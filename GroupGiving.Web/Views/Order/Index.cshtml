@@ -1,0 +1,43 @@
+﻿@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Purchase</h2>
+
+<div>Quantity: 
+<select name="quantity">
+<option>1</option>
+<option>2</option>
+<option>3</option>
+</select>
+</div>
+<div>Price: $price (fee = %5 + VAT)</div>
+
+<h2>Personal Details</h2>
+<div>
+<div>Sign Up</div>
+<div>First Name: <input type="text" name="firstName" /></div>
+<div>Last Name: <input type="text" name="lastName" /></div>
+<div>Email: <input type="text" name="email" /></div>
+<div>Password: <input type="text" name="password" /></div>
+<div>Confirm Password: <input type="text" name="confirmPassword" /></div>
+</div>
+
+<div>
+<div>Sign In</div>
+<div>Email address: <input type="text" name="emailAddress" /></div>
+<div>Password: <input type="password" name="password" /></div>
+</div>
+
+<div>
+<div>Tickets</div>
+<div>Ticket #1 Name: <input type="text" name="attendeeName" /></div>
+<div>Ticket #2 Name: <input type="text" name="attendeeName" /></div>
+</div>
+
+<div>
+<div><input type="checkbox" name="offers" /><label for="offers">I want to receive event offers</label></div>
+<div><input type="checkbox" name="tnc" /><label for="tnc">I agree to the Terms and Conditions</label></div>
+<div><a>Pay Now</a></div>
+</div>
