@@ -1,8 +1,9 @@
-﻿@{
+﻿@model GroupGiving.Web.Models.EventViewModel
+@{
     ViewBag.Title = "Event";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
-
+<h1>@Html.ActionLink(Model.EventId.ToString(), "Index", new { id = Model.EventId })</h1>
 <h2>Event Title</h2>
 
 <div>Event Date</div>
