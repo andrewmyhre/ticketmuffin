@@ -1,4 +1,15 @@
-﻿@{
+﻿@using GroupGiving.Web.Code
+@{
     ViewBag.Title = "Home Page";
 }
 
+@section scripts {
+<script type="text/javascript" src="/scripts/jquery.expander.js"></script>
+<script type="text/javascript" src="/scripts/home.js"></script>
+}
+
+
+<h2>Upcoming Events in London</h2>
+
+@Html.ActionLink("Sample Event", "Index", "Event") 20 June, 2011
+<p class="expandable">@Html.FakeLatinParagraph()</p>
