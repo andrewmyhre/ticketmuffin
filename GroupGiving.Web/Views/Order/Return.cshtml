@@ -1,0 +1,16 @@
+﻿@{
+    ViewBag.Title = "Return";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Return</h2>
+<script type="text/javascript" src="https://www.paypalobjects.com/js/external/dg.js"></script>
+<script type="text/javascript" src="/scripts/order.js"></script>
+
+<script type="text/javascript">
+    dgFlow = top.dgFlow || top.opener.top.dgFlow;
+    dgFlow.closeFlow();
+    top.close();
+
+    alert(getQuerystring('payKey'));
+</script>

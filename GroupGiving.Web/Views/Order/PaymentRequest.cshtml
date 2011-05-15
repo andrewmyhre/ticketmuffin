@@ -1,0 +1,32 @@
+﻿@model GroupGiving.Web.Models.OrderRequestViewModel
+
+@{
+    ViewBag.Title = "PaymentRequest";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<script type="text/javascript" src="https://www.paypalobjects.com/js/external/dg.js"></script>
+
+<h2>PaymentRequest</h2>
+
+@if (Model.Errors != null)
+{
+    <ul>
+    @foreach (var error in Model.Errors)
+    {
+        <li>@error.Parameter: @error.Message</li>
+    }
+    </ul>
+}
+
+<p>You're about to make a PayPal purchase for a $100.00 ticket through the sandbox site</p>
+<p>Use the following credentials:</p>
+<p>Email: buyer1_1304843364_per@gmail.com</p>
+<p>Password: lilacwine</p>
+<p>Pay key for this transation is @Model.PayKey</p>
+
+<form action="@Model.PayPalPostUrl" target="PPDGFrame"> 
+<input id="type" type="hidden" name="expType" value="mini"> 
+<input id="paykey" type="hidden" name="paykey" value="@Model.PayKey"> 
+<input type="submit" id="submitBtn" value="Pay with PayPal"> 
+</form>

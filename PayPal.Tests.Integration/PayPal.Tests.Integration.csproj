@@ -1,0 +1,118 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{6AB21D0F-97EC-4A45-9668-CAB3C655993A}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>PayPal.Tests.Integration</RootNamespace>
+    <AssemblyName>PayPal.Tests.Integration</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <TargetFrameworkProfile>
+    </TargetFrameworkProfile>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
+    <PlatformTarget>x86</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
+    <PlatformTarget>x86</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject />
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="log4net">
+      <HintPath>..\packages\log4net.1.2.10\lib\2.0\log4net.dll</HintPath>
+    </Reference>
+    <Reference Include="NSpec">
+      <HintPath>..\packages\nspec.0.9.37\lib\NSpec.dll</HintPath>
+    </Reference>
+    <Reference Include="nunit.framework, Version=2.5.7.10213, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77, processorArchitecture=MSIL">
+      <HintPath>..\packages\nspec.0.9.37\lib\nunit.framework.dll</HintPath>
+    </Reference>
+    <Reference Include="nunit.mocks, Version=2.5.10.11092, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\NUnit.2.5.10.11092\lib\nunit.mocks.dll</HintPath>
+    </Reference>
+    <Reference Include="Payflow_dotNET_2.0">
+      <HintPath>..\packages\PayPal SDK\Payflow_dotNET_2.0.dll</HintPath>
+    </Reference>
+    <Reference Include="pnunit.framework">
+      <HintPath>..\packages\NUnit.2.5.10.11092\lib\pnunit.framework.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Xml.Linq" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="app.config" />
+    <None Include="packages.config" />
+    <None Include="PayPalHelper\Docs\startHere.docx" />
+    <None Include="PayPalHelper\Docs\startHere.pdf" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="ChainedPayments.cs" />
+    <Compile Include="XmlTests.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="FaultMessage.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="PayPalHelper\Docs\startHere.htm" />
+    <Content Include="PayPalHelper\Docs\startHere.html\html\DocSet_default.html" />
+    <Content Include="PayPalHelper\Docs\startHere.html\html\images\19fb5f20-19a2-4d76-a2b0-fd753895da1e.png" />
+    <Content Include="PayPalHelper\Docs\startHere.html\html\images\45d9257f-f452-491c-a16e-20d3cd1370db.png" />
+    <Content Include="PayPalHelper\Docs\startHere.html\html\images\8b52f348-d854-4a8f-9132-863e0fce5da9.png" />
+    <Content Include="PayPalHelper\Docs\startHere.html\html\images\c3431829-bc93-4403-921f-b35745aedb75.png" />
+    <Content Include="PayPalHelper\Docs\startHere.html\local\Classic.css" />
+    <Content Include="PayPalHelper\Docs\startHere.html\local\collall.gif" />
+    <Content Include="PayPalHelper\Docs\startHere.html\local\collapse_all.gif" />
+    <Content Include="PayPalHelper\Docs\startHere.html\local\copycode.gif" />
+    <Content Include="PayPalHelper\Docs\startHere.html\local\copycodeHighlight.gif" />
+    <Content Include="PayPalHelper\Docs\startHere.html\local\Dropdown.js" />
+    <Content Include="PayPalHelper\Docs\startHere.html\local\drpdown.gif" />
+    <Content Include="PayPalHelper\Docs\startHere.html\local\drpdown_orange.gif" />
+    <Content Include="PayPalHelper\Docs\startHere.html\local\EventUtilities.js" />
+    <Content Include="PayPalHelper\Docs\startHere.html\local\exp.gif" />
+    <Content Include="PayPalHelper\Docs\startHere.html\local\expall.gif" />
+    <Content Include="PayPalHelper\Docs\startHere.html\local\expand_all.gif" />
+    <Content Include="PayPalHelper\Docs\startHere.html\local\note.gif" />
+    <Content Include="PayPalHelper\Docs\startHere.html\local\samples.js" />
+    <Content Include="PayPalHelper\Docs\startHere.html\local\script.js" />
+    <Content Include="PayPalHelper\Docs\startHere.html\local\script_chm.js" />
+    <Content Include="PayPalHelper\Docs\startHere.html\local\SplitScreen.js" />
+    <Content Include="PayRequest.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\GroupGiving.PayPal\GroupGiving.PayPal.csproj">
+      <Project>{69AC82E2-904E-4A5F-9A94-E5EDD91534AB}</Project>
+      <Name>GroupGiving.PayPal</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

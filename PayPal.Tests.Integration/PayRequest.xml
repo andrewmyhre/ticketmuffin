@@ -1,0 +1,27 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<PayRequest xmlns:ns2="http://svcs.paypal.com/types/ap">
+    <requestEnvelope>
+        <errorLanguage>en_US</errorLanguage>
+        <detailLevel>ReturnAll</detailLevel>
+    </requestEnvelope>
+    <clientDetails>
+        <applicationId>APP-80W284485P519543T</applicationId>
+        <deviceId>255.255.255.255</deviceId>
+        <ipAddress>255.255.255.255</ipAddress>
+        <partnerName>MyCompanyName</partnerName>
+    </clientDetails>
+    <actionType>PAY</actionType>
+    <cancelUrl>https://MyCancelURL</cancelUrl>
+    <returnUrl>https://MyReturnURL</returnUrl>
+    <currencyCode>USD</currencyCode>
+    <feesPayer>EACHRECEIVER</feesPayer>
+    <memo>testing my first pay call</memo>
+    <receiverList>
+        <receiver>
+            <amount>5</amount>
+            <email>sellr2_1304843519_biz@gmail.com</email>
+        </receiver>
+    </receiverList>
+    <senderEmail>buyer1_1304843364_per@gmail.com</senderEmail>
+    <trackingId>a3d1f14d-1e97-4b08-82bb-e5dd529ee64d</trackingId>
+</PayRequest>
