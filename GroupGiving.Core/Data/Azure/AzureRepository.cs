@@ -9,7 +9,7 @@ using Microsoft.WindowsAzure.StorageClient;
 
 namespace GroupGiving.Core.Data.Azure
 {
-    public class AzureRepository<T> where T : TableServiceEntity
+    public class AzureRepository<T> : IRepository<T> where T : TableServiceEntity
     {
         private readonly CloudStorageAccount _account;
         private readonly CloudTableClient _client;
@@ -51,6 +51,45 @@ namespace GroupGiving.Core.Data.Azure
             {
                 throw;
             }
+        }
+
+        public IEnumerable<T> RetrieveAll()
+        {
+            var context = _client.GetDataServiceContext();
+            return context.CreateQuery<T>(Table).AsTableServiceQuery();
+        }
+
+        public T Retrieve(object id)
+        {
+            return All.Where(o => o.RowKey == id.ToString()).FirstOrDefault();
+        }
+
+        public void SaveOrUpdate(T entity)
+        {
+            var context = _client.GetDataServiceContext();
+            if (string.IsNullOrEmpty(entity.RowKey))
+            {
+                entity.RowKey = Guid.NewGuid().ToString();
+                context.AddObject(_tableName, entity);
+            }
+            else
+            {
+                context.UpdateObject(entity);
+            }
+
+            try
+            {
+                context.SaveChangesWithRetries();
+            }
+            catch
+            {
+                throw;
+            }
+        }
+
+        public void Delete(object id)
+        {
+            throw new NotImplementedException();
         }
     }
 }

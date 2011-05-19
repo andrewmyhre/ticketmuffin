@@ -4,6 +4,8 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using System.Web.Routing;
+using GroupGiving.Web.Code;
+using Ninject;
 
 namespace GroupGiving.Web
 {
@@ -12,6 +14,16 @@ namespace GroupGiving.Web
 
     public class MvcApplication : System.Web.HttpApplication
     {
+        private static IKernel _kernel;
+        public static IKernel NinjectKernel
+        {
+            get
+            {
+                if (_kernel == null) 
+                    throw new InvalidOperationException("Kernel isn't initialised yet!"); 
+                return _kernel;
+            }
+        }
         public static void RegisterGlobalFilters(GlobalFilterCollection filters)
         {
             filters.Add(new HandleErrorAttribute());
@@ -36,6 +48,8 @@ namespace GroupGiving.Web
 
             RegisterGlobalFilters(GlobalFilters.Filters);
             RegisterRoutes(RouteTable.Routes);
+
+            _kernel = new StandardKernel(new GroupGivingNinjectModule());
         }
     }
 }

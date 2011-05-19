@@ -1,10 +1,10 @@
-﻿using System.Linq;
-using GroupGiving.Core.Data.Azure;
+﻿using System.Collections.Generic;
+using GroupGiving.Core.Domain;
 
 namespace GroupGiving.Web.Models
 {
     public class HomePageViewModel
     {
-        public IQueryable<EventRow> Events { get; set; }
+        public IEnumerable<GroupGivingEvent> Events { get; set; }
     }
 }

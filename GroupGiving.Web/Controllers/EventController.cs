@@ -8,21 +8,26 @@ using GroupGiving.Core.Data.Azure;
 using GroupGiving.Core.Domain;
 using GroupGiving.Web.Models;
 using Microsoft.WindowsAzure;
+using Ninject;
 
 namespace GroupGiving.Web.Controllers
 {
     public class EventController : Controller
     {
+        //CloudStorageAccount account = CloudConfiguration.GetStorageAccount("DataConnectionString");
+        private readonly IRepository<GroupGivingEvent> _eventRepository;
+
         //
         // GET: /Event/
-        CloudStorageAccount account = CloudConfiguration.GetStorageAccount("DataConnectionString");
+        public EventController()
+        {
+            _eventRepository = MvcApplication.NinjectKernel.Get<IRepository<GroupGivingEvent>>();
+        }
 
         public ActionResult Index(Guid id)
         {
-            var eventRepository = new AzureRepository<EventRow>(account);
-
             var viewModel = new EventViewModel();
-            var givingEvent = eventRepository.Retrieve(id);
+            var givingEvent = _eventRepository.Retrieve(id);
             if (givingEvent == null)
                 return HttpNotFound();
 
@@ -34,11 +39,14 @@ namespace GroupGiving.Web.Controllers
         [AcceptVerbs(HttpVerbs.Post)]
         public ActionResult Create(string name, string city)
         {
-            var eventRepository = new AzureRepository<EventRow>(account);
-            var givingEvent = new EventRow(Guid.NewGuid(), "London");
-            givingEvent.Name = "this is a test event";
+            var givingEvent = new GroupGivingEvent()
+            {
+                Id=Guid.NewGuid(),
+                Name="this is a test event",
+                City="London"
+            };
 
-            eventRepository.Save(givingEvent);
+            _eventRepository.SaveOrUpdate(givingEvent);
             return RedirectToAction("Index", new {id = givingEvent.Id});
         }
     }

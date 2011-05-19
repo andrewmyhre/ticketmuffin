@@ -21,6 +21,11 @@ namespace GroupGiving.Web.Controllers
 
         public ActionResult PaymentRequest()
         {
+            return View();
+        }
+
+        public ActionResult StartRequest()
+        {
             IApiClient payPal = new ApiClient(new ApiClientSettings()
             {
                 Username = "seller_1304843436_biz_api1.gmail.com",
@@ -32,8 +37,8 @@ namespace GroupGiving.Web.Controllers
             request.CurrencyCode = "USD";
             request.FeesPayer = "EACHRECEIVER";
             request.Memo = "test order";
-            request.CancelUrl = "http://"+Request.Url.Authority+"/Order/Cancel?payKey=${payKey}.";
-            request.ReturnUrl = "http://"+Request.Url.Authority+"/Order/Return?payKey=${payKey}.";
+            request.CancelUrl = "http://" + Request.Url.Authority + "/Order/Cancel?payKey=${payKey}.";
+            request.ReturnUrl = "http://" + Request.Url.Authority + "/Order/Return?payKey=${payKey}.";
             request.Receivers.Add(new Receiver("10", "seller_1304843436_biz@gmail.com"));
             request.Receivers.Add(new Receiver("9", "sellr2_1304843519_biz@gmail.com"));
             var response = payPal.SendPayRequest(request);
@@ -43,7 +48,11 @@ namespace GroupGiving.Web.Controllers
             viewModel.Ack = response.ResponseEnvelope.Ack;
             viewModel.PayKey = response.PayKey;
             viewModel.Errors = response.Errors;
-            return View(viewModel);
+
+            if (response.Errors != null && response.Errors.Count() > 0)
+                return View(viewModel);
+
+            return Redirect(string.Format("https://www.sandbox.paypal.com/webscr?cmd=_ap-payment&paykey={0}", response.PayKey));
         }
 
         public ActionResult Return()
