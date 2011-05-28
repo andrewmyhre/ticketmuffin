@@ -6,20 +6,24 @@ using GroupGiving.Core.Data;
 using GroupGiving.Core.Data.Azure;
 using GroupGiving.Core.Domain;
 using GroupGiving.Web.Models;
+using Microsoft.WindowsAzure;
 using Ninject;
 
 namespace GroupGiving.Web.Controllers
 {
     public class HomeController : Controller
     {
+        private readonly IRepository<GroupGivingEvent> _eventRepository;
+
+        public HomeController()
+        {
+            _eventRepository = MvcApplication.Kernel.Get<IRepository<GroupGivingEvent>>();
+        }
+
         public ActionResult Index()
         {
-            //var account = CloudConfiguration.GetStorageAccount("DataConnectionString");
-            var eventRepository = MvcApplication.NinjectKernel.Get<IRepository<GroupGivingEvent>>();
-
             var viewModel = new HomePageViewModel();
-            viewModel.Events = eventRepository.RetrieveAll();
-
+            viewModel.Events = _eventRepository.RetrieveAll();
             return View(viewModel);
         }
     }

@@ -9,18 +9,17 @@ using Microsoft.WindowsAzure.StorageClient;
 
 namespace GroupGiving.Core.Data.Azure
 {
-    public class AzureRepository<T> : IRepository<T> where T : TableServiceEntity
+    public class AzureRepository<T> : IAzureRepository<T> where T : TableServiceEntity
     {
-        private readonly CloudStorageAccount _account;
+        private readonly CloudStorageAccount _azureAccount;
         private readonly CloudTableClient _client;
         private readonly string _tableName;
 
-        public AzureRepository(CloudStorageAccount account)
+        public AzureRepository(CloudStorageAccount azureAccount)
         {
-            _account = account;
+            _azureAccount = azureAccount;
             _tableName = typeof (T).Name;
-            _client = _account.CreateCloudTableClient();
-            _client.CreateTableIfNotExist(_tableName);
+            _client = _azureAccount.CreateCloudTableClient();
         }
 
         public string Table { get { return typeof (T).Name; }}

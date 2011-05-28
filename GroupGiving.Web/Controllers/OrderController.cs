@@ -37,7 +37,7 @@ namespace GroupGiving.Web.Controllers
             if (response.Errors != null && response.Errors.Count() > 0)
                 return View(viewModel);
 
-            return Redirect(string.Format("https://www.sandbox.paypal.com/webscr?cmd=_ap-payment&paykey={0}", response.PayKey));
+            return Redirect(string.Format(ConfigurationManager.AppSettings["PayFlowProPaymentPage"], response.PayKey));
         }
 
         private PayResponse SendPaymentRequest()
@@ -50,7 +50,7 @@ namespace GroupGiving.Web.Controllers
                                                   });
             var request = new PayRequest();
             request.ActionType = "PAY";
-            request.CurrencyCode = "USD";
+            request.CurrencyCode = "GBP";
             request.FeesPayer = "EACHRECEIVER";
             request.Memo = "test order";
             request.CancelUrl = "http://" + Request.Url.Authority + "/Order/Cancel?payKey=${payKey}.";

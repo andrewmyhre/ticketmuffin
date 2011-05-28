@@ -53,11 +53,13 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Data\Azure\AzureDomainTypes.cs" />
     <Compile Include="Data\Azure\AzureEventRepository.cs" />
     <Compile Include="Data\Azure\CloudConfiguration.cs" />
     <Compile Include="Data\Azure\AzureRepository.cs" />
     <Compile Include="Data\Azure\EntityMappings.cs" />
     <Compile Include="Data\Azure\EventRow.cs" />
+    <Compile Include="Data\Azure\IAzureRepository.cs" />
     <Compile Include="Data\EventRepository.cs" />
     <Compile Include="Data\Fakes\FakeRepository.cs" />
     <Compile Include="Data\IRepository.cs" />

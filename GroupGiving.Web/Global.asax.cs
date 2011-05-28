@@ -4,6 +4,7 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using System.Web.Routing;
+using GroupGiving.Core.Data.Azure;
 using GroupGiving.Web.Code;
 using Ninject;
 
@@ -12,18 +13,9 @@ namespace GroupGiving.Web
     // Note: For instructions on enabling IIS6 or IIS7 classic mode, 
     // visit http://go.microsoft.com/?LinkId=9394801
 
-    public class MvcApplication : System.Web.HttpApplication
+    public class MvcApplication : Ninject.Web.NinjectHttpApplication
     {
-        private static IKernel _kernel;
-        public static IKernel NinjectKernel
-        {
-            get
-            {
-                if (_kernel == null) 
-                    throw new InvalidOperationException("Kernel isn't initialised yet!"); 
-                return _kernel;
-            }
-        }
+        public static IKernel Kernel { get; set; }
         public static void RegisterGlobalFilters(GlobalFilterCollection filters)
         {
             filters.Add(new HandleErrorAttribute());
@@ -41,6 +33,7 @@ namespace GroupGiving.Web
 
         }
 
+        /*
         protected void Application_Start()
         {
             log4net.Config.XmlConfigurator.Configure();
@@ -48,8 +41,23 @@ namespace GroupGiving.Web
 
             RegisterGlobalFilters(GlobalFilters.Filters);
             RegisterRoutes(RouteTable.Routes);
+        }*/
 
-            _kernel = new StandardKernel(new GroupGivingNinjectModule());
+        protected override void OnApplicationStarted()
+        {
+            log4net.Config.XmlConfigurator.Configure();
+            AreaRegistration.RegisterAllAreas();
+
+            RegisterGlobalFilters(GlobalFilters.Filters);
+            RegisterRoutes(RouteTable.Routes);
+            new EntityMappings().CreateMaps();
+            base.OnApplicationStarted();
+        }
+
+        protected override IKernel CreateKernel()
+        {
+            Kernel = new StandardKernel(new GroupGivingNinjectModule());
+            return Kernel;
         }
     }
 }

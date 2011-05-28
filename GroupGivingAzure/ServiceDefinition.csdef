@@ -13,8 +13,13 @@
     </Endpoints>
     <Imports>
       <Import moduleName="Diagnostics" />
-      <Import moduleName="RemoteAccess" />
-      <Import moduleName="RemoteForwarder" />
     </Imports>
+    <LocalResources>
+    </LocalResources>
+    <Certificates>
+    </Certificates>
+    <ConfigurationSettings>
+      <Setting name="DataConnectionString" />
+    </ConfigurationSettings>
   </WebRole>
 </ServiceDefinition>

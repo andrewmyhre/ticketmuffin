@@ -14,16 +14,14 @@ namespace GroupGiving.Web.Controllers
 {
     public class EventController : Controller
     {
-        //CloudStorageAccount account = CloudConfiguration.GetStorageAccount("DataConnectionString");
         private readonly IRepository<GroupGivingEvent> _eventRepository;
+        public EventController(IRepository<GroupGivingEvent> eventRepository)
+        {
+            _eventRepository = eventRepository;
+        }
 
         //
         // GET: /Event/
-        public EventController()
-        {
-            _eventRepository = MvcApplication.NinjectKernel.Get<IRepository<GroupGivingEvent>>();
-        }
-
         public ActionResult Index(Guid id)
         {
             var viewModel = new EventViewModel();
