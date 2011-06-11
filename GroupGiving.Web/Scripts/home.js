@@ -1,4 +1,4 @@
-﻿$(document).ready(function () {
+﻿$(function () {
     $('.expandable').expander({
         userCollapseText: 'read less'
     });

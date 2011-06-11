@@ -96,6 +96,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Code\ContentTypeAwareViewEngine.cs" />
     <Compile Include="Code\GroupGivingNinjectModule.cs" />
     <Compile Include="Code\HtmlHelperExtensions.cs" />
     <Compile Include="Code\MustBeTrueAttribute.cs" />
@@ -112,6 +113,7 @@
     <Compile Include="Models\EditUserModel.cs" />
     <Compile Include="Models\EventViewModel.cs" />
     <Compile Include="Models\HomePageViewModel.cs" />
+    <Compile Include="Models\LogOnResultViewModel.cs" />
     <Compile Include="Models\OrderRequestViewModel.cs" />
     <Compile Include="Models\ResetPasswordViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -145,6 +147,7 @@
     <Content Include="Content\themes\base\jquery.ui.tabs.css" />
     <Content Include="Content\themes\base\jquery.ui.theme.css" />
     <Content Include="Global.asax" />
+    <Content Include="Scripts\global.js" />
     <Content Include="Scripts\home.js" />
     <Content Include="Scripts\jquery-1.5.1-vsdoc.js" />
     <Content Include="Scripts\jquery-1.5.1.js" />

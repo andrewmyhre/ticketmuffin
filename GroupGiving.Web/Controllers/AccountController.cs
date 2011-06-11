@@ -19,7 +19,7 @@ using RavenDBMembership.Web.Models;
 
 namespace GroupGiving.Web.Controllers
 {
-    public class AccountController : Controller
+    public class AccountController : ContentTypeAwareController
     {
         private ILog _log = LogManager.GetLogger("AccountController");
         private readonly IFormsAuthenticationService _formsService;
@@ -55,10 +55,14 @@ namespace GroupGiving.Web.Controllers
                     if (Url.IsLocalUrl(returnUrl) && returnUrl.Length > 1 && returnUrl.StartsWith("/")
                         && !returnUrl.StartsWith("//") && !returnUrl.StartsWith("/\\"))
                     {
+                        if (Request.AcceptTypes.Contains("application/json"))
+                            return Json(new LogOnResultViewModel() {Success = true, RedirectUrl = returnUrl});
                         return Redirect(returnUrl);
                     }
                     else
                     {
+                        if (Request.AcceptTypes.Contains("application/json"))
+                            return Json(new LogOnResultViewModel() { Success = true, RedirectUrl = Url.Action("Index", "Home") });
                         return RedirectToAction("Index", "Home");
                     }
                 }
@@ -69,6 +73,8 @@ namespace GroupGiving.Web.Controllers
             }
 
             // If we got this far, something failed, redisplay form
+            if (Request.AcceptTypes.Contains("application/json"))
+                return Json(model);
             return View(model);
         }
 
