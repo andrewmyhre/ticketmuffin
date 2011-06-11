@@ -108,6 +108,7 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Models\AccountModels.cs" />
+    <Compile Include="Models\ContactDetailsViewModel.cs" />
     <Compile Include="Models\EditUserModel.cs" />
     <Compile Include="Models\EventViewModel.cs" />
     <Compile Include="Models\HomePageViewModel.cs" />
@@ -242,6 +243,9 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Views\Account\PasswordHasBeenReset.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Account\ContactDetails.cshtml" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v10.0\WebApplications\Microsoft.WebApplication.targets" />

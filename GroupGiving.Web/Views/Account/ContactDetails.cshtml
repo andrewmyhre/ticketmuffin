@@ -1,0 +1,87 @@
+﻿@model GroupGiving.Web.Models.ContactDetailsViewModel
+
+@{
+    ViewBag.Title = "ContactDetails";
+}
+
+<h2>ContactDetails</h2>
+
+@using (Html.BeginForm())
+{
+    <div>
+    @Html.ValidationSummary(false, "There were some problems updating your details. Please check the values below and re-submit")
+    @if (Model.UpdatedSuccessfully)
+    {
+        <p>Your contact details were updated successfully</p>
+    }
+    
+    <fieldset>
+        <legend>Account Information</legend>
+
+        <div class="editor-label">
+            @Html.LabelFor(m=>m.Email)
+            @Model.Email
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(m => m.AccountType)
+        </div>
+        <div class="editor-field">
+            @Html.DropDownListFor(m=>m.AccountType, Model.AccountTypes)
+            @Html.ValidationMessageFor(m => m.AccountType)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(m => m.FirstName)
+        </div>
+        <div class="editor-field">
+            @Html.TextBoxFor(m => m.FirstName)
+            @Html.ValidationMessageFor(m => m.FirstName)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(m => m.LastName)
+        </div>
+        <div class="editor-field">
+            @Html.TextBoxFor(m => m.LastName)
+            @Html.ValidationMessageFor(m => m.LastName)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(m => m.AddressLine)
+        </div>
+        <div class="editor-field">
+            @Html.TextBoxFor(m => m.AddressLine)
+            @Html.ValidationMessageFor(m => m.AddressLine)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(m => m.Town)
+        </div>
+        <div class="editor-field">
+            @Html.TextBoxFor(m => m.Town)
+            @Html.ValidationMessageFor(m => m.Town)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(m => m.PostCode)
+        </div>
+        <div class="editor-field">
+            @Html.TextBoxFor(m => m.PostCode)
+            @Html.ValidationMessageFor(m => m.PostCode)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(m => m.Country)
+        </div>
+        <div class="editor-field">
+            @Html.DropDownListFor(m=>m.Country, Model.Countries)
+            @Html.ValidationMessageFor(m => m.Country)
+        </div>
+
+        <div>
+            <input type="submit" value="Update Contact Details" />
+        </div>
+    </fieldset>
+    </div>
+}

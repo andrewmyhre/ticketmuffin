@@ -6,6 +6,7 @@ using System.Linq;
 using System.Transactions;
 using System.Web.Mvc;
 using System.Web.Security;
+using GroupGiving.Core.Domain;
 using GroupGiving.Web.Code;
 using Microsoft.Web.Mvc;
 
@@ -112,12 +113,6 @@ namespace RavenDBMembership.Web.Models
 
 	    public string RedirectUrl { get; set; }
 	}
-
-    public enum AccountType
-    {
-        Individual,
-        Company
-    }
 
     #endregion
 

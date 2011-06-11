@@ -89,6 +89,18 @@ namespace GroupGiving.Core.Services
 
             return ResetPasswordResult.SuccessResult;
         }
+
+        public UserAccount RetrieveByEmailAddress(string email)
+        {
+            var account = _accountRepository.Retrieve(a => a.Email == email);
+            return account;
+        }
+
+        public void UpdateAccount(UserAccount account)
+        {
+            _accountRepository.SaveOrUpdate(account);
+            _accountRepository.CommitUpdates();
+        }
     }
 
     public class ResetPasswordResult

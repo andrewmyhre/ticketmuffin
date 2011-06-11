@@ -23,5 +23,6 @@ namespace GroupGiving.Core.Domain
         public string PostCode { get; set; }
         public string ResetPasswordToken { get; set; }
         public DateTime ResetPasswordTokenExpiry { get; set; }
+        public GroupGiving.Core.Domain.AccountType AccountType { get; set; }
     }
 }

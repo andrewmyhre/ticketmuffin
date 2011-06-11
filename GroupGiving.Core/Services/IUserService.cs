@@ -11,5 +11,7 @@ namespace GroupGiving.Core.Services
         SendThanksForRegisteringEmailResult SendThanksForRegisteringEmail(string emailAddress, string firstName, IEmailService emailService);
         UserAccount RetrieveAccountByPasswordResetToken(string resetPasswordToken);
         ResetPasswordResult ResetPassword(string resetPasswordToken, string newPassword);
+        UserAccount RetrieveByEmailAddress(string email);
+        void UpdateAccount(UserAccount account);
     }
 }

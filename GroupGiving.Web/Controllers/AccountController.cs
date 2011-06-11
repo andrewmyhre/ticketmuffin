@@ -290,6 +290,74 @@ namespace GroupGiving.Web.Controllers
             return View();
         }
 
+        [AcceptVerbs(HttpVerbs.Get)]
+        public ActionResult ContactDetails()
+        {
+            var viewModel = new ContactDetailsViewModel();
+            var accountService = MvcApplication.Kernel.Get<IUserService>();
+            var membershipUser = Membership.GetUser(true);
+            var account = accountService.RetrieveByEmailAddress(membershipUser.Email);
+            viewModel.AccountType = account.AccountType;
+            viewModel.AddressLine = account.AddressLine1;
+            viewModel.Country = account.Country;
+            viewModel.Town = account.City;
+            viewModel.FirstName = account.FirstName;
+            viewModel.LastName = account.LastName;
+            viewModel.PostCode = account.PostCode;
+            viewModel.Email = account.Email;
+
+            viewModel.Countries = new SelectList(
+                new []
+                    {
+                        "Poland",
+                        "United Kingdom",
+                        "United States of America",
+                        "New Zealand",
+                    }
+                );
+
+            viewModel.AccountTypes = new SelectList(
+                new[] { "Individual", "Company" });
+            
+            return View(viewModel);
+        }
+
+        [AcceptVerbs(HttpVerbs.Post)]
+        public ActionResult ContactDetails(ContactDetailsViewModel viewModel)
+        {
+            if (ModelState.IsValid)
+            {
+                // update
+                var accountService = MvcApplication.Kernel.Get<IUserService>();
+                var membershipUser = Membership.GetUser(true);
+                var account = accountService.RetrieveByEmailAddress(membershipUser.Email);
+                account.FirstName = viewModel.FirstName;
+                account.LastName = viewModel.LastName;
+                account.AccountType = viewModel.AccountType;
+                account.AddressLine1 = viewModel.AddressLine;
+                account.City = viewModel.Town;
+                account.PostCode = viewModel.PostCode;
+                account.Country = viewModel.Country;
+                accountService.UpdateAccount(account);
+                viewModel.UpdatedSuccessfully = true;
+                viewModel.Email = account.Email;
+            }
+
+            viewModel.Countries = new SelectList(
+                new[]
+                    {
+                        "Poland",
+                        "United Kingdom",
+                        "United States of America",
+                        "New Zealand",
+                    });
+
+                    viewModel.AccountTypes = new SelectList(
+                        new [] { "Individual", "Company"});
+
+            return View(viewModel);
+        }
+
         #region Status Codes
         private static string ErrorCodeToString(MembershipCreateStatus createStatus)
         {
