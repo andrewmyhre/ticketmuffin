@@ -1,14 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using System.Web.Mvc;
 using GroupGiving.Core.Data;
-using GroupGiving.Core.Data.Azure;
 using GroupGiving.Core.Domain;
 using GroupGiving.Web.Models;
-using Microsoft.WindowsAzure;
-using Ninject;
+using System.Web.Mvc;
 
 namespace GroupGiving.Web.Controllers
 {
@@ -22,10 +16,10 @@ namespace GroupGiving.Web.Controllers
 
         //
         // GET: /Event/
-        public ActionResult Index(Guid id)
+        public ActionResult Index(int id)
         {
             var viewModel = new EventViewModel();
-            var givingEvent = _eventRepository.Retrieve(id);
+            var givingEvent = _eventRepository.Retrieve(e=>e.Id=="groupgivingevents/"+id);
             if (givingEvent == null)
                 return HttpNotFound();
 
@@ -39,7 +33,6 @@ namespace GroupGiving.Web.Controllers
         {
             var givingEvent = new GroupGivingEvent()
             {
-                Id=Guid.NewGuid(),
                 Name="this is a test event",
                 City="London"
             };

@@ -2,9 +2,9 @@
 
 namespace GroupGiving.Core.Domain
 {
-    public class GroupGivingEvent : DomainBase
+    public class GroupGivingEvent : IDomainObject
     {
-        public new Guid Id { get; set; }
+        public string Id { get; set; }
         public string Name { get; set; }
         public string City { get; set; }
     }

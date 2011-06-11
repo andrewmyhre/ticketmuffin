@@ -1,10 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using System.Web.Mvc;
+﻿using System.Web.Mvc;
 using System.Web.Routing;
-using GroupGiving.Core.Data.Azure;
 using GroupGiving.Web.Code;
 using Ninject;
 
@@ -26,22 +21,17 @@ namespace GroupGiving.Web
             routes.IgnoreRoute("{resource}.axd/{*pathInfo}");
 
             routes.MapRoute(
+                "SignUp",
+                "signup",
+                new {controller = "Account", action = "signup"});
+
+            routes.MapRoute(
                 "Default", // Route name
                 "{controller}/{action}/{id}", // URL with parameters
                 new { controller = "Home", action = "Index", id = UrlParameter.Optional } // Parameter defaults
             );
 
         }
-
-        /*
-        protected void Application_Start()
-        {
-            log4net.Config.XmlConfigurator.Configure();
-            AreaRegistration.RegisterAllAreas();
-
-            RegisterGlobalFilters(GlobalFilters.Filters);
-            RegisterRoutes(RouteTable.Routes);
-        }*/
 
         protected override void OnApplicationStarted()
         {
@@ -50,7 +40,6 @@ namespace GroupGiving.Web
 
             RegisterGlobalFilters(GlobalFilters.Filters);
             RegisterRoutes(RouteTable.Routes);
-            new EntityMappings().CreateMaps();
             base.OnApplicationStarted();
         }
 

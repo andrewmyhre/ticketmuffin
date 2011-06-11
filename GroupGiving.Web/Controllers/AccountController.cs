@@ -63,10 +63,13 @@ namespace GroupGiving.Web.Controllers
 
         //
         // GET: /Account/Register
-
-        public ActionResult Register()
+        public ActionResult Register(string redirectUrl)
         {
-            return View();
+            var viewModel = new RegisterModel()
+            {
+                RedirectUrl = redirectUrl
+            };
+            return View(viewModel);
         }
 
         //
@@ -84,7 +87,10 @@ namespace GroupGiving.Web.Controllers
                 if (createStatus == MembershipCreateStatus.Success)
                 {
                     FormsAuthentication.SetAuthCookie(model.UserName, false /* createPersistentCookie */);
-                    return RedirectToAction("Index", "Home");
+                    if (!string.IsNullOrWhiteSpace(model.RedirectUrl))
+                        return Redirect(model.RedirectUrl);
+                    else
+                        return RedirectToAction("Index", "Home");
                 }
                 else
                 {

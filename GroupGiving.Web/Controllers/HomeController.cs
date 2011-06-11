@@ -1,29 +1,25 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Web;
-using System.Web.Mvc;
-using GroupGiving.Core.Data;
-using GroupGiving.Core.Data.Azure;
+﻿using System.Web.Mvc;
 using GroupGiving.Core.Domain;
+using GroupGiving.Core.Services;
+using GroupGiving.Web.Code;
 using GroupGiving.Web.Models;
-using Microsoft.WindowsAzure;
 using Ninject;
 
 namespace GroupGiving.Web.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly IRepository<GroupGivingEvent> _eventRepository;
+        private readonly IEventService _eventService;
 
         public HomeController()
         {
-            _eventRepository = MvcApplication.Kernel.Get<IRepository<GroupGivingEvent>>();
+            _eventService = MvcApplication.Kernel.Get<IEventService>();
         }
 
         public ActionResult Index()
         {
             var viewModel = new HomePageViewModel();
-            viewModel.Events = _eventRepository.RetrieveAll();
+            viewModel.Events = _eventService.RetrieveAllEvents();
             return View(viewModel);
         }
     }

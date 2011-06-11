@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using GroupGiving.Core.Data.Azure;
 using GroupGiving.Core.Domain;
 
 namespace GroupGiving.Web.Models

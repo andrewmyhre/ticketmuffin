@@ -1,0 +1,167 @@
+Delete a document with key: Raven/Backup/Status and etag 
+Document with key 'Raven/Backup/Status' was not found, and considered deleted
+Document with key 'Raven/Replication/Destinations' was not found
+Request #   1: GET     -   183 ms - <default>  - 404 - /docs/Raven/Replication/Destinations
+Document with key 'Raven/Hilo/groupgivingevents' was not found
+Request #   2: GET     -    45 ms - <default>  - 404 - /docs/Raven/Hilo/groupgivingevents
+Putting a document with key: Raven/Hilo/groupgivingevents and etag 00000000-0000-0000-0000-000000000000
+Inserted a new document with key 'Raven/Hilo/groupgivingevents', update: False, 
+Request #   3: PUT     -   905 ms - <default>  - 201 - /docs/Raven/Hilo/groupgivingevents
+New index Raven%2fDocumentsByEntityName:
+using Raven.Database.Linq;
+using System.Linq;
+using System.Collections.Generic;
+using System.Collections;
+using System;
+using Raven.Database.Linq.PrivateExtensions;
+using Lucene.Net.Documents;
+using Raven.Database.Indexing;
+public class Index_Raven_2fDocumentsByEntityName : AbstractViewGenerator
+{
+	public Index_Raven_2fDocumentsByEntityName()
+	{
+		this.ForEntityName = null;
+		this.ViewText = @"from doc in docs 
+let Tag = doc[""@metadata""][""Raven-Entity-Name""]
+where  Tag != null 
+select new { Tag };";
+		this.MapDefinition = docs => from doc in docs
+			let Tag = doc["@metadata"]["Raven-Entity-Name"]
+			where Tag != null
+			select new { Tag, __document_id = doc.__document_id };
+		this.AddField("__document_id");
+		this.AddField("Tag");
+		this.AddQueryParameterForMap("__document_id");
+		this.AddQueryParameterForReduce("__document_id");
+	}
+}
+
+Compiled to:
+using Raven.Database.Linq;
+using System.Linq;
+using System.Collections.Generic;
+using System.Collections;
+using System;
+using Raven.Database.Linq.PrivateExtensions;
+using Lucene.Net.Documents;
+using Raven.Database.Indexing;
+public class Index_Raven_2fDocumentsByEntityName : AbstractViewGenerator
+{
+	public Index_Raven_2fDocumentsByEntityName()
+	{
+		this.ForEntityName = null;
+		this.ViewText = @"from doc in docs 
+let Tag = doc[""@metadata""][""Raven-Entity-Name""]
+where  Tag != null 
+select new { Tag };";
+		this.MapDefinition = docs => from doc in docs
+			let Tag = doc["@metadata"]["Raven-Entity-Name"]
+			where Tag != null
+			select new { Tag, __document_id = doc.__document_id };
+		this.AddField("__document_id");
+		this.AddField("Tag");
+		this.AddQueryParameterForMap("__document_id");
+		this.AddQueryParameterForReduce("__document_id");
+	}
+}
+
+Creating index Raven/DocumentsByEntityName with encoded name Raven/DocumentsByEntityName
+Creating index for Raven/DocumentsByEntityName
+Indexing 1 documents for index: Raven/DocumentsByEntityName
+Indexed 0 documents for Raven/DocumentsByEntityName
+New index Raven%2fDocumentCollections:
+using Raven.Database.Linq;
+using System.Linq;
+using System.Collections.Generic;
+using System.Collections;
+using System;
+using Raven.Database.Linq.PrivateExtensions;
+using Lucene.Net.Documents;
+using Raven.Database.Indexing;
+public class Index_Raven_2fDocumentCollections : AbstractViewGenerator
+{
+	public Index_Raven_2fDocumentCollections()
+	{
+		this.ForEntityName = null;
+		this.ViewText = @"from doc in docs
+let Name = doc[""@metadata""][""Raven-Entity-Name""]
+where Name != null
+select new { Name , Count = 1}
+
+from result in results
+group result by result.Name into g
+select new { Name = g.Key, Count = g.Sum(x=>x.Count) }";
+		this.MapDefinition = docs => from doc in docs
+			let Name = doc["@metadata"]["Raven-Entity-Name"]
+			where Name != null
+			select new { Name, Count = 1, __document_id = doc.__document_id };
+		this.ReduceDefinition = results => from result in results
+			group result by result.Name into g
+			select new { Name = g.Key, Count = g.Sum(x => x.Count) };
+		this.GroupByExtraction = result => result.Name;
+		this.AddField("Name");
+		this.AddField("Count");
+		this.AddQueryParameterForMap("__document_id");
+		this.AddQueryParameterForReduce("__document_id");
+	}
+}
+
+Compiled to:
+using Raven.Database.Linq;
+using System.Linq;
+using System.Collections.Generic;
+using System.Collections;
+using System;
+using Raven.Database.Linq.PrivateExtensions;
+using Lucene.Net.Documents;
+using Raven.Database.Indexing;
+public class Index_Raven_2fDocumentCollections : AbstractViewGenerator
+{
+	public Index_Raven_2fDocumentCollections()
+	{
+		this.ForEntityName = null;
+		this.ViewText = @"from doc in docs
+let Name = doc[""@metadata""][""Raven-Entity-Name""]
+where Name != null
+select new { Name , Count = 1}
+
+from result in results
+group result by result.Name into g
+select new { Name = g.Key, Count = g.Sum(x=>x.Count) }";
+		this.MapDefinition = docs => from doc in docs
+			let Name = doc["@metadata"]["Raven-Entity-Name"]
+			where Name != null
+			select new { Name, Count = 1, __document_id = doc.__document_id };
+		this.ReduceDefinition = results => from result in results
+			group result by result.Name into g
+			select new { Name = g.Key, Count = g.Sum(x => x.Count) };
+		this.GroupByExtraction = result => result.Name;
+		this.AddField("Name");
+		this.AddField("Count");
+		this.AddQueryParameterForMap("__document_id");
+		this.AddQueryParameterForReduce("__document_id");
+	}
+}
+
+Creating index Raven/DocumentCollections with encoded name Raven/DocumentCollections
+Creating index for Raven/DocumentCollections
+Indexing 1 documents for index: Raven/DocumentCollections
+Mapped 0 documents for Raven/DocumentCollections
+Request #   4: GET     -    10 ms - <default>  - 200 - /silverlight/plugins?noCache=-2111236501
+Request #   5: GET     -   153 ms - <default>  - 200 - /databases/?noCache=779675577
+Document with key 'Raven/Databases/docs' was not found
+Error on request
+Raven.Http.Exceptions.BadRequestException: Could not find a database named: docs
+   at Raven.Http.HttpServer.SetupRequestToProperDatabase(IHttpContext ctx) in c:\Builds\raven\Raven.Http\HttpServer.cs:line 430
+   at Raven.Http.HttpServer.DispatchRequest(IHttpContext ctx) in c:\Builds\raven\Raven.Http\HttpServer.cs:line 353
+   at Raven.Http.HttpServer.HandleActualRequest(IHttpContext ctx) in c:\Builds\raven\Raven.Http\HttpServer.cs:line 198
+Request #   6: GET     -   194 ms - <default>  - 400 - /databases/docs/Raven/WarningMessages
+Request #   7: GET     -   264 ms - <default>  - 200 - /stats?noCache=1949961500
+Issuing query on index Raven/DocumentCollections for all documents
+Request #   8: GET     -    44 ms - <default>  - 200 - /docs/?start=0&pageSize=12&noCache=574413335
+Request #   9: GET     -     2 ms - <default>  - 200 - /silverlight/ensureStartup?noCache=-1919265092
+Request #  10: GET     -   337 ms - <default>  - 200 - /indexes/Raven/DocumentCollections?query=&start=0&pageSize=25&aggregation=None&sort=Name
+Request #  11: GET     -     9 ms - <default>  - 200 - /build/version
+Request #  12: GET     -     1 ms - <default>  - 304 - /indexes/Raven/DocumentCollections?query=&start=0&pageSize=25&aggregation=None&sort=Name
+Request #  13: GET     -     0 ms - <default>  - 200 - /docs/?start=0&pageSize=12&noCache=1740594514
+Request #  14: GET     -    50 ms - <default>  - 200 - /stats?noCache=503932203
