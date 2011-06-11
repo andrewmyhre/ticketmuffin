@@ -7,3 +7,5 @@ obj/
 logs/
 App_Data/
 *Publish.xml
+packages/RavenDB.1.0.0.371/server/Data
+packages/RavenDB.1.0.0.371/server/*.log*

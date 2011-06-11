@@ -3,15 +3,16 @@ using GroupGiving.Core.Data;
 using GroupGiving.Core.Domain;
 using GroupGiving.Web.Models;
 using System.Web.Mvc;
+using Ninject;
 
 namespace GroupGiving.Web.Controllers
 {
     public class EventController : Controller
     {
         private readonly IRepository<GroupGivingEvent> _eventRepository;
-        public EventController(IRepository<GroupGivingEvent> eventRepository)
+        public EventController()
         {
-            _eventRepository = eventRepository;
+            _eventRepository = MvcApplication.Kernel.Get<IRepository<GroupGivingEvent>>();
         }
 
         //

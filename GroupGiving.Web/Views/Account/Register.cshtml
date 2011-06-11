@@ -1,4 +1,4 @@
-﻿@model GroupGiving.Web.Models.RegisterModel
+﻿@model RavenDBMembership.Web.Models.RegisterModel
 
 @{
     ViewBag.Title = "Register";
@@ -9,17 +9,15 @@
     Use the form below to create a new account. 
 </p>
 <p>
-    Passwords are required to be a minimum of @Membership.MinRequiredPasswordLength characters in length.
+    Passwords are required to be a minimum of @ViewBag.PasswordLength characters in length.
 </p>
-
-<script src="@Url.Content("~/Scripts/jquery.validate.min.js")" type="text/javascript"></script>
-<script src="@Url.Content("~/Scripts/jquery.validate.unobtrusive.min.js")" type="text/javascript"></script>
 
 @using (Html.BeginForm()) {
     @Html.ValidationSummary(true, "Account creation was unsuccessful. Please correct the errors and try again.")
     <div>
         <fieldset>
-            <legend>Sign Up</legend>
+            <legend>Account Information</legend>
+
             <div class="editor-label">
                 @Html.LabelFor(m => m.Email)
             </div>
@@ -45,7 +43,6 @@
             </div>
 
             <p>
-                @Html.HiddenFor(m=>m.RedirectUrl)
                 <input type="submit" value="Register" />
             </p>
         </fieldset>

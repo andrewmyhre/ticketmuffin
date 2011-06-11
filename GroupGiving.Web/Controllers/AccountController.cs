@@ -5,17 +5,31 @@ using System.Web;
 using System.Web.Mvc;
 using System.Web.Routing;
 using System.Web.Security;
+using GroupGiving.Web.Code;
 using GroupGiving.Web.Models;
+using Ninject;
+using RavenDBMembership.Provider;
+using RavenDBMembership.Web.Models;
 
 namespace GroupGiving.Web.Controllers
 {
     public class AccountController : Controller
     {
+        private readonly IFormsAuthenticationService _formsService;
+        private readonly IMembershipService _membershipService;
+
+        public AccountController()
+        {
+            _formsService = MvcApplication.Kernel.Get<IFormsAuthenticationService>();
+            _membershipService = MvcApplication.Kernel.Get<AccountMembershipService>();
+            ((RavenDBMembershipProvider) Membership.Provider).DocumentStore
+                = RavenDbDocumentStore.Instance;
+        }
 
         //
         // GET: /Account/LogOn
 
-        public ActionResult LogOn()
+        public ActionResult SignIn()
         {
             return View();
         }
@@ -24,13 +38,13 @@ namespace GroupGiving.Web.Controllers
         // POST: /Account/LogOn
 
         [HttpPost]
-        public ActionResult LogOn(LogOnModel model, string returnUrl)
+        public ActionResult SignIn(LogOnModel model, string returnUrl)
         {
             if (ModelState.IsValid)
             {
                 if (Membership.ValidateUser(model.UserName, model.Password))
                 {
-                    FormsAuthentication.SetAuthCookie(model.UserName, model.RememberMe);
+                    _formsService.SignIn(model.UserName, model.RememberMe);
                     if (Url.IsLocalUrl(returnUrl) && returnUrl.Length > 1 && returnUrl.StartsWith("/")
                         && !returnUrl.StartsWith("//") && !returnUrl.StartsWith("/\\"))
                     {
@@ -54,9 +68,9 @@ namespace GroupGiving.Web.Controllers
         //
         // GET: /Account/LogOff
 
-        public ActionResult LogOff()
+        public ActionResult SignOut()
         {
-            FormsAuthentication.SignOut();
+            _formsService.SignOut();
 
             return RedirectToAction("Index", "Home");
         }
@@ -81,12 +95,11 @@ namespace GroupGiving.Web.Controllers
             if (ModelState.IsValid)
             {
                 // Attempt to register the user
-                MembershipCreateStatus createStatus;
-                Membership.CreateUser(model.UserName, model.Password, model.Email, null, null, true, null, out createStatus);
+                var createStatus = _membershipService.CreateUser(model.Email, model.Password, model.Email);
 
                 if (createStatus == MembershipCreateStatus.Success)
                 {
-                    FormsAuthentication.SetAuthCookie(model.UserName, false /* createPersistentCookie */);
+                    _formsService.SignIn(model.Email, false /* createPersistentCookie */);
                     if (!string.IsNullOrWhiteSpace(model.RedirectUrl))
                         return Redirect(model.RedirectUrl);
                     else
@@ -94,11 +107,12 @@ namespace GroupGiving.Web.Controllers
                 }
                 else
                 {
-                    ModelState.AddModelError("", ErrorCodeToString(createStatus));
+                    ModelState.AddModelError("", AccountValidation.ErrorCodeToString(createStatus));
                 }
             }
 
             // If we got this far, something failed, redisplay form
+            ViewBag.PasswordLength = _membershipService.MinPasswordLength;
             return View(model);
         }
 
