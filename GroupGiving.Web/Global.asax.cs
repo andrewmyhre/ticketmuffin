@@ -26,6 +26,11 @@ namespace GroupGiving.Web
                 new {controller = "Account", action = "signup"});
 
             routes.MapRoute(
+                "ResetPassword",
+                "account/resetpassword/{token}",
+                new {controller = "Account", action = "ResetPassword"});
+
+            routes.MapRoute(
                 "Default", // Route name
                 "{controller}/{action}/{id}", // URL with parameters
                 new { controller = "Home", action = "Index", id = UrlParameter.Optional } // Parameter defaults

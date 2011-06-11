@@ -23,7 +23,7 @@ namespace GroupGiving.Core.Data
 
         public T Retrieve(Func<T, bool> predicate)
         {
-            return _session.Load<T>().SingleOrDefault(predicate);
+            return _session.Query<T>().SingleOrDefault(predicate);
         }
 
         public void SaveOrUpdate(T entity)
@@ -39,6 +39,16 @@ namespace GroupGiving.Core.Data
         public void Delete(T entity)
         {
             _session.Delete(entity);
+        }
+
+        public void CommitUpdates()
+        {
+            _session.SaveChanges();
+        }
+
+        public IEnumerable<T> Query(Func<T, bool> predicate)
+        {
+            return _session.Query<T>().Where(predicate);
         }
     }
 }

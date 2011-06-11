@@ -12,5 +12,7 @@ namespace GroupGiving.Core.Data
         void SaveOrUpdate(T entity);
         void Delete(Func<T, bool> predicate);
         void Delete(T entity);
+        void CommitUpdates();
+        IEnumerable<T> Query(Func<T, bool> predicate);
     }
 }

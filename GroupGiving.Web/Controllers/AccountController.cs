@@ -13,6 +13,7 @@ using GroupGiving.Web.Code;
 using GroupGiving.Web.Models;
 using log4net;
 using Ninject;
+using RavenDBMembership;
 using RavenDBMembership.Provider;
 using RavenDBMembership.Web.Models;
 
@@ -118,12 +119,12 @@ namespace GroupGiving.Web.Controllers
                             createUserRequest.City = model.Town;
                             createUserRequest.PostCode = model.PostCode;
                             createUserRequest.Country = model.Country;
-                            var userAccountRepository = MvcApplication.Kernel.Get<IUserService>();
-                            var userAccount = userAccountRepository.CreateUser(createUserRequest);
+                            var userService = MvcApplication.Kernel.Get<IUserService>();
+                            userService.CreateUser(createUserRequest);
 
                             // send a registration email to the user
-                            var thanksForRegisteringEmail = new ThanksForRegisteringEmail(model.Email, model.Email);
-                            MvcApplication.Kernel.Get<IEmailService>().SendEmail(thanksForRegisteringEmail);
+                            var emailService = MvcApplication.Kernel.Get<IEmailService>();
+                            userService.SendThanksForRegisteringEmail(model.Email, model.FirstName, emailService);
 
                             transaction.Complete();
 
@@ -201,6 +202,90 @@ namespace GroupGiving.Web.Controllers
         // GET: /Account/ChangePasswordSuccess
 
         public ActionResult ChangePasswordSuccess()
+        {
+            return View();
+        }
+
+        [AcceptVerbs(HttpVerbs.Get)]
+        public ActionResult ForgotPassword()
+        {
+            return View();
+        }
+
+        [AcceptVerbs(HttpVerbs.Post)]
+        public ActionResult ForgotPassword(string email)
+        {
+            var userService = MvcApplication.Kernel.Get<IUserService>();
+            var emailService = MvcApplication.Kernel.Get<IEmailService>();
+            var result = userService.SendPasswordResetEmail(email, emailService);
+
+            if (result.AccountNotFound)
+            {
+                ModelState.AddModelError("email", "We don't have an account registered with that email address...");
+                return View();
+            }
+
+            return RedirectToAction("ForgotPasswordEmailSent");
+        }
+
+        [AcceptVerbs(HttpVerbs.Get)]
+        public ActionResult ForgotPasswordEmailSent()
+        {
+            return View();
+        }
+
+        [AcceptVerbs(HttpVerbs.Get)]
+        public ActionResult ResetPassword(string token)
+        {
+            var resetPasswordViewModel = new ResetPasswordViewModel();
+            var userService = MvcApplication.Kernel.Get<IUserService>();
+            var account = userService.RetrieveAccountByPasswordResetToken(token);
+
+            if (account==null)
+            {
+                resetPasswordViewModel.TokenNotValid = true;
+                ModelState.AddModelError("token", "That token is invalid or has expired.");
+                return View(resetPasswordViewModel);
+            }
+            resetPasswordViewModel.EmailAddress = account.Email;
+            return View(resetPasswordViewModel);
+        }
+
+        [AcceptVerbs(HttpVerbs.Post)]
+        public ActionResult ResetPassword(string token, ResetPasswordViewModel resetPasswordViewModel)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(resetPasswordViewModel);
+            }
+            var userService = MvcApplication.Kernel.Get<IUserService>();
+
+            var accountService = MvcApplication.Kernel.Get<IUserService>();
+            var account = accountService.RetrieveAccountByPasswordResetToken(token);
+            if (account == null)
+            {
+                return RedirectToAction("ResetPassword", new {token = token});
+            }
+
+            using (var session = RavenDbDocumentStore.Instance.OpenSession())
+            {
+                var q = from u in session.Query<User>()
+                        where u.Username == account.Email 
+                        select u;
+                var user = q.SingleOrDefault();
+
+                user.PasswordSalt = PasswordUtil.CreateRandomSalt();
+                user.PasswordHash = PasswordUtil.HashPassword(resetPasswordViewModel.NewPassword, user.PasswordSalt);
+
+                session.SaveChanges();
+            }
+            
+            userService.ResetPassword(token, resetPasswordViewModel.NewPassword);
+
+            return RedirectToAction("PasswordHasBeenReset");
+        }
+
+        public ActionResult PasswordHasBeenReset()
         {
             return View();
         }

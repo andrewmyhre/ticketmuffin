@@ -4,6 +4,7 @@ using GroupGiving.Core.Services;
 using GroupGiving.Web.Code;
 using GroupGiving.Web.Models;
 using Ninject;
+using Raven.Client.Linq;
 
 namespace GroupGiving.Web.Controllers
 {
@@ -20,6 +21,7 @@ namespace GroupGiving.Web.Controllers
         {
             var viewModel = new HomePageViewModel();
             viewModel.Events = _eventService.RetrieveAllEvents();
+
             return View(viewModel);
         }
     }

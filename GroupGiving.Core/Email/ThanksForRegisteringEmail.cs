@@ -28,16 +28,11 @@ namespace GroupGiving.Core.Email
 
         public MailMessage ToMailMessage()
         {
-            MailMessage message = new MailMessage();
-            message.Subject = _template.Subject;
-            message.Body = _template.Body;
-            message.From = new MailAddress(_template.FromAddress, _template.FromName);
-            message.Sender = new MailAddress(_template.SenderAddress, _template.SenderName);
+            MailMessage message = EmailTemplate.ToMailMessage(_template);
             message.To.Add(new MailAddress(_toAddress, _toName));
-            message.IsBodyHtml = false;
-            message.From = new MailAddress(_template.FromAddress, _template.FromName);
 
             return message;
         }
+
     }
 }

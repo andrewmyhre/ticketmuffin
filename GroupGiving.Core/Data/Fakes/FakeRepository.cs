@@ -42,5 +42,15 @@ namespace GroupGiving.Core.Data.Fakes
         {
             _list.Remove(entity);
         }
+
+        public void CommitUpdates()
+        {
+            throw new NotImplementedException();
+        }
+
+        IEnumerable<T> IRepository<T>.Query(Func<T, bool> predicate)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
