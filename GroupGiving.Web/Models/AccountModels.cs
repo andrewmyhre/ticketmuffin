@@ -6,6 +6,7 @@ using System.Linq;
 using System.Transactions;
 using System.Web.Mvc;
 using System.Web.Security;
+using GroupGiving.Web.Code;
 using Microsoft.Web.Mvc;
 
 namespace RavenDBMembership.Web.Models
@@ -72,8 +73,51 @@ namespace RavenDBMembership.Web.Models
 		[Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
 		public string ConfirmPassword { get; set; }
 
+        public AccountType AccountType { get; set; }
+
+        [DataType(DataType.Text)]
+        [Display(Name="First Name")]
+        [Required]
+        public string FirstName { get; set; }
+        
+        [DataType(DataType.Text)]
+        [Display(Name = "Last Name")]
+        [Required]
+        public string LastName { get; set; }
+        
+        [DataType(DataType.Text)]
+        [Display(Name = "Address Line")]
+        [Required]
+        public string AddressLine { get; set; }
+
+        [DataType(DataType.Text)]
+        [Display(Name = "Town or City")]
+        [Required]
+        public string Town { get; set; }
+
+        [DataType(DataType.Text)]
+        [Display(Name = "Post Code")]
+        [Required]
+	    public string PostCode { get; set; }
+
+        [DataType(DataType.Text)]
+        [Display(Name = "Country")]
+        [Required]
+        public string Country { get; set; }
+
+        [Required]
+        [Display(Name="I agree to the Terms and Conditions")]
+        [MustBeTrue(ErrorMessage="You must agree to the terms and conditions")]
+        public bool AgreeToTermsAndConditions { get; set; }
+
 	    public string RedirectUrl { get; set; }
 	}
+
+    public enum AccountType
+    {
+        Individual,
+        Company
+    }
 
     #endregion
 

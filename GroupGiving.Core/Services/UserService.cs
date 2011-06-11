@@ -20,7 +20,13 @@ namespace GroupGiving.Core.Services
         {
             UserAccount userAccount = new UserAccount()
             {
-                Email=request.Email
+                Email=request.Email,
+                FirstName = request.FirstName,
+                LastName = request.LastName,
+                AddressLine1 = request.AddressLine1,
+                City = request.City,
+                PostCode = request.PostCode,
+                Country =  request.Country
             };
 
             _userRepository.SaveOrUpdate(userAccount);
@@ -36,5 +42,17 @@ namespace GroupGiving.Core.Services
     public class CreateUserRequest
     {
         public string Email { get; set; }
+
+        public string FirstName { get; set; }
+
+        public string LastName { get; set; }
+
+        public string AddressLine1 { get; set; }
+
+        public string City { get; set; }
+
+        public string PostCode { get; set; }
+
+        public string Country { get; set; }
     }
 }

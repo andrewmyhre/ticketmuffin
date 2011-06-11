@@ -1,12 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Transactions;
 using System.Web;
 using System.Web.Mvc;
 using System.Web.Routing;
 using System.Web.Security;
+using GroupGiving.Core.Domain;
+using GroupGiving.Core.Email;
+using GroupGiving.Core.Services;
 using GroupGiving.Web.Code;
 using GroupGiving.Web.Models;
+using log4net;
 using Ninject;
 using RavenDBMembership.Provider;
 using RavenDBMembership.Web.Models;
@@ -15,6 +20,7 @@ namespace GroupGiving.Web.Controllers
 {
     public class AccountController : Controller
     {
+        private ILog _log = LogManager.GetLogger("AccountController");
         private readonly IFormsAuthenticationService _formsService;
         private readonly IMembershipService _membershipService;
 
@@ -95,19 +101,48 @@ namespace GroupGiving.Web.Controllers
             if (ModelState.IsValid)
             {
                 // Attempt to register the user
-                var createStatus = _membershipService.CreateUser(model.Email, model.Password, model.Email);
+                using (var transaction = new TransactionScope())
+                {
+                    try
+                    {
+                        var createStatus = _membershipService.CreateUser(model.Email, model.Password, model.Email);
 
-                if (createStatus == MembershipCreateStatus.Success)
-                {
-                    _formsService.SignIn(model.Email, false /* createPersistentCookie */);
-                    if (!string.IsNullOrWhiteSpace(model.RedirectUrl))
-                        return Redirect(model.RedirectUrl);
-                    else
-                        return RedirectToAction("Index", "Home");
-                }
-                else
-                {
-                    ModelState.AddModelError("", AccountValidation.ErrorCodeToString(createStatus));
+                        if (createStatus == MembershipCreateStatus.Success)
+                        {
+                            // create a full user account record
+                            var createUserRequest = new CreateUserRequest();
+                            createUserRequest.FirstName = model.FirstName;
+                            createUserRequest.LastName = model.LastName;
+                            createUserRequest.Email = model.Email;
+                            createUserRequest.AddressLine1 = model.AddressLine;
+                            createUserRequest.City = model.Town;
+                            createUserRequest.PostCode = model.PostCode;
+                            createUserRequest.Country = model.Country;
+                            var userAccountRepository = MvcApplication.Kernel.Get<IUserService>();
+                            var userAccount = userAccountRepository.CreateUser(createUserRequest);
+
+                            // send a registration email to the user
+                            var thanksForRegisteringEmail = new ThanksForRegisteringEmail(model.Email, model.Email);
+                            MvcApplication.Kernel.Get<IEmailService>().SendEmail(thanksForRegisteringEmail);
+
+                            transaction.Complete();
+
+                            _formsService.SignIn(model.Email, false /* createPersistentCookie */);
+                            if (!string.IsNullOrWhiteSpace(model.RedirectUrl))
+                                return Redirect(model.RedirectUrl);
+                            else
+                                return RedirectToAction("Index", "Home");
+                        }
+                        else
+                        {
+                            ModelState.AddModelError("", AccountValidation.ErrorCodeToString(createStatus));
+                        }
+                    } catch (Exception ex)
+                    {
+                        // there was a problem creating the user
+                        _log.Fatal(ex);
+                        ModelState.AddModelError("", "Could not create your account at this time");
+                    }
                 }
             }
 

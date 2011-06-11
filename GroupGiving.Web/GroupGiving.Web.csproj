@@ -98,6 +98,7 @@
   <ItemGroup>
     <Compile Include="Code\GroupGivingNinjectModule.cs" />
     <Compile Include="Code\HtmlHelperExtensions.cs" />
+    <Compile Include="Code\MustBeTrueAttribute.cs" />
     <Compile Include="Code\RavenDbDocumentStore.cs" />
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\EventController.cs" />

@@ -11,6 +11,11 @@ namespace GroupGiving.Core.Data
     {
         private readonly IDocumentSession _session;
 
+        public RavenDBRepositoryBase(IDocumentSession session)
+        {
+            _session = session;
+        }
+
         public IEnumerable<T> RetrieveAll()
         {
             return _session.Query<T>();
