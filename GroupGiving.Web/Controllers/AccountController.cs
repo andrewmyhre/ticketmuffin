@@ -88,8 +88,19 @@ namespace GroupGiving.Web.Controllers
         {
             var viewModel = new RegisterModel()
             {
-                RedirectUrl = redirectUrl
+                RedirectUrl = redirectUrl,
+                Countries = new SelectList(
+                new[]
+                    {
+                        "Poland",
+                        "United Kingdom",
+                        "United States of America",
+                        "New Zealand",
+                    }),
+                AccountTypes = new SelectList(
+                            new[] { "Individual", "Company" })
             };
+
             return View(viewModel);
         }
 
@@ -119,7 +130,7 @@ namespace GroupGiving.Web.Controllers
                             createUserRequest.City = model.Town;
                             createUserRequest.PostCode = model.PostCode;
                             createUserRequest.Country = model.Country;
-                            var userService = MvcApplication.Kernel.Get<IUserService>();
+                            var userService = MvcApplication.Kernel.Get<IAccountService>();
                             userService.CreateUser(createUserRequest);
 
                             // send a registration email to the user
@@ -149,6 +160,18 @@ namespace GroupGiving.Web.Controllers
 
             // If we got this far, something failed, redisplay form
             ViewBag.PasswordLength = _membershipService.MinPasswordLength;
+
+            model.Countries = new SelectList(
+                new[]
+                    {
+                        "Poland",
+                        "United Kingdom",
+                        "United States of America",
+                        "New Zealand",
+                    });
+            model.AccountTypes = new SelectList(
+                new[] {"Individual", "Company"});
+
             return View(model);
         }
 
@@ -215,7 +238,7 @@ namespace GroupGiving.Web.Controllers
         [AcceptVerbs(HttpVerbs.Post)]
         public ActionResult ForgotPassword(string email)
         {
-            var userService = MvcApplication.Kernel.Get<IUserService>();
+            var userService = MvcApplication.Kernel.Get<IAccountService>();
             var emailService = MvcApplication.Kernel.Get<IEmailService>();
             var result = userService.SendPasswordResetEmail(email, emailService);
 
@@ -238,7 +261,7 @@ namespace GroupGiving.Web.Controllers
         public ActionResult ResetPassword(string token)
         {
             var resetPasswordViewModel = new ResetPasswordViewModel();
-            var userService = MvcApplication.Kernel.Get<IUserService>();
+            var userService = MvcApplication.Kernel.Get<IAccountService>();
             var account = userService.RetrieveAccountByPasswordResetToken(token);
 
             if (account==null)
@@ -258,9 +281,9 @@ namespace GroupGiving.Web.Controllers
             {
                 return View(resetPasswordViewModel);
             }
-            var userService = MvcApplication.Kernel.Get<IUserService>();
+            var userService = MvcApplication.Kernel.Get<IAccountService>();
 
-            var accountService = MvcApplication.Kernel.Get<IUserService>();
+            var accountService = MvcApplication.Kernel.Get<IAccountService>();
             var account = accountService.RetrieveAccountByPasswordResetToken(token);
             if (account == null)
             {
@@ -294,11 +317,11 @@ namespace GroupGiving.Web.Controllers
         public ActionResult ContactDetails()
         {
             var viewModel = new ContactDetailsViewModel();
-            var accountService = MvcApplication.Kernel.Get<IUserService>();
+            var accountService = MvcApplication.Kernel.Get<IAccountService>();
             var membershipUser = Membership.GetUser(true);
             var account = accountService.RetrieveByEmailAddress(membershipUser.Email);
             viewModel.AccountType = account.AccountType;
-            viewModel.AddressLine = account.AddressLine1;
+            viewModel.AddressLine = account.AddressLine;
             viewModel.Country = account.Country;
             viewModel.Town = account.City;
             viewModel.FirstName = account.FirstName;
@@ -328,13 +351,13 @@ namespace GroupGiving.Web.Controllers
             if (ModelState.IsValid)
             {
                 // update
-                var accountService = MvcApplication.Kernel.Get<IUserService>();
+                var accountService = MvcApplication.Kernel.Get<IAccountService>();
                 var membershipUser = Membership.GetUser(true);
                 var account = accountService.RetrieveByEmailAddress(membershipUser.Email);
                 account.FirstName = viewModel.FirstName;
                 account.LastName = viewModel.LastName;
                 account.AccountType = viewModel.AccountType;
-                account.AddressLine1 = viewModel.AddressLine;
+                account.AddressLine = viewModel.AddressLine;
                 account.City = viewModel.Town;
                 account.PostCode = viewModel.PostCode;
                 account.Country = viewModel.Country;

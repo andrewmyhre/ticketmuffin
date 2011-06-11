@@ -8,32 +8,32 @@ using GroupGiving.Core.Email;
 
 namespace GroupGiving.Core.Services
 {
-    public class UserService : IUserService
+    public class AccountService : IAccountService
     {
-        private readonly IRepository<UserAccount> _accountRepository;
+        private readonly IRepository<Account> _accountRepository;
 
-        public UserService(IRepository<UserAccount> accountRepository)
+        public AccountService(IRepository<Account> accountRepository)
         {
             _accountRepository = accountRepository;
         }
 
-        public UserAccount CreateUser(CreateUserRequest request)
+        public Account CreateUser(CreateUserRequest request)
         {
-            UserAccount userAccount = new UserAccount()
+            Account account = new Account()
             {
                 Email=request.Email,
                 FirstName = request.FirstName,
                 LastName = request.LastName,
-                AddressLine1 = request.AddressLine1,
+                AddressLine = request.AddressLine1,
                 City = request.City,
                 PostCode = request.PostCode,
                 Country =  request.Country
             };
 
-            _accountRepository.SaveOrUpdate(userAccount);
+            _accountRepository.SaveOrUpdate(account);
             _accountRepository.CommitUpdates();
 
-            return userAccount;
+            return account;
         }
 
         public SendPasswordResetResult SendPasswordResetEmail(string emailAddress, IEmailService emailService)
@@ -70,7 +70,7 @@ namespace GroupGiving.Core.Services
             return SendThanksForRegisteringEmailResult.SuccessResult;
         }
 
-        public UserAccount RetrieveAccountByPasswordResetToken(string resetPasswordToken)
+        public Account RetrieveAccountByPasswordResetToken(string resetPasswordToken)
         {
             return _accountRepository
                 .Retrieve(a => a.ResetPasswordToken == resetPasswordToken
@@ -90,13 +90,13 @@ namespace GroupGiving.Core.Services
             return ResetPasswordResult.SuccessResult;
         }
 
-        public UserAccount RetrieveByEmailAddress(string email)
+        public Account RetrieveByEmailAddress(string email)
         {
             var account = _accountRepository.Retrieve(a => a.Email == email);
             return account;
         }
 
-        public void UpdateAccount(UserAccount account)
+        public void UpdateAccount(Account account)
         {
             _accountRepository.SaveOrUpdate(account);
             _accountRepository.CommitUpdates();

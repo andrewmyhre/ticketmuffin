@@ -4,14 +4,14 @@ using GroupGiving.Core.Email;
 
 namespace GroupGiving.Core.Services
 {
-    public interface IUserService
+    public interface IAccountService
     {
-        UserAccount CreateUser(CreateUserRequest request);
+        Account CreateUser(CreateUserRequest request);
         SendPasswordResetResult SendPasswordResetEmail(string email, IEmailService emailService);
         SendThanksForRegisteringEmailResult SendThanksForRegisteringEmail(string emailAddress, string firstName, IEmailService emailService);
-        UserAccount RetrieveAccountByPasswordResetToken(string resetPasswordToken);
+        Account RetrieveAccountByPasswordResetToken(string resetPasswordToken);
         ResetPasswordResult ResetPassword(string resetPasswordToken, string newPassword);
-        UserAccount RetrieveByEmailAddress(string email);
-        void UpdateAccount(UserAccount account);
+        Account RetrieveByEmailAddress(string email);
+        void UpdateAccount(Account account);
     }
 }

@@ -70,7 +70,7 @@
     <Compile Include="Data\RavenDBRepositoryBase.cs" />
     <Compile Include="Domain\AccountType.cs" />
     <Compile Include="Domain\GroupGivingEvent.cs" />
-    <Compile Include="Domain\UserAccount.cs" />
+    <Compile Include="Domain\Account.cs" />
     <Compile Include="Domain\IDomainObject.cs" />
     <Compile Include="Email\EmailTemplate.cs" />
     <Compile Include="Email\PasswordResetInstructionsEmail.cs" />
@@ -82,11 +82,11 @@
     <Compile Include="Services\CreateUserRequest.cs" />
     <Compile Include="Services\EventService.cs" />
     <Compile Include="Services\IEventService.cs" />
-    <Compile Include="Services\IUserService.cs" />
+    <Compile Include="Services\IAccountService.cs" />
     <Compile Include="Services\SendPasswordResetResult.cs" />
     <Compile Include="Services\SendThanksForRegisteringEmailResult.cs" />
     <Compile Include="Services\UpdateUserRequest.cs" />
-    <Compile Include="Services\UserService.cs" />
+    <Compile Include="Services\AccountService.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

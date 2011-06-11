@@ -112,6 +112,10 @@ namespace RavenDBMembership.Web.Models
         public bool AgreeToTermsAndConditions { get; set; }
 
 	    public string RedirectUrl { get; set; }
+
+	    public SelectList Countries { get; set; }
+
+	    public SelectList AccountTypes { get; set; }
 	}
 
     #endregion

@@ -13,14 +13,14 @@ namespace GroupGiving.Web.Code
     {
         public override void Load()
         {
-            Bind<IUserService>().To<UserService>();
+            Bind<IAccountService>().To<AccountService>();
             Bind<IEventService>().To<EventService>();
             Bind<IDocumentSession>()
                 .ToMethod(delegate { return RavenDbDocumentStore.Instance.OpenSession(); })
                 .InRequestScope();
 
             Bind<IRepository<GroupGivingEvent>>().To<Core.Data.RavenDBRepositoryBase<GroupGivingEvent>>();
-            Bind<IRepository<UserAccount>>().To<Core.Data.RavenDBRepositoryBase<UserAccount>>();
+            Bind<IRepository<Account>>().To<Core.Data.RavenDBRepositoryBase<Account>>();
 
             Bind<IFormsAuthenticationService>().To<FormsAuthenticationService>();
             Bind<IMembershipService>().To<AccountMembershipService>();
