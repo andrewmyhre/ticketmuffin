@@ -24,7 +24,25 @@ namespace GroupGiving.Core.Services
 
         public CreateEventResult CreateEvent(CreateEventRequest request)
         {
-            throw new NotImplementedException();
+            GroupGivingEvent ggEvent = new GroupGivingEvent()
+            {
+                Title = request.Title,
+                Description = request.Description,
+                City = request.City,
+                StartDate = request.StartDateTime,
+                Venue = request.Venue,
+                AddressLine = request.AddressLine,
+                ShortUrl = request.ShortUrl,
+                IsPrivate = request.IsPrivate,
+                IsFeatured = request.IsFeatured,
+                PhoneNumber = request.PhoneNumber
+            };
+
+            _eventRepository.SaveOrUpdate(ggEvent);
+            _eventRepository.CommitUpdates();
+
+            int eventId = int.Parse(ggEvent.Id.Substring(ggEvent.Id.IndexOf('/') + 1));
+            return new CreateEventResult() {Success = true, EventId = eventId};
         }
 
         public void SetTicketDetails(SetTicketDetailsRequest setTicketDetailsRequest)

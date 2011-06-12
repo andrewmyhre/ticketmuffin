@@ -48,7 +48,9 @@ namespace GroupGiving.Web.Controllers
         [Authorize]
         public ActionResult EventDetails()
         {
-            return View();
+            var viewModel = new CreateEventRequest();
+            viewModel.StartDateTime = DateTime.Now;
+            return View(viewModel);
         }
 
         [AcceptVerbs(HttpVerbs.Post)]
@@ -56,9 +58,18 @@ namespace GroupGiving.Web.Controllers
         [Authorize]
         public ActionResult EventDetails(CreateEventRequest request)
         {
+            DateTime startDate = new DateTime();
+            if (!DateTime.TryParse(string.Format("{0} {1}", request.StartDate, request.StartTime), out startDate))
+            {
+                ModelState.AddModelError("startDateTime", "Please select a valid date for the event");
+            }
+            else
+            {
+                request.StartDateTime = startDate;
+            }
             if (!ModelState.IsValid)
             {
-                return View();
+                return View(request);
             }
 
             var result = _eventService.CreateEvent(request);
@@ -69,7 +80,7 @@ namespace GroupGiving.Web.Controllers
             }
 
             ModelState.AddModelError("createevent", "There was a problem with the information you provided");
-            return View();
+            return View(request);
         }
 
         [AcceptVerbs(HttpVerbs.Get)]
@@ -77,7 +88,8 @@ namespace GroupGiving.Web.Controllers
         [Authorize]
         public ActionResult TicketDetails()
         {
-            return View();
+            var viewModel = new SetTicketDetailsRequest();
+            return View(viewModel);
         }
 
         [AcceptVerbs(HttpVerbs.Post)]

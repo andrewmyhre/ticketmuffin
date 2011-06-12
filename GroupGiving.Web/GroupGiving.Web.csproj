@@ -150,6 +150,7 @@
     <Content Include="Content\themes\base\jquery.ui.tabs.css" />
     <Content Include="Content\themes\base\jquery.ui.theme.css" />
     <Content Include="Global.asax" />
+    <Content Include="Scripts\createevent.js" />
     <Content Include="Scripts\global.js" />
     <Content Include="Scripts\home.js" />
     <Content Include="Scripts\jquery-1.5.1-vsdoc.js" />
@@ -258,6 +259,9 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Views\Account\signup-or-signin.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\CreateEvent\tickets.cshtml" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v10.0\WebApplications\Microsoft.WebApplication.targets" />

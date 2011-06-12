@@ -28,11 +28,10 @@ namespace GroupGiving.Test.Common
             return new CreateEventRequest()
             {
                 Title = "event title",
-                DateAndTime = DateTime.Now.AddDays(10),
+                StartDateTime = DateTime.Now.AddDays(10),
                 Venue = "my house",
                 AddressLine = "55 albion drive",
                 City = "london",
-                PostCode = "e8 4lt",
                 Description = "my test event",
                 ShortUrl = "testevent",
                 IsPrivate = false,

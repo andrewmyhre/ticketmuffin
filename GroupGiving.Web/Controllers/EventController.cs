@@ -34,7 +34,7 @@ namespace GroupGiving.Web.Controllers
         {
             var givingEvent = new GroupGivingEvent()
             {
-                Name="this is a test event",
+                Title="this is a test event",
                 City="London"
             };
 

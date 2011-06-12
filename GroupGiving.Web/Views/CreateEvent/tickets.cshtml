@@ -1,0 +1,24 @@
+﻿@model GroupGiving.Core.Services.SetTicketDetailsRequest
+
+@{
+    ViewBag.Title = "tickets";
+}
+
+<h2>Enter ticket details</h2>
+
+<div>
+@using (Html.BeginForm())
+{
+    <fieldset>
+        <legend>Event Details</legend>
+
+        <div class="formline">
+            @Html.LabelFor(m => m.Title)
+            @Html.TextBoxFor(m => m.Title)
+        </div>
+        <div class="formvalidation">
+            @Html.ValidationMessageFor(m => m.Title)
+        </div>
+    </fieldset>
+}
+</div>

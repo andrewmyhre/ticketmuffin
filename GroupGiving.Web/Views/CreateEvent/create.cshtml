@@ -1,5 +1,111 @@
-﻿@{
+﻿@model GroupGiving.Core.Services.CreateEventRequest
+@{
     ViewBag.Title = "details";
 }
 
-<h2>details</h2>
+@section scripts {
+<script src="/scripts/jquery-ui-1.8.11.min.js" type="text/javascript"></script>
+<script type="text/javascript" src="/scripts/createevent.js"></script>
+}
+
+
+<h2>Create Event</h2>
+
+<div>
+@using (Html.BeginForm())
+{
+    <fieldset>
+        <legend>Event Details</legend>
+
+        <div class="formline">
+            @Html.LabelFor(m => m.Title)
+            @Html.TextBoxFor(m => m.Title)
+        </div>
+        <div class="formvalidation">
+            @Html.ValidationMessageFor(m => m.Title)
+        </div>
+
+        <div class="formline">
+            @Html.Label("Event date")
+            @Html.TextBox("startDate", Model.StartDateTime.ToShortDateString())
+            @Html.DropDownList("startTime", 
+                new SelectList(
+                    new [] {
+                        "12:00am",
+                        "12:30am"
+                    })
+                )
+        </div>
+        <div class="formvalidation">
+            @Html.ValidationMessageFor(m => m.StartDateTime)
+        </div>
+
+        <div class="formline">
+            @Html.LabelFor(m => m.Venue)
+            @Html.TextBoxFor(m => m.Venue)
+        </div>
+        <div class="formvalidation">
+            @Html.ValidationMessageFor(m => m.Venue)
+        </div>
+
+        <div class="formline">
+            @Html.LabelFor(m => m.AddressLine)
+            @Html.TextBoxFor(m => m.AddressLine)
+        </div>
+        <div class="formvalidation">
+            @Html.ValidationMessageFor(m => m.AddressLine)
+        </div>
+
+        <div class="formline">
+            @Html.LabelFor(m => m.City)
+            @Html.TextBoxFor(m => m.City)
+        </div>
+        <div class="formvalidation">
+            @Html.ValidationMessageFor(m => m.City)
+        </div>
+
+        <div class="formline">
+            @Html.LabelFor(m => m.Description)
+            @Html.TextAreaFor(m => m.Description)
+        </div>
+        <div class="formvalidation">
+            @Html.ValidationMessageFor(m => m.Description)
+        </div>
+
+        <div class="formline">
+            upload image
+        </div>
+
+        <div class="formline">
+            @Html.LabelFor(m => m.ShortUrl)
+            http://groupgiving.com/@Html.TextBoxFor(m => m.ShortUrl, new { style = "width:150px" })
+        </div>
+        <div class="formvalidation">
+            @Html.ValidationMessageFor(m => m.ShortUrl)
+        </div>
+
+        <div class="formline">
+            @Html.CheckBoxFor(m => m.IsPrivate)
+            @Html.LabelFor(m => m.IsPrivate)
+        </div>
+        
+        <div class="formline">
+            @Html.CheckBoxFor(m => m.IsFeatured)
+            @Html.LabelFor(m => m.IsFeatured)
+        </div>
+
+        <div class="formline">
+            @Html.LabelFor(m => m.PhoneNumber)
+            @Html.TextBoxFor(m => m.PhoneNumber)
+        </div>
+        <div class="formvalidation">
+            @Html.ValidationMessageFor(m => m.PhoneNumber)
+        </div>
+
+        <div class="formline">
+            <input type="submit" value="Next Step &gt;" />
+        </div>
+    </fieldset>
+}
+</div>
+<div class="clearfix" />
