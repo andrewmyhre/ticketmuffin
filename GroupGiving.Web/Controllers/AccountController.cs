@@ -138,11 +138,6 @@ namespace GroupGiving.Web.Controllers
                             createUserRequest.Country = model.Country;
                             var userService = MvcApplication.Kernel.Get<IAccountService>();
                             userService.CreateUser(createUserRequest);
-
-                            // send a registration email to the user
-                            var emailService = MvcApplication.Kernel.Get<IEmailService>();
-                            userService.SendThanksForRegisteringEmail(model.Email, model.FirstName, emailService);
-
                             transaction.Complete();
 
                             _formsService.SignIn(model.Email, false /* createPersistentCookie */);
@@ -245,7 +240,7 @@ namespace GroupGiving.Web.Controllers
         public ActionResult ForgotPassword(string email)
         {
             var userService = MvcApplication.Kernel.Get<IAccountService>();
-            var emailService = MvcApplication.Kernel.Get<IEmailService>();
+            var emailService = MvcApplication.Kernel.Get<IEmailRelayService>();
             var result = userService.SendPasswordResetEmail(email, emailService);
 
             if (result.AccountNotFound)

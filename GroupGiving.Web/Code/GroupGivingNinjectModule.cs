@@ -27,7 +27,7 @@ namespace GroupGiving.Web.Code
 
             Bind<AccountController>().ToSelf();
 
-            Bind<IEmailService>().To<SimpleSmtpEmailService>();
+            Bind<IEmailRelayService>().To<SimpleSmtpEmailRelayService>();
         }
     }
 }

@@ -11,10 +11,16 @@ namespace GroupGiving.Core.Services
     public class AccountService : IAccountService
     {
         private readonly IRepository<Account> _accountRepository;
+        private readonly IEmailCreationService _emailCreationService;
+        private readonly IEmailRelayService _emailRelayService;
 
-        public AccountService(IRepository<Account> accountRepository)
+        public AccountService(IRepository<Account> accountRepository, 
+            IEmailCreationService emailCreationService,
+            IEmailRelayService emailRelayService)
         {
             _accountRepository = accountRepository;
+            _emailCreationService = emailCreationService;
+            _emailRelayService = emailRelayService;
         }
 
         public Account CreateUser(CreateUserRequest request)
@@ -33,10 +39,13 @@ namespace GroupGiving.Core.Services
             _accountRepository.SaveOrUpdate(account);
             _accountRepository.CommitUpdates();
 
+            var thanksForRegisteringEmail = _emailCreationService.ThankYouForRegisteringEmail(request.Email, request.FirstName);
+            _emailRelayService.SendEmail(thanksForRegisteringEmail);
+
             return account;
         }
 
-        public SendPasswordResetResult SendPasswordResetEmail(string emailAddress, IEmailService emailService)
+        public SendPasswordResetResult SendPasswordResetEmail(string emailAddress, IEmailRelayService emailRelayService)
         {
             var account = _accountRepository.Retrieve(a => a.Email == emailAddress);
             if (account == null)
@@ -56,18 +65,10 @@ namespace GroupGiving.Core.Services
             _accountRepository.CommitUpdates();
 
             // send email
-            var email = new PasswordResetInstructionsEmail(account.Email, account.FirstName, account.ResetPasswordToken);
-            emailService.SendEmail(email);
+            var email = _emailCreationService.PasswordResetInstructionsEmail(account.Email, account.FirstName, account.ResetPasswordToken);
+            emailRelayService.SendEmail(email);
 
             return SendPasswordResetResult.SuccessResult;
-        }
-
-        public SendThanksForRegisteringEmailResult SendThanksForRegisteringEmail(string emailAddress, string firstName, IEmailService emailService)
-        {
-            var thanksForRegisteringEmail = new ThanksForRegisteringEmail(emailAddress, firstName);
-            emailService.SendEmail(thanksForRegisteringEmail);
-
-            return SendThanksForRegisteringEmailResult.SuccessResult;
         }
 
         public Account RetrieveAccountByPasswordResetToken(string resetPasswordToken)
@@ -101,25 +102,5 @@ namespace GroupGiving.Core.Services
             _accountRepository.SaveOrUpdate(account);
             _accountRepository.CommitUpdates();
         }
-    }
-
-    public class ResetPasswordResult
-    {
-        public bool Success { get; set; }
-        public bool InvalidToken { get; set; }
-
-        public static ResetPasswordResult InvalidTokenResult
-        {
-            get
-            {
-                return new ResetPasswordResult() { InvalidToken = true };
-            }
-        }
-
-        public static ResetPasswordResult SuccessResult
-        {
-            get { return new ResetPasswordResult(){Success=true};}
-        }
-
     }
 }

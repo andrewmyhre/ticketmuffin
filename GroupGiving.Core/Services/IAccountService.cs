@@ -7,8 +7,7 @@ namespace GroupGiving.Core.Services
     public interface IAccountService
     {
         Account CreateUser(CreateUserRequest request);
-        SendPasswordResetResult SendPasswordResetEmail(string email, IEmailService emailService);
-        SendThanksForRegisteringEmailResult SendThanksForRegisteringEmail(string emailAddress, string firstName, IEmailService emailService);
+        SendPasswordResetResult SendPasswordResetEmail(string email, IEmailRelayService emailRelayService);
         Account RetrieveAccountByPasswordResetToken(string resetPasswordToken);
         ResetPasswordResult ResetPassword(string resetPasswordToken, string newPassword);
         Account RetrieveByEmailAddress(string email);

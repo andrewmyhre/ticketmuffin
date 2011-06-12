@@ -22,6 +22,7 @@ namespace GroupGiving.Web
 
             routes.MapRoute(
                 "SignUp",
+
                 "signup",
                 new {controller = "Account", action = "signup"});
 
