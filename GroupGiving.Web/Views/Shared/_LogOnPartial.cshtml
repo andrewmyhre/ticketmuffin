@@ -10,7 +10,7 @@ else {
         <form id="signin" action="/account/signin">
             <label for="emailaddress">Username: </label><input type="text" name="emailaddress" /><br />
             <label for="password">Password: </label><input type="password" name="password" /><br />
-            <input type="hidden" name="returnurl" value="@Request.Url.PathAndQuery" />
+            <input type="hidden" name="returnurl" value="@(Request.QueryString["returnUrl"] ?? Request.Url.PathAndQuery)" />
             <span id="invalidCredentials" class="field-validation-error" style="display:none;">We couldn't find an account matching those credentials</span>
             <a href="#" class="hide">cancel</a>
             <input type="submit" value="Sign In" />

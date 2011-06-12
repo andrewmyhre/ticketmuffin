@@ -5,7 +5,7 @@
 
 <h2>Sign Up or Sign In</h2>
 
-@using (Html.BeginForm("signin", "CreateEvent"))
+@using (Html.BeginForm("signin", "account"))
 {
     <div id="ce_signin">
         <fieldset>
@@ -32,7 +32,7 @@
                 @Html.Label("rememberMe", "Remember me")
             </div>
 
-                @Html.Hidden("returnUrl", Url.Action("EventDetails", "CreateEvent"))
+                @Html.Hidden("returnUrl", Request.QueryString["returnUrl"])
             <div class="editor-field" style="width:auto">
                 <input type="submit" value="Log On" />
             </div>
@@ -40,7 +40,7 @@
     </div>
 }
 
-@using (Html.BeginForm("signup", "CreateEvent"))
+@using (Html.BeginForm("signup", "account"))
 {
     <div id="ce_signup">
         <fieldset>
@@ -132,7 +132,7 @@
             </div>
             @Html.ValidationMessage("AgreeToTermsAndConditions")
 
-                @Html.Hidden("returnUrl", Url.Action("EventDetails", "CreateEvent"))
+                @Html.Hidden("returnUrl", Request.QueryString["returnUrl"])
             <div class="editor-field" style="width:auto">
                 <input type="submit" value="Register" />
             </div>
