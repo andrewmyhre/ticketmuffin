@@ -15,5 +15,17 @@ namespace GroupGiving.Core.Domain
         public bool IsPrivate { get; set; }
         public bool IsFeatured { get; set; }
         public string PhoneNumber { get; set; }
+
+        public decimal TicketPrice { get; set; }
+
+        public int MinimumParticipants { get; set; }
+
+        public int? MaximumParticipants { get; set; }
+
+        public DateTime SalesEndDateTime { get; set; }
+
+        public string AdditionalBenefits { get; set; }
+
+        public string PaypalAccountEmailAddress { get; set; }
     }
 }

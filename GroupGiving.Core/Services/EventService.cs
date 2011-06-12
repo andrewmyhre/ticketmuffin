@@ -47,7 +47,29 @@ namespace GroupGiving.Core.Services
 
         public void SetTicketDetails(SetTicketDetailsRequest setTicketDetailsRequest)
         {
-            throw new NotImplementedException();
+            var ggEvent =
+                _eventRepository.Retrieve(
+                    e => e.Id == string.Format("groupgivingevents/{0}", setTicketDetailsRequest.EventId));
+
+            if (ggEvent==null)
+                throw new ArgumentException("Event not found");
+
+            ggEvent.TicketPrice = setTicketDetailsRequest.TicketPrice;
+            ggEvent.MinimumParticipants = setTicketDetailsRequest.MinimumParticipants;
+            ggEvent.MaximumParticipants = setTicketDetailsRequest.MaximumParticipants;
+            ggEvent.SalesEndDateTime = setTicketDetailsRequest.SalesEndDateTime;
+            ggEvent.AdditionalBenefits = setTicketDetailsRequest.AdditionalBenefits;
+            ggEvent.PaypalAccountEmailAddress = setTicketDetailsRequest.PaypalAccountEmailAddress;
+
+            _eventRepository.SaveOrUpdate(ggEvent);
+            _eventRepository.CommitUpdates();
+        }
+
+        public bool ShortUrlAvailable(string shortUrl)
+        {
+            var ggEvent = _eventRepository.Retrieve(
+                e => e.ShortUrl == shortUrl);
+            return ggEvent != null;
         }
     }
 }

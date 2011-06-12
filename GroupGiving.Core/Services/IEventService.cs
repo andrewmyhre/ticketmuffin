@@ -8,5 +8,6 @@ namespace GroupGiving.Core.Services
         IEnumerable<GroupGivingEvent> RetrieveAllEvents();
         CreateEventResult CreateEvent(CreateEventRequest request);
         void SetTicketDetails(SetTicketDetailsRequest setTicketDetailsRequest);
+        bool ShortUrlAvailable(string shortUrl);
     }
 }

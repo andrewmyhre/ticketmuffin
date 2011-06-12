@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -67,6 +68,10 @@ namespace GroupGiving.Web.Controllers
             {
                 request.StartDateTime = startDate;
             }
+            if (!_eventService.ShortUrlAvailable(request.ShortUrl))
+            {
+                ModelState.AddModelError("ShortUrl", "Unfortunately that url is already in use");
+            }
             if (!ModelState.IsValid)
             {
                 return View(request);
@@ -86,9 +91,10 @@ namespace GroupGiving.Web.Controllers
         [AcceptVerbs(HttpVerbs.Get)]
         [ActionName("tickets")]
         [Authorize]
-        public ActionResult TicketDetails()
+        public ActionResult TicketDetails(int eventId)
         {
             var viewModel = new SetTicketDetailsRequest();
+            viewModel.SalesEndDateTime = DateTime.Now;
             return View(viewModel);
         }
 
@@ -97,14 +103,35 @@ namespace GroupGiving.Web.Controllers
         [Authorize]
         public ActionResult TicketDetails(SetTicketDetailsRequest setTicketDetailsRequest)
         {
+            if (setTicketDetailsRequest.MaximumParticipants < setTicketDetailsRequest.MinimumParticipants)
+            {
+                ModelState.AddModelError("MaximumParticipants", "Maximum participants can't be less than the minimum");
+            }
+
+            DateTime salesEndDateTime = new DateTime();
+            if (!DateTime.TryParse(setTicketDetailsRequest.SalesEndDate + " " + setTicketDetailsRequest.SalesEndTime, out salesEndDateTime))
+            {
+                ModelState.AddModelError("SalesEndDateTime", "Provide a valid date and time for ticket sales to end");
+            }
+            else
+            {
+                setTicketDetailsRequest.SalesEndDateTime = salesEndDateTime;
+            }
+
             if (!ModelState.IsValid)
             {
-                return View();
+                string[] times = new []
+                {
+                    "12:00am",
+                    "12:30am"
+                };
+                setTicketDetailsRequest.Times = new SelectList(times);
+                return View(setTicketDetailsRequest);
             }
 
             _eventService.SetTicketDetails(setTicketDetailsRequest);
 
-            return RedirectToRoute("Event_ShareYourEvent", new {id=setTicketDetailsRequest.EventId});
+            return RedirectToRoute("Event_ShareYourEvent", new { eventId = setTicketDetailsRequest.EventId });
         }
     }
 }

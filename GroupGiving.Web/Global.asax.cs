@@ -56,10 +56,14 @@ namespace GroupGiving.Web
 
         private static void MapEventRoutes(RouteCollection routes)
         {
+            routes.MapRoute("Event_Details",
+                            "events/{shortUrl}",
+                            new {controller = "Event", action = "index"});
+
             routes.MapRoute(
                 "Event_ShareYourEvent",
-                "events/{id}/share",
-                new {controller = "Events", action = "Share"});
+                "events/{shortUrl}/share",
+                new {controller = "Event", action = "share"});
         }
 
         private static void MapEventCreationRoutes(RouteCollection routes)
@@ -70,8 +74,9 @@ namespace GroupGiving.Web
                 new { controller = "CreateEvent", action = "create" });
             routes.MapRoute(
                 "CreateEvent_TicketDetails",
-                "events/create/{id}/tickets",
+                "events/create/{eventId}/tickets",
                 new { controller = "CreateEvent", action = "tickets" });
+
         }
 
         protected override void OnApplicationStarted()

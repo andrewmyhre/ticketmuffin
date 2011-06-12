@@ -17,29 +17,46 @@ namespace GroupGiving.Web.Controllers
 
         //
         // GET: /Event/
-        public ActionResult Index(int id)
+        public ActionResult Index(string shortUrl)
         {
+            if (string.IsNullOrWhiteSpace(shortUrl))
+                return new HttpNotFoundResult();
+
             var viewModel = new EventViewModel();
-            var givingEvent = _eventRepository.Retrieve(e=>e.Id=="groupgivingevents/"+id);
+            var givingEvent = _eventRepository.Retrieve(e=>e.ShortUrl==shortUrl);
             if (givingEvent == null)
                 return HttpNotFound();
 
             viewModel.EventId = givingEvent.Id;
+            viewModel.StartDate = givingEvent.StartDate;
+            viewModel.AdditionalBenefits = givingEvent.AdditionalBenefits;
+            viewModel.AddressLine = givingEvent.AddressLine;
+            viewModel.City = givingEvent.City;
+            viewModel.Description = givingEvent.Description;
+            viewModel.IsFeatured = givingEvent.IsFeatured;
+            viewModel.IsPrivate = givingEvent.IsPrivate;
+            viewModel.MaximumParticipants = givingEvent.MaximumParticipants;
+            viewModel.MinimumParticipants = givingEvent.MinimumParticipants;
+            viewModel.PaypalAccountEmailAddress = givingEvent.PaypalAccountEmailAddress;
+            viewModel.PhoneNumber = givingEvent.PhoneNumber;
+            viewModel.SalesEndDateTime = givingEvent.SalesEndDateTime;
+            viewModel.ShortUrl = givingEvent.ShortUrl;
+            viewModel.Title = givingEvent.Title;
+            viewModel.TicketPrice = givingEvent.TicketPrice;
+            viewModel.Venue = givingEvent.Venue;
 
             return View(viewModel);
         }
 
-        [AcceptVerbs(HttpVerbs.Post)]
-        public ActionResult Create(string name, string city)
+        [AcceptVerbs(HttpVerbs.Get)]
+        [ActionName("share")]
+        public ActionResult Share(string shortUrl)
         {
-            var givingEvent = new GroupGivingEvent()
-            {
-                Title="this is a test event",
-                City="London"
-            };
+            if (string.IsNullOrWhiteSpace(shortUrl))
+                return new HttpNotFoundResult();
 
-            _eventRepository.SaveOrUpdate(givingEvent);
-            return RedirectToAction("Index", new {id = givingEvent.Id});
+            var viewModel = new ShareEventViewModel();
+            return View(viewModel);
         }
     }
 }

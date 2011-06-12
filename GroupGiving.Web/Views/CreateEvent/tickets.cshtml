@@ -6,6 +6,11 @@
 
 <h2>Enter ticket details</h2>
 
+@section scripts {
+    <script src="/Scripts/jquery-ui-1.8.11.min.js" type="text/javascript"></script>
+    <script src="/Scripts/tickets.js" type="text/javascript"></script>
+}
+
 <div>
 @using (Html.BeginForm())
 {
@@ -13,11 +18,54 @@
         <legend>Event Details</legend>
 
         <div class="formline">
-            @Html.LabelFor(m => m.Title)
-            @Html.TextBoxFor(m => m.Title)
+            @Html.LabelFor(m => m.TicketPrice)
+            @Html.TextBoxFor(m => m.TicketPrice)
         </div>
         <div class="formvalidation">
-            @Html.ValidationMessageFor(m => m.Title)
+            @Html.ValidationMessageFor(m => m.TicketPrice)
+        </div>
+
+        <div class="formline">
+            @Html.LabelFor(m => m.MinimumParticipants)
+            @Html.TextBoxFor(m => m.MinimumParticipants)
+        </div>
+        <div class="formvalidation">
+            @Html.ValidationMessageFor(m => m.MinimumParticipants)
+        </div>
+
+        <div class="formline">
+            @Html.LabelFor(m => m.MaximumParticipants)
+            @Html.TextBoxFor(m => m.MaximumParticipants)
+        </div>
+        <div class="formvalidation">
+            @Html.ValidationMessageFor(m => m.MaximumParticipants)
+        </div>
+
+        <div class="formline">
+            @Html.LabelFor(m => m.PaypalAccountEmailAddress)
+            @Html.TextBoxFor(m => m.PaypalAccountEmailAddress)
+        </div>
+        <div class="formvalidation">
+            @Html.ValidationMessageFor(m => m.PaypalAccountEmailAddress)
+        </div>
+
+        <div class="formline">
+            Sales end
+            @Html.TextBox("salesEndDate", Model.SalesEndDateTime.ToShortDateString())
+            @Html.DropDownList("salesEndTime",
+                new SelectList(
+                    new[] {
+                        "12:00am",
+                        "12:30am"
+                    })
+                )
+        </div>
+        <div class="formvalidation">
+            @Html.ValidationMessageFor(m => m.SalesEndDateTime)
+        </div>
+
+        <div class="formvalidation">
+            <input type="submit" value="Finish Creating Event" />
         </div>
     </fieldset>
 }

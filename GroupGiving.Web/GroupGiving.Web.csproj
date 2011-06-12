@@ -117,6 +117,7 @@
     <Compile Include="Models\LogOnResultViewModel.cs" />
     <Compile Include="Models\OrderRequestViewModel.cs" />
     <Compile Include="Models\ResetPasswordViewModel.cs" />
+    <Compile Include="Models\ShareEventViewModel.cs" />
     <Compile Include="Models\SignInModel.cs" />
     <Compile Include="Models\SignUpModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -150,6 +151,7 @@
     <Content Include="Content\themes\base\jquery.ui.tabs.css" />
     <Content Include="Content\themes\base\jquery.ui.theme.css" />
     <Content Include="Global.asax" />
+    <Content Include="Scripts\tickets.js" />
     <Content Include="Scripts\createevent.js" />
     <Content Include="Scripts\global.js" />
     <Content Include="Scripts\home.js" />
@@ -262,6 +264,9 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Views\CreateEvent\tickets.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Event\share.cshtml" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v10.0\WebApplications\Microsoft.WebApplication.targets" />

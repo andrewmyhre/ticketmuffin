@@ -4,17 +4,21 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 <h1>@Html.ActionLink(Model.EventId.ToString(), "Index", new { id = Model.EventId })</h1>
-<h2>Event Title</h2>
+<h2>@Model.Title</h2>
 
-<div>Event Date</div>
-<div>Event Date, City</div>
+<div>@Model.StartDate.ToString("dd/MM/yyyy hh:mm"), @Model.City</div>
 <div>@Html.ActionLink("Pledge/Order Tickets", "Index", "Order", new {EventId=1}, null)</div>
-<div>No. pledges needed to fund the event</div>
-<div>Time left to pledge<br />
+<div>@Model.MinimumParticipants participants required, @Model.MaximumParticipants maximum</div>
+<div>Sales end @Model.SalesEndDateTime.ToString("dd/MM/yyyy hh:mm")<br />
 <a>Invite Your Friends</a></div>
 <div><img src="http://placehold.it/350x150"></div>
 <h3>Event Details</h3>
-<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed quis neque mi, sed gravida leo. Nullam aliquet magna non purus rhoncus sed pulvinar nisl dapibus. Praesent sit amet lectus nec magna ultricies lobortis eget eu risus. Nullam dui tortor, luctus sit amet aliquam sed, iaculis a mauris. Fusce congue dui id tortor molestie feugiat. Suspendisse at sodales ligula. Donec vitae orci sem, at ultrices tortor. In rhoncus, lacus eu faucibus dictum, lacus lorem pellentesque dui, eget facilisis ante lacus quis magna. Morbi accumsan, tellus eu interdum gravida, odio felis consectetur lorem, mollis hendrerit tellus nulla nec metus. Etiam feugiat ante id diam faucibus venenatis. Aliquam erat volutpat. Curabitur velit tortor, vestibulum eu sodales a, rutrum et metus. Donec congue fringilla odio, et pretium lorem rutrum vitae. Maecenas mauris diam, adipiscing sed sagittis non, dignissim sit amet nisl. Mauris quam nisl, dignissim non vehicula quis, ornare sed risus. Fusce odio turpis, fringilla sit amet elementum at, bibendum in lectus. Sed imperdiet leo nec massa sagittis vel facilisis ligula ornare.</p>
+<p>@Model.Description</p>
+<h3>Additional Benefits</h3>
+<p>@Model.AdditionalBenefits</p>
+<p>Tickets: @Model.TicketPrice.ToString("c")</p>
 <div>Event date, time</div>
-<div>Address, map</div>
+<div>@Model.Venue, 
+@Model.AddressLine,
+@Model.City</div>
 <div>Organiser Profile <a>Contact</a></div>
