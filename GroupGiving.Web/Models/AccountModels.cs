@@ -116,6 +116,8 @@ namespace RavenDBMembership.Web.Models
 	    public SelectList Countries { get; set; }
 
 	    public SelectList AccountTypes { get; set; }
+
+	    public string ReturnView { get; set; }
 	}
 
     #endregion

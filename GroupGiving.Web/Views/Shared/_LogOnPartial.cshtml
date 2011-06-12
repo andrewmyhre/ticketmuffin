@@ -8,7 +8,7 @@ else {
 
     <div id="signInForm" style="display:none;">
         <form id="signin" action="/account/signin">
-            <label for="username">Username: </label><input type="text" name="username" /><br />
+            <label for="emailaddress">Username: </label><input type="text" name="emailaddress" /><br />
             <label for="password">Password: </label><input type="password" name="password" /><br />
             <input type="hidden" name="returnurl" value="@Request.Url.PathAndQuery" />
             <span id="invalidCredentials" class="field-validation-error" style="display:none;">We couldn't find an account matching those credentials</span>

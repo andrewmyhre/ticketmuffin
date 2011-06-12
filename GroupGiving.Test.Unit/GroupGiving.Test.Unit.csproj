@@ -65,6 +65,9 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Web.ApplicationServices" />
+    <Reference Include="System.Web.Mvc, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -73,6 +76,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="GivenCreatingAnAccount.cs" />
+    <Compile Include="CreateEventControllerTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -86,6 +90,10 @@
     <ProjectReference Include="..\GroupGiving.Test.Common\GroupGiving.Test.Common.csproj">
       <Project>{8D1BC929-6F29-4B15-902E-5644935575B1}</Project>
       <Name>GroupGiving.Test.Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\GroupGiving.Web\GroupGiving.Web.csproj">
+      <Project>{B75BD700-F6ED-4B72-AB58-19875F157585}</Project>
+      <Name>GroupGiving.Web</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

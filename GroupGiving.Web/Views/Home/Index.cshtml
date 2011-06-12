@@ -13,6 +13,8 @@
 
 <h2>Upcoming Events in London</h2>
 
+@Html.ActionLink("Create a New Event", "create", "CreateEvent")
+
 @foreach(var e in Model.Events)
 {
     @Html.ActionLink(e.Name, "Index", "Event", new { id = e.Id }, null) @e.City <text>20 June, 2011</text>

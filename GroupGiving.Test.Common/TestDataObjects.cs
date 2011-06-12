@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using GroupGiving.Core.Services;
+using GroupGiving.Web.Models;
 
 namespace GroupGiving.Test.Common
 {
@@ -22,5 +23,22 @@ namespace GroupGiving.Test.Common
             };
         }
 
+        public static CreateEventRequest ValidCreateEventDetails()
+        {
+            return new CreateEventRequest()
+            {
+                Title = "event title",
+                DateAndTime = DateTime.Now.AddDays(10),
+                Venue = "my house",
+                AddressLine = "55 albion drive",
+                City = "london",
+                PostCode = "e8 4lt",
+                Description = "my test event",
+                ShortUrl = "testevent",
+                IsPrivate = false,
+                IsFeatured = true,
+                PhoneNumber = "0123456789"
+            };
+        }
     }
 }

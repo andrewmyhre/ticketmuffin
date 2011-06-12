@@ -48,6 +48,10 @@
       <Project>{665762CC-21C5-4DF4-A0AD-AB23C449DDF9}</Project>
       <Name>GroupGiving.Core</Name>
     </ProjectReference>
+    <ProjectReference Include="..\GroupGiving.Web\GroupGiving.Web.csproj">
+      <Project>{B75BD700-F6ED-4B72-AB58-19875F157585}</Project>
+      <Name>GroupGiving.Web</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

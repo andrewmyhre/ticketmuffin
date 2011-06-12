@@ -279,6 +279,9 @@ div#title {
 -----------------------------------------------------------*/
 .field-validation-error {
     color: #ff0000;
+    float:right;
+    width:100%;
+    display:block;
 }
 
 .field-validation-valid {
@@ -303,12 +306,24 @@ div#title {
 ----------------------------------------------------------*/
 .display-label, 
 .editor-label {
-    margin: 1em 0 0 0;
+    float: left;
+    height: 1.4em;
+    margin: 0.5em 0 0;
+    padding: 0.6em 0 0 0;
+    width: 49%;
 }
 
 .display-field, 
 .editor-field {
-    margin: 0.5em 0 0 0;
+    float: right;
+    height: 2em;
+    margin: 0.5em 0 0;
+    width: 49%;
+    text-align:right;
+}
+.editor-field input, .editor-field select
+{
+width:200px;
 }
 
 .text-box {
@@ -335,4 +350,19 @@ div#title {
     right:15px;
     top:15px;
     z-index:1;
+}
+
+#ce_signup
+{
+float:left; 
+width:45%;
+}
+#ce_signin
+{
+float:right; 
+width:45%;
+}
+.clearfix
+{
+clear:both;
 }

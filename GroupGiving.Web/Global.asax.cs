@@ -1,4 +1,5 @@
-﻿using System.Web.Mvc;
+﻿using System;
+using System.Web.Mvc;
 using System.Web.Routing;
 using GroupGiving.Web.Code;
 using Ninject;
@@ -21,15 +22,29 @@ namespace GroupGiving.Web
             routes.IgnoreRoute("{resource}.axd/{*pathInfo}");
 
             routes.MapRoute(
-                "SignUp",
-
-                "signup",
-                new {controller = "Account", action = "signup"});
-
-            routes.MapRoute(
                 "ResetPassword",
                 "account/resetpassword/{token}",
                 new {controller = "Account", action = "ResetPassword"});
+
+            routes.MapRoute(
+                "SignUpOrSignIn",
+                "signin",
+                new { controller = "Account", action = "signup-or-signin" },
+                new { httpMethod = new HttpMethodConstraint("GET") });
+            routes.MapRoute(
+                "SignUp",
+                "signup",
+                new { controller = "Account", action = "signup" },
+                new {httpMethod = new HttpMethodConstraint("POST")});
+            routes.MapRoute(
+                "SignIn",
+                "signin",
+                new { controller = "Account", action = "signin" },
+                new { httpMethod = new HttpMethodConstraint("POST") });
+
+
+            MapEventCreationRoutes(routes);
+            MapEventRoutes(routes);
 
             routes.MapRoute(
                 "Default", // Route name
@@ -37,6 +52,26 @@ namespace GroupGiving.Web
                 new { controller = "Home", action = "Index", id = UrlParameter.Optional } // Parameter defaults
             );
 
+        }
+
+        private static void MapEventRoutes(RouteCollection routes)
+        {
+            routes.MapRoute(
+                "Event_ShareYourEvent",
+                "events/{id}/share",
+                new {controller = "Events", action = "Share"});
+        }
+
+        private static void MapEventCreationRoutes(RouteCollection routes)
+        {
+            routes.MapRoute(
+                "CreateEvent_EventDetails",
+                "events/create",
+                new { controller = "CreateEvent", action = "create" });
+            routes.MapRoute(
+                "CreateEvent_TicketDetails",
+                "events/create/{id}/tickets",
+                new { controller = "CreateEvent", action = "tickets" });
         }
 
         protected override void OnApplicationStarted()

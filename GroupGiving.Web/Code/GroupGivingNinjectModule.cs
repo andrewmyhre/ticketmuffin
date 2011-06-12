@@ -28,6 +28,8 @@ namespace GroupGiving.Web.Code
             Bind<AccountController>().ToSelf();
 
             Bind<IEmailRelayService>().To<SimpleSmtpEmailRelayService>();
+            Bind<IEmailCreationService>().To<EmailCreationService>();
+            Bind<ICountryService>().To<CountryService>();
         }
     }
 }

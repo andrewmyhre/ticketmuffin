@@ -6,5 +6,7 @@ namespace GroupGiving.Core.Services
     public interface IEventService
     {
         IEnumerable<GroupGivingEvent> RetrieveAllEvents();
+        CreateEventResult CreateEvent(CreateEventRequest request);
+        void SetTicketDetails(SetTicketDetailsRequest setTicketDetailsRequest);
     }
 }

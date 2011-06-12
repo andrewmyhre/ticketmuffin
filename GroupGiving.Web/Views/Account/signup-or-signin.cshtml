@@ -1,0 +1,142 @@
+﻿@model GroupGiving.Web.Models.SignInModel
+@{
+    ViewBag.Title = "signup-or-signin";
+}
+
+<h2>Sign Up or Sign In</h2>
+
+@using (Html.BeginForm("signin", "CreateEvent"))
+{
+    <div id="ce_signin">
+        <fieldset>
+            <legend>Sign In</legend>
+
+            <div class="editor-label">
+                Email
+            </div>
+            <div class="editor-field">
+                @Html.TextBox("emailaddress")
+            </div>
+                @Html.ValidationMessage("emailaddress")
+
+            <div class="editor-label">
+                Password
+            </div>
+            <div class="editor-field">
+                @Html.Password("password")
+            </div>
+                @Html.ValidationMessage("password")
+
+            <div class="editor-label" style="width:auto">
+                @Html.CheckBox("rememberMe")
+                @Html.Label("rememberMe", "Remember me")
+            </div>
+
+                @Html.Hidden("returnUrl", Url.Action("EventDetails", "CreateEvent"))
+            <div class="editor-field" style="width:auto">
+                <input type="submit" value="Log On" />
+            </div>
+        </fieldset>
+    </div>
+}
+
+@using (Html.BeginForm("signup", "CreateEvent"))
+{
+    <div id="ce_signup">
+        <fieldset>
+            <legend>Sign Up</legend>
+
+            <div class="editor-label">
+                Account Type
+            </div>
+            <div class="editor-field">
+                @Html.DropDownList("AccountType", Model.AccountTypes)
+            </div>
+                @Html.ValidationMessage("AccountType")
+
+            <div class="editor-label">
+                First name
+            </div>
+            <div class="editor-field">
+                @Html.TextBox("FirstName")
+            </div>
+                @Html.ValidationMessage("FirstName")
+
+            <div class="editor-label">
+                Last name
+            </div>
+            <div class="editor-field">
+                @Html.TextBox("lastname")
+            </div>
+                @Html.ValidationMessage("lastname")
+
+            <div class="editor-label">
+                Email
+            </div>
+            <div class="editor-field">
+                @Html.TextBox("email")
+            </div>
+                @Html.ValidationMessage("email")
+
+            <div class="editor-label">
+                Password
+            </div>
+            <div class="editor-field">
+                @Html.Password("newpassword")
+            </div>
+                @Html.ValidationMessage("newpassword")
+
+            <div class="editor-label">
+                Confirm password
+            </div>
+            <div class="editor-field">
+                @Html.Password("confirmPassword")
+            </div>
+                @Html.ValidationMessage("confirmPassword")
+
+            <div class="editor-label">
+                Address line
+            </div>
+            <div class="editor-field">
+                @Html.TextBox("addressLine")
+            </div>
+                @Html.ValidationMessage("addressLine")
+
+            <div class="editor-label">
+                Town
+            </div>
+            <div class="editor-field">
+                @Html.TextBox("Town")
+            </div>
+                @Html.ValidationMessage("Town")
+
+            <div class="editor-label">
+                Post code
+            </div>
+            <div class="editor-field">
+                @Html.TextBox("postCode")
+            </div>
+                @Html.ValidationMessage("postCode")
+
+            <div class="editor-label">
+                Country
+            </div>
+            <div class="editor-field">
+                @Html.DropDownList("country", Model.Countries)
+            </div>
+            @Html.ValidationMessage("country")
+
+            <div class="editor-label" style="width:auto">
+                @Html.CheckBox("AgreeToTermsAndConditions")
+                @Html.Label("AgreeToTermsAndConditions", "I agree to the terms and conditions")
+            </div>
+            @Html.ValidationMessage("AgreeToTermsAndConditions")
+
+                @Html.Hidden("returnUrl", Url.Action("EventDetails", "CreateEvent"))
+            <div class="editor-field" style="width:auto">
+                <input type="submit" value="Register" />
+            </div>
+        </fieldset>
+    </div>
+}
+<div class="clearfix" />

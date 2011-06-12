@@ -21,5 +21,15 @@ namespace GroupGiving.Core.Services
         {
             return _eventRepository.RetrieveAll();
         }
+
+        public CreateEventResult CreateEvent(CreateEventRequest request)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void SetTicketDetails(SetTicketDetailsRequest setTicketDetailsRequest)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

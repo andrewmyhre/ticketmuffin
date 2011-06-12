@@ -56,6 +56,7 @@
       <HintPath>..\packages\RavenDB.1.0.0.371\lib\net40\Raven.Json.dll</HintPath>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -79,14 +80,19 @@
     <Compile Include="Email\IEmailRelayService.cs" />
     <Compile Include="Email\ThanksForRegisteringEmail.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Services\CreateEventRequest.cs" />
+    <Compile Include="Services\CreateEventResult.cs" />
     <Compile Include="Services\CreateUserRequest.cs" />
+    <Compile Include="Services\EmailCreationService.cs" />
     <Compile Include="Services\EventService.cs" />
+    <Compile Include="Services\ICountryService.cs" />
     <Compile Include="Services\IEmailCreationService.cs" />
     <Compile Include="Services\IEventService.cs" />
     <Compile Include="Services\IAccountService.cs" />
     <Compile Include="Services\ResetPasswordResult.cs" />
     <Compile Include="Services\SendPasswordResetResult.cs" />
     <Compile Include="Services\SendThanksForRegisteringEmailResult.cs" />
+    <Compile Include="Services\SetTicketDetailsRequest.cs" />
     <Compile Include="Services\UpdateUserRequest.cs" />
     <Compile Include="Services\AccountService.cs" />
   </ItemGroup>

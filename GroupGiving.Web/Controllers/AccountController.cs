@@ -24,58 +24,106 @@ namespace GroupGiving.Web.Controllers
         private ILog _log = LogManager.GetLogger("AccountController");
         private readonly IFormsAuthenticationService _formsService;
         private readonly IMembershipService _membershipService;
+        private ICountryService _countryService;
 
         public AccountController()
         {
             _formsService = MvcApplication.Kernel.Get<IFormsAuthenticationService>();
             _membershipService = MvcApplication.Kernel.Get<AccountMembershipService>();
+            _countryService = MvcApplication.Kernel.Get<ICountryService>();
             ((RavenDBMembershipProvider) Membership.Provider).DocumentStore
                 = RavenDbDocumentStore.Instance;
         }
 
-        //
-        // GET: /Account/LogOn
-
-        public ActionResult SignIn()
+        [AcceptVerbs(HttpVerbs.Get)]
+        [ActionName("signup-or-signin")]
+        public ActionResult SignUpOrSignIn()
         {
-            return View();
+            if (User.Identity.IsAuthenticated)
+            {
+                if (Request.QueryString["returnUrl"] != null)
+                    Response.Redirect(Request.QueryString["returnUrl"]);
+                else
+                    Response.Redirect("/");
+            }
+
+            var model = new SignInModel();
+            model.Countries = new SelectList(_countryService.RetrieveAllCountries(), "Name", "Name");
+            model.AccountTypes = new SelectList(Enum.GetNames(typeof(AccountType)));
+            return View(model);
         }
 
-        //
-        // POST: /Account/LogOn
-
-        [HttpPost]
-        public ActionResult SignIn(LogOnModel model, string returnUrl)
+        [AcceptVerbs(HttpVerbs.Post)]
+        public ActionResult SignIn(SignInModel request, string returnUrl)
         {
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
-                if (Membership.ValidateUser(model.UserName, model.Password))
+                var model = new SignInModel();
+                model.Countries = new SelectList(_countryService.RetrieveAllCountries(), "Name", "Name");
+                model.AccountTypes = new SelectList(Enum.GetNames(typeof(AccountType)));
+                if (Request.AcceptTypes.Contains("application/json"))
+                    return Json(new LogOnResultViewModel() { Success = false });
+                return View("signup-or-signin", model);
+            }
+
+            ((RavenDBMembershipProvider)Membership.Provider).DocumentStore = RavenDbDocumentStore.Instance;
+            if (_membershipService.ValidateUser(request.EmailAddress, request.Password))
+            {
+                _formsService.SignIn(request.EmailAddress, request.RememberMe);
+                if (Url.IsLocalUrl(returnUrl) && returnUrl.Length > 1 && returnUrl.StartsWith("/")
+                    && !returnUrl.StartsWith("//") && !returnUrl.StartsWith("/\\"))
                 {
-                    _formsService.SignIn(model.UserName, model.RememberMe);
-                    if (Url.IsLocalUrl(returnUrl) && returnUrl.Length > 1 && returnUrl.StartsWith("/")
-                        && !returnUrl.StartsWith("//") && !returnUrl.StartsWith("/\\"))
-                    {
-                        if (Request.AcceptTypes.Contains("application/json"))
-                            return Json(new LogOnResultViewModel() {Success = true, RedirectUrl = returnUrl});
-                        return Redirect(returnUrl);
-                    }
-                    else
-                    {
-                        if (Request.AcceptTypes.Contains("application/json"))
-                            return Json(new LogOnResultViewModel() { Success = true, RedirectUrl = Url.Action("Index", "Home") });
-                        return RedirectToAction("Index", "Home");
-                    }
+                    if (Request.AcceptTypes.Contains("application/json"))
+                        return Json(new LogOnResultViewModel() { Success = true, RedirectUrl = returnUrl });
+                    return Redirect(returnUrl);
                 }
                 else
                 {
-                    ModelState.AddModelError("", "The user name or password provided is incorrect.");
+                    if (Request.AcceptTypes.Contains("application/json"))
+                        return Json(new LogOnResultViewModel() { Success = true, RedirectUrl = Url.Action("Index", "Home") });
+                    return RedirectToAction("Index", "Home");
                 }
             }
+            else
+            {
+                ModelState.AddModelError("login", "The combination of email and password you entered did not match any user");
+                var model = new SignInModel();
+                model.Countries = new SelectList(_countryService.RetrieveAllCountries(), "Name", "Name");
+                model.AccountTypes = new SelectList(Enum.GetNames(typeof(AccountType)));
+                if (Request.AcceptTypes.Contains("application/json"))
+                    return Json(new LogOnResultViewModel() { Success = false });
+                return View("signup-or-signin", model);
+            }
+        }
 
-            // If we got this far, something failed, redisplay form
-            if (Request.AcceptTypes.Contains("application/json"))
-                return Json(model);
-            return View(model);
+        [AcceptVerbs(HttpVerbs.Post)]
+        [ActionName("signup")]
+        public ActionResult SignUp(SignUpModel request)
+        {
+            if (!ModelState.IsValid)
+            {
+                var model = new SignInModel();
+                model.Countries = new SelectList(_countryService.RetrieveAllCountries(), "Name", "Name");
+                model.AccountTypes = new SelectList(Enum.GetNames(typeof(AccountType)));
+                return View("signup-or-signin", model);
+            }
+
+            ((RavenDBMembershipProvider)Membership.Provider).DocumentStore = RavenDbDocumentStore.Instance;
+            var createResult = _membershipService.CreateUser(request.Email, request.NewPassword, request.Email);
+
+            if (createResult == MembershipCreateStatus.Success)
+            {
+                _formsService.SignIn(request.Email, false);
+                return RedirectToRoute("CreateEvent_EventDetails");
+            }
+            else
+            {
+                ModelState.AddModelError("signup", "There was a problem with the details you provided");
+                var model = new SignInModel();
+                model.Countries = new SelectList(_countryService.RetrieveAllCountries(), "Name", "Name");
+                model.AccountTypes = new SelectList(Enum.GetNames(typeof(AccountType)));
+                return View("signup-or-signin", model);
+            }
         }
 
         //
@@ -95,16 +143,8 @@ namespace GroupGiving.Web.Controllers
             var viewModel = new RegisterModel()
             {
                 RedirectUrl = redirectUrl,
-                Countries = new SelectList(
-                new[]
-                    {
-                        "Poland",
-                        "United Kingdom",
-                        "United States of America",
-                        "New Zealand",
-                    }),
-                AccountTypes = new SelectList(
-                            new[] { "Individual", "Company" })
+                Countries = new SelectList(_countryService.RetrieveAllCountries()),
+                AccountTypes = new SelectList(Enum.GetNames(typeof(AccountType)))
             };
 
             return View(viewModel);
@@ -162,18 +202,12 @@ namespace GroupGiving.Web.Controllers
             // If we got this far, something failed, redisplay form
             ViewBag.PasswordLength = _membershipService.MinPasswordLength;
 
-            model.Countries = new SelectList(
-                new[]
-                    {
-                        "Poland",
-                        "United Kingdom",
-                        "United States of America",
-                        "New Zealand",
-                    });
-            model.AccountTypes = new SelectList(
-                new[] {"Individual", "Company"});
+            model.Countries = new SelectList(new SelectList(_countryService.RetrieveAllCountries()));
+            model.AccountTypes = new SelectList(Enum.GetNames(typeof(AccountType)));
+            if (string.IsNullOrWhiteSpace(model.ReturnView))
+                return View(model);
 
-            return View(model);
+            return View(model.ReturnView, model);
         }
 
         //
@@ -330,18 +364,9 @@ namespace GroupGiving.Web.Controllers
             viewModel.PostCode = account.PostCode;
             viewModel.Email = account.Email;
 
-            viewModel.Countries = new SelectList(
-                new []
-                    {
-                        "Poland",
-                        "United Kingdom",
-                        "United States of America",
-                        "New Zealand",
-                    }
-                );
+            viewModel.Countries = new SelectList(new SelectList(_countryService.RetrieveAllCountries()));
 
-            viewModel.AccountTypes = new SelectList(
-                new[] { "Individual", "Company" });
+            viewModel.AccountTypes = new SelectList(Enum.GetNames(typeof(AccountType)));
             
             return View(viewModel);
         }
@@ -367,17 +392,9 @@ namespace GroupGiving.Web.Controllers
                 viewModel.Email = account.Email;
             }
 
-            viewModel.Countries = new SelectList(
-                new[]
-                    {
-                        "Poland",
-                        "United Kingdom",
-                        "United States of America",
-                        "New Zealand",
-                    });
+            viewModel.Countries = new SelectList(new SelectList(_countryService.RetrieveAllCountries()));
 
-                    viewModel.AccountTypes = new SelectList(
-                        new [] { "Individual", "Company"});
+                    viewModel.AccountTypes = new SelectList(Enum.GetNames(typeof(AccountType)));
 
             return View(viewModel);
         }
