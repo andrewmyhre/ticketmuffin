@@ -1,4 +1,6 @@
-﻿using Raven.Client;
+﻿using System;
+using System.Configuration;
+using Raven.Client;
 using Raven.Client.Document;
 
 namespace GroupGiving.Web.Code
@@ -12,8 +14,14 @@ namespace GroupGiving.Web.Code
             {
                 if (_instance == null)
                 {
-                    _instance = new DocumentStore() {Url = "http://localhost:8080"};
-                    _instance.Initialize();
+                    try
+                    {
+                        _instance = new DocumentStore() {Url = ConfigurationManager.AppSettings["RavenDbStoragePath"]};
+                        _instance.Initialize();
+                    } catch (Exception ex)
+                    {
+                        throw new Exception("Couldn't connect to database. Is it running?");
+                    }
                 }
                 return _instance;
             }
