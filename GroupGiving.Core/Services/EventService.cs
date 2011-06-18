@@ -69,7 +69,17 @@ namespace GroupGiving.Core.Services
         {
             var ggEvent = _eventRepository.Retrieve(
                 e => e.ShortUrl == shortUrl);
-            return ggEvent != null;
+            return ggEvent == null;
+        }
+
+        public GroupGivingEvent Retrieve(int eventId)
+        {
+            return _eventRepository.Retrieve(e => e.Id == string.Format("groupgivingevents/{0}",eventId));
+        }
+
+        public GroupGivingEvent Retrieve(string shortUrl)
+        {
+            return _eventRepository.Retrieve(e => e.ShortUrl == shortUrl);
         }
     }
 }

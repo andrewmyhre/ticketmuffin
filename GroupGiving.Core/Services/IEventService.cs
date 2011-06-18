@@ -9,5 +9,7 @@ namespace GroupGiving.Core.Services
         CreateEventResult CreateEvent(CreateEventRequest request);
         void SetTicketDetails(SetTicketDetailsRequest setTicketDetailsRequest);
         bool ShortUrlAvailable(string shortUrl);
+        GroupGivingEvent Retrieve(int eventId);
+        GroupGivingEvent Retrieve(string shortUrl);
     }
 }

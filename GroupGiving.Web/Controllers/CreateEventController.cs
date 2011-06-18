@@ -81,7 +81,7 @@ namespace GroupGiving.Web.Controllers
 
             if (result.Success)
             {
-                return RedirectToRoute("CreateEvent_TicketDetails", new {id=result.EventId});
+                return RedirectToRoute("CreateEvent_TicketDetails", new { eventId = result.EventId });
             }
 
             ModelState.AddModelError("createevent", "There was a problem with the information you provided");
@@ -131,7 +131,9 @@ namespace GroupGiving.Web.Controllers
 
             _eventService.SetTicketDetails(setTicketDetailsRequest);
 
-            return RedirectToRoute("Event_ShareYourEvent", new { eventId = setTicketDetailsRequest.EventId });
+            var @event = _eventService.Retrieve(setTicketDetailsRequest.EventId);
+
+            return RedirectToRoute("Event_ShareYourEvent", new { shortUrl = @event.ShortUrl });
         }
     }
 }
