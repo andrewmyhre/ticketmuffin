@@ -1,18 +1,32 @@
 ﻿using System;
+using System.Web.Security;
 using GroupGiving.Core.Data;
 using GroupGiving.Core.Domain;
+using GroupGiving.Core.Services;
+using GroupGiving.Web.Code;
 using GroupGiving.Web.Models;
 using System.Web.Mvc;
 using Ninject;
+using RavenDBMembership.Provider;
+using RavenDBMembership.Web.Models;
 
 namespace GroupGiving.Web.Controllers
 {
     public class EventController : Controller
     {
         private readonly IRepository<GroupGivingEvent> _eventRepository;
+        private readonly IFormsAuthenticationService _formsService;
+        private readonly IMembershipService _membershipService;
+        private readonly IAccountService _accountService;
+
         public EventController()
         {
+            _accountService = MvcApplication.Kernel.Get<IAccountService>();
             _eventRepository = MvcApplication.Kernel.Get<IRepository<GroupGivingEvent>>();
+            _formsService = MvcApplication.Kernel.Get<IFormsAuthenticationService>();
+            _membershipService = MvcApplication.Kernel.Get<AccountMembershipService>();
+            ((RavenDBMembershipProvider)Membership.Provider).DocumentStore
+                = RavenDbDocumentStore.Instance;
         }
 
         //
@@ -66,7 +80,7 @@ namespace GroupGiving.Web.Controllers
             if (string.IsNullOrWhiteSpace(shortUrl))
                 return new HttpNotFoundResult();
 
-            var viewModel = new EventViewModel();
+            var viewModel = new EventPledgeViewModel();
             var givingEvent = _eventRepository.Retrieve(e => e.ShortUrl == shortUrl);
             if (givingEvent == null)
                 return HttpNotFound();
@@ -88,6 +102,14 @@ namespace GroupGiving.Web.Controllers
             viewModel.Title = givingEvent.Title;
             viewModel.TicketPrice = givingEvent.TicketPrice;
             viewModel.Venue = givingEvent.Venue;
+
+            if (User.Identity.IsAuthenticated)
+            {
+                var account = _accountService.RetrieveByEmailAddress(User.Identity.Name);
+                viewModel.UserFirstName = account.FirstName;
+                viewModel.UserLastName = account.LastName;
+                viewModel.UserPayPalEmail = account.Email;
+            }
 
             return View(viewModel);
         }

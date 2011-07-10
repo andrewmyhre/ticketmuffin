@@ -24,10 +24,12 @@ namespace GroupGiving.Web.Controllers
         private ILog _log = LogManager.GetLogger("AccountController");
         private readonly IFormsAuthenticationService _formsService;
         private readonly IMembershipService _membershipService;
+        private readonly IAccountService _accountService;
         private ICountryService _countryService;
 
         public AccountController()
         {
+            _accountService = MvcApplication.Kernel.Get<IAccountService>();
             _formsService = MvcApplication.Kernel.Get<IFormsAuthenticationService>();
             _membershipService = MvcApplication.Kernel.Get<AccountMembershipService>();
             _countryService = MvcApplication.Kernel.Get<ICountryService>();
@@ -113,6 +115,19 @@ namespace GroupGiving.Web.Controllers
 
             if (createResult == MembershipCreateStatus.Success)
             {
+                var createAccountRequest = new CreateUserRequest()
+                {
+                    FirstName = request.FirstName,
+                    LastName=request.LastName,
+                    AddressLine1 = request.AddressLine,
+                    City=request.Town,
+                    Country=request.Country,
+                    Email=request.Email,
+                    PostCode=request.PostCode
+                };
+
+                _accountService.CreateUser(createAccountRequest);
+
                 _formsService.SignIn(request.Email, false);
                 return RedirectToRoute("CreateEvent_EventDetails");
             }

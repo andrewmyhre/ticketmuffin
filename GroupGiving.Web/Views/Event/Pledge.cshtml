@@ -1,47 +1,58 @@
-﻿@{
+﻿@model GroupGiving.Web.Models.EventPledgeViewModel
+@{
     ViewBag.Title = "Pledge";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
 <h2>Pledge</h2>
 
-<div style="float:left;">
-    <div>Quantity: 
-    <select name="quantity">
-    <option>1</option>
-    <option>2</option>
-    <option>3</option>
-    </select>
-</div>
-<div>Price: $price (fee = %5 + VAT)</div>
-</div>
-
-@if (!User.Identity.IsAuthenticated)
+@using (Html.BeginForm("StartRequest", "Order"))
 {
-    Html.RenderPartial("PersonalDetailsNotSignedIn");
+    <div style="float:left;">
+        <div>Quantity: 
+        <select name="quantity">
+        <option>1</option>
+        <option>2</option>
+        <option>3</option>
+        </select>
+    </div>
+    <div>Ticket Price: @Model.TicketPrice.ToString("c") (fee = %5 + VAT)</div>
+    </div>
+    <div class="clearfix"></div>
+    <div style="float:right">
+        <div>
+            <p><strong>PayPal sandbox details</strong></p>
+            <p>Use the following credentials:</p>
+            <p>Email: buyer1_1304843364_per@gmail.com</p>
+            <p>Password: lilacwine</p>
+        </div>
+    </div>
+    <div style="float:left;">
+    <div>Tickets</div>
+    <div>Ticket #1 Name: <input type="text" name="attendeeName" /></div>
+    <div>Ticket #2 Name: <input type="text" name="attendeeName" /></div>
+    </div>
+
+    <div class="clearfix"></div>
+
+    if (!User.Identity.IsAuthenticated)
+    {
+        Html.RenderPartial("PersonalDetailsNotSignedIn");
+    }
+    else
+    {
+        Html.RenderPartial("PersonalDetailsSignedIn");
+    }
+    <div class="clearfix"></div>
+
+    <div style="float:left;">
+        <div>
+            <div><input type="checkbox" name="offers" /><label for="offers">I want to receive event offers</label></div>
+            <div><input type="checkbox" name="tnc" /><label for="tnc">I agree to the Terms and Conditions</label></div>
+
+            @Html.Hidden("shortUrl", Model.ShortUrl)
+            <p><input type="submit" value="Pay now through PayPal" /></p>
+        </div>
+    </div>
 }
-else
-{
-    Html.RenderPartial("PersonalDetailsSignedIn");
-}
-
-
-<div style="float:left;">
-<div>Tickets</div>
-<div>Ticket #1 Name: <input type="text" name="attendeeName" /></div>
-<div>Ticket #2 Name: <input type="text" name="attendeeName" /></div>
-</div>
-
-<div style="float:left">
-<div><input type="checkbox" name="offers" /><label for="offers">I want to receive event offers</label></div>
-<div><input type="checkbox" name="tnc" /><label for="tnc">I agree to the Terms and Conditions</label></div>
-<div>
-    <p>You're about to make a PayPal purchase for a $100.00 ticket through the sandbox site</p>
-    <p>Use the following credentials:</p>
-    <p>Email: buyer1_1304843364_per@gmail.com</p>
-    <p>Password: lilacwine</p>
-
-    @Html.ActionLink("Pay now through PayPal", "StartRequest", "Order")
-</div>
-</div>
 <div style="clear:left;"></div>

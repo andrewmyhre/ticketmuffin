@@ -3,9 +3,12 @@ using System.Configuration;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using GroupGiving.Core.Data;
+using GroupGiving.Core.Domain;
 using GroupGiving.PayPal;
 using GroupGiving.PayPal.Model;
 using GroupGiving.Web.Models;
+using Ninject;
 
 namespace GroupGiving.Web.Controllers
 {
@@ -13,6 +16,12 @@ namespace GroupGiving.Web.Controllers
     {
         //
         // GET: /Order/
+        private readonly IRepository<GroupGivingEvent> _eventRepository;
+
+        public OrderController()
+        {
+            _eventRepository = MvcApplication.Kernel.Get<IRepository<GroupGivingEvent>>();
+        }
 
         public ActionResult Index(int eventId)
         {
@@ -24,9 +33,13 @@ namespace GroupGiving.Web.Controllers
             return View();
         }
 
-        public ActionResult StartRequest()
+        [AcceptVerbs(HttpVerbs.Post)]
+        public ActionResult StartRequest(PurchaseDetails purchaseDetails)
         {
-            PayResponse response = SendPaymentRequest();
+            var eventDetails = _eventRepository.Retrieve(e => e.ShortUrl == purchaseDetails.ShortUrl);
+
+            decimal amount = eventDetails.TicketPrice*purchaseDetails.Quantity;
+            PayResponse response = SendPaymentRequest(amount);
 
             var viewModel = new OrderRequestViewModel();
             viewModel.PayPalPostUrl = ConfigurationManager.AppSettings["PayFlowProPaymentPage"];
@@ -40,7 +53,7 @@ namespace GroupGiving.Web.Controllers
             return Redirect(string.Format(ConfigurationManager.AppSettings["PayFlowProPaymentPage"], response.PayKey));
         }
 
-        private PayResponse SendPaymentRequest()
+        private PayResponse SendPaymentRequest(decimal amount)
         {
             IApiClient payPal = new ApiClient(new ApiClientSettings()
                                                   {
@@ -48,6 +61,7 @@ namespace GroupGiving.Web.Controllers
                                                       Password = "1304843443",
                                                       Signature = "AFcWxV21C7fd0v3bYYYRCpSSRl31APG52hf-AmPfK7eyvf7LBc0.0sm7"
                                                   });
+            decimal amountCommissionAdded = amount*1.05m;
             var request = new PayRequest();
             request.ActionType = "PAY";
             request.CurrencyCode = "GBP";
@@ -55,8 +69,8 @@ namespace GroupGiving.Web.Controllers
             request.Memo = "test order";
             request.CancelUrl = "http://" + Request.Url.Authority + "/Order/Cancel?payKey=${payKey}.";
             request.ReturnUrl = "http://" + Request.Url.Authority + "/Order/Return?payKey=${payKey}.";
-            request.Receivers.Add(new Receiver("10", "seller_1304843436_biz@gmail.com"));
-            request.Receivers.Add(new Receiver("9", "sellr2_1304843519_biz@gmail.com"));
+            request.Receivers.Add(new Receiver(amountCommissionAdded.ToString("#.00"), "seller_1304843436_biz@gmail.com"));
+            request.Receivers.Add(new Receiver(amount.ToString("#.00"), "sellr2_1304843519_biz@gmail.com"));
             return payPal.SendPayRequest(request);
         }
 
