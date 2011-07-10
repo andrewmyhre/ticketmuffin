@@ -3,8 +3,7 @@
     ViewBag.Title = "Event";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
-<h1>@Html.ActionLink(Model.EventId.ToString(), "Index", new { id = Model.EventId })</h1>
-<h2>@Model.Title</h2>
+<h1>@Html.ActionLink(Model.Title, "Index", new { id = Model.EventId })</h1>
 
 <div>@Model.StartDate.ToString("dd/MM/yyyy hh:mm"), @Model.City</div>
 <div>@Html.ActionLink("Pledge/Order Tickets", "Index", "Order", new {EventId=1}, null)</div>
