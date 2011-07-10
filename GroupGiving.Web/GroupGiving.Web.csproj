@@ -115,6 +115,7 @@
     <Compile Include="Code\HtmlHelperExtensions.cs" />
     <Compile Include="Code\MustBeTrueAttribute.cs" />
     <Compile Include="Code\RavenDbDocumentStore.cs" />
+    <Compile Include="Code\XmlContentProvider.cs" />
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\CreateEventController.cs" />
     <Compile Include="Controllers\EventController.cs" />
@@ -137,6 +138,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Content\PageContent\en-GB\content.xml" />
     <Content Include="Content\themes\base\images\ui-bg_flat_0_aaaaaa_40x100.png" />
     <Content Include="Content\themes\base\images\ui-bg_flat_75_ffffff_40x100.png" />
     <Content Include="Content\themes\base\images\ui-bg_glass_55_fbf9ee_1x400.png" />

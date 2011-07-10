@@ -71,6 +71,7 @@
     <Compile Include="Data\IRepository.cs" />
     <Compile Include="Data\RavenDBRepositoryBase.cs" />
     <Compile Include="Domain\AccountType.cs" />
+    <Compile Include="Domain\ContentDefinition.cs" />
     <Compile Include="Domain\GroupGivingEvent.cs" />
     <Compile Include="Domain\Account.cs" />
     <Compile Include="Domain\IDomainObject.cs" />

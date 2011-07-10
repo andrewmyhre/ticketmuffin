@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Web.Mvc;
 using System.Text;
+using GroupGiving.Core.Data;
+using GroupGiving.Core.Services;
 
 namespace GroupGiving.Web.Code
 {
@@ -61,6 +63,17 @@ namespace GroupGiving.Web.Code
             title = System.Threading.Thread.CurrentThread.CurrentCulture.TextInfo.ToTitleCase(title);
             title = title.Substring(0, title.Length - 1); // kill period from paragraph
             return title;
+        }
+
+        public static string Content(this HtmlHelper helper, string key)
+        {
+            var contentId = key.Split('-');
+            return MvcApplication.PageContent.Get("en-GB", contentId[0], contentId[1]);
+        }
+
+        public static string Content(this HtmlHelper helper, string page, string key)
+        {
+            return MvcApplication.PageContent.Get("en-GB", page, key);
         }
 
         #endregion

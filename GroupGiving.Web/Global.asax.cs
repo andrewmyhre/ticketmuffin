@@ -12,6 +12,8 @@ namespace GroupGiving.Web
     public class MvcApplication : Ninject.Web.NinjectHttpApplication
     {
         public static IKernel Kernel { get; set; }
+        public static XmlContentProvider PageContent = new XmlContentProvider();
+
         public static void RegisterGlobalFilters(GlobalFilterCollection filters)
         {
             filters.Add(new HandleErrorAttribute());
@@ -86,6 +88,7 @@ namespace GroupGiving.Web
 
             RegisterGlobalFilters(GlobalFilters.Filters);
             RegisterRoutes(RouteTable.Routes);
+            PageContent.Initialise(System.Web.Hosting.HostingEnvironment.MapPath("~/content/PageContent"));
             base.OnApplicationStarted();
         }
 
