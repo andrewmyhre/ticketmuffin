@@ -1,5 +1,4 @@
-﻿using System;
-using GroupGiving.Core.Email;
+﻿using GroupGiving.Core.Email;
 
 namespace GroupGiving.Core.Services
 {
@@ -13,6 +12,11 @@ namespace GroupGiving.Core.Services
         public IEmailMessage ThankYouForRegisteringEmail(string emailAddress, string firstName)
         {
             return new ThanksForRegisteringEmail(emailAddress, firstName);
+        }
+
+        public IEmailMessage GetYourAccountStartedEmail(string emailAddress, string resetPasswordToken)
+        {
+            return new GetYourAccountStarted(emailAddress, resetPasswordToken);
         }
     }
 }

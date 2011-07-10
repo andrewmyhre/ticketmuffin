@@ -10,5 +10,6 @@ namespace GroupGiving.Core.Services
     {
         IEmailMessage PasswordResetInstructionsEmail(string emailAddress, string firstName, string resetPasswordToken);
         IEmailMessage ThankYouForRegisteringEmail(string emailAddress, string firstName);
+        IEmailMessage GetYourAccountStartedEmail(string emailAddress, string resetPasswordToken);
     }
 }

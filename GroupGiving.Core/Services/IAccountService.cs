@@ -8,9 +8,11 @@ namespace GroupGiving.Core.Services
     {
         Account CreateUser(CreateUserRequest request);
         SendPasswordResetResult SendPasswordResetEmail(string email, IEmailRelayService emailRelayService);
+        SendPasswordResetResult SendGetYourAccountStartedEmail(string emailAddress, IEmailRelayService emailRelayService);
         Account RetrieveAccountByPasswordResetToken(string resetPasswordToken);
         ResetPasswordResult ResetPassword(string resetPasswordToken, string newPassword);
         Account RetrieveByEmailAddress(string email);
         void UpdateAccount(Account account);
+        void CreateIncompleteAccount(string emailAddress, IEmailRelayService emailRelayService);
     }
 }

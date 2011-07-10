@@ -3,12 +3,18 @@ using System.Configuration;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using System.Web.Security;
 using GroupGiving.Core.Data;
 using GroupGiving.Core.Domain;
+using GroupGiving.Core.Email;
+using GroupGiving.Core.Services;
 using GroupGiving.PayPal;
 using GroupGiving.PayPal.Model;
+using GroupGiving.Web.Code;
 using GroupGiving.Web.Models;
 using Ninject;
+using RavenDBMembership.Provider;
+using RavenDBMembership.Web.Models;
 
 namespace GroupGiving.Web.Controllers
 {
@@ -17,10 +23,18 @@ namespace GroupGiving.Web.Controllers
         //
         // GET: /Order/
         private readonly IRepository<GroupGivingEvent> _eventRepository;
+        private readonly IFormsAuthenticationService _formsService;
+        private readonly IMembershipService _membershipService;
+        private readonly IAccountService _accountService;
 
         public OrderController()
         {
             _eventRepository = MvcApplication.Kernel.Get<IRepository<GroupGivingEvent>>();
+            _formsService = MvcApplication.Kernel.Get<IFormsAuthenticationService>();
+            _membershipService = MvcApplication.Kernel.Get<AccountMembershipService>();
+            _accountService = MvcApplication.Kernel.Get<IAccountService>();
+            ((RavenDBMembershipProvider)Membership.Provider).DocumentStore
+                = RavenDbDocumentStore.Instance;
         }
 
         public ActionResult Index(int eventId)
@@ -36,12 +50,19 @@ namespace GroupGiving.Web.Controllers
         [AcceptVerbs(HttpVerbs.Post)]
         public ActionResult StartRequest(PurchaseDetails purchaseDetails)
         {
+            var viewModel = new OrderRequestViewModel();
+
             var eventDetails = _eventRepository.Retrieve(e => e.ShortUrl == purchaseDetails.ShortUrl);
 
             decimal amount = eventDetails.TicketPrice*purchaseDetails.Quantity;
             PayResponse response = SendPaymentRequest(amount);
+            var account = _accountService.RetrieveByEmailAddress(purchaseDetails.EmailAddress);
+            if (account==null)
+            {
+                IEmailRelayService emailRelayService = MvcApplication.Kernel.Get<IEmailRelayService>();
+                _accountService.CreateIncompleteAccount(purchaseDetails.EmailAddress, emailRelayService);
+            }
 
-            var viewModel = new OrderRequestViewModel();
             viewModel.PayPalPostUrl = ConfigurationManager.AppSettings["PayFlowProPaymentPage"];
             viewModel.Ack = response.ResponseEnvelope.Ack;
             viewModel.PayKey = response.PayKey;

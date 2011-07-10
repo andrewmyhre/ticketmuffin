@@ -76,6 +76,7 @@
     <Compile Include="Domain\Account.cs" />
     <Compile Include="Domain\IDomainObject.cs" />
     <Compile Include="Email\EmailTemplate.cs" />
+    <Compile Include="Email\GetYourAccountStarted.cs" />
     <Compile Include="Email\PasswordResetInstructionsEmail.cs" />
     <Compile Include="Email\SimpleSmtpEmailRelayService.cs" />
     <Compile Include="Email\IEmailMessage.cs" />

@@ -71,6 +71,32 @@ namespace GroupGiving.Core.Services
             return SendPasswordResetResult.SuccessResult;
         }
 
+        public SendPasswordResetResult SendGetYourAccountStartedEmail(string emailAddress, IEmailRelayService emailRelayService)
+        {
+            var account = _accountRepository.Retrieve(a => a.Email == emailAddress);
+            if (account == null)
+                return SendPasswordResetResult.AccountNotFoundResult;
+
+            // generate a unique token
+            string token = Guid.NewGuid().ToString().Replace("{", "").Replace("-", "");
+            var otherAccounts = _accountRepository.Query(a => a.ResetPasswordToken == token);
+            while (otherAccounts.Count() > 0)
+            {
+                token = Guid.NewGuid().ToString().Replace("{", "").Replace("-", "");
+                otherAccounts = _accountRepository.Query(a => a.ResetPasswordToken == token);
+            }
+            account.ResetPasswordToken = token;
+            account.ResetPasswordTokenExpiry = DateTime.MaxValue;
+            _accountRepository.SaveOrUpdate(account);
+            _accountRepository.CommitUpdates();
+
+            // send email
+            var email = _emailCreationService.GetYourAccountStartedEmail(account.Email, account.ResetPasswordToken);
+            emailRelayService.SendEmail(email);
+
+            return SendPasswordResetResult.SuccessResult;
+        }
+
         public Account RetrieveAccountByPasswordResetToken(string resetPasswordToken)
         {
             return _accountRepository
@@ -101,6 +127,20 @@ namespace GroupGiving.Core.Services
         {
             _accountRepository.SaveOrUpdate(account);
             _accountRepository.CommitUpdates();
+        }
+
+        public void CreateIncompleteAccount(string emailAddress, IEmailRelayService emailRelayService)
+        {
+            var account = new Account()
+                              {
+                                  Email = emailAddress,
+                                  ResetPasswordToken = Guid.NewGuid().ToString(),
+                                  ResetPasswordTokenExpiry = DateTime.MaxValue
+                              };
+            _accountRepository.SaveOrUpdate(account);
+            _accountRepository.CommitUpdates();
+
+            SendGetYourAccountStartedEmail(emailAddress, emailRelayService);
         }
     }
 }
