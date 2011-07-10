@@ -9,11 +9,7 @@
 <script type="text/javascript" src="/scripts/home.js"></script>
 }
 
-@Html.ActionLink("Buy Ticket", "Index", "Order")
-
 <h2>@Html.Content("homepage", "heading")</h2>
-
-@Html.ActionLink("Create a New Event", "create", "CreateEvent")
 
 @foreach(var e in Model.Events)
 {
