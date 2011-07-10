@@ -14,7 +14,7 @@ namespace GroupGiving.Web.Controllers
         //
         // GET: /Order/
 
-        public ActionResult Index(int? eventId)
+        public ActionResult Index(int eventId)
         {
             return View();
         }

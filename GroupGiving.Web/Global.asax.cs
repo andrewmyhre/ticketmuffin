@@ -23,6 +23,31 @@ namespace GroupGiving.Web
         {
             routes.IgnoreRoute("{resource}.axd/{*pathInfo}");
 
+            MapAccountRoutes(routes);
+            MapEventCreationRoutes(routes);
+            MapEventRoutes(routes);
+            MapPurchaseRoutes(routes);
+
+            routes.MapRoute(
+                "Default", // Route name
+                "{controller}/{action}/{id}", // URL with parameters
+                new { controller = "Home", action = "Index", id = UrlParameter.Optional } // Parameter defaults
+            );
+
+        }
+
+        private static void MapPurchaseRoutes(RouteCollection routes)
+        {
+            routes.MapRoute("OrderStep1",
+                            "pledge/{eventId}",
+                            new {controller = "Order", action = "Index"});
+            routes.MapRoute("OrderStep2",
+                            "pledge/{eventId}/step2",
+                            new { controller = "Order", action = "StartRequest" });
+        }
+
+        private static void MapAccountRoutes(RouteCollection routes)
+        {
             routes.MapRoute(
                 "ResetPassword",
                 "account/resetpassword/{token}",
@@ -43,17 +68,6 @@ namespace GroupGiving.Web
                 "signin",
                 new { controller = "Account", action = "signin" },
                 new { httpMethod = new HttpMethodConstraint("POST") });
-
-
-            MapEventCreationRoutes(routes);
-            MapEventRoutes(routes);
-
-            routes.MapRoute(
-                "Default", // Route name
-                "{controller}/{action}/{id}", // URL with parameters
-                new { controller = "Home", action = "Index", id = UrlParameter.Optional } // Parameter defaults
-            );
-
         }
 
         private static void MapEventRoutes(RouteCollection routes)
@@ -66,6 +80,10 @@ namespace GroupGiving.Web
                 "Event_ShareYourEvent",
                 "events/{shortUrl}/share",
                 new {controller = "Event", action = "share"});
+            routes.MapRoute(
+                "Event_Pledge",
+                "events/{shortUrl}/pledge",
+                new { controller = "Event", action = "pledge" });
         }
 
         private static void MapEventCreationRoutes(RouteCollection routes)

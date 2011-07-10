@@ -3,10 +3,10 @@
     ViewBag.Title = "Event";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
-<h1>@Html.ActionLink(Model.Title, "Index", new { id = Model.EventId })</h1>
+<h1>@Html.ActionLink(Model.Title, "Index", new { shortUrl = Model.ShortUrl })</h1>
 
 <div>@Model.StartDate.ToString("dd/MM/yyyy hh:mm"), @Model.City</div>
-<div>@Html.ActionLink("Pledge/Order Tickets", "Index", "Order", new {EventId=1}, null)</div>
+<div>@Html.ActionLink("Pledge/Order Tickets", "Pledge", "Event", new {shortUrl=Model.ShortUrl}, null)</div>
 <div>@Model.MinimumParticipants participants required, @Model.MaximumParticipants maximum</div>
 <div>Sales end @Model.SalesEndDateTime.ToString("dd/MM/yyyy hh:mm")<br />
 <a>Invite Your Friends</a></div>
