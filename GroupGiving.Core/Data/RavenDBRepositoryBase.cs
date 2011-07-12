@@ -9,7 +9,7 @@ namespace GroupGiving.Core.Data
 {
     public class RavenDBRepositoryBase<T> : IRepository<T> where T : IDomainObject
     {
-        private readonly IDocumentSession _session;
+        protected readonly IDocumentSession _session;
 
         public RavenDBRepositoryBase(IDocumentSession session)
         {

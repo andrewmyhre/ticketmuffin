@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using GroupGiving.Core.Domain;
 
 namespace GroupGiving.Web.Models
 {
@@ -57,5 +59,11 @@ namespace GroupGiving.Web.Models
         public double VenueLatitude { get; set; }
 
         public double VenueLongitude { get; set; }
+
+        public IEnumerable<EventPledge> Pledges { get; set; }
+
+        public int PledgeCount { get; set; }
+
+        public decimal RequiredPledgesPercentage { get; set; }
     }
 }

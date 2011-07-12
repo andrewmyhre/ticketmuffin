@@ -23,13 +23,13 @@
             }
           </div>
           <div id="pledgeInfo">
-            <div id="count">193</div>
+            <div id="count">@Model.MinimumParticipants</div>
 
             <div id="countInfo">Pledges needed to fund the event</div>
             <div id="countBar">
-              <div id="barProgress" style="width: 75%;"></div>
+              <div id="barProgress" style="width: @Model.RequiredPledgesPercentage%;"></div>
             </div>
-            <div id="peopleInfo">14 people have already pledged to the event</div>
+            <div id="peopleInfo">@Model.PledgeCount people have already pledged to the event</div>
             <div class="timeBox">
               <div class="name">DAYS</div>
 

@@ -26,9 +26,11 @@ namespace GroupGiving.Web.Controllers
         private readonly IFormsAuthenticationService _formsService;
         private readonly IMembershipService _membershipService;
         private readonly IAccountService _accountService;
+        private readonly IEventPledgeRepository _eventPledgeRepository;
 
         public OrderController()
         {
+            _eventPledgeRepository = MvcApplication.Kernel.Get<IEventPledgeRepository>();
             _eventRepository = MvcApplication.Kernel.Get<IRepository<GroupGivingEvent>>();
             _formsService = MvcApplication.Kernel.Get<IFormsAuthenticationService>();
             _membershipService = MvcApplication.Kernel.Get<AccountMembershipService>();
@@ -63,6 +65,17 @@ namespace GroupGiving.Web.Controllers
                 _accountService.CreateIncompleteAccount(purchaseDetails.EmailAddress, emailRelayService);
             }
 
+            // create an event pledge
+            var pledge = new EventPledge();
+            pledge.EmailAddress = purchaseDetails.EmailAddress;
+            pledge.EventId = eventDetails.Id;
+            pledge.EventTitle = eventDetails.Title;
+            pledge.TicketPrice = eventDetails.TicketPrice;
+            pledge.AmountPaid = amount;
+            pledge.PayPalPayKey = response.PayKey;
+            _eventPledgeRepository.SaveOrUpdate(pledge);
+            _eventPledgeRepository.CommitUpdates();
+
             viewModel.PayPalPostUrl = ConfigurationManager.AppSettings["PayFlowProPaymentPage"];
             viewModel.Ack = response.ResponseEnvelope.Ack;
             viewModel.PayKey = response.PayKey;
@@ -88,15 +101,25 @@ namespace GroupGiving.Web.Controllers
             request.CurrencyCode = "GBP";
             request.FeesPayer = "EACHRECEIVER";
             request.Memo = "test order";
-            request.CancelUrl = "http://" + Request.Url.Authority + "/Order/Cancel?payKey=${payKey}.";
-            request.ReturnUrl = "http://" + Request.Url.Authority + "/Order/Return?payKey=${payKey}.";
+            request.CancelUrl = "http://" + Request.Url.Authority + "/Order/Cancel?payKey=${payKey}";
+            request.ReturnUrl = "http://" + Request.Url.Authority + "/Order/Return?payKey=${payKey}";
             request.Receivers.Add(new Receiver(amountCommissionAdded.ToString("#.00"), "seller_1304843436_biz@gmail.com"));
             request.Receivers.Add(new Receiver(amount.ToString("#.00"), "sellr2_1304843519_biz@gmail.com"));
             return payPal.SendPayRequest(request);
         }
 
-        public ActionResult Return()
+        public ActionResult Return(string payKey)
         {
+            // update the pledge
+            var pledge = _eventPledgeRepository.RetrieveByPayKey(payKey);
+            if (pledge == null)
+                return new HttpNotFoundResult();
+
+            pledge.Paid = true;
+            pledge.DatePledged = DateTime.Now;
+            _eventPledgeRepository.SaveOrUpdate(pledge);
+            _eventPledgeRepository.CommitUpdates();
+
             return View();
         }
 

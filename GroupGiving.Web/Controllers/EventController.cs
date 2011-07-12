@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Web.Security;
 using GroupGiving.Core.Data;
 using GroupGiving.Core.Domain;
@@ -18,9 +19,11 @@ namespace GroupGiving.Web.Controllers
         private readonly IFormsAuthenticationService _formsService;
         private readonly IMembershipService _membershipService;
         private readonly IAccountService _accountService;
+        private readonly IEventPledgeRepository _eventPledgeRepository;
 
         public EventController()
         {
+            _eventPledgeRepository = MvcApplication.Kernel.Get<IEventPledgeRepository>();
             _accountService = MvcApplication.Kernel.Get<IAccountService>();
             _eventRepository = MvcApplication.Kernel.Get<IRepository<GroupGivingEvent>>();
             _formsService = MvcApplication.Kernel.Get<IFormsAuthenticationService>();
@@ -60,6 +63,10 @@ namespace GroupGiving.Web.Controllers
             viewModel.Venue = givingEvent.Venue;
             viewModel.VenueLatitude = 50.022019d;
             viewModel.VenueLongitude = 19.984719d;
+
+            viewModel.Pledges = _eventPledgeRepository.RetrieveByEvent(givingEvent.Id);
+            viewModel.PledgeCount = viewModel.Pledges.Count();
+            viewModel.RequiredPledgesPercentage = (int)Math.Round(((double) viewModel.PledgeCount/(double) Math.Max(givingEvent.MinimumParticipants, 1))*100, 0);
 
             if (givingEvent.SalesEndDateTime > DateTime.Now)
             {
