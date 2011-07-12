@@ -1,4 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <contentDefinitions locale="en-GB">
+    <content page="template" label="sitetitle">TicketMuffin</content>
     <content page="homepage" label="heading">Upcoming Events in London</content>
+
 </contentDefinitions>

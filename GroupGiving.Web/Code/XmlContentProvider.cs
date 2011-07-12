@@ -6,36 +6,24 @@ using System.Linq;
 using System.Web;
 using System.Xml.Linq;
 using GroupGiving.Core.Domain;
+using log4net;
 
 namespace GroupGiving.Web.Code
 {
-    public class PageContent : Dictionary<string,string>
-    {
-        public PageContent() : base()
-        {
-            
-        }
-        public PageContent(IEnumerable<KeyValuePair<string,string>> values)
-        {
-            foreach(var value in values)
-                Add(value.Key, value.Value);
-        }
-    }
-
-    public class ContentDictionaries : Dictionary<string,PageContent>
-    {
-    }
-
     public class XmlContentProvider : IContentProvider
     {
         CultureInfo[] allCultures = CultureInfo.GetCultures(CultureTypes.AllCultures);
-        ContentDictionaries _dictionaries = new ContentDictionaries();
+        ContentDictionaries _dictionaries;
+        private FileSystemWatcher _fileWatcher;
+        private ILog log = LogManager.GetLogger("XmlContentProvider");
 
         public void Initialise(string contentFolderPath)
         {
             var mainFolder = new DirectoryInfo(contentFolderPath);
             if (!mainFolder.Exists)
                 throw new InvalidOperationException(string.Format("Could not locate {0}", contentFolderPath));
+            
+            _dictionaries = new ContentDictionaries();
             var langFolders = mainFolder.GetDirectories();
             foreach(var folder in langFolders)
             {
@@ -50,6 +38,34 @@ namespace GroupGiving.Web.Code
                 var contentFilePath = files.First().FullName;
                 LoadContentFromXml(contentFilePath);
             }
+
+            _fileWatcher = new FileSystemWatcher(contentFolderPath, "*.xml");
+            _fileWatcher.IncludeSubdirectories = true;
+            _fileWatcher.Changed += new FileSystemEventHandler(_fileWatcher_Changed);
+            _fileWatcher.Created += new FileSystemEventHandler(_fileWatcher_Created);
+            _fileWatcher.Deleted += new FileSystemEventHandler(_fileWatcher_Deleted);
+            _fileWatcher.Renamed += new RenamedEventHandler(_fileWatcher_Renamed);
+            _fileWatcher.EnableRaisingEvents = true;
+        }
+
+        void _fileWatcher_Renamed(object sender, RenamedEventArgs e)
+        {
+            Initialise(_fileWatcher.Path);
+        }
+
+        void _fileWatcher_Deleted(object sender, FileSystemEventArgs e)
+        {
+            Initialise(_fileWatcher.Path);
+        }
+
+        void _fileWatcher_Created(object sender, FileSystemEventArgs e)
+        {
+            Initialise(_fileWatcher.Path);
+        }
+
+        void _fileWatcher_Changed(object sender, FileSystemEventArgs e)
+        {
+            Initialise(_fileWatcher.Path);
         }
 
         public string Get(string locale, string page, string label)
@@ -69,7 +85,7 @@ namespace GroupGiving.Web.Code
                         c.Value))
                     ));
 
-
+            log.DebugFormat("Loaded page content from {0}", contentFilePath);
         }
 
 
