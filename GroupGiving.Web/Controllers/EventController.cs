@@ -58,6 +58,18 @@ namespace GroupGiving.Web.Controllers
             viewModel.Title = givingEvent.Title;
             viewModel.TicketPrice = givingEvent.TicketPrice;
             viewModel.Venue = givingEvent.Venue;
+            viewModel.VenueLatitude = 50.022019d;
+            viewModel.VenueLongitude = 19.984719d;
+
+            if (givingEvent.SalesEndDateTime > DateTime.Now)
+            {
+                var timeLeft = givingEvent.SalesEndDateTime - DateTime.Now;
+                viewModel.DaysLeft = timeLeft.Days;
+                viewModel.HoursLeft = timeLeft.Hours;
+                viewModel.MinutesLeft = timeLeft.Minutes;
+                viewModel.SecondsLeft = timeLeft.Seconds;
+                viewModel.CountDown = true;
+            }
 
             return View(viewModel);
         }

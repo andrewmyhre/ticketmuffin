@@ -1,16 +1,7 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
 using System.Web.Mvc;
-using System.Web.Security;
-using GroupGiving.Core.Domain;
 using GroupGiving.Core.Services;
-using GroupGiving.Web.Code;
-using GroupGiving.Web.Models;
 using Ninject;
-using RavenDBMembership.Provider;
 using RavenDBMembership.Web.Models;
 
 namespace GroupGiving.Web.Controllers

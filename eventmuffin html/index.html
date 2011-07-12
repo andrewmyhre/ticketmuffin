@@ -1,0 +1,185 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+  <link rel="stylesheet" type="text/css" href="style.css" />
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+  <title>ticketmuffin</title>
+  </head>
+  <body>
+
+    <div id="mainArea">
+      <div id="topArea">
+        <a href="/" id="logo"><img src="img/logo.png" /></a>
+        <a href="/" id="fbconnect"><img src="img/fbconnect.png" /></a>
+        <div id="loginArea">
+          <a href="/">SIGN IN</a>&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;
+          <a href="/">SIGN UP</a> 
+        </div>
+      </div>
+      <div id="eventPage">
+        <div id="eventHead">
+          <div id="eventDate">
+            <div id="month">July</div>
+            <div id="day">20</div>
+          </div>
+          <div id="eventName"><h1>FlashFWD 20II: Awards & Concert</h1></div>
+          <div id="eventDetails"><strong>Kraków</strong>, Poland, Friday, July 20, 2011, 18:00 PM, Some Place street 18</div>
+          <div id="howItWorks">How it works</div>
+        </div>
+        <div id="eventLeft">
+          <div id="pledge"><input type="submit" class="bigButton" value="$20 Pledge" /></div>
+          <div id="pledgeInfo">
+            <div id="count">193</div>
+            <div id="countInfo">Pledges needed to fund the event</div>
+            <div id="countBar">
+              <div id="barProgress" style="width: 75%;"></div>
+            </div>
+            <div id="peopleInfo">14 people have already pledged to the event</div>
+            <div class="timeBox">
+              <div class="name">DAYS</div>
+              <div class="number">01</div>
+            </div>
+            <div class="timeBox">
+              <div class="name">HOURS</div>
+              <div class="number">13</div>
+            </div>
+            <div class="timeBox">
+              <div class="name">MINS</div>
+              <div class="number">45</div>
+            </div>
+            <div class="timeBox">
+              <div class="name">SECS</div>
+              <div class="number">02</div>
+            </div>
+            <div class="clearFix"></div>
+            <div id="timeLeft">Time left to pledge</div>
+          </div>
+          <div id="shareBox">
+            <div>Share with your friends</div>
+          </div>
+          <h2>Event details</h2>
+          <div class="eventBox">
+            <div class="eventBoxTop">Date, time</div>
+            <div class="eventBoxBottom">
+              Friday, July 11, 2011,<br />
+              at 07.00 PM
+            </div>
+          </div>
+          <div class="eventBox">
+            <div class="eventBoxTop">Location and address</div>
+            <div class="eventBoxBottom">
+            <div id="obszar_mapy" style="width: 240px; height: 200px;">Location</div>
+
+<div id="location">
+
+<script src="http://maps.google.com/maps/api/js?sensor=false" type="text/javascript"></script>
+
+<script type="text/javascript"><!--
+
+var mapa;
+
+
+
+function inicjalizacja() {
+
+
+
+var latlng = new google.maps.LatLng(50.022019,19.984719);	
+
+
+
+var mojeUstawienia = {
+
+
+
+zoom: 16, 									
+
+
+
+center: latlng, 
+
+
+
+mapTypeId: google.maps.MapTypeId.ROADMAP 		
+
+
+
+};
+
+
+
+mapa = new google.maps.Map(document.getElementById("obszar_mapy"), mojeUstawienia);
+
+
+
+var marker = new google.maps.Marker({
+
+
+
+position: latlng, 
+
+
+
+map: mapa,
+
+
+
+});
+
+
+
+}
+
+
+
+setTimeout("inicjalizacja()",1000);
+
+// --></script>
+
+</div>
+              <strong>World Class Arena</strong><br />
+              ul. Floriańska 11, Kraków<br />
+              Poland
+            </div>
+          </div>
+          <div class="eventBox">
+            <div class="eventBoxTop">Organiser</div>
+            <div class="eventBoxBottom">
+              <strong>Andrzej Więckowski</strong><br /><br />   
+              <input type="submit" class="smallButton" value="Contact" />
+            </div>
+          </div>
+          <input type="submit" class="blueButton" value="Make your own event" />
+        </div>                                    
+        <div id="eventRight">
+          <div id="eventDesc">
+            <div id="eventImage" style="background: url(img/image.jpg)">
+              <div id="imageInfo">if you buy online you save 25% of the ticket price</div>
+            </div>
+            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi varius mollis elit, tempus vulputate sapien blandit malesuada. Phasellus lacinia sollicitudin erat, sit amet malesuada urna varius sit amet. Nam sit amet sapien non tellus faucibus scelerisque. In risus enim, fringilla varius dapibus ac, ultricies ut quam. Fusce malesuada nunc vel leo eleifend ut cursus augue vehicula. Suspendisse pretium eleifend vulputate. Aenean dignissim aliquam eros, in egestas nulla bibendum nec. Sed malesuada arcu sed mauris vestibulum viverra. Nullam cursus, libero et vestibulum facilisis, diam augue eleifend tellus, ut semper odio lorem a velit. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent at mauris eros. Ut eleifend risus massa, porta ullamcorper purus. Maecenas imperdiet varius cursus. In molestie ligula congue neque ultrices quis ultricies orci tempor. Fusce sed mi sed magna rutrum gravida.</p>
+            <ul>
+              <li>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</li>
+              <li>Donec nec lacus mi, in elementum dolor.</li>
+              <li>Vivamus eu leo quis nunc accumsan faucibus nec at metus.</li>
+              <li>Fusce id diam venenatis ipsum accumsan convallis eu id tortor.</li>
+              <li>Duis sed urna sed nisi tincidunt sodales.</li>
+            </ul>
+            <div id="fb-root"></div><script src="http://connect.facebook.net/en_US/all.js#xfbml=1"></script><fb:comments href="ticketmuffin.com" num_posts="1" width="680"></fb:comments>            
+          </div>
+        </div>
+        <div class="clearFix"></div>  
+      </div>
+    </div>
+    <div id="footerArea">
+      <div id="footerAreaInner">
+        <div class="left">Copyrihght © 2011 <a href="/">ticketmuffin</a>. All Rights Reserved.</div>
+        <div class="right">
+          <a href="">Contact Us</a>&nbsp;&nbsp;&bull;&nbsp;&nbsp;
+          <a href="">Privacy Policy</a>&nbsp;&nbsp;&bull;&nbsp;&nbsp;
+          <a href="">Terms and Conditions</a>
+        </div>
+      </div>
+    </div>
+
+  </body>
+</html>

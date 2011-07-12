@@ -110,10 +110,12 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Code\ContentDictionaries.cs" />
     <Compile Include="Code\ContentTypeAwareViewEngine.cs" />
     <Compile Include="Code\GroupGivingNinjectModule.cs" />
     <Compile Include="Code\HtmlHelperExtensions.cs" />
     <Compile Include="Code\MustBeTrueAttribute.cs" />
+    <Compile Include="Code\PageContent.cs" />
     <Compile Include="Code\RavenDbDocumentStore.cs" />
     <Compile Include="Code\XmlContentProvider.cs" />
     <Compile Include="Controllers\AccountController.cs" />
@@ -140,7 +142,23 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Content\img\barProgress.png" />
+    <Content Include="Content\img\blueButton.png" />
+    <Content Include="Content\img\body_bg.jpg" />
+    <Content Include="Content\img\button_bg.jpg" />
+    <Content Include="Content\img\countBar.png" />
+    <Content Include="Content\img\date.png" />
+    <Content Include="Content\img\fbconnect.png" />
+    <Content Include="Content\img\footerArea_bg.png" />
+    <Content Include="Content\img\howitworks.png" />
+    <Content Include="Content\img\image.jpg" />
+    <Content Include="Content\img\logo.png" />
+    <Content Include="Content\img\number.png" />
+    <Content Include="Content\img\paypal.jpg" />
+    <Content Include="Content\img\pledgeInfo_bg.jpg" />
+    <Content Include="Content\img\transparency.png" />
     <Content Include="Content\PageContent\en-GB\content.xml" />
+    <Content Include="Content\style.css" />
     <Content Include="Content\themes\base\images\ui-bg_flat_0_aaaaaa_40x100.png" />
     <Content Include="Content\themes\base\images\ui-bg_flat_75_ffffff_40x100.png" />
     <Content Include="Content\themes\base\images\ui-bg_glass_55_fbf9ee_1x400.png" />
@@ -209,11 +227,12 @@
     <Content Include="Views\Home\Index.cshtml" />
     <Content Include="Views\Shared\Error.cshtml" />
     <Content Include="Views\Shared\_LogOnPartial.cshtml" />
-    <Content Include="Views\Shared\_Layout.cshtml" />
+    <Content Include="Views\Shared\_Layout-original.cshtml" />
     <Content Include="Views\Web.config" />
     <Content Include="Views\Event\Pledge.cshtml" />
     <Content Include="Views\Event\PersonalDetailsNotSignedIn.cshtml" />
     <Content Include="Views\Event\PersonalDetailsSignedIn.cshtml" />
+    <Content Include="Views\Shared\_Layout.cshtml" />
     <None Include="_bin_deployableAssemblies\System.Web.Mvc.dll" />
     <None Include="_bin_deployableAssemblies\WebMatrix.WebData.xml" />
     <None Include="_bin_deployableAssemblies\WebMatrix.WebData.dll" />
