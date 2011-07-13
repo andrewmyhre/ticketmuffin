@@ -52,13 +52,7 @@
         <div class="formline">
             Sales end
             @Html.TextBox("salesEndDate", Model.SalesEndDateTime.ToShortDateString())
-            @Html.DropDownList("salesEndTime",
-                new SelectList(
-                    new[] {
-                        "12:00am",
-                        "12:30am"
-                    })
-                )
+            @Html.DropDownList("salesEndTime",Model.SalesEndTimeOptions)
         </div>
         <div class="formvalidation">
             @Html.ValidationMessageFor(m => m.SalesEndDateTime)

@@ -28,13 +28,7 @@
         <div class="formline">
             @Html.Label("Event date")
             @Html.TextBox("startDate", Model.StartDateTime.ToShortDateString())
-            @Html.DropDownList("startTime", 
-                new SelectList(
-                    new [] {
-                        "12:00am",
-                        "12:30am"
-                    })
-                )
+            @Html.DropDownList("startTime", Model.StartTimes)
         </div>
         <div class="formvalidation">
             @Html.ValidationMessageFor(m => m.StartDateTime)

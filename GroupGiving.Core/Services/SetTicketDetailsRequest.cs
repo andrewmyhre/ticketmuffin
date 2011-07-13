@@ -34,5 +34,7 @@ namespace GroupGiving.Core.Services
         public string AdditionalBenefits { get; set; }
 
         public SelectList Times { get; set; }
+
+        public SelectList SalesEndTimeOptions { get; set; }
     }
 }

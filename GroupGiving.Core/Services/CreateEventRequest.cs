@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Web.Mvc;
 
 namespace GroupGiving.Core.Services
 {
@@ -47,5 +49,7 @@ namespace GroupGiving.Core.Services
 
         public string StartDate { get; set; }
         public string StartTime { get; set; }
+
+        public SelectList StartTimes { get; set; }
     }
 }

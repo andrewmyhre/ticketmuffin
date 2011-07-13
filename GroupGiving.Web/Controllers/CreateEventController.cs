@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Web.Mvc;
 using GroupGiving.Core.Services;
 using Ninject;
@@ -42,6 +43,8 @@ namespace GroupGiving.Web.Controllers
         {
             var viewModel = new CreateEventRequest();
             viewModel.StartDateTime = DateTime.Now;
+            viewModel.StartTimes = TimeOptions();
+            
             return View(viewModel);
         }
 
@@ -86,6 +89,7 @@ namespace GroupGiving.Web.Controllers
         {
             var viewModel = new SetTicketDetailsRequest();
             viewModel.SalesEndDateTime = DateTime.Now;
+            viewModel.SalesEndTimeOptions = TimeOptions();
             return View(viewModel);
         }
 
@@ -111,12 +115,7 @@ namespace GroupGiving.Web.Controllers
 
             if (!ModelState.IsValid)
             {
-                string[] times = new []
-                {
-                    "12:00am",
-                    "12:30am"
-                };
-                setTicketDetailsRequest.Times = new SelectList(times);
+                setTicketDetailsRequest.Times = TimeOptions();
                 return View(setTicketDetailsRequest);
             }
 
@@ -125,6 +124,19 @@ namespace GroupGiving.Web.Controllers
             var @event = _eventService.Retrieve(setTicketDetailsRequest.EventId);
 
             return RedirectToRoute("Event_ShareYourEvent", new { shortUrl = @event.ShortUrl });
+        }
+
+        private SelectList TimeOptions()
+        {
+            List<string> dateTimes = new List<string>();
+            DateTime time = new DateTime(200, 1, 1, 0, 0, 0);
+            for (int i = 0; i < 48; i++)
+            {
+                dateTimes.Add(time.ToString("HH:mmtt"));
+                time = time.AddMinutes(30);
+            }
+
+            return new SelectList(dateTimes, "12:00PM");
         }
     }
 }
