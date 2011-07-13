@@ -72,6 +72,7 @@ namespace GroupGiving.Web.Controllers
             pledge.EventTitle = eventDetails.Title;
             pledge.TicketPrice = eventDetails.TicketPrice;
             pledge.AmountPaid = amount;
+            pledge.Quantity = purchaseDetails.Quantity;
             pledge.PayPalPayKey = response.PayKey;
             _eventPledgeRepository.SaveOrUpdate(pledge);
             _eventPledgeRepository.CommitUpdates();
@@ -120,7 +121,10 @@ namespace GroupGiving.Web.Controllers
             _eventPledgeRepository.SaveOrUpdate(pledge);
             _eventPledgeRepository.CommitUpdates();
 
-            return View();
+            var viewModel = new OrderConfirmationViewModel();
+            viewModel.Pledge = pledge;
+
+            return View(viewModel);
         }
 
         public ActionResult Cancel()

@@ -133,6 +133,7 @@
     <Compile Include="Models\EventViewModel.cs" />
     <Compile Include="Models\HomePageViewModel.cs" />
     <Compile Include="Models\LogOnResultViewModel.cs" />
+    <Compile Include="Models\OrderConfirmationViewModel.cs" />
     <Compile Include="Models\OrderRequestViewModel.cs" />
     <Compile Include="Models\PurchaseDetails.cs" />
     <Compile Include="Models\ResetPasswordViewModel.cs" />

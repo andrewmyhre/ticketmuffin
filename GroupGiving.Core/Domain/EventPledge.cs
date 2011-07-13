@@ -19,5 +19,7 @@ namespace GroupGiving.Core.Domain
         public string PayPalPayKey { get; set; }
 
         public decimal AmountPaid { get; set; }
+
+        public int Quantity { get; set; }
     }
 }

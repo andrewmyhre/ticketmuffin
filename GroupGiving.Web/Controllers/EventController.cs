@@ -65,7 +65,7 @@ namespace GroupGiving.Web.Controllers
             viewModel.VenueLongitude = 19.984719d;
 
             viewModel.Pledges = _eventPledgeRepository.RetrieveByEvent(givingEvent.Id);
-            viewModel.PledgeCount = viewModel.Pledges.Count();
+            viewModel.PledgeCount = viewModel.Pledges.Sum(p=>p.Quantity);
             viewModel.RequiredPledgesPercentage = (int)Math.Round(((double) viewModel.PledgeCount/(double) Math.Max(givingEvent.MinimumParticipants, 1))*100, 0);
 
             if (givingEvent.SalesEndDateTime > DateTime.Now)
