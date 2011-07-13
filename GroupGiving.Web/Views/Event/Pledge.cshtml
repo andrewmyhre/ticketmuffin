@@ -4,55 +4,41 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h2>Pledge to attend @Model.Title</h2>
-
-@using (Html.BeginForm("StartRequest", "Order"))
+@section scripts
 {
-    <div style="float:left;">
-        <div>Quantity: 
-        <select name="quantity">
-        <option>1</option>
-        <option>2</option>
-        <option>3</option>
-        </select>
-    </div>
-    <div>Ticket Price: @Model.TicketPrice.ToString("c") (fee = %5 + VAT)</div>
-    </div>
-    <div class="clearfix"></div>
-    <div style="float:right">
-        <div>
-            <p><strong>PayPal sandbox details</strong></p>
-            <p>Use the following credentials:</p>
-            <p>Email: buyer1_1304843364_per@gmail.com</p>
-            <p>Password: lilacwine</p>
-        </div>
-    </div>
-    <div style="float:left;">
-    <div>Tickets</div>
-    <div>Ticket #1 Name: <input type="text" name="attendeeName" /></div>
-    <div>Ticket #2 Name: <input type="text" name="attendeeName" /></div>
-    </div>
-
-    <div class="clearfix"></div>
-
-    if (!User.Identity.IsAuthenticated)
-    {
-        Html.RenderPartial("PersonalDetailsNotSignedIn");
-    }
-    else
-    {
-        Html.RenderPartial("PersonalDetailsSignedIn");
-    }
-    <div class="clearfix"></div>
-
-    <div style="float:left;">
-        <div>
-            <div><input type="checkbox" name="offers" /><label for="offers">I want to receive event offers</label></div>
-            <div><input type="checkbox" name="tnc" /><label for="tnc">I agree to the Terms and Conditions</label></div>
-
-            @Html.Hidden("shortUrl", Model.ShortUrl)
-            <p><input type="submit" value="Pay now through PayPal" /></p>
-        </div>
-    </div>
+    <script src="/Scripts/pledge.js" type="text/javascript"></script>
+    <script src="/Scripts/jquery.watermark.min.js" type="text/javascript"></script>
 }
-<div style="clear:left;"></div>
+<span id="c" style="display:none;">@System.Globalization.CultureInfo.CurrentCulture.NumberFormat.CurrencySymbol</span>
+<div style="margin-top: 10px;display:none;" id="attendeeTemplate">
+                <label style="display: inline-block; width: 110px;">Ticket #<span class="attendeeNumber">1</span></label>
+                <input type="text" style="width: 300px;" name="attendeeName" title="Full name" />
+            </div>
+<div id="orderPage">
+    <h1>Tickets quantity</h1>
+    @using (Html.BeginForm("StartRequest", "Order"))
+    {
+        <div class="grayBox">
+            <div><strong>Event:</strong> @Model.Title</div><br />
+            <select name="quantity"><option>1</option><option>2</option><option>3</option></select>
+            <strong style="font-size: 18px;">x @Model.TicketPrice.ToString("c") = <span style="color: #b3b70d;" class="total">$56</span></strong>
+        </div>
+        <div style="color: #b3b70d;"><strong>The money will be refunded if the minimum amount of participants is not reached till @Model.SalesEndDateTime.ToString("dddd dd MMMM").</strong></div>
+        <h1 style="margin-top: 30px;">Participants' names</h1>
+        <div class="grayBox" id="attendeeList">
+            <div>
+                <label style="display: inline-block; width: 110px;">Ticket #<span class="attendeeNumber">1</span></label>
+                <input type="text" style="width: 300px;" name="attendeeName" class="jq_watermark" title="Full name" />
+            </div>
+        </div>
+        <div style="padding: 20px 0 20px 0;">
+            <div><input type="checkbox" name="offers" />I want to receive events’ bullshits and spam</div>
+            <div><input type="checkbox" name="tnc" />I accept <a href="">Terms & Conditions</a></div>
+        </div>
+        <div>
+        @Html.Hidden("ticketPrice", Model.TicketPrice)
+        @Html.Hidden("shortUrl", Model.ShortUrl)
+        <input type="submit" class="bigButton" value="Pay Now" style="float: left;" /><img src="/content/img/paypal.jpg" />
+        </div>
+    }
+</div>
