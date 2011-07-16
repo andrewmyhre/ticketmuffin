@@ -1,8 +1,11 @@
-﻿using GroupGiving.Core.Data;
+﻿using GroupGiving.Core.Actions.CreatePledge;
+using GroupGiving.Core.Data;
 using GroupGiving.Core.Domain;
 using GroupGiving.Core.Email;
 using GroupGiving.Core.Services;
+using GroupGiving.PayPal;
 using GroupGiving.Web.Controllers;
+using Ninject;
 using Ninject.Modules;
 using Raven.Client;
 using RavenDBMembership.Web.Models;
@@ -19,8 +22,8 @@ namespace GroupGiving.Web.Code
                 .ToMethod(delegate { return RavenDbDocumentStore.Instance.OpenSession(); })
                 .InRequestScope();
 
-            Bind<IRepository<GroupGivingEvent>>().To<Core.Data.RavenDBRepositoryBase<GroupGivingEvent>>();
-            Bind<IRepository<Account>>().To<Core.Data.RavenDBRepositoryBase<Account>>();
+            Bind<IRepository<GroupGivingEvent>>().To<RavenDBRepositoryBase<GroupGivingEvent>>();
+            Bind<IRepository<Account>>().To<RavenDBRepositoryBase<Account>>();
 
             Bind<IFormsAuthenticationService>().To<FormsAuthenticationService>();
             Bind<IMembershipService>().To<AccountMembershipService>();
@@ -30,6 +33,21 @@ namespace GroupGiving.Web.Code
             Bind<IEmailRelayService>().To<SimpleSmtpEmailRelayService>();
             Bind<IEmailCreationService>().To<EmailCreationService>();
             Bind<ICountryService>().To<CountryService>();
+            Bind<IPayPalConfiguration>().ToMethod(
+                (request) => System.Configuration.ConfigurationManager.GetSection("paypal") as PayPalConfiguration);
+            Bind<IApiClient>().ToMethod((request)=>
+                {
+                    IPayPalConfiguration config = MvcApplication.Kernel.Get<IPayPalConfiguration>();
+                    return new ApiClient(new ApiClientSettings()
+                                        {
+                                            Username = config.PayPalMerchantUsername,
+                                            Password = config.PayPalMerchantPassword,
+                                            Signature = config.PayPalMerchantSignature
+                                        },
+                                        config);
+                });
+            Bind<IPaymentGateway>().To<PayPalPaymentGateway>();
+            Bind<ITaxAmountResolver>().To<NilTax>();
         }
     }
 }

@@ -15,13 +15,15 @@ namespace GroupGiving.PayPal
     {
         private ILog _log = LogManager.GetLogger(typeof (ApiClient));
         private readonly ApiClientSettings _clientSettings;
+        private readonly IPayPalConfiguration _payPalConfiguration;
 
-        public ApiClient(ApiClientSettings clientSettings)
+        public ApiClient(ApiClientSettings clientSettings, IPayPalConfiguration payPalConfiguration)
         {
             _clientSettings = clientSettings;
+            _payPalConfiguration = payPalConfiguration;
         }
 
-        public PayResponse SendPayRequest(PayRequest request)
+        public PaymentGatewayResponse SendPayRequest(PayRequest request)
         {
             // set first receiver as primary
             request.Receivers.First().Primary = true;
@@ -66,7 +68,7 @@ namespace GroupGiving.PayPal
 
             if (doc.Root.Name.LocalName=="FaultMessage")
             {
-                return new PayResponse()
+                return new PaymentGatewayResponse()
                 {
                     ResponseEnvelope = new ResponseEnvelope()
                     {
@@ -78,20 +80,20 @@ namespace GroupGiving.PayPal
                     Errors = (from e in doc.Root.Elements("error")
                                   select new ResponseError()
                                     {
-                                        ErrorId=e.Element("errorId").Value,
-                                        Domain=e.Element("domain").Value,
-                                        SubDomain=e.Element("subdomain").Value,
-                                        Severity=e.Element("severity").Value,
-                                        Category = e.Element("category").Value,
-                                        Message=e.Element("message").Value,
-                                        Parameter=e.Element("parameter").Value
+                                        ErrorId = e.Element("errorId") != null ? e.Element("errorId").Value : "",
+                                        Domain = e.Element("domain") != null ? e.Element("domain").Value : "",
+                                        SubDomain = e.Element("subdomain") != null ? e.Element("subdomain").Value : "",
+                                        Severity = e.Element("severity") != null ? e.Element("severity").Value : "",
+                                        Category = e.Element("category") != null ? e.Element("category").Value : "",
+                                        Message = e.Element("message") != null ? e.Element("message").Value : "",
+                                        Parameter=e.Element("parameter") != null ? e.Element("parameter").Value : ""
                                     })  
                 };
             }
 
-            var responseObject = new PayResponse()
+            var responseObject = new PaymentGatewayResponse()
             {
-                PayKey = doc.Root.Element("payKey").Value,
+                TransactionId = doc.Root.Element("payKey").Value,
                 PaymentExecStatus = doc.Root.Element("paymentExecStatus").Value,
                 ResponseEnvelope = new ResponseEnvelope()
                 {
@@ -99,7 +101,8 @@ namespace GroupGiving.PayPal
                     Build =long.Parse(doc.Root.Element("responseEnvelope").Element("build").Value),
                     CorrelationId =doc.Root.Element("responseEnvelope").Element("correlationId").Value,
                     Timestamp =DateTime.Parse(doc.Root.Element("responseEnvelope").Element("timestamp").Value)
-                }
+                },
+                PaymentPageUrl = _payPalConfiguration.PayFlowProPaymentPage
             };
 
             return responseObject;

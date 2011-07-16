@@ -13,6 +13,6 @@ namespace GroupGiving.Core.Services
         ResetPasswordResult ResetPassword(string resetPasswordToken, string newPassword);
         Account RetrieveByEmailAddress(string email);
         void UpdateAccount(Account account);
-        void CreateIncompleteAccount(string emailAddress, IEmailRelayService emailRelayService);
+        Account CreateIncompleteAccount(string emailAddress, IEmailRelayService emailRelayService);
     }
 }

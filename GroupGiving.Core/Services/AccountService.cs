@@ -129,7 +129,7 @@ namespace GroupGiving.Core.Services
             _accountRepository.CommitUpdates();
         }
 
-        public void CreateIncompleteAccount(string emailAddress, IEmailRelayService emailRelayService)
+        public Account CreateIncompleteAccount(string emailAddress, IEmailRelayService emailRelayService)
         {
             var account = new Account()
                               {
@@ -141,6 +141,8 @@ namespace GroupGiving.Core.Services
             _accountRepository.CommitUpdates();
 
             SendGetYourAccountStartedEmail(emailAddress, emailRelayService);
+
+            return account;
         }
     }
 }

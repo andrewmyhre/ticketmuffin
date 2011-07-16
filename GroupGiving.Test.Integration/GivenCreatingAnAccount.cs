@@ -16,10 +16,12 @@ using Raven.Client.Document;
 namespace GroupGiving.Test.Integration
 {
     [TestFixture]
+    [Ignore("embedded ravendb storage doesn't work properly, sets readonly after first run, subsequent runs fail with IO exception")]
     public class GivenCreatingAnAccount
     {
         private IDocumentStore storage = null;
-        private IEmailCreationService _emailCreationService = null;
+        private Mock<IEmailCreationService> _emailCreationService = null;
+        private Mock<IEmailRelayService> _emailRelayService;
 
         [SetUp]
         public void Setup()
@@ -33,7 +35,7 @@ namespace GroupGiving.Test.Integration
                           };
             storage.Initialize();
 
-            
+            _emailCreationService = new Mock<IEmailCreationService>();
         }
 
         [Test]
@@ -42,16 +44,23 @@ namespace GroupGiving.Test.Integration
             // arrange
             using (var session = storage.OpenSession())
             {
-                IRepository<Account> accountRepository = new RavenDBRepositoryBase<Account>(session);
-                IAccountService accountService = new AccountService(accountRepository, _emailCreationService, new Mock<IEmailRelayService>().Object);
+                try
+                {
+                    IRepository<Account> accountRepository = new RavenDBRepositoryBase<Account>(session);
+                    _emailRelayService = new Mock<IEmailRelayService>();
+                    IAccountService accountService = new AccountService(accountRepository, _emailCreationService.Object,
+                                                                        _emailRelayService.Object);
 
-                CreateUserRequest createUserRequest = TestDataObjects.CreateValidCreateUserRequest();
-                // act
-                var account = accountService.CreateUser(createUserRequest);
+                    CreateUserRequest createUserRequest = TestDataObjects.CreateValidCreateUserRequest();
+                    // act
+                    var account = accountService.CreateUser(createUserRequest);
 
-                // assert
-                var assertAccount = session.Load<Account>(account.Id);
-                Assert.That(assertAccount, Is.Not.Null);
+                    // assert
+                    var assertAccount = session.Load<Account>(account.Id);
+                    Assert.That(assertAccount, Is.Not.Null);
+                } finally
+                {
+                }
             }
         }
     }

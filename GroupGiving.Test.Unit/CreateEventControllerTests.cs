@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Web.Mvc;
 using System.Web.Security;
+using GroupGiving.Core.Domain;
 using GroupGiving.Core.Services;
 using GroupGiving.Test.Common;
 using GroupGiving.Web.Controllers;
@@ -34,17 +35,33 @@ namespace GroupGiving.Test.Unit
         [Test]
         public void ValidCreateEventDetailsProvided_ReturnsRedirectToTicketOptions()
         {
-            eventService
-                .Setup(m => m.CreateEvent(It.IsAny<CreateEventRequest>()))
-                .Returns(new CreateEventResult() {Success = true});
+            EventCreationAlwaysSuccessful();
+            AnyShortUrlIsAvailable();
 
             var controller = new CreateEventController(accountService.Object, membershipService.Object,
                                                        formsAuthenticationService.Object, eventService.Object, null);
 
-            var result = controller.EventDetails(new CreateEventRequest()) as RedirectToRouteResult;
+            var createEventRequest = new CreateEventRequest();
+            createEventRequest.StartDate = DateTime.Now.AddDays(10).ToString("dd/MM/yyyy");
+            createEventRequest.StartTime = "10:00PM";
+            var result = controller.EventDetails(createEventRequest) as RedirectToRouteResult;
 
             Assert.That(result, Is.Not.Null);
             Assert.That(result.RouteName, Is.StringMatching("CreateEvent_TicketDetails"));
+        }
+
+        private void EventCreationAlwaysSuccessful()
+        {
+            eventService
+                .Setup(m => m.CreateEvent(It.IsAny<CreateEventRequest>()))
+                .Returns(new CreateEventResult() {Success = true});
+        }
+
+        private void AnyShortUrlIsAvailable()
+        {
+            eventService
+                .Setup(m => m.ShortUrlAvailable(It.IsAny<string>()))
+                .Returns(true);
         }
 
         [Test]
@@ -67,15 +84,23 @@ namespace GroupGiving.Test.Unit
         [Test]
         public void ValidTicketDetailsProvided_ReturnsRedirectToShareEvent()
         {
+            var groupGivingEvent = new GroupGivingEvent() {ShortUrl = "shorturl"};  
+            eventService
+                .Setup(m => m.Retrieve(It.IsAny<int>()))
+                .Returns(groupGivingEvent);
+
             var controller = new CreateEventController(accountService.Object,
                                                        membershipService.Object, formsAuthenticationService.Object,
                                                        eventService.Object, null);
 
-            var result = controller.TicketDetails(new SetTicketDetailsRequest(){EventId=1}) as RedirectToRouteResult;
+            var setTicketDetailsRequest = new SetTicketDetailsRequest() {EventId = 1};
+            setTicketDetailsRequest.SalesEndDate = DateTime.Now.AddDays(10).ToString("dd/MM/yyyy");
+            setTicketDetailsRequest.SalesEndTime = "10:00PM";
+            var result = controller.TicketDetails(setTicketDetailsRequest) as RedirectToRouteResult;
 
             Assert.That(result, Is.Not.Null);
             Assert.That(result.RouteName, Is.StringMatching("Event_ShareYourEvent"));
-            Assert.That(result.RouteValues["id"], Is.EqualTo(1));
+            Assert.That(result.RouteValues["shortUrl"], Is.EqualTo(groupGivingEvent.ShortUrl));
         }
 
         [Test]

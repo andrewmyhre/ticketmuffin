@@ -22,7 +22,8 @@ namespace PayPal.Tests.Integration
                                                      Username = "seller_1304843436_biz_api1.gmail.com",
                                                      Password = "1304843443",
                                                      Signature = "AFcWxV21C7fd0v3bYYYRCpSSRl31APG52hf-AmPfK7eyvf7LBc0.0sm7"
-                                                 });
+                                                 },
+                                                 new PayPalConfiguration());
 
             PayRequest request = new PayRequest();
             request.ActionType = "PAY";
@@ -46,10 +47,10 @@ namespace PayPal.Tests.Integration
             var response = client.SendPayRequest(request);
 
             // leave the console up for us to physically read the response data
-            Assert.That(response.PayKey, Is.StringStarting("AP-"));
+            Assert.That(response.TransactionId, Is.StringStarting("AP-"));
             Assert.That(response.ResponseEnvelope.Ack, Is.StringMatching("Success"));
             Assert.That(response.PaymentExecStatus, Is.StringMatching("CREATED"));
-            Console.WriteLine("Paykey: {0}", response.PayKey);
+            Console.WriteLine("Paykey: {0}", response.TransactionId);
             
         }
 

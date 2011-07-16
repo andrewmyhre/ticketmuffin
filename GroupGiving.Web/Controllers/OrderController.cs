@@ -5,6 +5,7 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using System.Web.Security;
+using GroupGiving.Core.Actions.CreatePledge;
 using GroupGiving.Core.Data;
 using GroupGiving.Core.Domain;
 using GroupGiving.Core.Email;
@@ -27,6 +28,9 @@ namespace GroupGiving.Web.Controllers
         private readonly IFormsAuthenticationService _formsService;
         private readonly IMembershipService _membershipService;
         private readonly IAccountService _accountService;
+        private readonly IPaymentGateway _paymentGateway;
+        private readonly ITaxAmountResolver _taxResolver;
+        private IPayPalConfiguration _paypalConfiguration;
 
         public OrderController()
         {
@@ -34,6 +38,9 @@ namespace GroupGiving.Web.Controllers
             _formsService = MvcApplication.Kernel.Get<IFormsAuthenticationService>();
             _membershipService = MvcApplication.Kernel.Get<AccountMembershipService>();
             _accountService = MvcApplication.Kernel.Get<IAccountService>();
+            _paymentGateway = MvcApplication.Kernel.Get<IPaymentGateway>();
+            _taxResolver = MvcApplication.Kernel.Get<ITaxAmountResolver>();
+            _paypalConfiguration = MvcApplication.Kernel.Get<IPayPalConfiguration>();
             ((RavenDBMembershipProvider)Membership.Provider).DocumentStore
                 = RavenDbDocumentStore.Instance;
         }
@@ -46,54 +53,40 @@ namespace GroupGiving.Web.Controllers
         [AcceptVerbs(HttpVerbs.Post)]
         public ActionResult StartRequest(PurchaseDetails purchaseDetails)
         {
-            var viewModel = new OrderRequestViewModel();
-
             var eventDetails = _eventRepository.Retrieve(e => e.ShortUrl == purchaseDetails.ShortUrl);
-
-            decimal amount = eventDetails.TicketPrice*purchaseDetails.Quantity;
-            
-            PayResponse response = SendPaymentRequest(amount);
-            viewModel.PayPalPostUrl = ConfigurationManager.AppSettings["PayFlowProPaymentPage"];
-            viewModel.Ack = response.ResponseEnvelope.Ack;
-            viewModel.PayKey = response.PayKey;
-            viewModel.Errors = response.Errors;
-
-            if (response.Errors != null && response.Errors.Count() > 0)
-                return View(viewModel);
-
-
-
             var account = _accountService.RetrieveByEmailAddress(purchaseDetails.EmailAddress);
-            if (account==null)
+
+            if (account == null)
             {
                 IEmailRelayService emailRelayService = MvcApplication.Kernel.Get<IEmailRelayService>();
-                _accountService.CreateIncompleteAccount(purchaseDetails.EmailAddress, emailRelayService);
+                account = _accountService.CreateIncompleteAccount(purchaseDetails.EmailAddress, emailRelayService);
             }
 
-            // create an event pledge
-            var pledge = new EventPledge();
-            pledge.EmailAddress = purchaseDetails.EmailAddress;
-            pledge.AmountPaid = amount;
-            pledge.PayPalPayKey = response.PayKey;
-            pledge.OrderNumber = Guid.NewGuid().ToString().Replace("{", "").Replace("}", "").Replace("-", "");
-
-            // add the attendees
-            pledge.Attendees = new List<EventPledgeAttendee>();
-            foreach(var attendeeName in purchaseDetails.AttendeeName)
+            var action = new MakePledgeAction(_taxResolver, _eventRepository, _paymentGateway, _paypalConfiguration);
+            var request = new MakePledgeRequest()
             {
-                var attendee = new EventPledgeAttendee();
-                attendee.FullName = attendeeName;
-                pledge.Attendees.Add(attendee);
-            }
+                AttendeeNames = purchaseDetails.AttendeeName,
+                PayPalEmailAddress = account.Email
+            };
 
-            eventDetails.Pledges.Add(pledge);
-            _eventRepository.SaveOrUpdate(eventDetails);
-            _eventRepository.CommitUpdates();
+            var result = action.Attempt(eventDetails, account, request);
 
-            return Redirect(string.Format(ConfigurationManager.AppSettings["PayFlowProPaymentPage"], response.PayKey));
+            var viewModel = new OrderRequestViewModel();
+
+            PaymentGatewayResponse response = result.GatewayResponse;
+            viewModel.PayPalPostUrl = response.PaymentPageUrl;
+            viewModel.Ack = response.ResponseEnvelope.Ack;
+            viewModel.PayKey = response.TransactionId;
+            viewModel.Errors = response.Errors;
+
+            if (!result.Succeeded)
+                return View(viewModel);
+
+            return Redirect(string.Format(ConfigurationManager.AppSettings["PayFlowProPaymentPage"], response.TransactionId));
         }
 
-        private PayResponse SendPaymentRequest(decimal amount)
+        /*
+        private PaymentGatewayResponse SendPaymentRequest(decimal amount)
         {
             IApiClient payPal = new ApiClient(new ApiClientSettings()
                                                   {
@@ -112,7 +105,7 @@ namespace GroupGiving.Web.Controllers
             request.Receivers.Add(new Receiver(amountCommissionAdded.ToString("#.00"), "seller_1304843436_biz@gmail.com"));
             request.Receivers.Add(new Receiver(amount.ToString("#.00"), "sellr2_1304843519_biz@gmail.com"));
             return payPal.SendPayRequest(request);
-        }
+        }*/
 
         public ActionResult Success(string payKey)
         {
@@ -123,9 +116,9 @@ namespace GroupGiving.Web.Controllers
             {
                 @event =
                     session.Query<GroupGivingEvent>()
-                        .Where(e => e.Pledges.Any(p => p.PayPalPayKey == payKey))
+                        .Where(e => e.Pledges.Any(p => p.TransactionId == payKey))
                         .FirstOrDefault();
-                pledge = @event.Pledges.Where(p => p.PayPalPayKey == payKey).FirstOrDefault();
+                pledge = @event.Pledges.Where(p => p.TransactionId == payKey).FirstOrDefault();
             }
 
             if (@event==null || pledge == null)

@@ -7,16 +7,18 @@ using System.Xml.Serialization;
 namespace GroupGiving.PayPal.Model
 {
     [XmlRoot(ElementName="PayResponse")]
-    public class PayResponse
+    public class PaymentGatewayResponse
     {
         [XmlElement(ElementName="responseEnvelope", Order=0)]
         public ResponseEnvelope ResponseEnvelope { get; set; }
         [XmlElement(ElementName="payKey", Order=1)]
-        public string PayKey { get; set; }
+        public string TransactionId { get; set; }
         [XmlElement(ElementName = "paymentExecStatus", Order = 2)]
         public string PaymentExecStatus { get; set; }
         [XmlArrayItem(ElementName = "error")]
         public IEnumerable<ResponseError> Errors { get; set; }
+        [XmlElement(ElementName="paymentPageUrl")]
+        public string PaymentPageUrl { get; set; }
     }
 
     [XmlRoot(ElementName="responseEnvelope")]

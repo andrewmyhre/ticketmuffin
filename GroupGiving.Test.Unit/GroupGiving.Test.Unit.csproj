@@ -64,6 +64,7 @@
       <HintPath>..\packages\RavenDB.1.0.0.371\lib\net40\Raven.Json.dll</HintPath>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Web" />
     <Reference Include="System.Web.ApplicationServices" />
@@ -77,6 +78,9 @@
   <ItemGroup>
     <Compile Include="GivenCreatingAnAccount.cs" />
     <Compile Include="CreateEventControllerTests.cs" />
+    <Compile Include="MakingAPaymentGatewayRequest.cs" />
+    <Compile Include="MakingAPledgeWithValidRequest.cs" />
+    <Compile Include="PledgeTestsBase.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -86,6 +90,10 @@
     <ProjectReference Include="..\GroupGiving.Core\GroupGiving.Core.csproj">
       <Project>{665762CC-21C5-4DF4-A0AD-AB23C449DDF9}</Project>
       <Name>GroupGiving.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\GroupGiving.PayPal\GroupGiving.PayPal.csproj">
+      <Project>{69AC82E2-904E-4A5F-9A94-E5EDD91534AB}</Project>
+      <Name>GroupGiving.PayPal</Name>
     </ProjectReference>
     <ProjectReference Include="..\GroupGiving.Test.Common\GroupGiving.Test.Common.csproj">
       <Project>{8D1BC929-6F29-4B15-902E-5644935575B1}</Project>
