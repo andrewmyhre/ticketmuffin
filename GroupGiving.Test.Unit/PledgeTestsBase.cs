@@ -2,6 +2,7 @@
 using GroupGiving.Core.Actions.CreatePledge;
 using GroupGiving.Core.Data;
 using GroupGiving.Core.Domain;
+using GroupGiving.Core.Email;
 using GroupGiving.Core.Services;
 using GroupGiving.PayPal;
 using GroupGiving.PayPal.Model;
@@ -11,10 +12,12 @@ namespace GroupGiving.Test.Unit
 {
     public class PledgeTestsBase
     {
+        protected Mock<IEmailCreationService> _emailCreationService = null;
         protected Mock<IPaymentGateway> paypalService = new Mock<IPaymentGateway>();
         protected Mock<IRepository<GroupGivingEvent>> eventRepositoryMock = new Mock<IRepository<GroupGivingEvent>>();
         protected Mock<ITaxAmountResolver> taxResolverMock = new Mock<ITaxAmountResolver>();
         protected Mock<IPayPalConfiguration> _paypalConfiguration = new Mock<IPayPalConfiguration>();
+        protected Mock<IEmailRelayService> _emailRelayService=new Mock<IEmailRelayService>();
         protected GroupGivingEvent _event;
         protected string _paypalPayKey;
 

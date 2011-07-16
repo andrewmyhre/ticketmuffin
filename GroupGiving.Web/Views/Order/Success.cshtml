@@ -23,8 +23,29 @@
         <h1>Thank you for your pledge!</h1>
         <h2>Your order number is @Model.Pledge.OrderNumber</h2>
         <div>We've just sent you an email to: @Model.Pledge.EmailAddress</div> 
-        <div style="font-size: 20px; padding-top: 30px;"><strong>The event still needs <span style="color: #b3b70d;">@Model.PledgesRequired</span> pledges to be funded</strong></div>  
-        <div style="padding-top: 30px;"><input type="submit" class="bigButton" value="Invite" /></div>
+        @if (Model.Event.IsFull)
+        {
+            <div style="font-size: 20px; padding-top: 30px;">
+                <strong>The event is now full! Thanks for helping out!</strong>
+            </div>  
+        }
+        else if (Model.Event.IsOn)
+        {
+            <div style="font-size: 20px; padding-top: 30px;">
+                <strong>The event has <span style="color: #b3b70d;">@Model.Event.SpacesLeft</span> spaces left</strong>
+            </div>  
+        }
+        else
+        {
+            <div style="font-size: 20px; padding-top: 30px;">
+                <strong>The event still needs <span style="color: #b3b70d;">@Model.PledgesRequired</span> pledges to be funded</strong>
+            </div>
+        }
+
+        @if (!Model.Event.IsFull)
+        {
+            <div style="padding-top: 30px;"><input type="submit" class="bigButton" value="Invite" /></div>
+        }
 
         <div class="clearFix"></div>
       </div>

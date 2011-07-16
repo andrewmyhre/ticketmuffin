@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using Newtonsoft.Json;
 
 namespace GroupGiving.Core.Domain
 {
@@ -31,6 +33,26 @@ namespace GroupGiving.Core.Domain
         public string PaypalAccountEmailAddress { get; set; }
 
         public List<EventPledge> Pledges { get; set; }
+
+        [JsonIgnore]
+        public bool IsOn
+        {
+            get { return PledgeCount > MinimumParticipants; }
+        }
+        [JsonIgnore]
+        public bool IsFull
+        {
+            get { return PledgeCount >= MaximumParticipants; }
+        }
+        [JsonIgnore]
+        public int PledgeCount { get { return Pledges.Sum(p => p.Attendees.Count()); } }
+
+        [JsonIgnore]
+        public int SpacesLeft
+        {
+            get { return (MaximumParticipants??0) - PledgeCount; }
+        }
+
         public GroupGivingEvent()
         {
             Pledges = new List<EventPledge>();

@@ -86,6 +86,7 @@
     <Compile Include="Domain\PaymentStatus.cs" />
     <Compile Include="Email\EmailTemplate.cs" />
     <Compile Include="Email\GetYourAccountStarted.cs" />
+    <Compile Include="Email\MinimumAttendeesReached.cs" />
     <Compile Include="Email\PasswordResetInstructionsEmail.cs" />
     <Compile Include="Email\SimpleSmtpEmailRelayService.cs" />
     <Compile Include="Email\IEmailMessage.cs" />

@@ -25,15 +25,19 @@ namespace GroupGiving.Web.Controllers
         //
         // GET: /Order/
         private readonly IRepository<GroupGivingEvent> _eventRepository;
+        private readonly IEmailCreationService _emailCreationService;
         private readonly IFormsAuthenticationService _formsService;
         private readonly IMembershipService _membershipService;
         private readonly IAccountService _accountService;
         private readonly IPaymentGateway _paymentGateway;
         private readonly ITaxAmountResolver _taxResolver;
-        private IPayPalConfiguration _paypalConfiguration;
+        private readonly IPayPalConfiguration _paypalConfiguration;
+        private readonly IEmailRelayService _emailRelayService;
 
         public OrderController()
         {
+            _emailRelayService = MvcApplication.Kernel.Get<IEmailRelayService>();
+            _emailCreationService = MvcApplication.Kernel.Get<IEmailCreationService>();
             _eventRepository = MvcApplication.Kernel.Get<IRepository<GroupGivingEvent>>();
             _formsService = MvcApplication.Kernel.Get<IFormsAuthenticationService>();
             _membershipService = MvcApplication.Kernel.Get<AccountMembershipService>();
@@ -62,7 +66,7 @@ namespace GroupGiving.Web.Controllers
                 account = _accountService.CreateIncompleteAccount(purchaseDetails.EmailAddress, emailRelayService);
             }
 
-            var action = new MakePledgeAction(_taxResolver, _eventRepository, _paymentGateway, _paypalConfiguration);
+            var action = new MakePledgeAction(_taxResolver, _eventRepository, _paymentGateway, _paypalConfiguration, _emailCreationService, (IEmailRelayService) ViewBag);
             var request = new MakePledgeRequest()
             {
                 AttendeeNames = purchaseDetails.AttendeeName,

@@ -24,12 +24,22 @@
             <select name="quantity">
                 @for (int i = 1; i <= 3; i++)
                 {
-                <option @if (Model.AttendeeName.Count() == i) { <text>selected="selected"</text> }>@i</option>
+                <option @if (Model.AttendeeName != null && Model.AttendeeName.Count() == i)
+                        { <text>selected="selected"</text> }>@i</option>
                 }
             </select>
             <strong style="font-size: 18px;">x @Model.TicketPrice.ToString("c") = <span style="color: #b3b70d;" class="total"></span></strong>
         </div>
-        <div style="color: #b3b70d;"><strong>The money will be refunded if the minimum amount of participants is not reached till @Model.SalesEndDateTime.ToString("dddd dd MMMM").</strong></div>
+        <div style="color: #b3b70d;"><strong>
+            @if (Model.EventIsFull) {
+                <text>This event is now full and is not accepting more pledges</text>
+            } else if (Model.EventIsOn) {
+                <text>The minimum number of pledges has been reached. This event is now on!</text>
+            } else {
+                <text>The money will be refunded if the minimum amount of participants is not reached till @Model.SalesEndDateTime.ToString("dddd dd MMMM").</text>
+            }
+        </strong>
+        </div>
         <h1 style="margin-top: 30px;">Participants' names</h1>
         <div class="grayBox" id="attendeeList">
             @{int attendeeNumber = 1;}

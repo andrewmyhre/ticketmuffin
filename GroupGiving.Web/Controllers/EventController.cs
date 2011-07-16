@@ -20,6 +20,8 @@ namespace GroupGiving.Web.Controllers
 {
     public class EventController : Controller
     {
+        private readonly IEmailRelayService _emailRelayService;
+        private readonly IEmailCreationService _emailCreationService;
         private readonly IRepository<GroupGivingEvent> _eventRepository;
         private readonly IFormsAuthenticationService _formsService;
         private readonly IMembershipService _membershipService;
@@ -30,6 +32,8 @@ namespace GroupGiving.Web.Controllers
 
         public EventController()
         {
+            _emailRelayService = MvcApplication.Kernel.Get<IEmailRelayService>();
+            _emailCreationService = MvcApplication.Kernel.Get<IEmailCreationService>();
             _accountService = MvcApplication.Kernel.Get<IAccountService>();
             _eventRepository = MvcApplication.Kernel.Get<IRepository<GroupGivingEvent>>();
             _formsService = MvcApplication.Kernel.Get<IFormsAuthenticationService>();
@@ -71,6 +75,8 @@ namespace GroupGiving.Web.Controllers
             viewModel.Venue = givingEvent.Venue;
             viewModel.VenueLatitude = 50.022019d;
             viewModel.VenueLongitude = 19.984719d;
+            viewModel.EventIsOn = givingEvent.IsOn;
+            viewModel.EventIsFull = givingEvent.IsFull;
 
             viewModel.PledgeCount = givingEvent.Pledges.Sum(p=>p.Attendees.Count);
             viewModel.RequiredPledgesPercentage = (int)Math.Round(((double) viewModel.PledgeCount/(double) Math.Max(givingEvent.MinimumParticipants, 1))*100, 0);
@@ -137,6 +143,9 @@ namespace GroupGiving.Web.Controllers
             viewModel.Title = givingEvent.Title;
             viewModel.TicketPrice = givingEvent.TicketPrice;
             viewModel.Venue = givingEvent.Venue;
+            viewModel.EventIsOn = givingEvent.IsOn;
+            viewModel.EventIsFull = givingEvent.IsFull;
+            viewModel.AttendeeName = viewModel.AttendeeName ?? new string[1];
 
             if (User.Identity.IsAuthenticated)
             {
@@ -188,14 +197,23 @@ namespace GroupGiving.Web.Controllers
                 _accountService.UpdateAccount(account);
             }
 
-            var action = new MakePledgeAction(_taxResolver, _eventRepository, _paymentGateway, _paypalConfiguration);
+            var action = new MakePledgeAction(_taxResolver, _eventRepository, _paymentGateway, _paypalConfiguration, _emailCreationService, _emailRelayService);
             var makePledgeRequest = new MakePledgeRequest()
             {
                 AttendeeNames = request.AttendeeName,
                 PayPalEmailAddress = account.Email
             };
 
-            var result = action.Attempt(eventDetails, account, makePledgeRequest);
+            CreatePledgeActionResult result = null;
+            try
+            {
+                result = action.Attempt(eventDetails, account, makePledgeRequest);
+            } catch (InvalidOperationException ex)
+            {
+                ModelState.AddModelError("_form", ex.Message);
+                viewModel = BuildEventPageViewModel(eventDetails, request);
+                return View(viewModel);
+            }
 
             PaymentGatewayResponse response = result.GatewayResponse;
 

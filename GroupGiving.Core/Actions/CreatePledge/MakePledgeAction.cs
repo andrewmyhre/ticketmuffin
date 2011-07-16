@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using GroupGiving.Core.Data;
 using GroupGiving.Core.Domain;
+using GroupGiving.Core.Email;
 using GroupGiving.Core.Services;
 using GroupGiving.PayPal;
 using GroupGiving.PayPal.Model;
@@ -15,20 +16,43 @@ namespace GroupGiving.Core.Actions.CreatePledge
         private readonly IRepository<GroupGivingEvent> _eventRepository;
         private readonly IPaymentGateway _paymentGateway;
         private readonly IPayPalConfiguration _paypalConfiguration;
+        private readonly IEmailCreationService _emailCreationService;
+        private readonly IEmailRelayService _emailRelayService;
 
-        public MakePledgeAction(ITaxAmountResolver tax, IRepository<GroupGivingEvent> eventRepository, 
-            IPaymentGateway paymentGateway, IPayPalConfiguration paypalConfiguration)
+        public MakePledgeAction(ITaxAmountResolver tax, 
+            IRepository<GroupGivingEvent> eventRepository, 
+            IPaymentGateway paymentGateway, 
+            IPayPalConfiguration paypalConfiguration, 
+            IEmailCreationService emailCreationService,
+            IEmailRelayService emailRelayService)
         {
             _tax = tax;
             _eventRepository = eventRepository;
             _paymentGateway = paymentGateway;
             _paypalConfiguration = paypalConfiguration;
+            _emailCreationService = emailCreationService;
+            _emailRelayService = emailRelayService;
         }
 
         public CreatePledgeActionResult Attempt(GroupGivingEvent @event, Account account, MakePledgeRequest request)
         {
             var result = new CreatePledgeActionResult();
             var pledge = new EventPledge();
+            bool eventWasOn = @event.IsOn;
+
+            if (@event.IsFull)
+            {
+                throw new InvalidOperationException("Maximum attendees exceeded");
+            }
+ 
+            if (@event.IsOn)
+            {
+                int spacesLeft = (@event.MaximumParticipants??0) - @event.PledgeCount;
+                if (request.AttendeeNames.Count() > spacesLeft)
+                {
+                    throw new InvalidOperationException(string.Format("There are only {0} spaces left for this event", spacesLeft));
+                }
+            }
 
             // calculate sub total to charge
             pledge.SubTotal = @event.TicketPrice * request.AttendeeNames.Count();
@@ -60,6 +84,16 @@ namespace GroupGiving.Core.Actions.CreatePledge
                 @event.Pledges.Add(pledge);
                 _eventRepository.SaveOrUpdate(@event);
                 _eventRepository.CommitUpdates();
+            }
+
+            // event has now reached minimum number of attendees
+            if (!eventWasOn && @event.IsOn)
+            {
+                foreach(var eventPledge in @event.Pledges)
+                {
+                    var email = _emailCreationService.MinimumNumberOfAttendeesReached(@event, eventPledge);
+                    _emailRelayService.SendEmail(email);
+                }
             }
 
             return result;

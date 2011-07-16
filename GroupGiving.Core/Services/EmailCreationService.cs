@@ -1,4 +1,7 @@
-﻿using GroupGiving.Core.Email;
+﻿using System;
+using System.Collections.Generic;
+using GroupGiving.Core.Domain;
+using GroupGiving.Core.Email;
 
 namespace GroupGiving.Core.Services
 {
@@ -17,6 +20,11 @@ namespace GroupGiving.Core.Services
         public IEmailMessage GetYourAccountStartedEmail(string emailAddress, string resetPasswordToken)
         {
             return new GetYourAccountStarted(emailAddress, resetPasswordToken);
+        }
+
+        public IEmailMessage MinimumNumberOfAttendeesReached(GroupGivingEvent @event, EventPledge pledge)
+        {
+            return new MinimumAttendeesReached(@event, pledge);
         }
     }
 }

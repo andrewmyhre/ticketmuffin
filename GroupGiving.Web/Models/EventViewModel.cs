@@ -63,5 +63,9 @@ namespace GroupGiving.Web.Models
         public int PledgeCount { get; set; }
 
         public decimal RequiredPledgesPercentage { get; set; }
+
+        public bool EventIsOn { get; set; }
+
+        public bool EventIsFull { get; set; }
     }
 }

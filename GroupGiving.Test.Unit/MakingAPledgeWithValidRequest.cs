@@ -5,6 +5,8 @@ using System.Text;
 using GroupGiving.Core.Actions.CreatePledge;
 using GroupGiving.Core.Actions.SettlePledge;
 using GroupGiving.Core.Domain;
+using GroupGiving.Core.Email;
+using GroupGiving.Core.Services;
 using GroupGiving.PayPal;
 using GroupGiving.PayPal.Model;
 using Moq;
@@ -40,7 +42,7 @@ namespace GroupGiving.Test.Unit.Pledging
             EventRepositoryStoresEventWithVerification();
 
             var request = new MakePledgeRequest() { AttendeeNames = _attendee };
-            var action = new MakePledgeAction(taxResolverMock.Object, eventRepositoryMock.Object, paypalService.Object, _paypalConfiguration.Object);
+            var action = new MakePledgeAction(taxResolverMock.Object, eventRepositoryMock.Object, paypalService.Object, _paypalConfiguration.Object, _emailCreationService.Object, _emailRelayService.Object);
             _result = action.Attempt(_event, new Account(), request);
         }
 
@@ -133,7 +135,7 @@ namespace GroupGiving.Test.Unit.Pledging
             EventRepositoryStoresEventWithVerification();
 
             var request = new MakePledgeRequest() { AttendeeNames = Attendee };
-            var action = new MakePledgeAction(taxResolverMock.Object, eventRepositoryMock.Object, paypalService.Object, _paypalConfiguration.Object);
+            var action = new MakePledgeAction(taxResolverMock.Object, eventRepositoryMock.Object, paypalService.Object, _paypalConfiguration.Object, _emailCreationService.Object, _emailRelayService.Object);
             _result = action.Attempt(_event, new Account(), request);
         }
 
@@ -186,6 +188,162 @@ namespace GroupGiving.Test.Unit.Pledging
             var pledge = _event.Pledges.LastOrDefault();
             Assert.That(pledge.DatePledged, Is.GreaterThan(DateTime.Now.AddSeconds(-1)));
             Assert.That(pledge.DatePledged, Is.LessThan(DateTime.Now.AddSeconds(1)));
+        }
+    }
+
+    [TestFixture]
+    public class MakingAPledgeForAnEventWhichIsNearlyFull : PledgeTestsBase
+    {
+        protected decimal _expectedTotalCharge;
+        protected decimal _expectedTaxValue;
+        protected string[] _attendee;
+        protected decimal _taxRate;
+
+        [SetUp]
+        public void SetUp()
+        {
+            _taxRate = 0.15m;
+            _attendee = new string[] { "some guy" };
+            _expectedTaxValue = 15;
+            _expectedTotalCharge = 115;
+            _paypalPayKey = "12345";
+            _event = new GroupGivingEvent() { Id = "events/1", Country = "some country", TicketPrice = 100, 
+                MaximumParticipants = 7,
+                Pledges = new List<EventPledge>()
+                              {
+                                  new EventPledge()
+                                      {
+                                          Attendees = new List<EventPledgeAttendee>()
+                                                          {
+                                                              new EventPledgeAttendee(){FullName="attendee"},
+                                                              new EventPledgeAttendee(){FullName="attendee"},
+                                                              new EventPledgeAttendee(){FullName="attendee"},
+                                                              new EventPledgeAttendee(){FullName="attendee"},
+                                                              new EventPledgeAttendee(){FullName="attendee"}
+                                                          }
+                                      }
+                              }};
+
+            SetDummyPaypalConfiguration();
+            AnyPayPalRequestReturnsPayKey(_paypalPayKey);
+            EventRepositoryReturns(_event);
+            SetTaxRateForCountry(_event.Country, _taxRate);
+            PayPalGatewayReturnsTransactionIdWithVerification();
+            EventRepositoryStoresEventWithVerification();
+        }
+
+        [Test]
+        public void ToManyAttendeesFails()
+        {
+            var request = new MakePledgeRequest()
+            {
+                AttendeeNames = new[] { "attendee1", "attendee2", "attendee3" }
+            };
+            var action = new MakePledgeAction(taxResolverMock.Object, eventRepositoryMock.Object, paypalService.Object, _paypalConfiguration.Object, _emailCreationService.Object, _emailRelayService.Object);
+
+            Assert.Throws<InvalidOperationException>(() => action.Attempt(_event, new Account(), request), "Number of attendees exceeded");
+        }
+    }
+
+    [TestFixture]
+    public class MakingAPledgeForAnEventWhichHasNearlyReachedMinimumPledges : PledgeTestsBase
+    {
+        protected decimal _expectedTotalCharge;
+        protected decimal _expectedTaxValue;
+        protected string[] _attendee;
+        protected decimal _taxRate;
+
+        [SetUp]
+        public void SetUp()
+        {
+            _taxRate = 0.15m;
+            _attendee = new string[] { "some guy" };
+            _expectedTaxValue = 15;
+            _expectedTotalCharge = 115;
+            _paypalPayKey = "12345";
+            _event = new GroupGivingEvent()
+            {
+                Id = "events/1",
+                Country = "some country",
+                TicketPrice = 100,
+                MinimumParticipants = 7,
+                MaximumParticipants = 100,
+                Pledges = new List<EventPledge>()
+                              {
+                                  new EventPledge()
+                                      {
+                                          Attendees = new List<EventPledgeAttendee>()
+                                                          {
+                                                              new EventPledgeAttendee(){FullName="attendee"},
+                                                              new EventPledgeAttendee(){FullName="attendee"},
+                                                              new EventPledgeAttendee(){FullName="attendee"},
+                                                              new EventPledgeAttendee(){FullName="attendee"},
+                                                              new EventPledgeAttendee(){FullName="attendee"}
+                                                          }
+                                      }
+                              }
+            };
+
+            _emailCreationService=new Mock<IEmailCreationService>();
+            SetDummyPaypalConfiguration();
+            AnyPayPalRequestReturnsPayKey(_paypalPayKey);
+            EventRepositoryReturns(_event);
+            SetTaxRateForCountry(_event.Country, _taxRate);
+            PayPalGatewayReturnsTransactionIdWithVerification();
+            EventRepositoryStoresEventWithVerification();
+        }
+
+        [Test]
+        public void ToManyAttendeesFails()
+        {
+            var request = new MakePledgeRequest()
+            {
+                AttendeeNames = new[] { "attendee1", "attendee2", "attendee3" }
+            };
+            var action = new MakePledgeAction(taxResolverMock.Object, eventRepositoryMock.Object, paypalService.Object, _paypalConfiguration.Object, _emailCreationService.Object, _emailRelayService.Object);
+
+            var result = action.Attempt(_event, new Account(), request);
+
+            Assert.That(_event.IsOn, Is.True);
+        }
+
+        [Test]
+        public void EmailsAreGeneratedToPledgersWhenMinimumIsReached()
+        {
+            var request = new MakePledgeRequest()
+            {
+                AttendeeNames = new[] { "attendee1", "attendee2", "attendee3" }
+            };
+            var action = new MakePledgeAction(taxResolverMock.Object, eventRepositoryMock.Object, paypalService.Object, _paypalConfiguration.Object, _emailCreationService.Object, _emailRelayService.Object);
+
+            _emailCreationService
+                .Setup(m=>m.MinimumNumberOfAttendeesReached(It.IsAny<GroupGivingEvent>(), It.IsAny<EventPledge>()))
+                .Verifiable();
+
+            var result = action.Attempt(_event, new Account(), request);
+
+            _emailCreationService.Verify(m => m.MinimumNumberOfAttendeesReached(It.IsAny<GroupGivingEvent>(), It.IsAny<EventPledge>()),
+                Times.Exactly(_event.Pledges.Count));
+        }
+
+        [Test]
+        public void EmailsAreSentToPledgersWhenMinimumIsReached()
+        {
+            var request = new MakePledgeRequest()
+            {
+                AttendeeNames = new[] { "attendee1", "attendee2", "attendee3" }
+            };
+            var action = new MakePledgeAction(taxResolverMock.Object, eventRepositoryMock.Object, 
+                paypalService.Object, _paypalConfiguration.Object, _emailCreationService.Object, _emailRelayService.Object);
+
+            _emailRelayService
+                .Setup(m=>m.SendEmail(It.IsAny<MinimumAttendeesReached>()))
+                .Verifiable();
+
+            var result = action.Attempt(_event, new Account(), request);
+
+            _emailRelayService.Verify(m=>m.SendEmail(It.IsAny<MinimumAttendeesReached>()),
+                Times.Exactly(_event.Pledges.Count));
         }
     }
 }
