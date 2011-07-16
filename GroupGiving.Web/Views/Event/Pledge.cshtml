@@ -21,7 +21,7 @@
         <div class="grayBox">
             <div><strong>Event:</strong> @Model.Title</div><br />
             <select name="quantity"><option>1</option><option>2</option><option>3</option></select>
-            <strong style="font-size: 18px;">x @Model.TicketPrice.ToString("c") = <span style="color: #b3b70d;" class="total">$56</span></strong>
+            <strong style="font-size: 18px;">x @Model.TicketPrice.ToString("c") = <span style="color: #b3b70d;" class="total"></span></strong>
         </div>
         <div style="color: #b3b70d;"><strong>The money will be refunded if the minimum amount of participants is not reached till @Model.SalesEndDateTime.ToString("dddd dd MMMM").</strong></div>
         <h1 style="margin-top: 30px;">Participants' names</h1>
@@ -38,6 +38,8 @@
         <div>
         @Html.Hidden("ticketPrice", Model.TicketPrice)
         @Html.Hidden("shortUrl", Model.ShortUrl)
+        @Html.Hidden("eventId", Model.EventId)
+        @Html.TextBox("emailAddress", Model.PaypalAccountEmailAddress)
         <input type="submit" class="bigButton" value="Pay Now" style="float: left;" /><img src="/content/img/paypal.jpg" />
         </div>
     }

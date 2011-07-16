@@ -266,9 +266,6 @@
     <Content Include="Views\Event\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Views\Order\Index.cshtml" />
-  </ItemGroup>
-  <ItemGroup>
     <ProjectReference Include="..\GroupGiving.Core\GroupGiving.Core.csproj">
       <Project>{665762CC-21C5-4DF4-A0AD-AB23C449DDF9}</Project>
       <Name>GroupGiving.Core</Name>
@@ -286,7 +283,7 @@
     <Content Include="Views\Order\PaymentRequest.cshtml" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Views\Order\Return.cshtml" />
+    <Content Include="Views\Order\Success.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Views\Order\Cancel.cshtml" />

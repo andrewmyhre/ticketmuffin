@@ -1,0 +1,30 @@
+﻿@model GroupGiving.Web.Models.OrderConfirmationViewModel
+@{
+    ViewBag.Title = "Return";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<script type="text/javascript" src="https://www.paypalobjects.com/js/external/dg.js"></script>
+<script type="text/javascript" src="/scripts/order.js"></script>
+
+      <div id="confirmPage">
+        <div id="confirmPageEvenInfo">
+          <div style="padding-bottom: 10px;"><strong>You have pledged to this event</strong></div>
+          <div id="eventDate">
+            <div id="month">July</div>
+            <div id="day">20</div>
+          </div>
+
+          <div style="font-size: 18px;"><strong>@Html.ActionLink(Model.Event.Title, "Index", "Event", new {shortUrl=Model.Event.ShortUrl},null)</strong></div>
+          <div style="font-size: 12px; line-height: 14px;"><strong>@Model.Event.Venue</strong>, @Model.Event.City, @Model.Event.Country, @Model.Event.StartDate.ToString("dddd, MMMM dd, yyyy, HH:mm tt"), @Model.Event.AddressLine</div>
+          <div style="padding-top: 20px; text-align: justify; font-size: 12px; line-height: 18px;">@Model.Event.Description </div>
+        </div>
+
+        <h1>Thank you for your pledge!</h1>
+        <h2>Your order number is @Model.Pledge.OrderNumber</h2>
+        <div>We've just sent you an email to: @Model.Pledge.EmailAddress</div> 
+        <div style="font-size: 20px; padding-top: 30px;"><strong>The event still needs <span style="color: #b3b70d;">@Model.PledgesRequired</span> pledges to be funded</strong></div>  
+        <div style="padding-top: 30px;"><input type="submit" class="bigButton" value="Invite" /></div>
+
+        <div class="clearFix"></div>
+      </div>

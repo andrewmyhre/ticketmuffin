@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
 using System.Web;
@@ -26,22 +27,15 @@ namespace GroupGiving.Web.Controllers
         private readonly IFormsAuthenticationService _formsService;
         private readonly IMembershipService _membershipService;
         private readonly IAccountService _accountService;
-        private readonly IEventPledgeRepository _eventPledgeRepository;
 
         public OrderController()
         {
-            _eventPledgeRepository = MvcApplication.Kernel.Get<IEventPledgeRepository>();
             _eventRepository = MvcApplication.Kernel.Get<IRepository<GroupGivingEvent>>();
             _formsService = MvcApplication.Kernel.Get<IFormsAuthenticationService>();
             _membershipService = MvcApplication.Kernel.Get<AccountMembershipService>();
             _accountService = MvcApplication.Kernel.Get<IAccountService>();
             ((RavenDBMembershipProvider)Membership.Provider).DocumentStore
                 = RavenDbDocumentStore.Instance;
-        }
-
-        public ActionResult Index(int eventId)
-        {
-            return View();
         }
 
         public ActionResult PaymentRequest()
@@ -57,7 +51,18 @@ namespace GroupGiving.Web.Controllers
             var eventDetails = _eventRepository.Retrieve(e => e.ShortUrl == purchaseDetails.ShortUrl);
 
             decimal amount = eventDetails.TicketPrice*purchaseDetails.Quantity;
+            
             PayResponse response = SendPaymentRequest(amount);
+            viewModel.PayPalPostUrl = ConfigurationManager.AppSettings["PayFlowProPaymentPage"];
+            viewModel.Ack = response.ResponseEnvelope.Ack;
+            viewModel.PayKey = response.PayKey;
+            viewModel.Errors = response.Errors;
+
+            if (response.Errors != null && response.Errors.Count() > 0)
+                return View(viewModel);
+
+
+
             var account = _accountService.RetrieveByEmailAddress(purchaseDetails.EmailAddress);
             if (account==null)
             {
@@ -68,22 +73,22 @@ namespace GroupGiving.Web.Controllers
             // create an event pledge
             var pledge = new EventPledge();
             pledge.EmailAddress = purchaseDetails.EmailAddress;
-            pledge.EventId = eventDetails.Id;
-            pledge.EventTitle = eventDetails.Title;
-            pledge.TicketPrice = eventDetails.TicketPrice;
             pledge.AmountPaid = amount;
-            pledge.Quantity = purchaseDetails.Quantity;
             pledge.PayPalPayKey = response.PayKey;
-            _eventPledgeRepository.SaveOrUpdate(pledge);
-            _eventPledgeRepository.CommitUpdates();
+            pledge.OrderNumber = Guid.NewGuid().ToString().Replace("{", "").Replace("}", "").Replace("-", "");
 
-            viewModel.PayPalPostUrl = ConfigurationManager.AppSettings["PayFlowProPaymentPage"];
-            viewModel.Ack = response.ResponseEnvelope.Ack;
-            viewModel.PayKey = response.PayKey;
-            viewModel.Errors = response.Errors;
+            // add the attendees
+            pledge.Attendees = new List<EventPledgeAttendee>();
+            foreach(var attendeeName in purchaseDetails.AttendeeName)
+            {
+                var attendee = new EventPledgeAttendee();
+                attendee.FullName = attendeeName;
+                pledge.Attendees.Add(attendee);
+            }
 
-            if (response.Errors != null && response.Errors.Count() > 0)
-                return View(viewModel);
+            eventDetails.Pledges.Add(pledge);
+            _eventRepository.SaveOrUpdate(eventDetails);
+            _eventRepository.CommitUpdates();
 
             return Redirect(string.Format(ConfigurationManager.AppSettings["PayFlowProPaymentPage"], response.PayKey));
         }
@@ -103,25 +108,42 @@ namespace GroupGiving.Web.Controllers
             request.FeesPayer = "EACHRECEIVER";
             request.Memo = "test order";
             request.CancelUrl = "http://" + Request.Url.Authority + "/Order/Cancel?payKey=${payKey}";
-            request.ReturnUrl = "http://" + Request.Url.Authority + "/Order/Return?payKey=${payKey}";
+            request.ReturnUrl = "http://" + Request.Url.Authority + "/Order/Success?payKey=${payKey}";
             request.Receivers.Add(new Receiver(amountCommissionAdded.ToString("#.00"), "seller_1304843436_biz@gmail.com"));
             request.Receivers.Add(new Receiver(amount.ToString("#.00"), "sellr2_1304843519_biz@gmail.com"));
             return payPal.SendPayRequest(request);
         }
 
-        public ActionResult Return(string payKey)
+        public ActionResult Success(string payKey)
         {
             // update the pledge
-            var pledge = _eventPledgeRepository.RetrieveByPayKey(payKey);
-            if (pledge == null)
+            GroupGivingEvent @event = null;
+            EventPledge pledge=null;
+            using (var session = RavenDbDocumentStore.Instance.OpenSession())
+            {
+                @event =
+                    session.Query<GroupGivingEvent>()
+                        .Where(e => e.Pledges.Any(p => p.PayPalPayKey == payKey))
+                        .FirstOrDefault();
+                pledge = @event.Pledges.Where(p => p.PayPalPayKey == payKey).FirstOrDefault();
+            }
+
+            if (@event==null || pledge == null)
                 return new HttpNotFoundResult();
 
-            pledge.Paid = true;
-            pledge.DatePledged = DateTime.Now;
-            _eventPledgeRepository.SaveOrUpdate(pledge);
-            _eventPledgeRepository.CommitUpdates();
+            // user may just be reloading the page - fine, don't do any updates and present the view
+            if (pledge.Paid)
+            {
+                pledge.Paid = true;
+                pledge.DatePledged = DateTime.Now;
+                _eventRepository.SaveOrUpdate(@event);
+                _eventRepository.CommitUpdates();
+            }
 
             var viewModel = new OrderConfirmationViewModel();
+            viewModel.Event = @event;
+            viewModel.PledgesRequired = viewModel.Event.MinimumParticipants -
+                                        viewModel.Event.Pledges.Sum(p => p.Attendees.Count);
             viewModel.Pledge = pledge;
 
             return View(viewModel);

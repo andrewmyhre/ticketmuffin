@@ -67,14 +67,13 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BCrypt.cs" />
-    <Compile Include="Data\EventPledgeRepository.cs" />
     <Compile Include="Data\Fakes\FakeRepository.cs" />
-    <Compile Include="Data\IEventPledgeRepository.cs" />
     <Compile Include="Data\IRepository.cs" />
     <Compile Include="Data\RavenDBRepositoryBase.cs" />
     <Compile Include="Domain\AccountType.cs" />
     <Compile Include="Domain\ContentDefinition.cs" />
     <Compile Include="Domain\EventPledge.cs" />
+    <Compile Include="Domain\EventPledgeAttendee.cs" />
     <Compile Include="Domain\GroupGivingEvent.cs" />
     <Compile Include="Domain\Account.cs" />
     <Compile Include="Domain\IDomainObject.cs" />

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace GroupGiving.Core.Domain
 {
@@ -7,6 +8,7 @@ namespace GroupGiving.Core.Domain
         public string Id { get; set; }
         public string Title { get; set; }
         public string City { get; set; }
+        public string Country { get; set; }
         public string Description { get; set; }
         public DateTime StartDate { get; set; }
         public string Venue { get; set; }
@@ -27,5 +29,11 @@ namespace GroupGiving.Core.Domain
         public string AdditionalBenefits { get; set; }
 
         public string PaypalAccountEmailAddress { get; set; }
+
+        public List<EventPledge> Pledges { get; set; }
+        public GroupGivingEvent()
+        {
+            Pledges = new List<EventPledge>();
+        }
     }
 }

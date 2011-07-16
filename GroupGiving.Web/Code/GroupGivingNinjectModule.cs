@@ -21,7 +21,6 @@ namespace GroupGiving.Web.Code
 
             Bind<IRepository<GroupGivingEvent>>().To<Core.Data.RavenDBRepositoryBase<GroupGivingEvent>>();
             Bind<IRepository<Account>>().To<Core.Data.RavenDBRepositoryBase<Account>>();
-            Bind<IEventPledgeRepository>().To<EventPledgeRepository>();
 
             Bind<IFormsAuthenticationService>().To<FormsAuthenticationService>();
             Bind<IMembershipService>().To<AccountMembershipService>();
