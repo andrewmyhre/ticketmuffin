@@ -18,5 +18,6 @@ namespace GroupGiving.Core.Domain
         public string ResetPasswordToken { get; set; }
         public DateTime ResetPasswordTokenExpiry { get; set; }
         public AccountType AccountType { get; set; }
+        public bool OptInForOffers { get; set; }
     }
 }

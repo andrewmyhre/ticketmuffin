@@ -16,31 +16,41 @@
             </div>
 <div id="orderPage">
     <h1>Tickets quantity</h1>
-    @using (Html.BeginForm("StartRequest", "Order"))
+    @using (Html.BeginForm())
     {
         <div class="grayBox">
+            @Html.ValidationSummary("Please correct the following problems:")
             <div><strong>Event:</strong> @Model.Title</div><br />
-            <select name="quantity"><option>1</option><option>2</option><option>3</option></select>
+            <select name="quantity">
+                @for (int i = 1; i <= 3; i++)
+                {
+                <option @if (Model.AttendeeName.Count() == i) { <text>selected="selected"</text> }>@i</option>
+                }
+            </select>
             <strong style="font-size: 18px;">x @Model.TicketPrice.ToString("c") = <span style="color: #b3b70d;" class="total"></span></strong>
         </div>
         <div style="color: #b3b70d;"><strong>The money will be refunded if the minimum amount of participants is not reached till @Model.SalesEndDateTime.ToString("dddd dd MMMM").</strong></div>
         <h1 style="margin-top: 30px;">Participants' names</h1>
         <div class="grayBox" id="attendeeList">
-            <div>
-                <label style="display: inline-block; width: 110px;">Ticket #<span class="attendeeNumber">1</span></label>
-                <input type="text" style="width: 300px;" name="attendeeName" class="jq_watermark" title="Full name" />
-            </div>
+            @{int attendeeNumber = 1;}
+            @foreach (var attendee in Model.AttendeeName)
+            {
+                <div>
+                    <label style="display: inline-block; width: 110px;">Ticket #<span class="attendeeNumber">@(attendeeNumber++)</span></label>
+                    <input type="text" style="width: 300px;" name="attendeeName" class="jq_watermark" title="Full name" value="@attendee" />
+                </div>
+            }
         </div>
         <div style="padding: 20px 0 20px 0;">
-            <div><input type="checkbox" name="offers" />I want to receive events’ bullshits and spam</div>
-            <div><input type="checkbox" name="tnc" />I accept <a href="">Terms & Conditions</a></div>
+            <div><input type="checkbox" name="optInForOffers" />I want to receive events’ bullshits and spam</div>
+            <div><input type="checkbox" name="acceptTerms" value="true" />I accept <a href="">Terms & Conditions</a></div>
         </div>
         <div>
         @Html.Hidden("ticketPrice", Model.TicketPrice)
         @Html.Hidden("shortUrl", Model.ShortUrl)
         @Html.Hidden("eventId", Model.EventId)
-        @Html.TextBox("emailAddress", Model.PaypalAccountEmailAddress)
+        @Html.TextBox("emailAddress", Model.EmailAddress)
         <input type="submit" class="bigButton" value="Pay Now" style="float: left;" /><img src="/content/img/paypal.jpg" />
         </div>
     }
-</div>
+</div

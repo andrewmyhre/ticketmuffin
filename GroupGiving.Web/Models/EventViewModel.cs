@@ -30,8 +30,6 @@ namespace GroupGiving.Web.Models
 
         public int MinimumParticipants { get; set; }
 
-        public string PaypalAccountEmailAddress { get; set; }
-
         public string PhoneNumber { get; set; }
 
         public DateTime SalesEndDateTime { get; set; }
