@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace GroupGiving.Web.Models
 {
@@ -7,6 +8,7 @@ namespace GroupGiving.Web.Models
     {
         public string UserFirstName { get; set; }
         public string UserLastName { get; set; }
+        [Required(AllowEmptyStrings = false, ErrorMessage = "Please provide your contact email address")]
         public string EmailAddress { get; set; }
 
         public bool AcceptTerms { get; set; }

@@ -89,28 +89,6 @@ namespace GroupGiving.Web.Controllers
             return Redirect(string.Format(ConfigurationManager.AppSettings["PayFlowProPaymentPage"], response.TransactionId));
         }
 
-        /*
-        private PaymentGatewayResponse SendPaymentRequest(decimal amount)
-        {
-            IApiClient payPal = new ApiClient(new ApiClientSettings()
-                                                  {
-                                                      Username = "seller_1304843436_biz_api1.gmail.com",
-                                                      Password = "1304843443",
-                                                      Signature = "AFcWxV21C7fd0v3bYYYRCpSSRl31APG52hf-AmPfK7eyvf7LBc0.0sm7"
-                                                  });
-            decimal amountCommissionAdded = amount*1.05m;
-            var request = new PayRequest();
-            request.ActionType = "PAY";
-            request.CurrencyCode = "GBP";
-            request.FeesPayer = "EACHRECEIVER";
-            request.Memo = "test order";
-            request.CancelUrl = "http://" + Request.Url.Authority + "/Order/Cancel?payKey=${payKey}";
-            request.ReturnUrl = "http://" + Request.Url.Authority + "/Order/Success?payKey=${payKey}";
-            request.Receivers.Add(new Receiver(amountCommissionAdded.ToString("#.00"), "seller_1304843436_biz@gmail.com"));
-            request.Receivers.Add(new Receiver(amount.ToString("#.00"), "sellr2_1304843519_biz@gmail.com"));
-            return payPal.SendPayRequest(request);
-        }*/
-
         public ActionResult Success(string payKey)
         {
             // update the pledge
@@ -129,10 +107,22 @@ namespace GroupGiving.Web.Controllers
                 return new HttpNotFoundResult();
 
             // user may just be reloading the page - fine, don't do any updates and present the view
-            if (pledge.Paid)
+            if (!pledge.Paid)
             {
                 pledge.Paid = true;
                 pledge.DatePledged = DateTime.Now;
+
+                // this pledge has activated the event
+                if (@event.IsOn 
+                    && (@event.PledgeCount - pledge.Attendees.Count < @event.MinimumParticipants))
+                {
+                    foreach(var eventPledge in @event.Pledges)
+                    {
+                        var email = _emailCreationService.MinimumNumberOfAttendeesReached(@event, eventPledge);
+                        _emailRelayService.SendEmail(email);
+                    }
+                }
+
                 _eventRepository.SaveOrUpdate(@event);
                 _eventRepository.CommitUpdates();
             }

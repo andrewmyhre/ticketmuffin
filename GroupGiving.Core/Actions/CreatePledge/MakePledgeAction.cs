@@ -86,16 +86,6 @@ namespace GroupGiving.Core.Actions.CreatePledge
                 _eventRepository.CommitUpdates();
             }
 
-            // event has now reached minimum number of attendees
-            if (!eventWasOn && @event.IsOn)
-            {
-                foreach(var eventPledge in @event.Pledges)
-                {
-                    var email = _emailCreationService.MinimumNumberOfAttendeesReached(@event, eventPledge);
-                    _emailRelayService.SendEmail(email);
-                }
-            }
-
             return result;
         }
     }

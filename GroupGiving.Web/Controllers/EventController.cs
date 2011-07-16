@@ -201,7 +201,7 @@ namespace GroupGiving.Web.Controllers
             var makePledgeRequest = new MakePledgeRequest()
             {
                 AttendeeNames = request.AttendeeName,
-                PayPalEmailAddress = account.Email
+                PayPalEmailAddress = request.EmailAddress
             };
 
             CreatePledgeActionResult result = null;

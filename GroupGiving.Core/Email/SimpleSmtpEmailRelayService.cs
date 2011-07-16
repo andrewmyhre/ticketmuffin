@@ -8,7 +8,17 @@ namespace GroupGiving.Core.Email
         public void SendEmail(IEmailMessage emailMessage)
         {
             SmtpClient smtp = new SmtpClient();
-            smtp.Send(emailMessage.ToMailMessage());
+
+            try
+            {
+                smtp.Send(emailMessage.ToMailMessage());
+            } catch (Exception ex)
+            {
+                // TODO log error
+            } finally
+            {
+                
+            }
         }
     }
 }

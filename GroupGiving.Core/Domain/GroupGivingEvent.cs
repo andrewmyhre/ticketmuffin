@@ -37,7 +37,7 @@ namespace GroupGiving.Core.Domain
         [JsonIgnore]
         public bool IsOn
         {
-            get { return PledgeCount > MinimumParticipants; }
+            get { return PledgeCount >= MinimumParticipants; }
         }
         [JsonIgnore]
         public bool IsFull

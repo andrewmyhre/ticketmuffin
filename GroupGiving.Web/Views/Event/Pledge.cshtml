@@ -52,6 +52,9 @@
             }
         </div>
         <div style="padding: 20px 0 20px 0;">
+            <div><input type="text" style="width: 300px;" name="emailAddress" class="jq_watermark" title="Contact email address" value="@Model.EmailAddress" /></div>
+        </div>
+        <div style="padding: 20px 0 20px 0;">
             <div><input type="checkbox" name="optInForOffers" />I want to receive events’ bullshits and spam</div>
             <div><input type="checkbox" name="acceptTerms" value="true" />I accept <a href="">Terms & Conditions</a></div>
         </div>
@@ -59,7 +62,6 @@
         @Html.Hidden("ticketPrice", Model.TicketPrice)
         @Html.Hidden("shortUrl", Model.ShortUrl)
         @Html.Hidden("eventId", Model.EventId)
-        @Html.TextBox("emailAddress", Model.EmailAddress)
         <input type="submit" class="bigButton" value="Pay Now" style="float: left;" /><img src="/content/img/paypal.jpg" />
         </div>
     }
