@@ -2,6 +2,6 @@
 {
     public interface IEmailRelayService
     {
-        void SendEmail(IEmailMessage emailMessage);
+        void SendEmail(IEmailTemplate emailTemplate);
     }
 }

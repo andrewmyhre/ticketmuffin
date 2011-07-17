@@ -120,6 +120,7 @@
     <Compile Include="Code\XmlContentProvider.cs" />
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\CreateEventController.cs" />
+    <Compile Include="Controllers\DiagnosticsController.cs" />
     <Compile Include="Controllers\EventController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\OrderController.cs" />
@@ -143,6 +144,10 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Content\emailTemplates\AccountCreated.xml" />
+    <Content Include="Content\emailTemplates\ResetYourPassword.xml" />
+    <Content Include="Content\emailTemplates\EventActivated.xml" />
+    <Content Include="Content\emailTemplates\GetYourAccountStarted.xml" />
     <Content Include="Content\img\barProgress.png" />
     <Content Include="Content\img\blueButton.png" />
     <Content Include="Content\img\body_bg.jpg" />
@@ -188,6 +193,7 @@
     <Content Include="Content\themes\base\jquery.ui.tabs.css" />
     <Content Include="Content\themes\base\jquery.ui.theme.css" />
     <Content Include="Global.asax" />
+    <Content Include="Scripts\diagnostics.js" />
     <Content Include="Scripts\jquery.watermark.min.js" />
     <Content Include="Scripts\pledge.js" />
     <Content Include="Scripts\tickets.js" />
@@ -206,6 +212,7 @@
     <Content Include="Scripts\modernizr-1.7.js" />
     <Content Include="Scripts\modernizr-1.7.min.js" />
     <Content Include="Scripts\order.js" />
+    <Content Include="Views\Diagnostics\Index.aspx" />
     <Content Include="Web.config">
       <SubType>Designer</SubType>
     </Content>
@@ -266,6 +273,10 @@
     <Content Include="Views\Event\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\EmailProcessing\EmailProcessing\EmailProcessing.csproj">
+      <Project>{F511818D-59DF-4358-8946-10FB3933E5B2}</Project>
+      <Name>EmailProcessing</Name>
+    </ProjectReference>
     <ProjectReference Include="..\GroupGiving.Core\GroupGiving.Core.csproj">
       <Project>{665762CC-21C5-4DF4-A0AD-AB23C449DDF9}</Project>
       <Name>GroupGiving.Core</Name>

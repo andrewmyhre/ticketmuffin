@@ -3,7 +3,7 @@ using System.Net.Mail;
 
 namespace GroupGiving.Core.Email
 {
-    public class GetYourAccountStarted : IEmailMessage
+    public class GetYourAccountStarted : IEmailTemplate
     {
         private readonly string _emailAddress;
         private readonly string _resetPasswordToken;

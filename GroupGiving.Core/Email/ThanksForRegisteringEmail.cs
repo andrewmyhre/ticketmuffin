@@ -3,7 +3,7 @@ using System.Net.Mail;
 
 namespace GroupGiving.Core.Email
 {
-    public class ThanksForRegisteringEmail : IEmailMessage
+    public class ThanksForRegisteringEmail : IEmailTemplate
     {
         private readonly string _toAddress;
         private readonly string _toName;

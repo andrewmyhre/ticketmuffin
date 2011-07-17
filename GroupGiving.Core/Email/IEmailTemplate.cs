@@ -2,7 +2,7 @@
 
 namespace GroupGiving.Core.Email
 {
-    public interface IEmailMessage
+    public interface IEmailTemplate
     {
         System.Net.Mail.MailMessage ToMailMessage();
 

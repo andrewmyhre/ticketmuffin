@@ -1,0 +1,36 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<emailTemplate xmlns="http://www.tanash.net/email/template">
+    <name>EventActivated</name>
+    <from>noreply@ticketmuffin.com</from>
+    <subject>@Model.Event.Title - event activated!</subject>
+    <html><![CDATA[
+        <p>Hi @(Model.Pledge.AccountName ?? "there"),</p>
+        <p>An event you have pledged for, @Model.Event.Title, has now reached the minimum number of pledges. That means it's properly on!</p>
+        <p>@Model.Event.Title</p>
+        <p>@Model.Event.StartDate.ToString("dd/MM/yyyy HH:mm")</p>
+        <p>
+            @Model.Event.Venue</br>
+            @Model.Event.AddressLine<br/>
+            @Model.Event.City<br/>
+            @Model.Event.Country
+        </p>
+        <p>Regards,</p>
+        <p>TicketMuffin</p>
+    ]]></html>
+    <text>Hi @(Model.Pledge.AccountName ?? "there"),
+An event you have pledged for, @Model.Event.Title, has now reached the minimum number of pledges. That means it's properly on!
+
+@Model.Event.Title
+
+@Model.Event.StartDate.ToString("dd/MM/yyyy HH:mm")
+        
+@Model.Event.Venue
+@Model.Event.AddressLine
+@Model.Event.City
+@Model.Event.Country
+
+Regards,
+
+TicketMuffin        
+    </text>
+</emailTemplate>

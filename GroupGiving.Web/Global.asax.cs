@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Web.Mvc;
 using System.Web.Routing;
+using EmailProcessing;
 using GroupGiving.Web.Code;
+using log4net;
 using Ninject;
 
 namespace GroupGiving.Web
@@ -13,6 +15,8 @@ namespace GroupGiving.Web
     {
         public static IKernel Kernel { get; set; }
         public static XmlContentProvider PageContent = new XmlContentProvider();
+        public static EmailFacade EmailFacade { get; private set; }
+        private static ILog _logger = LogManager.GetLogger(typeof(MvcApplication));
 
         public static void RegisterGlobalFilters(GlobalFilterCollection filters)
         {
@@ -107,6 +111,17 @@ namespace GroupGiving.Web
             RegisterGlobalFilters(GlobalFilters.Filters);
             RegisterRoutes(RouteTable.Routes);
             PageContent.Initialise(System.Web.Hosting.HostingEnvironment.MapPath("~/content/PageContent"));
+
+            try
+            {
+                EmailFacade = EmailFacadeFactory.CreateFromConfiguration();
+                EmailFacade.LoadTemplates();
+            }
+            catch (Exception e)
+            {
+                _logger.Fatal("Failed to load email sender", e);
+            }
+
             base.OnApplicationStarted();
         }
 

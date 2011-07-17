@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using EmailProcessing;
 using GroupGiving.Core.Data;
 using GroupGiving.Core.Domain;
 using GroupGiving.Core.Email;
@@ -20,7 +21,7 @@ namespace GroupGiving.Test.Integration
     public class GivenCreatingAnAccount
     {
         private IDocumentStore storage = null;
-        private Mock<IEmailCreationService> _emailCreationService = null;
+        private Mock<IEmailFacade> _emailFacade = null;
         private Mock<IEmailRelayService> _emailRelayService;
 
         [SetUp]
@@ -35,7 +36,7 @@ namespace GroupGiving.Test.Integration
                           };
             storage.Initialize();
 
-            _emailCreationService = new Mock<IEmailCreationService>();
+            _emailFacade = new Mock<IEmailFacade>();
         }
 
         [Test]
@@ -48,8 +49,7 @@ namespace GroupGiving.Test.Integration
                 {
                     IRepository<Account> accountRepository = new RavenDBRepositoryBase<Account>(session);
                     _emailRelayService = new Mock<IEmailRelayService>();
-                    IAccountService accountService = new AccountService(accountRepository, _emailCreationService.Object,
-                                                                        _emailRelayService.Object);
+                    IAccountService accountService = new AccountService(accountRepository, _emailFacade.Object);
 
                     CreateUserRequest createUserRequest = TestDataObjects.CreateValidCreateUserRequest();
                     // act

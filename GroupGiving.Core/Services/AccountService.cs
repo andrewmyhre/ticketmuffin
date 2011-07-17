@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using EmailProcessing;
 using GroupGiving.Core.Data;
 using GroupGiving.Core.Domain;
 using GroupGiving.Core.Email;
@@ -11,16 +12,13 @@ namespace GroupGiving.Core.Services
     public class AccountService : IAccountService
     {
         private readonly IRepository<Account> _accountRepository;
-        private readonly IEmailCreationService _emailCreationService;
-        private readonly IEmailRelayService _emailRelayService;
+        private readonly IEmailFacade _emailFacade;
 
-        public AccountService(IRepository<Account> accountRepository, 
-            IEmailCreationService emailCreationService,
-            IEmailRelayService emailRelayService)
+        public AccountService(IRepository<Account> accountRepository,
+            IEmailFacade emailFacade)
         {
             _accountRepository = accountRepository;
-            _emailCreationService = emailCreationService;
-            _emailRelayService = emailRelayService;
+            _emailFacade = emailFacade;
         }
 
         public Account CreateUser(CreateUserRequest request)
@@ -39,8 +37,13 @@ namespace GroupGiving.Core.Services
             _accountRepository.SaveOrUpdate(account);
             _accountRepository.CommitUpdates();
 
-            var thanksForRegisteringEmail = _emailCreationService.ThankYouForRegisteringEmail(request.Email, request.FirstName);
-            _emailRelayService.SendEmail(thanksForRegisteringEmail);
+            _emailFacade.Send(
+                request.Email, 
+                "AccountCreated", 
+                new {
+                    Account=account,
+                    AccountPageUrl = request.AccountPageUrl
+                });
 
             return account;
         }
@@ -65,8 +68,7 @@ namespace GroupGiving.Core.Services
             _accountRepository.CommitUpdates();
 
             // send email
-            var email = _emailCreationService.PasswordResetInstructionsEmail(account.Email, account.FirstName, account.ResetPasswordToken);
-            emailRelayService.SendEmail(email);
+            _emailFacade.Send(account.Email, "ResetYourPassword", new {Account=account});
 
             return SendPasswordResetResult.SuccessResult;
         }
@@ -91,8 +93,8 @@ namespace GroupGiving.Core.Services
             _accountRepository.CommitUpdates();
 
             // send email
-            var email = _emailCreationService.GetYourAccountStartedEmail(account.Email, account.ResetPasswordToken);
-            emailRelayService.SendEmail(email);
+            _emailFacade.Send(account.Email, "GetYourAccountStarted",
+                new {Account=account});
 
             return SendPasswordResetResult.SuccessResult;
         }

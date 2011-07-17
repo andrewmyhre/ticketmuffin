@@ -7,11 +7,12 @@ using GroupGiving.Core.Email;
 
 namespace GroupGiving.Core.Services
 {
+    [Obsolete("Use EmailProcessing", true)]
     public interface IEmailCreationService
     {
-        IEmailMessage PasswordResetInstructionsEmail(string emailAddress, string firstName, string resetPasswordToken);
-        IEmailMessage ThankYouForRegisteringEmail(string emailAddress, string firstName);
-        IEmailMessage GetYourAccountStartedEmail(string emailAddress, string resetPasswordToken);
-        IEmailMessage MinimumNumberOfAttendeesReached(GroupGivingEvent @event, EventPledge pledge);
+        IEmailTemplate PasswordResetInstructionsEmail(string emailAddress, string firstName, string resetPasswordToken);
+        IEmailTemplate ThankYouForRegisteringEmail(string emailAddress, string firstName);
+        IEmailTemplate GetYourAccountStartedEmail(string emailAddress, string resetPasswordToken);
+        IEmailTemplate MinimumNumberOfAttendeesReached(GroupGivingEvent @event, EventPledge pledge);
     }
 }

@@ -4,7 +4,7 @@ using GroupGiving.Core.Domain;
 
 namespace GroupGiving.Core.Email
 {
-    public class MinimumAttendeesReached : IEmailMessage
+    public class MinimumAttendeesReached : IEmailTemplate
     {
         private readonly GroupGivingEvent _event;
         private readonly EventPledge _pledge;
@@ -29,7 +29,7 @@ namespace GroupGiving.Core.Email
         public MailMessage ToMailMessage()
         {
             MailMessage message = EmailTemplate.ToMailMessage(_template);
-            message.To.Add(new MailAddress(_pledge.EmailAddress));
+            message.To.Add(new MailAddress(_pledge.AccountEmailAddress));
 
             return message;
         }

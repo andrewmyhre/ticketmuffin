@@ -1,0 +1,19 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<emailTemplate xmlns="http://www.tanash.net/email/template">
+    <name>AccountCreated</name>
+    <from>noreply@ticketmuffin.com</from>
+    <subject>TicketMuffin - Thanks for registering @Model.Account.FirstName</subject>
+    <html><![CDATA[<p>Hi @Model.Account.FirstName</p>
+<p>We're glad you've taken the time to register on our site.</p>
+<p>Whenever you want to update your personal information, change your password or review your activity, you can browse here:</p>
+<p>@Model.AccountPageUrl</p>
+<p>Regards,</p>
+<p>TicketMuffin</p>
+]]></html>
+    <text>Hi @Model.Account.FirstName
+We're glad you've taken the time to register on our site.
+Whenever you want to update your personal information, change your password or review your activity, you can browse here:
+@Model.AccountPageUrl
+Regards,
+TicketMuffin</text>
+</emailTemplate>

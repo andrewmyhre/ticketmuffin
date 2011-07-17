@@ -5,6 +5,7 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using System.Web.Security;
+using EmailProcessing;
 using GroupGiving.Core.Actions.CreatePledge;
 using GroupGiving.Core.Data;
 using GroupGiving.Core.Domain;
@@ -25,19 +26,16 @@ namespace GroupGiving.Web.Controllers
         //
         // GET: /Order/
         private readonly IRepository<GroupGivingEvent> _eventRepository;
-        private readonly IEmailCreationService _emailCreationService;
         private readonly IFormsAuthenticationService _formsService;
         private readonly IMembershipService _membershipService;
         private readonly IAccountService _accountService;
         private readonly IPaymentGateway _paymentGateway;
         private readonly ITaxAmountResolver _taxResolver;
         private readonly IPayPalConfiguration _paypalConfiguration;
-        private readonly IEmailRelayService _emailRelayService;
+        private readonly IEmailFacade _emailFacade;
 
         public OrderController()
         {
-            _emailRelayService = MvcApplication.Kernel.Get<IEmailRelayService>();
-            _emailCreationService = MvcApplication.Kernel.Get<IEmailCreationService>();
             _eventRepository = MvcApplication.Kernel.Get<IRepository<GroupGivingEvent>>();
             _formsService = MvcApplication.Kernel.Get<IFormsAuthenticationService>();
             _membershipService = MvcApplication.Kernel.Get<AccountMembershipService>();
@@ -45,6 +43,7 @@ namespace GroupGiving.Web.Controllers
             _paymentGateway = MvcApplication.Kernel.Get<IPaymentGateway>();
             _taxResolver = MvcApplication.Kernel.Get<ITaxAmountResolver>();
             _paypalConfiguration = MvcApplication.Kernel.Get<IPayPalConfiguration>();
+            _emailFacade = MvcApplication.Kernel.Get<IEmailFacade>();
             ((RavenDBMembershipProvider)Membership.Provider).DocumentStore
                 = RavenDbDocumentStore.Instance;
         }
@@ -66,7 +65,7 @@ namespace GroupGiving.Web.Controllers
                 account = _accountService.CreateIncompleteAccount(purchaseDetails.EmailAddress, emailRelayService);
             }
 
-            var action = new MakePledgeAction(_taxResolver, _eventRepository, _paymentGateway, _paypalConfiguration, _emailCreationService, (IEmailRelayService) ViewBag);
+            var action = new MakePledgeAction(_taxResolver, _eventRepository, _paymentGateway, _paypalConfiguration);
             var request = new MakePledgeRequest()
             {
                 AttendeeNames = purchaseDetails.AttendeeName,
@@ -118,8 +117,10 @@ namespace GroupGiving.Web.Controllers
                 {
                     foreach(var eventPledge in @event.Pledges)
                     {
-                        var email = _emailCreationService.MinimumNumberOfAttendeesReached(@event, eventPledge);
-                        _emailRelayService.SendEmail(email);
+                        _emailFacade.Send(
+                            eventPledge.AccountEmailAddress,
+                            "EventActivated",
+                            new {Event=@event,Pledge=pledge});
                     }
                 }
 

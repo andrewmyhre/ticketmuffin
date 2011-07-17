@@ -7,11 +7,12 @@ namespace GroupGiving.Core.Domain
 {
     public class EventPledge
     {
+        public string AccountName { get; set; }
         public DateTime DatePledged { get; set; }
         public DateTime? DateRefunded { get; set; }
         public bool Paid { get; set;}
         public bool Refunded { get; set; }
-        public string EmailAddress { get; set; }
+        public string AccountEmailAddress { get; set; }
         public string TransactionId { get; set; }
         public string OrderNumber { get; set; }
         public List<EventPledgeAttendee> Attendees { get; set; }

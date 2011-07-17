@@ -20,8 +20,6 @@ namespace GroupGiving.Web.Controllers
 {
     public class EventController : Controller
     {
-        private readonly IEmailRelayService _emailRelayService;
-        private readonly IEmailCreationService _emailCreationService;
         private readonly IRepository<GroupGivingEvent> _eventRepository;
         private readonly IFormsAuthenticationService _formsService;
         private readonly IMembershipService _membershipService;
@@ -32,8 +30,6 @@ namespace GroupGiving.Web.Controllers
 
         public EventController()
         {
-            _emailRelayService = MvcApplication.Kernel.Get<IEmailRelayService>();
-            _emailCreationService = MvcApplication.Kernel.Get<IEmailCreationService>();
             _accountService = MvcApplication.Kernel.Get<IAccountService>();
             _eventRepository = MvcApplication.Kernel.Get<IRepository<GroupGivingEvent>>();
             _formsService = MvcApplication.Kernel.Get<IFormsAuthenticationService>();
@@ -197,7 +193,7 @@ namespace GroupGiving.Web.Controllers
                 _accountService.UpdateAccount(account);
             }
 
-            var action = new MakePledgeAction(_taxResolver, _eventRepository, _paymentGateway, _paypalConfiguration, _emailCreationService, _emailRelayService);
+            var action = new MakePledgeAction(_taxResolver, _eventRepository, _paymentGateway, _paypalConfiguration);
             var makePledgeRequest = new MakePledgeRequest()
             {
                 AttendeeNames = request.AttendeeName,

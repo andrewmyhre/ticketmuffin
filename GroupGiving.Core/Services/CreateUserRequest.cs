@@ -1,4 +1,6 @@
-﻿namespace GroupGiving.Core.Services
+﻿using System;
+
+namespace GroupGiving.Core.Services
 {
     public class CreateUserRequest
     {
@@ -15,5 +17,7 @@
         public string PostCode { get; set; }
 
         public string Country { get; set; }
+
+        public string AccountPageUrl { get; set; }
     }
 }

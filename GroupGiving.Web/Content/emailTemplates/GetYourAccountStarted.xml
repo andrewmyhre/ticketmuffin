@@ -1,0 +1,34 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<emailTemplate xmlns="http://www.tanash.net/email/template">
+    <name>GetYourAccountStarted</name>
+    <from>noreply@ticketmuffin.com</from>
+    <subject>TicketMuffin - Let's get your account set up</subject>
+    <html><![CDATA[
+        <p>Hi there,</p>
+        <p>Thanks for making a pledge with TicketMuffin - we're really glad to have you on board.</p>
+        <p>We'd just like to ask you for a little personal information - your name, for instance, so we can be polite and address any emails we send to you personally.</p>
+        <p>If you have a spare minure, we'd be grateful if you click or copy/past this url into your browser:</p>
+        <p><a href="http://www.ticketmuffin.com/account/get-started/@Model.Account.PasswordResetToken">http://www.ticketmuffin.com/account/get-started/@Model.Account.PasswordResetToken</a></p>
+        <p>On that page you can tell us a little about yourself. Don't worry, all the information is optional and totally private.</p>
+        <p>Regards,</p>
+        <p>TicketMuffin</p>
+    ]]></html>
+    <text>
+    <![CDATA[Hi there,
+
+Thanks for making a pledge with TicketMuffin - we're really glad to have you on board.
+
+We'd just like to ask you for a little personal information - your name, for instance, so we can be polite and address any emails we send to you personally.
+
+If you have a spare minure, we'd be grateful if you click or copy/past this url into your browser:
+
+http://www.ticketmuffin.com/account/get-started/@Model.Account.PasswordResetToken
+
+On that page you can tell us a little about yourself. Don't worry, all the information is optional and totally private.
+
+Regards,
+
+TicketMuffin
+    ]]>
+</text>
+</emailTemplate>

@@ -5,13 +5,13 @@ namespace GroupGiving.Core.Email
 {
     public class SimpleSmtpEmailRelayService : IEmailRelayService
     {
-        public void SendEmail(IEmailMessage emailMessage)
+        public void SendEmail(IEmailTemplate emailTemplate)
         {
             SmtpClient smtp = new SmtpClient();
 
             try
             {
-                smtp.Send(emailMessage.ToMailMessage());
+                smtp.Send(emailTemplate.ToMailMessage());
             } catch (Exception ex)
             {
                 // TODO log error

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using EmailProcessing;
 using GroupGiving.Core.Data;
 using GroupGiving.Core.Domain;
 using GroupGiving.Core.Email;
@@ -16,22 +17,16 @@ namespace GroupGiving.Core.Actions.CreatePledge
         private readonly IRepository<GroupGivingEvent> _eventRepository;
         private readonly IPaymentGateway _paymentGateway;
         private readonly IPayPalConfiguration _paypalConfiguration;
-        private readonly IEmailCreationService _emailCreationService;
-        private readonly IEmailRelayService _emailRelayService;
 
         public MakePledgeAction(ITaxAmountResolver tax, 
             IRepository<GroupGivingEvent> eventRepository, 
             IPaymentGateway paymentGateway, 
-            IPayPalConfiguration paypalConfiguration, 
-            IEmailCreationService emailCreationService,
-            IEmailRelayService emailRelayService)
+            IPayPalConfiguration paypalConfiguration)
         {
             _tax = tax;
             _eventRepository = eventRepository;
             _paymentGateway = paymentGateway;
             _paypalConfiguration = paypalConfiguration;
-            _emailCreationService = emailCreationService;
-            _emailRelayService = emailRelayService;
         }
 
         public CreatePledgeActionResult Attempt(GroupGivingEvent @event, Account account, MakePledgeRequest request)
@@ -62,7 +57,7 @@ namespace GroupGiving.Core.Actions.CreatePledge
             pledge.Tax = pledge.TaxRateApplied * pledge.SubTotal;
             pledge.Total = pledge.SubTotal + pledge.Tax;
             pledge.Attendees = (from a in request.AttendeeNames select new EventPledgeAttendee() {FullName = a}).ToList();
-            pledge.EmailAddress = request.PayPalEmailAddress;
+            pledge.AccountEmailAddress = request.PayPalEmailAddress;
             pledge.OrderNumber = Guid.NewGuid().ToString().Replace("{", "").Replace("}", "").Replace("-", "");
 
             // make request to payment gateway

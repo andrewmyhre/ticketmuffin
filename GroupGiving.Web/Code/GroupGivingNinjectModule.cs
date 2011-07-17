@@ -1,4 +1,5 @@
-﻿using GroupGiving.Core.Actions.CreatePledge;
+﻿using EmailProcessing;
+using GroupGiving.Core.Actions.CreatePledge;
 using GroupGiving.Core.Data;
 using GroupGiving.Core.Domain;
 using GroupGiving.Core.Email;
@@ -31,7 +32,7 @@ namespace GroupGiving.Web.Code
             Bind<AccountController>().ToSelf();
 
             Bind<IEmailRelayService>().To<SimpleSmtpEmailRelayService>();
-            Bind<IEmailCreationService>().To<EmailCreationService>();
+            Bind<IEmailFacade>().ToMethod((request) => EmailFacadeFactory.CreateFromConfiguration());
             Bind<ICountryService>().To<CountryService>();
             Bind<IPayPalConfiguration>().ToMethod(
                 (request) => System.Configuration.ConfigurationManager.GetSection("paypal") as PayPalConfiguration);

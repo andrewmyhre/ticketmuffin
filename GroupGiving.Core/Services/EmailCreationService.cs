@@ -5,26 +5,31 @@ using GroupGiving.Core.Email;
 
 namespace GroupGiving.Core.Services
 {
+    [Obsolete("Use EmailProcessing", true)]
     public class EmailCreationService : IEmailCreationService
     {
-        public IEmailMessage PasswordResetInstructionsEmail(string emailAddress, string firstName, string resetPasswordToken)
+        public IEmailTemplate PasswordResetInstructionsEmail(string emailAddress, string firstName, string resetPasswordToken)
         {
-            return new PasswordResetInstructionsEmail(emailAddress, firstName, resetPasswordToken);
+            return null;
+            //return new PasswordResetInstructionsEmail(emailAddress, firstName, resetPasswordToken);
         }
 
-        public IEmailMessage ThankYouForRegisteringEmail(string emailAddress, string firstName)
+        public IEmailTemplate ThankYouForRegisteringEmail(string emailAddress, string firstName)
         {
-            return new ThanksForRegisteringEmail(emailAddress, firstName);
+            return null;
+            //return new ThanksForRegisteringEmail(emailAddress, firstName);
         }
 
-        public IEmailMessage GetYourAccountStartedEmail(string emailAddress, string resetPasswordToken)
+        public IEmailTemplate GetYourAccountStartedEmail(string emailAddress, string resetPasswordToken)
         {
-            return new GetYourAccountStarted(emailAddress, resetPasswordToken);
+            return null;
+            //return new GetYourAccountStarted(emailAddress, resetPasswordToken);
         }
 
-        public IEmailMessage MinimumNumberOfAttendeesReached(GroupGivingEvent @event, EventPledge pledge)
+        public IEmailTemplate MinimumNumberOfAttendeesReached(GroupGivingEvent @event, EventPledge pledge)
         {
-            return new MinimumAttendeesReached(@event, pledge);
+            return null;
+            //return new MinimumAttendeesReached(@event, pledge);
         }
     }
 }
