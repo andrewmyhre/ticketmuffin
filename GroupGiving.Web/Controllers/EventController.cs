@@ -69,8 +69,8 @@ namespace GroupGiving.Web.Controllers
             viewModel.Title = givingEvent.Title;
             viewModel.TicketPrice = givingEvent.TicketPrice;
             viewModel.Venue = givingEvent.Venue;
-            viewModel.VenueLatitude = 50.022019d;
-            viewModel.VenueLongitude = 19.984719d;
+            viewModel.VenueLatitude = givingEvent.Latitude;
+            viewModel.VenueLongitude = givingEvent.Longitude;
             viewModel.EventIsOn = givingEvent.IsOn;
             viewModel.EventIsFull = givingEvent.IsFull;
 
