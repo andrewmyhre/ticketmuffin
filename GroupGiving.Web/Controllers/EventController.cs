@@ -73,6 +73,7 @@ namespace GroupGiving.Web.Controllers
             viewModel.VenueLongitude = givingEvent.Longitude;
             viewModel.EventIsOn = givingEvent.IsOn;
             viewModel.EventIsFull = givingEvent.IsFull;
+            viewModel.ContactName = givingEvent.OrganiserName;
 
             viewModel.PledgeCount = givingEvent.Pledges.Sum(p=>p.Attendees.Count);
             viewModel.RequiredPledgesPercentage = (int)Math.Round(((double) viewModel.PledgeCount/(double) Math.Max(givingEvent.MinimumParticipants, 1))*100, 0);

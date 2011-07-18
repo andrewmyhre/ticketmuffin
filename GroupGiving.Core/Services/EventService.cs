@@ -35,7 +35,8 @@ namespace GroupGiving.Core.Services
                 ShortUrl = request.ShortUrl,
                 IsPrivate = request.IsPrivate,
                 IsFeatured = request.IsFeatured,
-                PhoneNumber = request.PhoneNumber
+                PhoneNumber = request.PhoneNumber,
+                OrganiserName = request.OrganiserName
             };
 
             _eventRepository.SaveOrUpdate(ggEvent);

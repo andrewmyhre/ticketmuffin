@@ -55,6 +55,8 @@ namespace GroupGiving.Core.Domain
             get { return (MaximumParticipants??0) - PledgeCount; }
         }
 
+        public string OrganiserName { get; set; }
+
         public GroupGivingEvent()
         {
             Pledges = new List<EventPledge>();

@@ -71,6 +71,8 @@ namespace GroupGiving.Web.Controllers
                 return View(request);
             }
 
+            var account = _accountService.RetrieveByEmailAddress(User.Identity.Name);
+            request.OrganiserName = string.Format("{0} {1}", account.FirstName, account.LastName);
             var result = _eventService.CreateEvent(request);
 
             if (result.Success)

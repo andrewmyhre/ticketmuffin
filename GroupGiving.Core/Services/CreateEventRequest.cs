@@ -51,5 +51,7 @@ namespace GroupGiving.Core.Services
         public string StartTime { get; set; }
 
         public SelectList StartTimes { get; set; }
+
+        public string OrganiserName { get; set; }
     }
 }
