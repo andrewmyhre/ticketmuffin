@@ -194,6 +194,7 @@
     <Content Include="Content\themes\base\jquery.ui.theme.css" />
     <Content Include="Global.asax" />
     <Content Include="Scripts\diagnostics.js" />
+    <Content Include="Scripts\jquery.countdown.min.js" />
     <Content Include="Scripts\jquery.watermark.min.js" />
     <Content Include="Scripts\pledge.js" />
     <Content Include="Scripts\tickets.js" />

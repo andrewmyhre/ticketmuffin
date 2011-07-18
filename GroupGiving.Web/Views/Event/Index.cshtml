@@ -4,6 +4,39 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
+@section scripts {
+    <script src="/Scripts/jquery.countdown.min.js" type="text/javascript"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('#countdown').countdown({  
+                until: new Date(
+                            @Model.StartDate.Year,
+                            @Model.StartDate.Month-1,
+                            @Model.StartDate.Day,
+                            @Model.StartDate.Hour,
+                            @Model.StartDate.Minute,
+                            @Model.StartDate.Second),
+                layout: '<div class="timeBox">'+
+              '<div class="name">DAYS</div>'+
+              '<div class="number">{dn}</div>'+
+            '</div>'+
+            '<div class="timeBox">'+
+              '<div class="name">HOURS</div>'+
+              '<div class="number">{hn}</div>'+
+            '</div>'+
+            '<div class="timeBox">'+
+              '<div class="name">MINS</div>'+
+              '<div class="number">{mn}</div>'+
+            '</div>'+
+            '<div class="timeBox">'+
+              '<div class="name">SECS</div>'+
+              '<div class="number">{sn}</div>'+
+            '</div>'
+            });
+        });
+    </script>
+}
+
 <div id="eventPage">
         <div id="eventHead">
           <div id="eventDate">
@@ -46,25 +79,7 @@
               <div id="barProgress" style="width: @Model.RequiredPledgesPercentage%;"></div>
             </div>
             <div id="peopleInfo">@Model.PledgeCount people have already pledged to the event</div>
-            <div class="timeBox">
-              <div class="name">DAYS</div>
-
-              <div class="number">@Model.DaysLeft</div>
-            </div>
-            <div class="timeBox">
-              <div class="name">HOURS</div>
-              <div class="number">@Model.HoursLeft</div>
-            </div>
-            <div class="timeBox">
-
-              <div class="name">MINS</div>
-              <div class="number">@Model.MinutesLeft</div>
-            </div>
-            <div class="timeBox">
-              <div class="name">SECS</div>
-              <div class="number">@Model.SecondsLeft</div>
-            </div>
-
+            <div id="countdown"></div>
             <div class="clearFix"></div>
             <div id="timeLeft">Time left to pledge</div>
           </div>
