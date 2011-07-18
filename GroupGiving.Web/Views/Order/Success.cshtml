@@ -20,9 +20,9 @@
           <div style="padding-top: 20px; text-align: justify; font-size: 12px; line-height: 18px;">@Html.Raw(Model.Event.Description) </div>
         </div>
 
-        <h1>Thank you for your pledge!</h1>
-        <h2>Your order number is @Model.Pledge.OrderNumber</h2>
-        <div>We've just sent you an email to: @Model.Pledge.EmailAddress</div> 
+        <p>Thank you for your pledge!</p>
+        <p>Your order number is @Model.Pledge.OrderNumber</p>
+        <p>We've just sent you an email to: @Model.Pledge.AccountEmailAddress</p> 
         @if (Model.Event.IsFull)
         {
             <div style="font-size: 20px; padding-top: 30px;">
