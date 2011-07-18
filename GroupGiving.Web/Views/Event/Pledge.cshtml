@@ -19,7 +19,7 @@
     @using (Html.BeginForm())
     {
         <div class="grayBox">
-            @Html.ValidationSummary("Please correct the following problems:")
+            @Html.ValidationSummary()
             <div><strong>Event:</strong> @Model.Title</div><br />
             <select name="quantity">
                 @for (int i = 1; i <= 3; i++)
