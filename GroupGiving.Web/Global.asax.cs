@@ -112,6 +112,11 @@ namespace GroupGiving.Web
             RegisterRoutes(RouteTable.Routes);
             PageContent.Initialise(System.Web.Hosting.HostingEnvironment.MapPath("~/content/PageContent"));
 
+            ViewEngines.Engines.Clear();
+            ViewEngines.Engines.AddIPhone<RazorViewEngine>();
+            ViewEngines.Engines.AddGenericMobile<RazorViewEngine>();
+            ViewEngines.Engines.Add(new RazorViewEngine());
+
             try
             {
                 EmailFacade = EmailFacadeFactory.CreateFromConfiguration();

@@ -34,6 +34,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="FiftyOne.Foundation, Version=1.0.4.1, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\51Degrees.mobi.1.0.4.1\lib\NET40\FiftyOne.Foundation.dll</HintPath>
+    </Reference>
     <Reference Include="log4net">
       <HintPath>..\packages\log4net.1.2.10\lib\2.0\log4net.dll</HintPath>
     </Reference>
@@ -51,6 +54,9 @@
     <Reference Include="Ninject.Web.Mvc, Version=2.2.0.0, Culture=neutral, PublicKeyToken=c7192dc5380945e7, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\Ninject.Web.Mvc3-2.2.2.0-release-net-4.0\Ninject.Web.Mvc.dll</HintPath>
+    </Reference>
+    <Reference Include="Payflow_dotNET_2.0">
+      <HintPath>..\packages\PayPal SDK\Payflow_dotNET_2.0.dll</HintPath>
     </Reference>
     <Reference Include="Raven.Client.Lightweight, Version=1.0.0.0, Culture=neutral, PublicKeyToken=37f41c7f99471593, processorArchitecture=MSIL" />
     <Reference Include="System.Transactions" />
@@ -114,6 +120,7 @@
     <Compile Include="Code\ContentTypeAwareViewEngine.cs" />
     <Compile Include="Code\GroupGivingNinjectModule.cs" />
     <Compile Include="Code\HtmlHelperExtensions.cs" />
+    <Compile Include="Code\MobileSupport.cs" />
     <Compile Include="Code\MustBeTrueAttribute.cs" />
     <Compile Include="Code\PageContent.cs" />
     <Compile Include="Code\RavenDbDocumentStore.cs" />
@@ -126,6 +133,13 @@
     <Compile Include="Controllers\OrderController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
+    </Compile>
+    <Compile Include="Mobile\Default.aspx.cs">
+      <DependentUpon>Default.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Mobile\Default.aspx.designer.cs">
+      <DependentUpon>Default.aspx</DependentUpon>
     </Compile>
     <Compile Include="Models\AccountModels.cs" />
     <Compile Include="Models\ContactDetailsViewModel.cs" />
@@ -144,6 +158,9 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="App_Data\FiftyOne.Foundation.dll" />
+    <Content Include="App_Data\web_browsers_patch.xml" />
+    <Content Include="Content\style.m.css" />
     <Content Include="Content\emailTemplates\AccountCreated.xml" />
     <Content Include="Content\emailTemplates\ResetYourPassword.xml" />
     <Content Include="Content\emailTemplates\EventActivated.xml" />
@@ -193,6 +210,7 @@
     <Content Include="Content\themes\base\jquery.ui.tabs.css" />
     <Content Include="Content\themes\base\jquery.ui.theme.css" />
     <Content Include="Global.asax" />
+    <Content Include="Mobile\Default.aspx" />
     <Content Include="Scripts\diagnostics.js" />
     <Content Include="Scripts\jquery.countdown.min.js" />
     <Content Include="Scripts\jquery.watermark.min.js" />
@@ -244,6 +262,14 @@
     <Content Include="Views\Event\PersonalDetailsNotSignedIn.cshtml" />
     <Content Include="Views\Event\PersonalDetailsSignedIn.cshtml" />
     <Content Include="Views\Shared\_Layout.cshtml" />
+    <Content Include="Views\Home\Mobile\Index.cshtml" />
+    <Content Include="Views\Shared\Mobile\_Layout.cshtml" />
+    <Content Include="Views\Shared\Mobile\Error.cshtml" />
+    <Content Include="Views\Shared\iPhone\_Layout.cshtml" />
+    <Content Include="Views\Shared\iPhone\Error.cshtml" />
+    <Content Include="Views\Home\iPhone\Index.cshtml" />
+    <Content Include="App_Data\51Degrees.mobi.config" />
+    <None Include="App_Data\wurfl.xml.gz" />
     <None Include="_bin_deployableAssemblies\System.Web.Mvc.dll" />
     <None Include="_bin_deployableAssemblies\WebMatrix.WebData.xml" />
     <None Include="_bin_deployableAssemblies\WebMatrix.WebData.dll" />
@@ -264,9 +290,7 @@
     <None Include="_bin_deployableAssemblies\Microsoft.Web.Infrastructure.xml" />
     <None Include="_bin_deployableAssemblies\Microsoft.Web.Infrastructure.dll" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="App_Data\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <Content Include="packages.config" />
   </ItemGroup>
