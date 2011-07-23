@@ -127,6 +127,8 @@ input[type="submit"] {
   -moz-border-radius: 10px;
   -webkit-border-radius: 10px;
   cursor: pointer;
+  padding:6px;
+  font-size:16pt;
 }
 input[type="submit"]:hover {
   opacity: 0.8;
@@ -331,4 +333,9 @@ div#confirmPageEvenInfo div#eventDate {
 div.validation-summary-errors, .field-validation-error
 {
 color:Red;
+}
+textarea.multi-line
+{
+    width:600px;
+    height:300px;
 }

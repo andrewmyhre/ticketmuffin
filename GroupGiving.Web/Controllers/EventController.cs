@@ -219,5 +219,40 @@ namespace GroupGiving.Web.Controllers
 
             return Redirect(string.Format(response.PaymentPageUrl, response.TransactionId));
         }
+
+        [ActionName("edit-event")]
+        [AcceptVerbs(HttpVerbs.Get)]
+        public ActionResult Edit(string shortUrl)
+        {
+            var viewModel = new UpdateEventViewModel();
+            var groupGivingEvent = _eventRepository.Retrieve(e => e.ShortUrl == shortUrl);
+
+            AutoMapper.Mapper.CreateMap<GroupGivingEvent, UpdateEventViewModel>();
+            viewModel = AutoMapper.Mapper.Map<GroupGivingEvent, UpdateEventViewModel>(groupGivingEvent);
+
+            return View(viewModel);
+        }
+
+        [ActionName("edit-event")]
+        [AcceptVerbs(HttpVerbs.Post)]
+        [ValidateInput(false)]
+        public ActionResult Edit(string shortUrl, UpdateEventViewModel viewModel)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(viewModel);
+            }
+
+            var groupGivingEvent = _eventRepository.Retrieve(e => e.ShortUrl == shortUrl);
+            AutoMapper.Mapper.CreateMap<UpdateEventViewModel, GroupGivingEvent>()
+                .ForMember(d=>d.Id, m=>m.Ignore());
+
+            this.TryUpdateModel(groupGivingEvent);
+
+            _eventRepository.SaveOrUpdate(groupGivingEvent);
+            _eventRepository.CommitUpdates();
+
+            return RedirectToAction("edit-event", new {shortUrl=shortUrl});
+        }
     }
 }
