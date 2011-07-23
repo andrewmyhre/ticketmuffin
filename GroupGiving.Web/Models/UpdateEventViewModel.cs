@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using GroupGiving.Core.Domain;
 
 namespace GroupGiving.Web.Models
 {
@@ -37,5 +39,7 @@ namespace GroupGiving.Web.Models
         public string AdditionalBenefits { get; set; }
 
         public string PaypalAccountEmailAddress { get; set; }
+
+        public List<EventPledge> Pledges { get; set; }
     }
 }

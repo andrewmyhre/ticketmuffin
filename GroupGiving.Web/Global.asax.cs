@@ -96,6 +96,11 @@ namespace GroupGiving.Web
                 "Event_ListPledges",
                 "events/{shortUrl}/pledges",
                 new { controller = "Event", action = "event-pledges" });
+
+            routes.MapRoute(
+                "Pledge_Refund",
+                "events/{shortUrl}/pledges/{orderNumber}/refund",
+                new {controller = "Event", action = "refund-pledge"});
         }
 
         private static void MapEventCreationRoutes(RouteCollection routes)

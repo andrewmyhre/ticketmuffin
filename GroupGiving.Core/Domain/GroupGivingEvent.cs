@@ -46,8 +46,15 @@ namespace GroupGiving.Core.Domain
         {
             get { return PledgeCount >= MaximumParticipants; }
         }
+
         [JsonIgnore]
-        public int PledgeCount { get { return Pledges.Sum(p => p.Attendees.Count()); } }
+        public int PledgeCount { 
+            get { 
+                return Pledges.Where(p=>p.Paid
+                    &&(p.PaymentStatus==PaymentStatus.PaidPendingReconciliation
+                    ||p.PaymentStatus==PaymentStatus.Reconciled)).Sum(p => p.Attendees.Count()); 
+            } 
+        }
 
         [JsonIgnore]
         public int SpacesLeft

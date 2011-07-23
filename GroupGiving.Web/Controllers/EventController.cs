@@ -75,7 +75,7 @@ namespace GroupGiving.Web.Controllers
             viewModel.EventIsFull = givingEvent.IsFull;
             viewModel.ContactName = givingEvent.OrganiserName;
 
-            viewModel.PledgeCount = givingEvent.Pledges.Sum(p=>p.Attendees.Count);
+            viewModel.PledgeCount = givingEvent.PledgeCount;
             viewModel.RequiredPledgesPercentage = (int)Math.Round(((double) viewModel.PledgeCount/(double) Math.Max(givingEvent.MinimumParticipants, 1))*100, 0);
 
             if (givingEvent.SalesEndDateTime > DateTime.Now)
@@ -253,6 +253,74 @@ namespace GroupGiving.Web.Controllers
             _eventRepository.CommitUpdates();
 
             return RedirectToAction("edit-event", new {shortUrl=shortUrl});
+        }
+
+        [ActionName("event-pledges")]
+        [AcceptVerbs(HttpVerbs.Get)]
+        public ActionResult ListPledges(string shortUrl)
+        {
+            var groupGivingEvent = _eventRepository.Retrieve(e => e.ShortUrl == shortUrl);
+
+            AutoMapper.Mapper.CreateMap<GroupGivingEvent, UpdateEventViewModel>();
+            var viewModel = AutoMapper.Mapper.Map<GroupGivingEvent, UpdateEventViewModel>(groupGivingEvent);
+
+            return View(viewModel);
+        }
+
+        [ActionName("refund-pledge")]
+        [AcceptVerbs(HttpVerbs.Get)]
+        public ActionResult RefundPledge(string shortUrl, string orderNumber)
+        {
+            var @event = _eventRepository.Retrieve(e => e.ShortUrl == shortUrl);
+            var pledge = @event.Pledges.Where(p => p.OrderNumber == orderNumber).FirstOrDefault();
+            if (pledge==null)
+            {
+                ModelState.AddModelError("ordernumber", "We couldn't locate a pledge with that order number.");
+                return View();
+            }
+
+            var viewModel = new GroupGiving.Web.Models.RefundViewModel();
+            viewModel.Event = @event;
+            viewModel.PledgeToBeRefunded = pledge;
+
+            return View(viewModel);
+        }
+
+        [ActionName("refund-pledge")]
+        [AcceptVerbs(HttpVerbs.Post)]
+        public ActionResult RefundPledge(string shortUrl, string orderNumber, bool? confirm)
+        {
+            var @event = _eventRepository.Retrieve(e => e.ShortUrl == shortUrl);
+            var pledge = @event.Pledges.Where(p => p.OrderNumber == orderNumber).FirstOrDefault();
+            if (pledge == null)
+            {
+                ModelState.AddModelError("ordernumber", "We couldn't locate a pledge with that order number.");
+            }
+
+            if (!confirm.HasValue || !confirm.Value)
+            {
+                ModelState.AddModelError("confirm",
+                                         "You have to confirm that you definitely want to refund this pledge.");
+            }
+
+            if (!ModelState.IsValid)
+            {
+                var viewModel = new GroupGiving.Web.Models.RefundViewModel();
+                viewModel.Event = @event;
+                viewModel.PledgeToBeRefunded = pledge;
+
+                return View(viewModel);
+            }
+
+            pledge.DateRefunded = DateTime.Now;
+            pledge.PaymentStatus = PaymentStatus.Refunded;
+            pledge.Paid = false;
+            _eventRepository.SaveOrUpdate(@event);
+            _eventRepository.CommitUpdates();
+
+            TempData["refunded"] = true;
+
+            return RedirectToAction("event-pledges", new {shortUrl = shortUrl});
         }
     }
 }

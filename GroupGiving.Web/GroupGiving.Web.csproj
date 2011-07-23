@@ -151,6 +151,7 @@
     <Compile Include="Models\OrderConfirmationViewModel.cs" />
     <Compile Include="Models\OrderRequestViewModel.cs" />
     <Compile Include="Models\PurchaseDetails.cs" />
+    <Compile Include="Models\RefundViewModel.cs" />
     <Compile Include="Models\ResetPasswordViewModel.cs" />
     <Compile Include="Models\ShareEventViewModel.cs" />
     <Compile Include="Models\SignInModel.cs" />
@@ -161,6 +162,9 @@
   <ItemGroup>
     <Content Include="App_Data\FiftyOne.Foundation.dll" />
     <Content Include="App_Data\web_browsers_patch.xml" />
+    <Content Include="Content\emailTemplates\PledgeConfirmation.xml" />
+    <Content Include="Content\img\dinner.jpg" />
+    <Content Include="Content\img\howitworks.jpg" />
     <Content Include="Content\style.m.css" />
     <Content Include="Content\emailTemplates\AccountCreated.xml" />
     <Content Include="Content\emailTemplates\ResetYourPassword.xml" />
@@ -272,6 +276,9 @@
     <Content Include="App_Data\51Degrees.mobi.config" />
     <Content Include="App_Data\wurfl.xml.gz" />
     <Content Include="Views\Event\Edit-Event.cshtml" />
+    <Content Include="Views\Event\event-pledges.cshtml" />
+    <Content Include="Views\Event\refund-pledge.cshtml" />
+    <Content Include="Views\Home\HowItWorks.cshtml" />
     <None Include="_bin_deployableAssemblies\System.Web.Mvc.dll" />
     <None Include="_bin_deployableAssemblies\WebMatrix.WebData.xml" />
     <None Include="_bin_deployableAssemblies\WebMatrix.WebData.dll" />

@@ -32,7 +32,6 @@ namespace GroupGiving.Web.Controllers
         private readonly IPaymentGateway _paymentGateway;
         private readonly ITaxAmountResolver _taxResolver;
         private readonly IPayPalConfiguration _paypalConfiguration;
-        private readonly IEmailFacade _emailFacade;
 
         public OrderController()
         {
@@ -43,7 +42,6 @@ namespace GroupGiving.Web.Controllers
             _paymentGateway = MvcApplication.Kernel.Get<IPaymentGateway>();
             _taxResolver = MvcApplication.Kernel.Get<ITaxAmountResolver>();
             _paypalConfiguration = MvcApplication.Kernel.Get<IPayPalConfiguration>();
-            _emailFacade = MvcApplication.Kernel.Get<IEmailFacade>();
             ((RavenDBMembershipProvider)Membership.Provider).DocumentStore
                 = RavenDbDocumentStore.Instance;
         }
@@ -93,6 +91,7 @@ namespace GroupGiving.Web.Controllers
             // update the pledge
             GroupGivingEvent @event = null;
             EventPledge pledge=null;
+            Account account = null;
             using (var session = RavenDbDocumentStore.Instance.OpenSession())
             {
                 @event =
@@ -100,6 +99,7 @@ namespace GroupGiving.Web.Controllers
                         .Where(e => e.Pledges.Any(p => p.TransactionId == payKey))
                         .FirstOrDefault();
                 pledge = @event.Pledges.Where(p => p.TransactionId == payKey).FirstOrDefault();
+                account = _accountService.RetrieveByEmailAddress(pledge.AccountEmailAddress);
             }
 
             if (@event==null || pledge == null)
@@ -109,15 +109,21 @@ namespace GroupGiving.Web.Controllers
             if (!pledge.Paid)
             {
                 pledge.Paid = true;
+                pledge.PaymentStatus = PaymentStatus.PaidPendingReconciliation;
                 pledge.DatePledged = DateTime.Now;
 
-                // this pledge has activated the event
+                // send a purchase confirmation email
+                MvcApplication.EmailFacade.Send(pledge.AccountEmailAddress,
+                                                "PledgeConfirmation",
+                                                new {Event = @event, Pledge = pledge, Account=account});
+
+                // this pledge has activated the event);
                 if (@event.IsOn 
                     && (@event.PledgeCount - pledge.Attendees.Count < @event.MinimumParticipants))
                 {
                     foreach(var eventPledge in @event.Pledges)
                     {
-                        _emailFacade.Send(
+                        MvcApplication.EmailFacade.Send(
                             eventPledge.AccountEmailAddress,
                             "EventActivated",
                             new {Event=@event,Pledge=pledge});

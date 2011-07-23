@@ -46,7 +46,7 @@
           <div id="eventName"><h1>@Model.Title</h1></div>
 
           <div id="eventDetails"><strong>@Model.Venue</strong>, @Model.City, @Model.Country, @Model.StartDate.ToString("dddd, MMMM dd, yyyy, HH:mm tt"), @Model.AddressLine</div>
-          <div id="howItWorks">How it works</div>
+          <div id="howItWorks">@Html.ActionLink("How it works", "HowItWorks", "Home")</div>
         </div>
         <div id="eventLeft">
         @if (!Model.EventIsFull)
