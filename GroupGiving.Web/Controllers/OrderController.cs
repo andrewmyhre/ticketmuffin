@@ -137,7 +137,7 @@ namespace GroupGiving.Web.Controllers
             var viewModel = new OrderConfirmationViewModel();
             viewModel.Event = @event;
             viewModel.PledgesRequired = viewModel.Event.MinimumParticipants -
-                                        viewModel.Event.Pledges.Sum(p => p.Attendees.Count);
+                                        viewModel.Event.PledgeCount;
             viewModel.Pledge = pledge;
 
             return View(viewModel);
