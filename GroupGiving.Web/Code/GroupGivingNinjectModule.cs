@@ -32,7 +32,7 @@ namespace GroupGiving.Web.Code
             Bind<AccountController>().ToSelf();
 
             Bind<IEmailRelayService>().To<SimpleSmtpEmailRelayService>();
-            Bind<IEmailFacade>().ToMethod((request) => EmailFacadeFactory.CreateFromConfiguration());
+            Bind<IEmailFacade>().ToMethod((request) => MvcApplication.EmailFacade);
             Bind<ICountryService>().To<CountryService>();
             Bind<IPayPalConfiguration>().ToMethod(
                 (request) => System.Configuration.ConfigurationManager.GetSection("paypal") as PayPalConfiguration);
