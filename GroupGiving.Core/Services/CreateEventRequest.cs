@@ -11,6 +11,8 @@ namespace GroupGiving.Core.Services
         [Display(Name="Title")]
         public string Title { get; set; }
 
+        [Required]
+        [DataType(DataType.Date, ErrorMessage="Please provide a valid date")]
         public DateTime StartDateTime { get; set; }
 
         [Required]

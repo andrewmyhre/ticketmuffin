@@ -62,12 +62,18 @@ namespace GroupGiving.Web.Controllers
             {
                 request.StartDateTime = startDate;
             }
+            if (request.StartDateTime < DateTime.Now)
+            {
+                ModelState.AddModelError("startDateTime", "The date you provided isn't valid because it's in the past");
+            }
             if (!_eventService.ShortUrlAvailable(request.ShortUrl))
             {
                 ModelState.AddModelError("ShortUrl", "Unfortunately that url is already in use");
             }
             if (!ModelState.IsValid)
             {
+                request.StartDateTime = DateTime.Now;
+                request.StartTimes = TimeOptions();
                 return View(request);
             }
 
@@ -82,6 +88,26 @@ namespace GroupGiving.Web.Controllers
 
             ModelState.AddModelError("createevent", "There was a problem with the information you provided");
             return View(request);
+        }
+
+        bool ParseDateStrict(string dateValue, out DateTime dateTime)
+        {
+            dateTime = DateTime.MinValue;
+            string[] values = dateValue.Split('/');
+            if (values.Length != 3)
+                return false;
+
+            if (values[2].Length != 2 && values[2].Length != 4)
+                return false;
+
+            int year = 0, month = 0, day = 0;
+            if (!int.TryParse(values[2], out year)
+                || !int.TryParse(values[1], out month)
+                || !int.TryParse(values[0], out day))
+                return false;
+
+            dateTime = new DateTime(year, month, day);
+            return true;
         }
 
         [AcceptVerbs(HttpVerbs.Get)]
