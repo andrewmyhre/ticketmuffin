@@ -21,6 +21,9 @@
         $('#AdditionalBenefits').markItUp(markdownSettings);
     });
 </script>
+
+<script type="text/javascript" src='http://maps.google.com/maps/api/js?sensor=false'></script>
+<script type='text/javascript' src='/scripts/editevent.js'></script>
 }
 
 
@@ -46,14 +49,24 @@
     </fieldset>
     <fieldset>
         <legend>Place and Time</legend>
+        <div id="map" style="width:300px;height:250px;float:right;"></div>
         <p>@Html.LabelFor(vm => vm.Venue) @Html.EditorFor(vm => vm.Venue) @Html.ValidationMessageFor(vm => vm.Venue)</p>
         <p>@Html.LabelFor(vm => vm.AddressLine) @Html.EditorFor(vm => vm.AddressLine) @Html.ValidationMessageFor(vm => vm.AddressLine)</p>
         <p>@Html.LabelFor(vm => vm.City) @Html.EditorFor(vm => vm.City) @Html.ValidationMessageFor(vm => vm.City)</p>
-        <p>@Html.LabelFor(vm => vm.Country) @Html.EditorFor(vm => vm.Country) @Html.ValidationMessageFor(vm => vm.Country)</p>
-        <p>@Html.LabelFor(vm => vm.Latitude) @Html.EditorFor(vm => vm.Latitude) @Html.ValidationMessageFor(vm => vm.Latitude)</p>
-        <p>@Html.LabelFor(vm => vm.Longitude) @Html.EditorFor(vm => vm.Longitude) @Html.ValidationMessageFor(vm => vm.Longitude)</p>
+        <p>@Html.LabelFor(vm => vm.Postcode) @Html.EditorFor(vm => vm.Postcode) @Html.ValidationMessageFor(vm => vm.Postcode)</p>
+        
+        <p>
+            @Html.LabelFor(vm => vm.Country) 
+            <select name="Country" id="Country">
+                <option selected="selected">United Kingdom</option>
+                <option>Poland</option>
+            </select>
+            @Html.ValidationMessageFor(vm => vm.Country)
+        </p>
+        <p><input type="hidden" name="latlong" id="latlong" /></p>
         <p>@Html.LabelFor(vm => vm.PhoneNumber) @Html.EditorFor(vm => vm.PhoneNumber) @Html.ValidationMessageFor(vm => vm.PhoneNumber)</p>
         <p>@Html.LabelFor(vm => vm.StartDate) @Html.EditorFor(vm => vm.StartDate) @Html.ValidationMessageFor(vm=>vm.StartDate)</p>
+        
     </fieldset>
     @Html.HiddenFor(vm => vm.Id)
     <input type="submit" value="Save Event Details" />

@@ -12,8 +12,10 @@ namespace GroupGiving.Web.Models
         public string Title { get; set; }
         public string City { get; set; }
         public string Country { get; set; }
-        [DataType(DataType.Html)]
-        [UIHint("HtmlEditor")]
+        public string Postcode { get; set; }
+        public string LatLong { get; set; }
+        [DataType(DataType.MultilineText)]
+        [UIHint("markdown")]
         public string Description { get; set; }
         [DataType(DataType.DateTime)]
         [Display(Name="Event Date")]
@@ -47,9 +49,9 @@ namespace GroupGiving.Web.Models
         [Display(Name="Date sales should end")]
         public DateTime SalesEndDateTime { get; set; }
 
-        [DataType(DataType.Html)]
-        [UIHint("HtmlEditor")]
+        [DataType(DataType.MultilineText)]
         [Display(Name="Other information e.g: the benefits of attending")]
+        [UIHint("markdown")]
         public string AdditionalBenefits { get; set; }
 
         public string PaypalAccountEmailAddress { get; set; }

@@ -233,7 +233,9 @@
     <Content Include="markitup\sets\markDown\style.css" />
     <Content Include="Mobile\Default.aspx" />
     <Content Include="Scripts\diagnostics.js" />
+    <Content Include="Scripts\editevent.js" />
     <Content Include="Scripts\jquery.countdown.min.js" />
+    <Content Include="Scripts\jquery.locationpicker.js" />
     <Content Include="Scripts\jquery.watermark.min.js" />
     <Content Include="markitup\jquery.markitup.js" />
     <Content Include="markitup\sets\default\images\bold.png" />
@@ -856,7 +858,6 @@
     <Content Include="Views\Event\event-pledges.cshtml" />
     <Content Include="Views\Event\refund-pledge.cshtml" />
     <Content Include="Views\Home\HowItWorks.cshtml" />
-    <Content Include="Views\Event\EditorTemplates\HtmlEditor.cshtml" />
     <None Include="tinymce\examples\media\sample.dcr" />
     <None Include="tinymce\examples\media\sample.flv" />
     <None Include="tinymce\examples\media\sample.ram" />
@@ -885,9 +886,7 @@
     <None Include="_bin_deployableAssemblies\Microsoft.Web.Infrastructure.xml" />
     <None Include="_bin_deployableAssemblies\Microsoft.Web.Infrastructure.dll" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Scripts\markitup\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <Content Include="packages.config" />
   </ItemGroup>

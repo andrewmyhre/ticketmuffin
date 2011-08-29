@@ -65,6 +65,8 @@ namespace GroupGiving.Core.Domain
 
         public string OrganiserName { get; set; }
 
+        public string Postcode { get; set; }
+
         public GroupGivingEvent()
         {
             Pledges = new List<EventPledge>();

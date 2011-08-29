@@ -60,6 +60,7 @@ namespace GroupGiving.Web.Controllers
             viewModel.AdditionalBenefitsMarkedDown = _markdown.Transform(!string.IsNullOrWhiteSpace(givingEvent.AdditionalBenefits) ? givingEvent.AdditionalBenefits : "");
             viewModel.AddressLine = givingEvent.AddressLine;
             viewModel.City = givingEvent.City;
+            viewModel.PostCode = givingEvent.Postcode;
             viewModel.DescriptionMarkedDown = _markdown.Transform(!string.IsNullOrWhiteSpace(givingEvent.Description) ? givingEvent.Description : "");
             viewModel.IsFeatured = givingEvent.IsFeatured;
             viewModel.IsPrivate = givingEvent.IsPrivate;
@@ -236,6 +237,7 @@ namespace GroupGiving.Web.Controllers
 
             AutoMapper.Mapper.CreateMap<GroupGivingEvent, UpdateEventViewModel>();
             viewModel = AutoMapper.Mapper.Map<GroupGivingEvent, UpdateEventViewModel>(groupGivingEvent);
+            viewModel.LatLong = string.Format("{0:#.#####},{1:#.#####}", groupGivingEvent.Latitude, groupGivingEvent.Longitude);
 
             return View(viewModel);
         }
@@ -245,6 +247,17 @@ namespace GroupGiving.Web.Controllers
         [ValidateInput(false)]
         public ActionResult Edit(string shortUrl, UpdateEventViewModel viewModel)
         {
+            string[] latLongValues = viewModel.LatLong.Split(',');
+            if (latLongValues.Length == 2)
+            {
+                float lat, lng;
+                if (float.TryParse(latLongValues[0], out lat) && float.TryParse(latLongValues[1], out lng))
+                {
+                    viewModel.Latitude = lat;
+                    viewModel.Longitude = lng;
+                }
+            }
+
             if (!ModelState.IsValid)
             {
                 return View(viewModel);
