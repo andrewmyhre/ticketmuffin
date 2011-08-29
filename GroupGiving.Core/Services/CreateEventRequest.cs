@@ -40,6 +40,7 @@ namespace GroupGiving.Core.Services
 
         [Required]
         [Display(Name = "Description")]
+        [DataType(DataType.MultilineText)]
         public string Description { get; set; }
 
         [Required]

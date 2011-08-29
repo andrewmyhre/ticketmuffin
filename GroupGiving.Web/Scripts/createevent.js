@@ -11,6 +11,8 @@ $(function () {
     $('#City').change(lookupAddress);
     $('#Country').change(lookupAddress);
     $('#Postcode').change(lookupAddress);
+
+    $('#Description').markItUp(markdownSettings);
 });
 
 function lookupAddress() {

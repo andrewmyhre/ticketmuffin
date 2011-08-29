@@ -334,11 +334,6 @@ div.validation-summary-errors, .field-validation-error
 {
 color:Red;
 }
-textarea.multi-line
-{
-    width:600px;
-    height:300px;
-}
 
 label
 {
