@@ -10,7 +10,7 @@ namespace GroupGiving.Web.Models
 
         public DateTime StartDate { get; set; }
 
-        public string AdditionalBenefits { get; set; }
+        public string AdditionalBenefitsMarkedDown { get; set; }
 
         public string AddressLine { get; set; }
 
@@ -20,7 +20,7 @@ namespace GroupGiving.Web.Models
 
         public string Country { get; set; }
 
-        public string Description { get; set; }
+        public string DescriptionMarkedDown { get; set; }
 
         public bool IsFeatured { get; set; }
 
@@ -67,5 +67,7 @@ namespace GroupGiving.Web.Models
         public bool EventIsOn { get; set; }
 
         public bool EventIsFull { get; set; }
+
+        public bool UserIsEventOwner { get; set; }
     }
 }

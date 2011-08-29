@@ -3,10 +3,6 @@ Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual Studio 2010
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GroupGiving.Web", "GroupGiving.Web\GroupGiving.Web.csproj", "{B75BD700-F6ED-4B72-AB58-19875F157585}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PayPal.Tests.Integration", "PayPal.Tests.Integration\PayPal.Tests.Integration.csproj", "{6AB21D0F-97EC-4A45-9668-CAB3C655993A}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PayPal", "..\..\tools\paypalhelper-5965\code\PayPal\PayPal.csproj", "{D41BB3C4-046E-491F-8EC7-D2D063F52435}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GroupGiving.PayPal", "GroupGiving.PayPal\GroupGiving.PayPal.csproj", "{69AC82E2-904E-4A5F-9A94-E5EDD91534AB}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GroupGiving.Core", "GroupGiving.Core\GroupGiving.Core.csproj", "{665762CC-21C5-4DF4-A0AD-AB23C449DDF9}"
@@ -43,26 +39,6 @@ Global
 		{B75BD700-F6ED-4B72-AB58-19875F157585}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{B75BD700-F6ED-4B72-AB58-19875F157585}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{B75BD700-F6ED-4B72-AB58-19875F157585}.Release|x86.ActiveCfg = Release|Any CPU
-		{6AB21D0F-97EC-4A45-9668-CAB3C655993A}.Debug|Any CPU.ActiveCfg = Debug|x86
-		{6AB21D0F-97EC-4A45-9668-CAB3C655993A}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
-		{6AB21D0F-97EC-4A45-9668-CAB3C655993A}.Debug|Mixed Platforms.Build.0 = Debug|x86
-		{6AB21D0F-97EC-4A45-9668-CAB3C655993A}.Debug|x86.ActiveCfg = Debug|x86
-		{6AB21D0F-97EC-4A45-9668-CAB3C655993A}.Debug|x86.Build.0 = Debug|x86
-		{6AB21D0F-97EC-4A45-9668-CAB3C655993A}.Release|Any CPU.ActiveCfg = Release|x86
-		{6AB21D0F-97EC-4A45-9668-CAB3C655993A}.Release|Mixed Platforms.ActiveCfg = Release|x86
-		{6AB21D0F-97EC-4A45-9668-CAB3C655993A}.Release|Mixed Platforms.Build.0 = Release|x86
-		{6AB21D0F-97EC-4A45-9668-CAB3C655993A}.Release|x86.ActiveCfg = Release|x86
-		{6AB21D0F-97EC-4A45-9668-CAB3C655993A}.Release|x86.Build.0 = Release|x86
-		{D41BB3C4-046E-491F-8EC7-D2D063F52435}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{D41BB3C4-046E-491F-8EC7-D2D063F52435}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{D41BB3C4-046E-491F-8EC7-D2D063F52435}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
-		{D41BB3C4-046E-491F-8EC7-D2D063F52435}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
-		{D41BB3C4-046E-491F-8EC7-D2D063F52435}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{D41BB3C4-046E-491F-8EC7-D2D063F52435}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{D41BB3C4-046E-491F-8EC7-D2D063F52435}.Release|Any CPU.Build.0 = Release|Any CPU
-		{D41BB3C4-046E-491F-8EC7-D2D063F52435}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
-		{D41BB3C4-046E-491F-8EC7-D2D063F52435}.Release|Mixed Platforms.Build.0 = Release|Any CPU
-		{D41BB3C4-046E-491F-8EC7-D2D063F52435}.Release|x86.ActiveCfg = Release|Any CPU
 		{69AC82E2-904E-4A5F-9A94-E5EDD91534AB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{69AC82E2-904E-4A5F-9A94-E5EDD91534AB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{69AC82E2-904E-4A5F-9A94-E5EDD91534AB}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU

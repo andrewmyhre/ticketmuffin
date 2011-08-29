@@ -1,0 +1,8 @@
+﻿@model GroupGiving.Web.Code.MarkdownViewModel
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "_EditorLayout.cshtml";
+}
+
+@Html.Raw(Model.ParsedData)

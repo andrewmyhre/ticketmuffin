@@ -8,6 +8,7 @@ namespace GroupGiving.Core.Domain
     public class GroupGivingEvent : IDomainObject
     {
         public string Id { get; set; }
+        public string CreatorId { get; set; }
         public string Title { get; set; }
         public string City { get; set; }
         public string Country { get; set; }

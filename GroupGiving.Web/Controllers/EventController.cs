@@ -2,6 +2,7 @@
 using System.Configuration;
 using System.Linq;
 using System.Web.Security;
+using anrControls;
 using GroupGiving.Core.Actions.CreatePledge;
 using GroupGiving.Core.Data;
 using GroupGiving.Core.Domain;
@@ -27,6 +28,7 @@ namespace GroupGiving.Web.Controllers
         private readonly IPaymentGateway _paymentGateway;
         private readonly ITaxAmountResolver _taxResolver;
         private IPayPalConfiguration _paypalConfiguration;
+        private static Markdown _markdown =  new Markdown();
 
         public EventController()
         {
@@ -55,10 +57,10 @@ namespace GroupGiving.Web.Controllers
 
             viewModel.EventId = givingEvent.Id;
             viewModel.StartDate = givingEvent.StartDate;
-            viewModel.AdditionalBenefits = givingEvent.AdditionalBenefits;
+            viewModel.AdditionalBenefitsMarkedDown = _markdown.Transform(!string.IsNullOrWhiteSpace(givingEvent.AdditionalBenefits) ? givingEvent.AdditionalBenefits : "");
             viewModel.AddressLine = givingEvent.AddressLine;
             viewModel.City = givingEvent.City;
-            viewModel.Description = givingEvent.Description;
+            viewModel.DescriptionMarkedDown = _markdown.Transform(!string.IsNullOrWhiteSpace(givingEvent.Description) ? givingEvent.Description : "");
             viewModel.IsFeatured = givingEvent.IsFeatured;
             viewModel.IsPrivate = givingEvent.IsPrivate;
             viewModel.MaximumParticipants = givingEvent.MaximumParticipants;
@@ -74,6 +76,7 @@ namespace GroupGiving.Web.Controllers
             viewModel.EventIsOn = givingEvent.IsOn;
             viewModel.EventIsFull = givingEvent.IsFull;
             viewModel.ContactName = givingEvent.OrganiserName;
+            viewModel.UserIsEventOwner = true; // todo
 
             viewModel.PledgeCount = givingEvent.PledgeCount;
             viewModel.RequiredPledgesPercentage = (int)Math.Round(((double) viewModel.PledgeCount/(double) Math.Max(givingEvent.MinimumParticipants, 1))*100, 0);
@@ -126,10 +129,10 @@ namespace GroupGiving.Web.Controllers
         {
             viewModel.EventId = givingEvent.Id;
             viewModel.StartDate = givingEvent.StartDate;
-            viewModel.AdditionalBenefits = givingEvent.AdditionalBenefits;
+            viewModel.AdditionalBenefitsMarkedDown = givingEvent.AdditionalBenefits;
             viewModel.AddressLine = givingEvent.AddressLine;
             viewModel.City = givingEvent.City;
-            viewModel.Description = givingEvent.Description;
+            viewModel.DescriptionMarkedDown = givingEvent.Description;
             viewModel.IsFeatured = givingEvent.IsFeatured;
             viewModel.IsPrivate = givingEvent.IsPrivate;
             viewModel.MaximumParticipants = givingEvent.MaximumParticipants;
@@ -143,6 +146,7 @@ namespace GroupGiving.Web.Controllers
             viewModel.EventIsOn = givingEvent.IsOn;
             viewModel.EventIsFull = givingEvent.IsFull;
             viewModel.AttendeeName = viewModel.AttendeeName ?? new string[1];
+            viewModel.UserIsEventOwner = true; // todo
 
             if (User.Identity.IsAuthenticated)
             {
@@ -215,7 +219,10 @@ namespace GroupGiving.Web.Controllers
             PaymentGatewayResponse response = result.GatewayResponse;
 
             if (!result.Succeeded)
+            {
+                viewModel = BuildEventPageViewModel(eventDetails, request);
                 return View(viewModel);
+            }
 
             return Redirect(string.Format(response.PaymentPageUrl, response.TransactionId));
         }

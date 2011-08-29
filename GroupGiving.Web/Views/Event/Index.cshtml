@@ -45,7 +45,13 @@
           </div>
           <div id="eventName"><h1>@Model.Title</h1></div>
 
-          <div id="eventDetails"><strong>@Model.Venue</strong>, @Model.City, @Model.Country, @Model.StartDate.ToString("dddd, MMMM dd, yyyy, HH:mm tt"), @Model.AddressLine</div>
+          <div id="eventDetails"><strong>@Model.Venue</strong>, @Model.City, @Model.Country, @Model.StartDate.ToString("dddd, MMMM dd, yyyy, HH:mm tt"), @Model.AddressLine
+          @{
+                if (Model.UserIsEventOwner)
+                {
+                    <text>@Html.ActionLink("Edit this event", "edit-event", new {shortUrl=Model.ShortUrl})</text>
+                }
+              }</div>
           <div id="howItWorks">@Html.ActionLink("How it works", "HowItWorks", "Home")</div>
         </div>
         <div id="eventLeft">
@@ -185,8 +191,8 @@ setTimeout("inicjalizacja()",1000);
         </div>                                    
         <div id="eventRight">
           <div id="eventDesc">
-            <p>@Html.Raw(Model.Description)</p>
-            <p>@Model.AdditionalBenefits</p>
+            <p>@Html.Raw(Model.DescriptionMarkedDown)</p>
+            <p>@Model.AdditionalBenefitsMarkedDown</p>
             <div id="fb-root"></div><script src="http://connect.facebook.net/en_US/all.js#xfbml=1"></script><fb:comments href="ticketmuffin.com/events/seedcamp-dinner" num_posts="1" width="680"></fb:comments>            
           </div>
         </div>

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq.Expressions;
 using System.Web.Mvc;
 using System.Text;
 using GroupGiving.Core.Data;
@@ -77,5 +78,11 @@ namespace GroupGiving.Web.Code
         }
 
         #endregion
+
+        public static MvcHtmlString HintFor<TModel,TValue>(this HtmlHelper<TModel> html, Expression<Func<TModel, TValue>> expression)
+        {
+            var display = ModelMetadata.FromLambdaExpression(expression, html.ViewData);
+            return MvcHtmlString.Create(display.Description);
+        }
     }
 }

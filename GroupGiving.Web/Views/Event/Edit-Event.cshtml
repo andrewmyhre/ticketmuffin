@@ -1,19 +1,40 @@
 ﻿@model GroupGiving.Web.Models.UpdateEventViewModel
+@using GroupGiving.Web.Code
 
 @{
     ViewBag.Title = "Edit";
 }
 
+@section css
+{
+<link rel="stylesheet" type="text/css" href="/markitup/skins/simple/style.css" />
+<link rel="stylesheet" type="text/css" href="/markitup/sets/markDown/style.css" />
+}
+
+@section scripts
+{
+<script type="text/javascript" src="/markitup/jquery.markitup.js"></script>
+<script type="text/javascript" src="/markitup/sets/markDown/set.js"></script>
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('#Description').markItUp(markdownSettings);
+        $('#AdditionalBenefits').markItUp(markdownSettings);
+    });
+</script>
+}
+
+
 <h2>Edit</h2>
 <p>Editing @Html.ActionLink(Model.Title, "Index", new {shortUrl=Model.ShortUrl})</p>
+<div>
+@{Html.ValidationSummary();}
+</div>
 @using (Html.BeginForm())
 {
-    
-    
     <fieldset>
         <legend>Basic Information</legend>
-        <p>@Html.LabelFor(vm => vm.ShortUrl) @Html.EditorFor(vm => vm.ShortUrl) @Html.ValidationMessageFor(vm=>vm.ShortUrl)</p>
         <p>@Html.LabelFor(vm => vm.Title) @Html.EditorFor(vm => vm.Title) @Html.ValidationMessageFor(vm => vm.Title)</p>
+        <p>@Html.LabelFor(vm => vm.ShortUrl) @Html.EditorFor(vm => vm.ShortUrl, "shortUrl") @Html.ValidationMessageFor(vm=>vm.ShortUrl)</p>
         <p>@Html.LabelFor(vm => vm.Description) @Html.EditorFor(vm => vm.Description) @Html.ValidationMessageFor(vm => vm.Description)</p>
         <p>@Html.LabelFor(vm => vm.IsPrivate) @Html.EditorFor(vm => vm.IsPrivate) @Html.ValidationMessageFor(vm => vm.IsPrivate)</p>
         <p>@Html.LabelFor(vm => vm.IsFeatured) @Html.EditorFor(vm => vm.IsFeatured) @Html.ValidationMessageFor(vm => vm.IsFeatured)</p>

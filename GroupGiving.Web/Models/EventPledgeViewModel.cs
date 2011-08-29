@@ -16,5 +16,7 @@ namespace GroupGiving.Web.Models
         public IEnumerable<string> AttendeeName { get; set; }
 
         public bool OptInForOffers { get; set; }
+
+        public bool UserIsEventOwner { get; set; }
     }
 }
