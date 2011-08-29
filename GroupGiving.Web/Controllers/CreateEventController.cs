@@ -1,9 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Text.RegularExpressions;
 using System.Web.Mvc;
 using GroupGiving.Core.Services;
 using Ninject;
 using RavenDBMembership.Web.Models;
+using System.Web.Routing;
+using System.Web;
 
 namespace GroupGiving.Web.Controllers
 {
@@ -34,6 +37,19 @@ namespace GroupGiving.Web.Controllers
             _membershipService = membershipService;
             _formsAuthenticationService = formsAuthenticationService;
             _eventService = eventService;
+        }
+
+        [AcceptVerbs(HttpVerbs.Get)]
+        [ActionName("check-url-availability")]
+        public string CheckShortUrlAvailability(string shortUrl)
+        {
+            var uriString = string.Format("{0}://{1}/{2}",
+                                          Request.Url.Scheme, Request.Url.Authority,
+                                          shortUrl);
+            var uri = new Uri(uriString);
+            var routeData = new RouteInfo(uri, Request.ApplicationPath);
+
+            return routeData == null ? "available" : "reserved";
         }
 
         [AcceptVerbs(HttpVerbs.Get)]
@@ -165,6 +181,57 @@ namespace GroupGiving.Web.Controllers
             }
 
             return new SelectList(dateTimes, "12:00PM");
+        }
+    }
+
+    public class RouteInfo
+    {
+        public RouteInfo(Uri uri, string applicationPath)
+        {
+            RouteData = RouteTable.Routes.GetRouteData(new InternalHttpContext(uri, applicationPath));
+        }
+
+        public RouteData RouteData { get; private set; }
+
+        private class InternalHttpContext : HttpContextBase
+        {
+            private readonly HttpRequestBase _request;
+
+            public InternalHttpContext(Uri uri, string applicationPath)
+                : base()
+            {
+                _request = new InternalRequestContext(uri, applicationPath);
+            }
+
+            public override HttpRequestBase Request { get { return _request; } }
+        }
+
+        private class InternalRequestContext : HttpRequestBase
+        {
+            private readonly string _appRelativePath;
+            private readonly string _pathInfo;
+
+            public InternalRequestContext(Uri uri, string applicationPath)
+                : base()
+            {
+                _pathInfo = uri.Query;
+
+                if (String.IsNullOrEmpty(applicationPath) || !uri.AbsolutePath.StartsWith(applicationPath,
+                    StringComparison.OrdinalIgnoreCase))
+                    _appRelativePath = uri.AbsolutePath.Substring(applicationPath.Length);
+                else
+                    _appRelativePath = uri.AbsolutePath;
+            }
+
+            public override string AppRelativeCurrentExecutionFilePath
+            {
+                get
+                {
+                    return String.Concat("~",
+                        _appRelativePath);
+                }
+            }
+            public override string PathInfo { get { return _pathInfo; } }
         }
     }
 }

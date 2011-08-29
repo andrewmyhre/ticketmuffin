@@ -1,4 +1,6 @@
 ﻿@model GroupGiving.Core.Services.CreateEventRequest
+@using System.Text
+@using System.Globalization
 @{
     ViewBag.Title = "details";
 }
@@ -26,12 +28,23 @@
     <fieldset>
         <legend>Event Details</legend>
 
+        <div id="dialectics"></div>
+
         <div class="formline">
             @Html.LabelFor(m => m.Title)
             @Html.TextBoxFor(m => m.Title)
         </div>
         <div class="formvalidation">
             @Html.ValidationMessageFor(m => m.Title)
+        </div>
+
+        <div class="formline">
+            @Html.LabelFor(m => m.ShortUrl)
+            http://groupgiving.com/@Html.TextBoxFor(m => m.ShortUrl, new { style = "width:150px" })
+        </div>
+        <div class="formvalidation">
+            @Html.ValidationMessageFor(m => m.ShortUrl)
+            <div id="urlAvailability"></div>
         </div>
 
         <div class="formline">
@@ -98,14 +111,6 @@
 
         <div class="formline">
             upload image
-        </div>
-
-        <div class="formline">
-            @Html.LabelFor(m => m.ShortUrl)
-            http://groupgiving.com/@Html.TextBoxFor(m => m.ShortUrl, new { style = "width:150px" })
-        </div>
-        <div class="formvalidation">
-            @Html.ValidationMessageFor(m => m.ShortUrl)
         </div>
 
         <div class="formline">
