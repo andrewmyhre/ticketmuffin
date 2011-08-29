@@ -247,26 +247,12 @@ namespace GroupGiving.Web.Controllers
         [ValidateInput(false)]
         public ActionResult Edit(string shortUrl, UpdateEventViewModel viewModel)
         {
-            string[] latLongValues = viewModel.LatLong.Split(',');
-            if (latLongValues.Length == 2)
-            {
-                float lat, lng;
-                if (float.TryParse(latLongValues[0], out lat) && float.TryParse(latLongValues[1], out lng))
-                {
-                    viewModel.Latitude = lat;
-                    viewModel.Longitude = lng;
-                }
-            }
-
             if (!ModelState.IsValid)
             {
                 return View(viewModel);
             }
 
             var groupGivingEvent = _eventRepository.Retrieve(e => e.ShortUrl == shortUrl);
-            AutoMapper.Mapper.CreateMap<UpdateEventViewModel, GroupGivingEvent>()
-                .ForMember(d=>d.Id, m=>m.Ignore());
-
             this.TryUpdateModel(groupGivingEvent);
 
             _eventRepository.SaveOrUpdate(groupGivingEvent);

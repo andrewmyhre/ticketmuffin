@@ -42,7 +42,6 @@ function lookupAddress() {
                 results[0].geometry.location,
                 results[0].geometry.viewport
             );
-            $('#latlong').valueOf(results[0].geometry.location);
             $('#map').show();
         } else {
             $('#map').hide();
@@ -59,7 +58,8 @@ function lookupAddress() {
         } else {
             map.panTo(latLng);
         }
-        $('#latlong').val(lat + "," + lng);
+        $('#Latitude').val(lat);
+        $('#Longitude').val(lng);
     }
 
     function RoundDecimal(num, decimals) {

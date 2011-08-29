@@ -63,7 +63,8 @@
             </select>
             @Html.ValidationMessageFor(vm => vm.Country)
         </p>
-        <p><input type="hidden" name="latlong" id="latlong" /></p>
+        @Html.HiddenFor(vm=>vm.Latitude)
+        @Html.HiddenFor(vm=>vm.Longitude)
         <p>@Html.LabelFor(vm => vm.PhoneNumber) @Html.EditorFor(vm => vm.PhoneNumber) @Html.ValidationMessageFor(vm => vm.PhoneNumber)</p>
         <p>@Html.LabelFor(vm => vm.StartDate) @Html.EditorFor(vm => vm.StartDate) @Html.ValidationMessageFor(vm=>vm.StartDate)</p>
         

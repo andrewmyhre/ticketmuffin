@@ -112,71 +112,30 @@
 <script src="http://maps.google.com/maps/api/js?sensor=false" type="text/javascript"></script>
 
 <script type="text/javascript"><!--
-
 var mapa;
-
-
-
 function inicjalizacja() {
-
-
-
-var latlng = new google.maps.LatLng(@Model.VenueLatitude,@Model.VenueLongitude);	
-
-
-
-var mojeUstawienia = {
-
-
-
-zoom: 16, 									
-
-
-
-center: latlng, 
-
-
-
-mapTypeId: google.maps.MapTypeId.ROADMAP 		
-
-
-
+    var latlng = new google.maps.LatLng(@Model.VenueLatitude,@Model.VenueLongitude);	
+    var mojeUstawienia = {
+        zoom: 16, 									
+        center: latlng, 
+        mapTypeId: google.maps.MapTypeId.ROADMAP 		
 };
-
-
 
 mapa = new google.maps.Map(document.getElementById("obszar_mapy"), mojeUstawienia);
 
-
-
 var marker = new google.maps.Marker({
-
-
-
-position: latlng, 
-
-
-
-map: mapa,
-
-
-
-});
-
-
-
+    position: latlng, 
+    map: mapa,
+    });
 }
 
-
-
 setTimeout("inicjalizacja()",1000);
-
 // --></script>
 
 </div>
               <strong>@Model.Venue</strong><br />
               @Model.AddressLine<br />
-              @Model.PostCode @Model.City<br />
+              @Model.City @Model.PostCode<br />
               @Model.Country
             </div>
           </div>
