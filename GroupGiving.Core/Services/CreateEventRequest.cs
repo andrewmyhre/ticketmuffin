@@ -28,6 +28,17 @@ namespace GroupGiving.Core.Services
         public string City { get; set; }
 
         [Required]
+        [Display(Name = "Postcode")]
+        public string Postcode { get; set; }
+
+        [Required]
+        [Display(Name = "Country")]
+        public string Country { get; set; }
+
+        public float Latitude { get; set; }
+        public float Longitude { get; set; }
+
+        [Required]
         [Display(Name = "Description")]
         public string Description { get; set; }
 

@@ -9,6 +9,8 @@
 <script type="text/javascript" src="/scripts/home.js"></script>
 }
 
+<p>@Html.ActionLink("Create an event...", "create", "CreateEvent")</p>
+
 <h2>@Html.Content("homepage", "heading")</h2>
 
 @foreach(var e in Model.Events)
