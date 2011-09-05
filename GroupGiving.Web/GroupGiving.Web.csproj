@@ -37,8 +37,9 @@
     <Reference Include="AutoMapper, Version=1.1.0.188, Culture=neutral, PublicKeyToken=be96cd2c38ef1005, processorArchitecture=MSIL">
       <HintPath>..\packages\AutoMapper.1.1.0.118\lib\AutoMapper.dll</HintPath>
     </Reference>
-    <Reference Include="FiftyOne.Foundation, Version=1.0.4.1, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\51Degrees.mobi.1.0.4.1\lib\NET40\FiftyOne.Foundation.dll</HintPath>
+    <Reference Include="FiftyOne.Foundation, Version=1.2.0.5, Culture=neutral, PublicKeyToken=e0b3a8da0bbce49c, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\51Degrees.mobi.1.2.0.5\lib\NET40\FiftyOne.Foundation.dll</HintPath>
     </Reference>
     <Reference Include="log4net">
       <HintPath>..\packages\log4net.1.2.10\lib\2.0\log4net.dll</HintPath>
@@ -163,7 +164,6 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="App_Data\FiftyOne.Foundation.dll" />
     <Content Include="App_Data\web_browsers_patch.xml" />
     <Content Include="Content\editorstyle.css" />
     <Content Include="Content\emailTemplates\PledgeConfirmation.xml" />
@@ -852,12 +852,12 @@
     <Content Include="Views\Shared\iPhone\_Layout.cshtml" />
     <Content Include="Views\Shared\iPhone\Error.cshtml" />
     <Content Include="Views\Home\iPhone\Index.cshtml" />
-    <Content Include="App_Data\51Degrees.mobi.config" />
-    <Content Include="App_Data\wurfl.xml.gz" />
     <Content Include="Views\Event\Edit-Event.cshtml" />
     <Content Include="Views\Event\event-pledges.cshtml" />
     <Content Include="Views\Event\refund-pledge.cshtml" />
     <Content Include="Views\Home\HowItWorks.cshtml" />
+    <Content Include="App_Data\51Degrees.mobi.config" />
+    <None Include="App_Data\wurfl.xml.gz" />
     <None Include="tinymce\examples\media\sample.dcr" />
     <None Include="tinymce\examples\media\sample.flv" />
     <None Include="tinymce\examples\media\sample.ram" />

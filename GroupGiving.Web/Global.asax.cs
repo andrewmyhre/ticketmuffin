@@ -149,4 +149,13 @@ namespace GroupGiving.Web
             return Kernel;
         }
     }
+
+    public static class EmailFacadeFactory
+    {
+        internal static EmailFacade CreateFromConfiguration()
+        {
+            throw new NotImplementedException();
+        }
+    }
+
 }

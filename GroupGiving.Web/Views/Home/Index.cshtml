@@ -13,6 +13,10 @@
 
 <h2>@Html.Content("homepage", "heading")</h2>
 
+<p>You don't need to recompile to update a view, just save the file and reload the page in the browser.</p>
+
+hello world
+
 @foreach(var e in Model.Events)
 {
     <p>@Html.ActionLink(e.Title, "Index", "Event", new { shortUrl= e.ShortUrl }, null) @e.City <text>20 June, 2011</text></p>
