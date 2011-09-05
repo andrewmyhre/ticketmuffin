@@ -5,6 +5,8 @@ using EmailProcessing;
 using GroupGiving.Web.Code;
 using log4net;
 using Ninject;
+using System.Configuration;
+using EmailProcessing.Configuration;
 
 namespace GroupGiving.Web
 {
@@ -154,7 +156,7 @@ namespace GroupGiving.Web
     {
         internal static EmailFacade CreateFromConfiguration()
         {
-            throw new NotImplementedException();
+            return new EmailFacade(ConfigurationManager.GetSection("emailBuilder") as EmailBuilderConfigurationSection);
         }
     }
 
