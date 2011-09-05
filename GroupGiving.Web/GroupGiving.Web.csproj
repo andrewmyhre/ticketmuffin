@@ -38,7 +38,6 @@
       <HintPath>..\packages\AutoMapper.1.1.0.118\lib\AutoMapper.dll</HintPath>
     </Reference>
     <Reference Include="FiftyOne.Foundation, Version=1.2.0.5, Culture=neutral, PublicKeyToken=e0b3a8da0bbce49c, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\51Degrees.mobi.1.2.0.5\lib\NET40\FiftyOne.Foundation.dll</HintPath>
     </Reference>
     <Reference Include="log4net">
