@@ -152,6 +152,10 @@ namespace GroupGiving.Web.Controllers
             {
                 ModelState.AddModelError("SalesEndDateTime", "Provide a valid date and time for ticket sales to end");
             }
+            else if (salesEndDateTime < DateTime.Now)
+            {
+                ModelState.AddModelError("SalesEndDateTime", "The date provided for sales to end is in the past, it must be in the future");
+            }
             else
             {
                 setTicketDetailsRequest.SalesEndDateTime = salesEndDateTime;
@@ -160,6 +164,7 @@ namespace GroupGiving.Web.Controllers
             if (!ModelState.IsValid)
             {
                 setTicketDetailsRequest.Times = TimeOptions();
+                setTicketDetailsRequest.SalesEndTimeOptions = TimeOptions();
                 return View(setTicketDetailsRequest);
             }
 

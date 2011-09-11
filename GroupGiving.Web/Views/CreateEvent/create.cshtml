@@ -25,116 +25,102 @@
 <div>
 @using (Html.BeginForm())
 {
-    <fieldset>
-        <legend>Event Details</legend>
-
+    <div class="grayBox">
         <div id="dialectics"></div>
 
-        <div class="formline">
-            @Html.LabelFor(m => m.Title)
+          <div style="padding-bottom: 10px;">
+            <label style="display: inline-block; width: 200px;">@Html.LabelFor(m => m.Title)</label>
             @Html.TextBoxFor(m => m.Title)
-        </div>
-        <div class="formvalidation">
             @Html.ValidationMessageFor(m => m.Title)
-        </div>
+          </div>
 
-        <div class="formline">
-            @Html.LabelFor(m => m.ShortUrl)
+          <div style="padding-bottom: 10px;">
+            <label style="display: inline-block; width: 200px;">@Html.LabelFor(m => m.ShortUrl)</label>
             http://groupgiving.com/@Html.TextBoxFor(m => m.ShortUrl, new { style = "width:150px" })
-        </div>
-        <div class="formvalidation">
-            @Html.ValidationMessageFor(m => m.ShortUrl)
             <div id="urlAvailability"></div>
-        </div>
+            @Html.ValidationMessageFor(m => m.ShortUrl)
+          </div>
 
-        <div class="formline">
-            @Html.Label("Event date")
+          <div style="padding-bottom: 10px;">
+            <label style="display: inline-block; width: 200px;">@Html.LabelFor(m => m.StartDate)</label>
             @Html.TextBox("startDate", Model.StartDateTime.ToShortDateString())
             @Html.DropDownList("startTime", Model.StartTimes)
-        </div>
-        <div class="formvalidation">
             @Html.ValidationMessageFor(m => m.StartDateTime)
-        </div>
-
+          </div>
+        
         <div id="map" style="width:300px;height:250px;float:right;display:none;"></div>
-        <div class="formline">
-            @Html.LabelFor(m => m.Venue)
+          <div style="padding-bottom: 10px;">
+            <label style="display: inline-block; width: 200px;">@Html.LabelFor(m => m.Venue)</label>
             @Html.TextBoxFor(m => m.Venue)
-        </div>
-        <div class="formvalidation">
             @Html.ValidationMessageFor(m => m.Venue)
-        </div>
+          </div>
 
-        <div class="formline">
-            @Html.LabelFor(m => m.AddressLine)
+          <div style="padding-bottom: 10px;">
+            <label style="display: inline-block; width: 200px;">@Html.LabelFor(m => m.AddressLine)</label>
             @Html.TextBoxFor(m => m.AddressLine)
-        </div>
-        <div class="formvalidation">
             @Html.ValidationMessageFor(m => m.AddressLine)
-        </div>
+          </div>
 
-        <div class="formline">
-            @Html.LabelFor(m => m.City)
+          <div style="padding-bottom: 10px;">
+            <label style="display: inline-block; width: 200px;">@Html.LabelFor(m => m.City)</label>
             @Html.TextBoxFor(m => m.City)
-        </div>
-        <div class="formvalidation">
             @Html.ValidationMessageFor(m => m.City)
-        </div>
+          </div>
 
-        <div class="formline">
-            @Html.LabelFor(m => m.Postcode)
-            @Html.TextBoxFor(m => m.Postcode)
-        </div>
-        <div class="formvalidation">
+          <div style="padding-bottom: 10px;">
+            <label style="display: inline-block; width: 200px;">@Html.LabelFor(m => m.Postcode)</label>
+            @Html.TextBox("Postcode", "", new { @class = "short" })
             @Html.ValidationMessageFor(m => m.Postcode)
-        </div>
+          </div>
 
-        <p>
-            @Html.LabelFor(vm => vm.Country) 
+          <div style="padding-bottom: 10px;">
+            <label style="display: inline-block; width: 200px;">@Html.LabelFor(m => m.Country)</label>
             <select name="Country" id="Country">
                 <option selected="selected">United Kingdom</option>
                 <option>Poland</option>
             </select>
             @Html.ValidationMessageFor(vm => vm.Country)
-        </p>
+        </div>
 
         @Html.HiddenFor(vm=>vm.Latitude)
         @Html.HiddenFor(vm=>vm.Longitude)
 
-        <div class="formline">
-            @Html.LabelFor(m => m.Description)
-            @Html.EditorFor(m => m.Description)
-        </div>
-        <div class="formvalidation">
+          <div style="padding-bottom: 10px;">
+            <label style="display: inline-block; width: 200px; float:left;">@Html.LabelFor(m => m.Description)</label>
+            @Html.TextArea("Description", "", 6, 50, new {style="width:400px"})
             @Html.ValidationMessageFor(m => m.Description)
+          </div>
+
+        <div style="padding-bottom: 10px;">
+            <label style="display:inline-block;width:200px">Upload image</label>
+            <input type="file"/>
         </div>
 
-        <div class="formline">
-            upload image
-        </div>
-
-        <div class="formline">
+        <div style="padding-bottom: 10px;">
+            <label style="display: inline-block; width: 200px;"></label>
             @Html.CheckBoxFor(m => m.IsPrivate)
-            @Html.LabelFor(m => m.IsPrivate)
+            <label for="IsPrivate" style="width:300px">Private event (Url is not published)</label>
         </div>
         
-        <div class="formline">
+        <div style="padding-bottom: 10px;">
+            <label style="display: inline-block; width: 200px;"></label>
             @Html.CheckBoxFor(m => m.IsFeatured)
-            @Html.LabelFor(m => m.IsFeatured)
+            <label for="IsFeatured" style="width:300px">I want this event to be featured</label>
         </div>
 
-        <div class="formline">
-            @Html.LabelFor(m => m.PhoneNumber)
+        <div style="padding-bottom: 10px;">
+            <label style="display: inline-block; width: 200px;">@Html.LabelFor(m => m.PhoneNumber)</label>
             @Html.TextBoxFor(m => m.PhoneNumber)
-        </div>
-        <div class="formvalidation">
             @Html.ValidationMessageFor(m => m.PhoneNumber)
         </div>
+        <div class="formvalidation">
+        </div>
 
         <div class="formline">
-            <input type="submit" value="Next Step &gt;" />
+            <label style="display: inline-block; width: 200px;"></label>
+            <input type="submit" value="Next" style="font-size: 20px; font-weight: bold; padding: 7px 50px;" />
         </div>
-    </fieldset>
+    </div>
 }
 </div>
 <div class="clearfix" />

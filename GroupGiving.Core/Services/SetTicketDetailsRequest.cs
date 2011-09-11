@@ -12,12 +12,13 @@ namespace GroupGiving.Core.Services
 
         [Required]
         [Range(1d, double.MaxValue, ErrorMessage="Ticket price must be greater than 0")]
-        public decimal TicketPrice { get; set; }
+        public decimal? TicketPrice { get; set; }
 
         [Required]
         [Range(1, int.MaxValue, ErrorMessage = "You must provide a minimum number of participants")]
-        public int MinimumParticipants { get; set; }
+        public int? MinimumParticipants { get; set; }
 
+        [Required]
         public int? MaximumParticipants { get; set; }
 
         [Required(ErrorMessage = "In order to receive money from ticket sales you must provide a PayPal account")]

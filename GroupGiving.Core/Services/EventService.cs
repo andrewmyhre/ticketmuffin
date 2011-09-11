@@ -55,8 +55,8 @@ namespace GroupGiving.Core.Services
             if (ggEvent==null)
                 throw new ArgumentException("Event not found");
 
-            ggEvent.TicketPrice = setTicketDetailsRequest.TicketPrice;
-            ggEvent.MinimumParticipants = setTicketDetailsRequest.MinimumParticipants;
+            ggEvent.TicketPrice = setTicketDetailsRequest.TicketPrice.Value;
+            ggEvent.MinimumParticipants = setTicketDetailsRequest.MinimumParticipants.Value;
             ggEvent.MaximumParticipants = setTicketDetailsRequest.MaximumParticipants;
             ggEvent.SalesEndDateTime = setTicketDetailsRequest.SalesEndDateTime;
             ggEvent.AdditionalBenefits = setTicketDetailsRequest.AdditionalBenefits;

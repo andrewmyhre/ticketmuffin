@@ -1,142 +1,106 @@
 ﻿@model GroupGiving.Web.Models.SignInModel
 @{
-    ViewBag.Title = "signup-or-signin";
+    ViewBag.Title = "Sign In";
 }
 
 <h2>Sign Up or Sign In</h2>
 
 @using (Html.BeginForm("signin", "account"))
 {
-    <div id="ce_signin">
-        <fieldset>
-            <legend>Sign In</legend>
-
-            <div class="editor-label">
-                Email
-            </div>
-            <div class="editor-field">
+    <div id="signIn" style="padding-top: 30px; position: relative;">
+        <h1>Sign in</h1>
+        <div class="grayBox">
+            <div style="padding-bottom: 10px;">
+                <label style="display: inline-block; width: 200px;">Email</label>
                 @Html.TextBox("emailaddress")
-            </div>
                 @Html.ValidationMessage("emailaddress")
-
-            <div class="editor-label">
-                Password
             </div>
-            <div class="editor-field">
+            <div style="padding-bottom: 10px;">
+                <label style="display: inline-block; width: 200px;">Password</label>
                 @Html.Password("password")
-            </div>
                 @Html.ValidationMessage("password")
-
-            <div class="editor-label" style="width:auto">
+            </div>
+            <div style="padding-bottom: 10px;">
                 @Html.CheckBox("rememberMe")
                 @Html.Label("rememberMe", "Remember me")
             </div>
-
                 @Html.Hidden("returnUrl", Request.QueryString["returnUrl"])
-            <div class="editor-field" style="width:auto">
+            <div style="padding-bottom: 10px;">
                 <input type="submit" value="Log On" />
             </div>
-        </fieldset>
+        </div>
     </div>
 }
 
 @using (Html.BeginForm("signup", "account"))
 {
-    <div id="ce_signup">
-        <fieldset>
-            <legend>Sign Up</legend>
+        <div id="signUp" style="padding-top: 30px; position: relative;">
+        <h1>Sign up</h1>
+        <a href="/" style="display: block; position: absolute; top: 18px; right: 0;"><img src="/content/img/fbconnect_big.jpg" /></a>   
+        <div class="grayBox">
+          <div style="padding-bottom: 10px;">
+            <label style="display: inline-block; width: 200px;">Ticket type</label>
+            @Html.DropDownList("AccountType", Model.AccountTypes)
+            @Html.ValidationMessage("AccountType")
+          </div>
+          <div style="padding-bottom: 10px;">
+            <label style="display: inline-block; width: 200px;">First name</label>
+            @Html.TextBox("FirstName")
+            @Html.ValidationMessage("FirstName")
+          </div>
+          <div style="padding-bottom: 10px;">
+            <label style="display: inline-block; width: 200px;">Last name</label>
+            @Html.TextBox("lastname")
+            @Html.ValidationMessage("lastname")
+          </div>
+          <div style="padding-bottom: 10px;">
+            <label style="display: inline-block; width: 200px;">E-mail address</label>
+            @Html.TextBox("email")
+            @Html.ValidationMessage("email")
+          </div>
+          <div style="padding-bottom: 10px;">
+            <label style="display: inline-block; width: 200px;">Password</label>
+            @Html.Password("newpassword")
+            @Html.ValidationMessage("newpassword")
 
-            <div class="editor-label">
-                Account Type
-            </div>
-            <div class="editor-field">
-                @Html.DropDownList("AccountType", Model.AccountTypes)
-            </div>
-                @Html.ValidationMessage("AccountType")
-
-            <div class="editor-label">
-                First name
-            </div>
-            <div class="editor-field">
-                @Html.TextBox("FirstName")
-            </div>
-                @Html.ValidationMessage("FirstName")
-
-            <div class="editor-label">
-                Last name
-            </div>
-            <div class="editor-field">
-                @Html.TextBox("lastname")
-            </div>
-                @Html.ValidationMessage("lastname")
-
-            <div class="editor-label">
-                Email
-            </div>
-            <div class="editor-field">
-                @Html.TextBox("email")
-            </div>
-                @Html.ValidationMessage("email")
-
-            <div class="editor-label">
-                Password
-            </div>
-            <div class="editor-field">
-                @Html.Password("newpassword")
-            </div>
-                @Html.ValidationMessage("newpassword")
-
-            <div class="editor-label">
-                Confirm password
-            </div>
-            <div class="editor-field">
-                @Html.Password("confirmPassword")
-            </div>
-                @Html.ValidationMessage("confirmPassword")
-
-            <div class="editor-label">
-                Address line
-            </div>
-            <div class="editor-field">
-                @Html.TextBox("addressLine")
-            </div>
-                @Html.ValidationMessage("addressLine")
-
-            <div class="editor-label">
-                Town
-            </div>
-            <div class="editor-field">
-                @Html.TextBox("Town")
-            </div>
-                @Html.ValidationMessage("Town")
-
-            <div class="editor-label">
-                Post code
-            </div>
-            <div class="editor-field">
-                @Html.TextBox("postCode")
-            </div>
-                @Html.ValidationMessage("postCode")
-
-            <div class="editor-label">
-                Country
-            </div>
-            <div class="editor-field">
-                @Html.DropDownList("country", Model.Countries)
-            </div>
+          </div>
+          <div style="padding-bottom: 10px;">
+            <label style="display: inline-block; width: 200px;">Confirm password</label>
+            @Html.Password("confirmPassword")
+            @Html.ValidationMessage("confirmPassword")
+          </div>
+          <div style="padding-bottom: 10px;">
+            <label style="display: inline-block; width: 200px;">Address line</label>
+            @Html.TextBox("addressLine")
+            @Html.ValidationMessage("addressLine")
+          </div>
+          <div style="padding-bottom: 10px;">
+            <label style="display: inline-block; width: 200px;">Town / city</label>
+            @Html.TextBox("Town")
+            @Html.ValidationMessage("Town")
+          </div>
+          <div style="padding-bottom: 10px;">
+            <label style="display: inline-block; width: 200px;">Post code</label>
+            @Html.TextBox("postCode", "", new { @class = "postcode" })
+            @Html.ValidationMessage("postCode")
+          </div>
+          <div style="padding-bottom: 10px;">
+            <label style="display: inline-block; width: 200px;">Country</label>
+            @Html.DropDownList("country", Model.Countries)
             @Html.ValidationMessage("country")
-
-            <div class="editor-label" style="width:auto">
-                @Html.CheckBox("AgreeToTermsAndConditions")
-                @Html.Label("AgreeToTermsAndConditions", "I agree to the terms and conditions")
-            </div>
+          </div>
+          <div style="padding-bottom: 10px;">
+            <label style="display: inline-block; width: 200px;"></label>
+            @Html.CheckBox("AgreeToTermsAndConditions")
+            @Html.Label("AgreeToTermsAndConditions", "I agree to the terms and conditions")
             @Html.ValidationMessage("AgreeToTermsAndConditions")
-
-                @Html.Hidden("returnUrl", Request.QueryString["returnUrl"])
-            <div class="editor-field" style="width:auto">
-                <input type="submit" value="Register" />
-            </div>
-        </fieldset>
-    </div>
+          </div>
+          <div style="padding-bottom: 10px;">
+            <label style="display: inline-block; width: 200px;"></label>
+            @Html.Hidden("returnUrl", Request.QueryString["returnUrl"])
+            <input type="submit" style="font-size: 20px; font-weight: bold; padding: 7px 50px;" value="Sign up" />
+          </div>
+        </div>       
+      </div>
 }
 <div class="clearfix" />

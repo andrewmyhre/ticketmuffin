@@ -12,7 +12,7 @@ $(function () {
     $('#Country').change(lookupAddress);
     $('#Postcode').change(lookupAddress);
 
-    $('#Description').markItUp(markdownSettings);
+    //$('#Description').markItUp(markdownSettings);
 
     $('#Title').change(function () {
         //if ($('#ShortUrl').val() == '') {
