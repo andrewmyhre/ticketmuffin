@@ -35,14 +35,18 @@ namespace GroupGiving.Web
             MapEventRoutes(routes);
             MapPurchaseRoutes(routes);
 
+            MapCultureRoutes(routes);
+
+            routes.MapRoute(
+                "CultureDefault", // Route name
+                "{culture}/{controller}/{action}/{id}", // URL with parameters
+                new { controller = "Home", action = "Index", id = UrlParameter.Optional, culture="en" } // Parameter defaults
+            );
             routes.MapRoute(
                 "Default", // Route name
                 "{controller}/{action}/{id}", // URL with parameters
                 new { controller = "Home", action = "Index", id = UrlParameter.Optional } // Parameter defaults
             );
-
-            MapCultureRoutes(routes);
-
         }
 
         private static void MapCultureRoutes(RouteCollection routes)
@@ -60,20 +64,23 @@ namespace GroupGiving.Web
                     {
                         newRoute.Defaults = new RouteValueDictionary();
                     }
-                    newRoute.Defaults.Add("culture", "en-GB");
+                    newRoute.Defaults.Add("culture", "en");
 
                     if (newRoute.Constraints == null)
                     {
                         newRoute.Constraints = new RouteValueDictionary();
                     }
-                    newRoute.Constraints.Add("culture", new CultureConstraint("en-GB", "pl-PL"));
+                    newRoute.Constraints.Add("culture", new CultureConstraint("en", "pl"));
                     newRoutes.Add(newRoute);
                 }
             }
 
             int index = 0;
-            foreach(var route in newRoutes)
-                routes.Insert(index++, route);
+            foreach (var route in newRoutes)
+            {
+                //routes.Insert(index++, route);
+                routes.Add(route);
+            }
         }
 
         private static void MapPurchaseRoutes(RouteCollection routes)

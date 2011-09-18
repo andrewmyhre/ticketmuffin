@@ -90,7 +90,7 @@ namespace GroupGiving.Web.Code
         public static string ChangeCultureForUri(this HtmlHelper html, Uri uri, string newCulture)
         {
             var currentRoute = RouteUtils.GetRouteDataByUrl("/" + uri.PathAndQuery);
-            newCulture = newCulture == "en-GB" ? "" : newCulture;
+            newCulture = newCulture == "en" ? "" : newCulture;
 
             if (currentRoute==null)
             {
