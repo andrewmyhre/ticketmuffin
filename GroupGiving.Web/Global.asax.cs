@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Web.Mvc;
 using System.Web.Routing;
 using EmailProcessing;
@@ -40,6 +41,39 @@ namespace GroupGiving.Web
                 new { controller = "Home", action = "Index", id = UrlParameter.Optional } // Parameter defaults
             );
 
+            MapCultureRoutes(routes);
+
+        }
+
+        private static void MapCultureRoutes(RouteCollection routes)
+        {
+            List<RouteBase> newRoutes = new List<RouteBase>();
+            foreach(Route route in routes)
+            {
+                if (!(route.RouteHandler is SingleCultureMvcRouteHandler))
+                {
+                    var newRoute = new Route("{culture}/" + route.Url, new MultiCultureMvcRouteHandler());
+                    newRoute.Defaults = route.Defaults;
+                    newRoute.Constraints = route.Constraints;
+
+                    if (newRoute.Defaults == null)
+                    {
+                        newRoute.Defaults = new RouteValueDictionary();
+                    }
+                    newRoute.Defaults.Add("culture", "en-GB");
+
+                    if (newRoute.Constraints == null)
+                    {
+                        newRoute.Constraints = new RouteValueDictionary();
+                    }
+                    newRoute.Constraints.Add("culture", new CultureConstraint("en-GB", "pl-PL"));
+                    newRoutes.Add(newRoute);
+                }
+            }
+
+            int index = 0;
+            foreach(var route in newRoutes)
+                routes.Insert(index++, route);
         }
 
         private static void MapPurchaseRoutes(RouteCollection routes)
@@ -128,9 +162,9 @@ namespace GroupGiving.Web
             PageContent.Initialise(System.Web.Hosting.HostingEnvironment.MapPath("~/content/PageContent"));
 
             ViewEngines.Engines.Clear();
-            ViewEngines.Engines.AddIPhone<RazorViewEngine>();
-            ViewEngines.Engines.AddGenericMobile<RazorViewEngine>();
-            ViewEngines.Engines.Add(new RazorViewEngine());
+            ViewEngines.Engines.AddIPhone<CultureViewEngine>();
+            ViewEngines.Engines.AddGenericMobile<CultureViewEngine>();
+            ViewEngines.Engines.Add(new CultureViewEngine());
 
             try
             {

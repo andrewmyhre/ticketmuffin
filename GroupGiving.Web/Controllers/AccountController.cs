@@ -414,6 +414,16 @@ namespace GroupGiving.Web.Controllers
             return View(viewModel);
         }
 
+        public ActionResult ChangeCulture(string lang, string returnUrl)
+        {
+            if (returnUrl.Length >= 6)
+            {
+                returnUrl = returnUrl.Substring(6);
+            }
+
+            return Redirect("/" + lang + returnUrl);
+        }
+
         #region Status Codes
         private static string ErrorCodeToString(MembershipCreateStatus createStatus)
         {

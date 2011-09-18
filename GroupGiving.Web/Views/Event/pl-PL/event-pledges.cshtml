@@ -1,0 +1,27 @@
+﻿@model GroupGiving.Web.Models.UpdateEventViewModel
+
+@{
+    ViewBag.Title = "Pledges for " + Model.Title;
+}
+
+<h2>Pledges for @Model.Title</h2>
+
+@foreach (var pledge in Model.Pledges)
+{
+<div>
+    <span><strong>#@pledge.OrderNumber</strong></span>
+    <span>@string.Join(", ", pledge.Attendees.Select(a=>a.FullName).ToArray())</span>
+    <span>@pledge.Total.ToString("c")</span>
+    @if (pledge.Paid) {
+        <text><span>Paid</span><span>@Html.ActionLink("Refund", "refund-pledge", new { shortUrl=Model.ShortUrl, orderNumber = pledge.OrderNumber }, null)</span></text>
+    } else if (pledge.PaymentStatus == GroupGiving.Core.Domain.PaymentStatus.Refunded)
+    {
+        <text><span>Refunded</span></text>
+    }
+    else if (pledge.PaymentStatus == GroupGiving.Core.Domain.PaymentStatus.Unpaid)
+    {
+        <span>Unpaid</span>
+    }
+    
+</div>
+}

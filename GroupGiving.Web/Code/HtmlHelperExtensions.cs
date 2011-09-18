@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Linq.Expressions;
+using System.Web;
 using System.Web.Mvc;
 using System.Text;
+using System.Web.Routing;
 using GroupGiving.Core.Data;
 using GroupGiving.Core.Services;
 
@@ -83,6 +85,73 @@ namespace GroupGiving.Web.Code
         {
             var display = ModelMetadata.FromLambdaExpression(expression, html.ViewData);
             return MvcHtmlString.Create(display.Description);
+        }
+
+        public static string ChangeCultureForUri(this HtmlHelper html, Uri uri, string newCulture)
+        {
+            var currentRoute = RouteUtils.GetRouteDataByUrl("/" + uri.PathAndQuery);
+            newCulture = newCulture == "en-GB" ? "" : newCulture;
+
+            if (currentRoute==null)
+            {
+                return "/" + newCulture;
+            }
+
+            if (currentRoute.Values.ContainsKey("culture"))
+            {
+                currentRoute.Values["culture"] = newCulture;
+            }
+
+            string link = RouteTable.Routes.GetVirtualPath(html.ViewContext.RequestContext, currentRoute.Values).VirtualPath;
+
+            return link;
+        }
+    }
+
+    public static class RouteUtils
+    {
+        public static RouteData GetRouteDataByUrl(string url)
+        {
+            return RouteTable.Routes.GetRouteData(new RewritedHttpContextBase(url));
+        }
+
+        private class RewritedHttpContextBase : HttpContextBase
+        {
+            private readonly HttpRequestBase mockHttpRequestBase;
+
+            public RewritedHttpContextBase(string appRelativeUrl)
+            {
+                this.mockHttpRequestBase = new MockHttpRequestBase(appRelativeUrl);
+            }
+
+
+            public override HttpRequestBase Request
+            {
+                get
+                {
+                    return mockHttpRequestBase;
+                }
+            }
+
+            private class MockHttpRequestBase : HttpRequestBase
+            {
+                private readonly string appRelativeUrl;
+
+                public MockHttpRequestBase(string appRelativeUrl)
+                {
+                    this.appRelativeUrl = appRelativeUrl;
+                }
+
+                public override string AppRelativeCurrentExecutionFilePath
+                {
+                    get { return appRelativeUrl; }
+                }
+
+                public override string PathInfo
+                {
+                    get { return ""; }
+                }
+            }
         }
     }
 }

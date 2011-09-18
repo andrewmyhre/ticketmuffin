@@ -59,6 +59,9 @@
       <HintPath>..\packages\Ninject.Web.Mvc3-2.2.2.0-release-net-4.0\Ninject.Web.Mvc.dll</HintPath>
     </Reference>
     <Reference Include="Raven.Client.Lightweight, Version=1.0.0.0, Culture=neutral, PublicKeyToken=37f41c7f99471593, processorArchitecture=MSIL" />
+    <Reference Include="RouteDebugger">
+      <HintPath>..\packages\routedebugger.2.0.0.7\lib\net40\RouteDebugger.dll</HintPath>
+    </Reference>
     <Reference Include="System.Transactions" />
     <Reference Include="System.Web.Helpers, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <Private>True</Private>
@@ -118,11 +121,14 @@
   <ItemGroup>
     <Compile Include="Code\ContentDictionaries.cs" />
     <Compile Include="Code\ContentTypeAwareViewEngine.cs" />
+    <Compile Include="Code\CultureConstraint.cs" />
+    <Compile Include="Code\CultureViewEngine.cs" />
     <Compile Include="Code\GroupGivingNinjectModule.cs" />
     <Compile Include="Code\HtmlHelperExtensions.cs" />
     <Compile Include="Code\Markdown.cs" />
     <Compile Include="Code\MarkdownViewModel.cs" />
     <Compile Include="Code\MobileSupport.cs" />
+    <Compile Include="Code\MultiCultureMvcRouteHandler.cs" />
     <Compile Include="Code\MustBeTrueAttribute.cs" />
     <Compile Include="Code\PageContent.cs" />
     <Compile Include="Code\RavenDbDocumentStore.cs" />
@@ -253,6 +259,7 @@
     <Content Include="Content\themes\base\jquery.ui.tabs.css" />
     <Content Include="Content\themes\base\jquery.ui.theme.css" />
     <Content Include="Global.asax" />
+    <Content Include="license.txt" />
     <Content Include="markitup\sets\markDown\images\bold.png" />
     <Content Include="markitup\sets\markDown\images\clean.png" />
     <Content Include="markitup\sets\markDown\images\image.png" />
@@ -900,6 +907,24 @@
     <Content Include="Views\Markdown\_EditorLayout.cshtml" />
     <Content Include="Views\Markdown\Sample.cshtml" />
     <Content Include="Views\Event\EditorTemplates\ShortUrl.cshtml" />
+    <Content Include="Views\Shared\SwitchCulture.cshtml" />
+    <Content Include="Views\Home\pl-PL\HowItWorks.cshtml" />
+    <Content Include="Views\Home\pl-PL\Index.cshtml" />
+    <Content Include="Views\Home\pl-PL\iPhone\Index.cshtml" />
+    <Content Include="Views\Home\pl-PL\Mobile\Index.cshtml" />
+    <Content Include="Views\Shared\pl-PL\_Layout.cshtml" />
+    <Content Include="Views\Shared\pl-PL\_LogOnPartial.cshtml" />
+    <Content Include="Views\Shared\pl-PL\Error.cshtml" />
+    <Content Include="Views\Event\pl-PL\EditorTemplates\ShortUrl.cshtml" />
+    <Content Include="Views\Event\pl-PL\share.cshtml" />
+    <Content Include="Views\Event\pl-PL\Edit-Event.cshtml" />
+    <Content Include="Views\Event\pl-PL\event-pledges.cshtml" />
+    <Content Include="Views\Event\pl-PL\Index.cshtml" />
+    <Content Include="Views\Event\pl-PL\PersonalDetailsNotSignedIn.cshtml" />
+    <Content Include="Views\Event\pl-PL\PersonalDetailsSignedIn.cshtml" />
+    <Content Include="Views\Event\pl-PL\Pledge.cshtml" />
+    <Content Include="Views\Event\pl-PL\refund-pledge.cshtml" />
+    <Content Include="Views\Shared\pl-PL\SwitchCulture.cshtml" />
     <None Include="_bin_deployableAssemblies\System.Web.Mvc.dll" />
     <None Include="_bin_deployableAssemblies\WebMatrix.WebData.xml" />
     <None Include="_bin_deployableAssemblies\WebMatrix.WebData.dll" />
