@@ -9,9 +9,9 @@
 <script type="text/javascript" src="/scripts/home.js"></script>
 }
 
-<p>@Html.ActionLink("Create an event...", "create", "CreateEvent")</p>
+<p>@Html.ActionLink("Create an event...", "create", "CreateEvent", new {culture=Culture}, null)</p>
 
-<h2>@Html.Content("homepage", "heading")</h2>
+<h2>Upcoming events in London</h2>
 
 <p>You don't need to recompile to update a view, just save the file and reload the page in the browser.</p>
 
@@ -19,7 +19,7 @@ hello world
 
 @foreach(var e in Model.Events)
 {
-    <p>@Html.ActionLink(e.Title, "Index", "Event", new { shortUrl= e.ShortUrl }, null) @e.City <text>20 June, 2011</text></p>
+    <p>@Html.ActionLink(e.Title, "Index", "Event", new { shortUrl= e.ShortUrl, culture=Culture }, null) @e.City <text>20 June, 2011</text></p>
     <p class="expandable">@Html.Raw(e.Description)</p>
 }
 

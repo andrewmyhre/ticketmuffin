@@ -6,6 +6,7 @@ using System.Text;
 using System.Web.Routing;
 using GroupGiving.Core.Data;
 using GroupGiving.Core.Services;
+using System.Web.Mvc.Html;
 
 namespace GroupGiving.Web.Code
 {
@@ -90,7 +91,6 @@ namespace GroupGiving.Web.Code
         public static string ChangeCultureForUri(this HtmlHelper html, Uri uri, string newCulture)
         {
             var currentRoute = RouteUtils.GetRouteDataByUrl("/" + uri.PathAndQuery);
-            newCulture = newCulture == "en" ? "" : newCulture;
 
             if (currentRoute==null)
             {
@@ -99,7 +99,13 @@ namespace GroupGiving.Web.Code
 
             if (currentRoute.Values.ContainsKey("culture"))
             {
-                currentRoute.Values["culture"] = newCulture;
+                if (newCulture != "en")
+                    currentRoute.Values["culture"] = newCulture;
+                else
+                    currentRoute.Values.Remove("culture");
+            } else if (newCulture != "en")
+            {
+                currentRoute.Values.Add("culture", newCulture);
             }
 
             string link = RouteTable.Routes.GetVirtualPath(html.ViewContext.RequestContext, currentRoute.Values).VirtualPath;

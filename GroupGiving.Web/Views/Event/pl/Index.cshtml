@@ -49,16 +49,16 @@
           @{
                 if (Model.UserIsEventOwner)
                 {
-                    <text>@Html.ActionLink("Edit this event", "edit-event", new {shortUrl=Model.ShortUrl})</text>
+                    <text>@Html.ActionLink("Edit this event", "edit-event", new {shortUrl=Model.ShortUrl, culture=Culture.Substring(0,2)})</text>
                 }
               }</div>
-          <div id="howItWorks">@Html.ActionLink("How it works", "HowItWorks", "Home")</div>
+          <div id="howItWorks">@Html.ActionLink("How it works", "HowItWorks", "Home", new {culture=Culture.Substring(0,2)}, null)</div>
         </div>
         <div id="eventLeft">
         @if (!Model.EventIsFull)
         {
           <div id="pledge">
-            @using (Html.BeginForm("Pledge", "Event", FormMethod.Get))
+            @using (Html.BeginForm("Pledge", "Event", new { culture = Culture.Substring(0, 2) }, FormMethod.Get))
             {
                 <input type="submit" class="bigButton" value="@Model.TicketPrice.ToString("c") Pledge" />
             }
