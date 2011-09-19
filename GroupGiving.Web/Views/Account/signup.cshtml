@@ -1,4 +1,4 @@
-﻿@model GroupGiving.Web.Models.SignInModel
+﻿@model GroupGiving.Web.Models.SignUpModel
 @{
     ViewBag.Title = "Sign In";
 }
@@ -14,63 +14,65 @@
 @using (Html.BeginForm("signup", "account"))
 {
         <h1>Sign up or @Html.ActionLink("Sign In", "SignIn", "Account", null, new {id="signInLink"})</h1>
+        
         <div class="grayBox">
+        <p>@Html.ActionLink("Forgot your password?", "ForgotPassword", "Account")</p>
           <div style="padding-bottom: 10px;">
-            <label style="display: inline-block; width: 200px;">Ticket type</label>
-            @Html.DropDownList("AccountType", Model.AccountTypes)
-            @Html.ValidationMessage("AccountType")
+            <label style="display: inline-block; width: 200px;">Account type</label>
+            @Html.DropDownListFor(m=>m.AccountType, Model.AccountTypes, new {@class="mid"})
+            @Html.ValidationMessageFor(m=>m.AccountType)
           </div>
           <div style="padding-bottom: 10px;">
             <label style="display: inline-block; width: 200px;">First name</label>
-            @Html.TextBox("FirstName")
-            @Html.ValidationMessage("FirstName")
+            @Html.TextBoxFor(m=>m.FirstName)
+            @Html.ValidationMessageFor(m=>m.FirstName)
           </div>
           <div style="padding-bottom: 10px;">
             <label style="display: inline-block; width: 200px;">Last name</label>
-            @Html.TextBox("lastname")
-            @Html.ValidationMessage("lastname")
+            @Html.TextBoxFor(m=>m.LastName)
+            @Html.ValidationMessageFor(m => m.LastName)
           </div>
           <div style="padding-bottom: 10px;">
             <label style="display: inline-block; width: 200px;">E-mail address</label>
-            @Html.TextBox("email")
-            @Html.ValidationMessage("email")
+            @Html.TextBoxFor(m => m.Email)
+            @Html.ValidationMessageFor(m => m.Email)
           </div>
           <div style="padding-bottom: 10px;">
             <label style="display: inline-block; width: 200px;">Password</label>
-            @Html.Password("newpassword")
-            @Html.ValidationMessage("newpassword")
+            @Html.PasswordFor(m => m.NewPassword)
+            @Html.ValidationMessageFor(m => m.NewPassword)
 
           </div>
           <div style="padding-bottom: 10px;">
             <label style="display: inline-block; width: 200px;">Confirm password</label>
-            @Html.Password("confirmPassword")
-            @Html.ValidationMessage("confirmPassword")
+            @Html.PasswordFor(m => m.ConfirmPassword)
+            @Html.ValidationMessageFor(m => m.ConfirmPassword)
           </div>
           <div style="padding-bottom: 10px;">
             <label style="display: inline-block; width: 200px;">Address line</label>
-            @Html.TextBox("addressLine")
-            @Html.ValidationMessage("addressLine")
+            @Html.TextBoxFor(m => m.AddressLine)
+            @Html.ValidationMessageFor(m => m.AddressLine)
           </div>
           <div style="padding-bottom: 10px;">
             <label style="display: inline-block; width: 200px;">Town / city</label>
-            @Html.TextBox("Town")
-            @Html.ValidationMessage("Town")
+            @Html.TextBoxFor(m => m.Town)
+            @Html.ValidationMessageFor(m => m.Town)
           </div>
           <div style="padding-bottom: 10px;">
             <label style="display: inline-block; width: 200px;">Post code</label>
-            @Html.TextBox("postCode", "", new { @class = "postcode" })
-            @Html.ValidationMessage("postCode")
+            @Html.TextBoxFor(m=>m.PostCode, new { @class = " short" })
+            @Html.ValidationMessageFor(m => m.PostCode)
           </div>
           <div style="padding-bottom: 10px;">
             <label style="display: inline-block; width: 200px;">Country</label>
-            @Html.DropDownList("country", Model.Countries)
+            @Html.DropDownList("country", Model.Countries, new { @class="mid" })
             @Html.ValidationMessage("country")
           </div>
           <div style="padding-bottom: 10px;">
             <label style="display: inline-block; width: 200px;"></label>
-            @Html.CheckBox("AgreeToTermsAndConditions")
-            @Html.Label("AgreeToTermsAndConditions", "I agree to the terms and conditions")
-            @Html.ValidationMessage("AgreeToTermsAndConditions")
+            @Html.CheckBoxFor(m=>m.AgreeToTermsAndConditions)
+            <span class="wholeline">@Html.LabelFor(m => m.AgreeToTermsAndConditions, "I agree to the terms and conditions")</span>
+            @Html.ValidationMessageFor(m=>m.AgreeToTermsAndConditions)
           </div>
           <div style="padding-bottom: 10px;">
             <label style="display: inline-block; width: 200px;"></label>

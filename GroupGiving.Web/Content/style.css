@@ -318,8 +318,12 @@ input[type="text"], input[type="password"], textarea, select {
 input[type="checkbox"] {
   margin-right: 10px;
 }
-input[type="text"].short {
+input.short, select.short {
   width: 80px;
+}
+select.mid
+{
+    width: 160px;  
 }
 div#confirmPageEvenInfo {
   border: solid 1px #e5e5e5;
@@ -365,4 +369,8 @@ div#ui-datepicker-div
 {
     width:200px;
     display:inline-block;
+}
+
+.wholeline label {
+    width: 400px;   
 }

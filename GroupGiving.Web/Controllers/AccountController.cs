@@ -39,7 +39,7 @@ namespace GroupGiving.Web.Controllers
 
         [AcceptVerbs(HttpVerbs.Get)]
         [ActionName("signup")]
-        public ActionResult SignUpOrSignIn()
+        public ActionResult SignUp()
         {
             if (User.Identity.IsAuthenticated)
             {
@@ -49,7 +49,7 @@ namespace GroupGiving.Web.Controllers
                     Response.Redirect("/");
             }
 
-            var model = new SignInModel();
+            var model = new SignUpModel();
             model.Countries = new SelectList(_countryService.RetrieveAllCountries(), "Name", "Name");
             model.AccountTypes = new SelectList(Enum.GetNames(typeof(AccountType)));
             return View(model);
@@ -82,7 +82,7 @@ namespace GroupGiving.Web.Controllers
                 model.AccountTypes = new SelectList(Enum.GetNames(typeof(AccountType)));
                 if (Request.AcceptTypes.Contains("application/json"))
                     return Json(new LogOnResultViewModel() { Success = false });
-                return View("signup-or-signin", model);
+                return View(model);
             }
 
             ((RavenDBMembershipProvider)Membership.Provider).DocumentStore = RavenDbDocumentStore.Instance;
@@ -106,12 +106,12 @@ namespace GroupGiving.Web.Controllers
             else
             {
                 ModelState.AddModelError("login", "The combination of email and password you entered did not match any user");
-                var model = new SignInModel();
+                var model = new SignUpModel();
                 model.Countries = new SelectList(_countryService.RetrieveAllCountries(), "Name", "Name");
                 model.AccountTypes = new SelectList(Enum.GetNames(typeof(AccountType)));
                 if (Request.AcceptTypes.Contains("application/json"))
                     return Json(new LogOnResultViewModel() { Success = false });
-                return View("signup-or-signin", model);
+                return View(model);
             }
         }
 
@@ -121,10 +121,9 @@ namespace GroupGiving.Web.Controllers
         {
             if (!ModelState.IsValid)
             {
-                var model = new SignInModel();
-                model.Countries = new SelectList(_countryService.RetrieveAllCountries(), "Name", "Name");
-                model.AccountTypes = new SelectList(Enum.GetNames(typeof(AccountType)));
-                return View("signup-or-signin", model);
+                request.Countries = new SelectList(_countryService.RetrieveAllCountries(), "Name", "Name");
+                request.AccountTypes = new SelectList(Enum.GetNames(typeof(AccountType)));
+                return View(request);
             }
 
             ((RavenDBMembershipProvider)Membership.Provider).DocumentStore = RavenDbDocumentStore.Instance;
@@ -154,7 +153,7 @@ namespace GroupGiving.Web.Controllers
                 var model = new SignInModel();
                 model.Countries = new SelectList(_countryService.RetrieveAllCountries(), "Name", "Name");
                 model.AccountTypes = new SelectList(Enum.GetNames(typeof(AccountType)));
-                return View("signup-or-signin", model);
+                return View(model);
             }
         }
 

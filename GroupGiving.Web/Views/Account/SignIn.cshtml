@@ -13,7 +13,9 @@
 @using (Html.BeginForm("signin", "account"))
 {
         <h1>Sign in or @Html.ActionLink("Sign Up", "signup", "Account", null, new { id = "signUpLink" })</h1>
+    
         <div class="grayBox">
+        <p>@Html.ActionLink("Forgot your password?", "ForgotPassword", "Account")</p>
             <div style="padding-bottom: 10px;">
                 <label style="display: inline-block; width: 200px;">Email</label>
                 @Html.TextBoxFor(m=>m.EmailAddress)
