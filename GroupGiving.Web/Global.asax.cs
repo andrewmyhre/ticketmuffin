@@ -60,20 +60,13 @@ namespace GroupGiving.Web
                 new {controller = "Account", action = "ResetPassword"});
 
             routes.MapRoute(
-                "SignUpOrSignIn",
-                "signin",
-                new { controller = "Account", action = "signup-or-signin" },
-                new { httpMethod = new HttpMethodConstraint("GET") });
-            routes.MapRoute(
                 "SignUp",
                 "signup",
-                new { controller = "Account", action = "signup" },
-                new {httpMethod = new HttpMethodConstraint("POST")});
+                new { controller = "Account", action = "signup" });
             routes.MapRoute(
                 "SignIn",
                 "signin",
-                new { controller = "Account", action = "signin" },
-                new { httpMethod = new HttpMethodConstraint("POST") });
+                new { controller = "Account", action = "signin" });
         }
 
         private static void MapEventRoutes(RouteCollection routes)

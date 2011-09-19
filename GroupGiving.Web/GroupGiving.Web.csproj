@@ -305,6 +305,7 @@
     <Content Include="markitup\templates\preview.css" />
     <Content Include="markitup\templates\preview.html" />
     <Content Include="Scripts\pledge.js" />
+    <Content Include="Scripts\signin.js" />
     <Content Include="Scripts\tickets.js" />
     <Content Include="Scripts\createevent.js" />
     <Content Include="Scripts\global.js" />
@@ -985,7 +986,7 @@
     <Content Include="Views\CreateEvent\create.cshtml" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Views\Account\signup-or-signin.cshtml" />
+    <Content Include="Views\Account\signup.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Views\CreateEvent\tickets.cshtml" />

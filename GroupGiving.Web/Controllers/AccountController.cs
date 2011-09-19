@@ -38,7 +38,7 @@ namespace GroupGiving.Web.Controllers
         }
 
         [AcceptVerbs(HttpVerbs.Get)]
-        [ActionName("signup-or-signin")]
+        [ActionName("signup")]
         public ActionResult SignUpOrSignIn()
         {
             if (User.Identity.IsAuthenticated)
@@ -49,6 +49,23 @@ namespace GroupGiving.Web.Controllers
                     Response.Redirect("/");
             }
 
+            var model = new SignInModel();
+            model.Countries = new SelectList(_countryService.RetrieveAllCountries(), "Name", "Name");
+            model.AccountTypes = new SelectList(Enum.GetNames(typeof(AccountType)));
+            return View(model);
+        }
+
+        [HttpGet]
+        [ActionName("signin")]
+        public ActionResult SignIn()
+        {
+            if (User.Identity.IsAuthenticated)
+            {
+                if (Request.QueryString["returnUrl"] != null)
+                    Response.Redirect(Request.QueryString["returnUrl"]);
+                else
+                    Response.Redirect("/");
+            }
             var model = new SignInModel();
             model.Countries = new SelectList(_countryService.RetrieveAllCountries(), "Name", "Name");
             model.AccountTypes = new SelectList(Enum.GetNames(typeof(AccountType)));

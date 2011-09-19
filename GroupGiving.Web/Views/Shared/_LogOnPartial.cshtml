@@ -4,10 +4,10 @@
 }
 else {
     @:[ <a href="#" id="showSignIn">SIGN IN</a> ]
-    @:[ @Html.ActionLink("SIGN UP", "signup-or-signin", "Account") ]
+    @:[ @Html.ActionLink("SIGN UP", "signup", "Account") ]
 
     <div id="signInForm" style="display:none;">
-        <form id="signin" action="/account/signin">
+        <form id="signin" action="@Url.Action("signin", "account")">
             <label for="emailaddress">Username: </label><input type="text" name="emailaddress" /><br />
             <label for="password">Password: </label><input type="password" name="password" /><br />
             <input type="hidden" name="returnurl" value="@(Request.QueryString["returnUrl"] ?? Request.Url.PathAndQuery)" />
