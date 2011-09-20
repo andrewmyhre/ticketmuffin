@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Configuration;
 using System.Linq;
+using System.Runtime.Serialization;
+using System.Text;
 using System.Web.Security;
+using System.Xml;
 using anrControls;
 using GroupGiving.Core.Actions.CreatePledge;
 using GroupGiving.Core.Data;
@@ -92,17 +95,6 @@ namespace GroupGiving.Web.Controllers
                 viewModel.CountDown = true;
             }
 
-            return View(viewModel);
-        }
-
-        [AcceptVerbs(HttpVerbs.Get)]
-        [ActionName("share")]
-        public ActionResult Share(string shortUrl)
-        {
-            if (string.IsNullOrWhiteSpace(shortUrl))
-                return new HttpNotFoundResult();
-
-            var viewModel = new ShareEventViewModel();
             return View(viewModel);
         }
 

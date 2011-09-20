@@ -78,7 +78,7 @@ namespace GroupGiving.Web
             routes.MapRoute(
                 "Event_ShareYourEvent",
                 "events/{shortUrl}/share",
-                new {controller = "Event", action = "share"});
+                new {controller = "ShareEvent", action = "Index"});
             routes.MapRoute(
                 "Event_Pledge",
                 "events/{shortUrl}/pledge",
@@ -96,6 +96,11 @@ namespace GroupGiving.Web
                 "Pledge_Refund",
                 "events/{shortUrl}/pledges/{orderNumber}/refund",
                 new {controller = "Event", action = "refund-pledge"});
+
+            routes.MapRoute(
+                "Events",
+                "events/{shortUrl}/{action}",
+                new { controller = "Event", action = "index" });
         }
 
         private static void MapEventCreationRoutes(RouteCollection routes)

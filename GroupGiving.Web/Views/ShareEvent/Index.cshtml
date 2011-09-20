@@ -1,8 +1,10 @@
-﻿@model GroupGiving.Web.Models.ShareEventViewModel
+﻿@using GroupGiving.Web.Models
+@model ShareEventViewModel
 
 @{
-    ViewBag.Title = "share";
+    ViewBag.Title = "Share your event";
 }
+
 @section scripts
 {
 <script type="text/javascript" src="/scripts/share.js"></script>
@@ -27,7 +29,7 @@
             $(document).ready(function () {
                 $('.infobox').hide();
                 $('.infobox').slideDown();
-                $('.infobox a.close').click(function() { $('.infobox').slideUp(); });
+                $('.infobox a.close').click(function () { $('.infobox').slideUp(); });
             });
         </script>
     }
@@ -77,10 +79,10 @@
 
             /*
             FB.Event.subscribe('edge.create', function (href, widget) {
-                try { JustGiving.Analytics.push(['_trackEvent', 'FacebookLike', href, '/account/your-pages/jonrowett3/']); } catch (ex) { }
+            try { JustGiving.Analytics.push(['_trackEvent', 'FacebookLike', href, '/account/your-pages/jonrowett3/']); } catch (ex) { }
             });
             FB.Event.subscribe('edge.remove', function (href, widget) {
-                try { JustGiving.Analytics.push(['_trackEvent', 'FacebookUnLike', href, '/account/your-pages/jonrowett3/']); } catch (ex) { }
+            try { JustGiving.Analytics.push(['_trackEvent', 'FacebookUnLike', href, '/account/your-pages/jonrowett3/']); } catch (ex) { }
             });*/
 
             $(document).trigger("facebookReady");
