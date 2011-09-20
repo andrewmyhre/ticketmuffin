@@ -13,9 +13,8 @@ namespace GroupGiving.Web
     // Note: For instructions on enabling IIS6 or IIS7 classic mode, 
     // visit http://go.microsoft.com/?LinkId=9394801
 
-    public class MvcApplication : Ninject.Web.NinjectHttpApplication
+    public class MvcApplication : System.Web.HttpApplication
     {
-        public static IKernel Kernel { get; set; }
         public static XmlContentProvider PageContent = new XmlContentProvider();
         public static EmailFacade EmailFacade { get; private set; }
         private static ILog _logger = LogManager.GetLogger(typeof(MvcApplication));
@@ -73,7 +72,8 @@ namespace GroupGiving.Web
         {
             routes.MapRoute("Event_Details",
                             "events/{shortUrl}",
-                            new {controller = "Event", action = "index"});
+                            new {controller = "Event", action = "index"},
+                            new[]{"GroupGiving.Web.Controllers"});
 
             routes.MapRoute(
                 "Event_ShareYourEvent",
@@ -82,25 +82,30 @@ namespace GroupGiving.Web
             routes.MapRoute(
                 "Event_Pledge",
                 "events/{shortUrl}/pledge",
-                new { controller = "Event", action = "pledge" });
+                new { controller = "Event", action = "pledge" },
+                            new[] { "GroupGiving.Web.Controllers" });
             routes.MapRoute(
                 "Event_Edit",
                 "events/{shortUrl}/edit",
-                new { controller = "Event", action = "edit-event" });
+                new { controller = "Event", action = "edit-event" },
+                            new[] { "GroupGiving.Web.Controllers" });
             routes.MapRoute(
                 "Event_ListPledges",
                 "events/{shortUrl}/pledges",
-                new { controller = "Event", action = "event-pledges" });
+                new { controller = "Event", action = "event-pledges" },
+                            new[] { "GroupGiving.Web.Controllers" });
 
             routes.MapRoute(
                 "Pledge_Refund",
                 "events/{shortUrl}/pledges/{orderNumber}/refund",
-                new {controller = "Event", action = "refund-pledge"});
+                new { controller = "Event", action = "refund-pledge" },
+                            new[] { "GroupGiving.Web.Controllers" });
 
             routes.MapRoute(
                 "Events",
                 "events/{shortUrl}/{action}",
-                new { controller = "Event", action = "index" });
+                new { controller = "Event", action = "index" },
+                            new[] { "GroupGiving.Web.Controllers" });
         }
 
         private static void MapEventCreationRoutes(RouteCollection routes)
@@ -116,7 +121,7 @@ namespace GroupGiving.Web
 
         }
 
-        protected override void OnApplicationStarted()
+        protected void Application_Start()
         {
             log4net.Config.XmlConfigurator.Configure();
             AreaRegistration.RegisterAllAreas();
@@ -139,14 +144,6 @@ namespace GroupGiving.Web
             {
                 _logger.Fatal("Failed to load email sender", e);
             }
-
-            base.OnApplicationStarted();
-        }
-
-        protected override IKernel CreateKernel()
-        {
-            Kernel = new StandardKernel(new GroupGivingNinjectModule());
-            return Kernel;
         }
     }
 

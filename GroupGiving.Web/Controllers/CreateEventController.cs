@@ -18,13 +18,13 @@ namespace GroupGiving.Web.Controllers
         private readonly IEventService _eventService;
         private readonly ICountryService _countryService;
 
-        public CreateEventController()
+        public CreateEventController(IAccountService accountService, ICountryService countryService, IMembershipService membershipService, IFormsAuthenticationService formsAuthenticationService, IEventService eventService)
         {
-            _accountService = MvcApplication.Kernel.Get<IAccountService>();
-            _countryService = MvcApplication.Kernel.Get<ICountryService>();
-            _membershipService = MvcApplication.Kernel.Get<IMembershipService>();
-            _formsAuthenticationService = MvcApplication.Kernel.Get<IFormsAuthenticationService>();
-            _eventService = MvcApplication.Kernel.Get<IEventService>();
+            _accountService = accountService;
+            _countryService = countryService;
+            _membershipService = membershipService;
+            _formsAuthenticationService = formsAuthenticationService;
+            _eventService = eventService;
         }
 
         public CreateEventController(IAccountService accountService,

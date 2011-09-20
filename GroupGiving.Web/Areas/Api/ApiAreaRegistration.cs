@@ -15,8 +15,8 @@ namespace GroupGiving.Web.Areas.Api
         public override void RegisterArea(AreaRegistrationContext context)
         {
             context.MapRoute("Event api methods",
-                             "Api/event/{shortUrl}/{action}",
-                             new {controller = "Event", action = "index"});
+                             "Api/events/{shortUrl}/{action}",
+                             new {controller = "Events", action = "index"});
 
             context.MapRoute(
                 "Api_default",

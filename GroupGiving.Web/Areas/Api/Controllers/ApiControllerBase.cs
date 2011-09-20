@@ -11,9 +11,9 @@ namespace GroupGiving.Web.Areas.Api.Controllers
     public class ApiControllerBase : Controller
     {
         protected IRepository<GroupGivingEvent> _eventRepository = null;
-        public ApiControllerBase()
+        public ApiControllerBase(IRepository<GroupGivingEvent> eventRepository)
         {
-            _eventRepository = MvcApplication.Kernel.Get<IRepository<GroupGivingEvent>>();
+            _eventRepository = eventRepository;
         }
 
         protected ContentResult Xml<T>(T graph)

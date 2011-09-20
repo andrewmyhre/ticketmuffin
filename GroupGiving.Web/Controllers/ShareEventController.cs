@@ -14,9 +14,9 @@ namespace GroupGiving.Web.Controllers
     {
         private readonly IRepository<GroupGivingEvent> _eventRepository;
 
-        public ShareEventController()
+        public ShareEventController(IRepository<GroupGivingEvent> eventRepository)
         {
-            _eventRepository = MvcApplication.Kernel.Get<IRepository<GroupGivingEvent>>();
+            _eventRepository = eventRepository;
         }
 
         //
