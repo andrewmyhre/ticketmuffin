@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using EmailProcessing;
 using GroupGiving.Core.Data;
 using GroupGiving.Core.Domain;
+using GroupGiving.Core.Email;
 using GroupGiving.Web.Models;
 using Ninject;
 
@@ -13,10 +15,12 @@ namespace GroupGiving.Web.Controllers
     public class ShareEventController : Controller
     {
         private readonly IRepository<GroupGivingEvent> _eventRepository;
+        private readonly IEmailPackageRelayer _emailRelayer;
 
-        public ShareEventController(IRepository<GroupGivingEvent> eventRepository)
+        public ShareEventController(IRepository<GroupGivingEvent> eventRepository, IEmailPackageRelayer emailRelayer)
         {
             _eventRepository = eventRepository;
+            _emailRelayer = emailRelayer;
         }
 
         //
@@ -69,7 +73,18 @@ Thanks!", viewModel.ShareUrl);
 
             }
 
-            // todo: send emails
+            EmailPackage package = new EmailPackage();
+            package.Subject = request.Subject;
+            package.Text = request.Body;
+            package.From = "noreply@ticketmuffin.com";
+
+            string[] recipientList = request.Recipients.Split(',');
+            foreach(var recipient in recipientList)
+            {
+                package.To.Add(recipient.Trim());
+                
+            }
+            _emailRelayer.Relay(package);
 
             TempData["email_sent"] = true;
             return RedirectToAction("Index", new { shortUrl });

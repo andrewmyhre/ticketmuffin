@@ -1,4 +1,6 @@
+using System.Configuration;
 using EmailProcessing;
+using EmailProcessing.Configuration;
 using GroupGiving.Core.Data;
 using GroupGiving.Core.Domain;
 using GroupGiving.Core.Email;
@@ -75,6 +77,8 @@ namespace GroupGiving.Web.App_Start
 
             kernel.Bind<IEmailRelayService>().To<SimpleSmtpEmailRelayService>();
             kernel.Bind<IEmailFacade>().ToMethod((request) => MvcApplication.EmailFacade);
+            kernel.Bind<IEmailPackageRelayer>()
+                .ToMethod(x => EmailSenderFactory.CreateRelayerFromConfiguration(ConfigurationManager.GetSection("emailBuilder") as EmailBuilderConfigurationSection));
             kernel.Bind<ICountryService>().To<CountryService>();
             kernel.Bind<IPayPalConfiguration>().ToMethod(
                 (request) => System.Configuration.ConfigurationManager.GetSection("paypal") as PayPalConfiguration);
