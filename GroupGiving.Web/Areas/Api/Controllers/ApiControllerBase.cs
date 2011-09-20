@@ -1,9 +1,11 @@
+using System.Net;
 using System.Runtime.Serialization;
 using System.Text;
 using System.Web.Mvc;
 using System.Xml;
 using GroupGiving.Core.Data;
 using GroupGiving.Core.Domain;
+using System.Linq;
 using Ninject;
 
 namespace GroupGiving.Web.Areas.Api.Controllers
@@ -27,6 +29,22 @@ namespace GroupGiving.Web.Areas.Api.Controllers
             result.Content = sb.ToString();
             result.ContentType = "application/xml";
             return result;
+        }
+
+        protected ActionResult Response<T>(T graph, HttpStatusCode statusCode)
+        {
+            base.Response.StatusCode = (int)statusCode;
+            if (Request.AcceptTypes.Contains("application/json"))
+            {
+                return Json(graph, JsonRequestBehavior.AllowGet);
+            }
+
+            return Xml(graph);
+        }
+
+        protected ActionResult Response<T>(T graph)
+        {
+            return Response(graph, HttpStatusCode.OK);
         }
     }
 }

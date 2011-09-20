@@ -1,4 +1,5 @@
 ﻿using System.Web.Mvc;
+using GroupGiving.Web.Areas.Api.Code;
 
 namespace GroupGiving.Web.Areas.Api
 {
@@ -23,6 +24,8 @@ namespace GroupGiving.Web.Areas.Api
                 "Api/{controller}/{action}/{id}",
                 new { action = "Index", id = UrlParameter.Optional }
             );
+
+            AutoMappingConfiguration.Configure();
         }
     }
 }
