@@ -1,0 +1,3 @@
+[submodule "EmailProcessing"]
+	path = EmailProcessing
+	url = git@github.com:andrewmyhre/EmailProcessing.git
