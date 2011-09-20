@@ -34,7 +34,7 @@ namespace GroupGiving.Web.Areas.Api.Controllers
         protected ActionResult ApiResponse<T>(T graph, HttpStatusCode statusCode)
         {
             base.Response.StatusCode = (int)statusCode;
-            if (Request.AcceptTypes.Contains("application/json"))
+            if (Request.AcceptTypes != null && Request.AcceptTypes.Contains("application/json"))
             {
                 return Json(graph, JsonRequestBehavior.AllowGet);
             }

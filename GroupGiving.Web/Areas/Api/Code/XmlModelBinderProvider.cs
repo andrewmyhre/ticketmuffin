@@ -14,8 +14,10 @@ namespace GroupGiving.Web.Areas.Api.Code
     {
         public IModelBinder GetBinder(Type modelType)
         {
-            if (HttpContext.Current.Request.ContentType.ToLower().Contains("application/xml"))
+            if (HttpContext.Current.Request.ContentType.ToLower().Contains("application/xml") 
+                && modelType.GetCustomAttributes(typeof(DataContractAttribute), false).Count() > 0)
             {
+                
                 return new XmlModelBinder();
             }
 
@@ -23,28 +25,23 @@ namespace GroupGiving.Web.Areas.Api.Code
         }
     }
 
-    public class XmlModelBinder : IModelBinder
+    public class XmlModelBinder : DefaultModelBinder
     {
-        public object BindModel(ControllerContext controllerContext, ModelBindingContext bindingContext)
+        protected override object CreateModel(ControllerContext controllerContext, ModelBindingContext bindingContext, Type modelType)
         {
             DataContractSerializer dcs = new DataContractSerializer(bindingContext.ModelType);
-            
 
+            controllerContext.HttpContext.Request.InputStream.Position = 0;
+            try
+            {
+                var result = dcs.ReadObject(controllerContext.HttpContext.Request.InputStream);
+                return result;
+            }
+            catch
+            {
+                return null;
+            }
 
-            var modelType = bindingContext.ModelType;
-            var serializer = new XmlSerializer(modelType);
-
-            MemoryStream ms = new MemoryStream();
-            controllerContext.HttpContext.Request.InputStream.CopyTo(ms);
-            
-            StreamReader reader = new StreamReader(controllerContext.HttpContext.Request.InputStream);
-            string content = reader.ReadToEnd();
-
-            ms.Seek(0, SeekOrigin.Begin);
-            XmlReader xmlReader = XmlReader.Create(ms);
-
-            return dcs.ReadObject(xmlReader);
-            //return serializer.Deserialize(xmlReader);
         }
     }
 }

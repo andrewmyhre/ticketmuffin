@@ -13,15 +13,16 @@
         textarea_id: 'Recipients'
     };
 </script>
-@using (Html.BeginForm("Index", "ShareEvent", new { shortUrl = Model.ShortUrl }))
+@using (Html.BeginForm("Index", "ShareEvent", new { shortUrl = Model.ShortUrl }, FormMethod.Post, new {id="share-via-email-form"}))
 {
-    <div style="padding-bottom:10px">
+    <div style="padding-bottom:10px" id="validation-messages" class="validation-summary-errors">
         @Html.ValidationMessage("Recipients")
     </div>
-    <div style="padding-bottom: 10px;"><textarea id="Recipients" name="Recipients" style="width:400px" rows="3" cols="50">@Model.Recipients</textarea></div>
-    <div style="padding-bottom: 10px;"><label for="Subject" style="display:block">Subject:</label><input type="text" name="Subject" id="email_subject" style="width:400px" value="@Model.Subject" /></div>
+    <div style="padding-bottom: 10px;"><textarea id="Recipients" name="Recipients" id="Recipients" style="width:400px" rows="3" cols="50">@Model.Recipients</textarea></div>
+    <div style="padding-bottom: 10px;"><label for="Subject" style="display:block">Subject:</label><input type="text" name="Subject" id="Subject" style="width:400px" value="@Model.Subject" /></div>
     <div style="padding-bottom: 10px;"><label for="Body">You can edit the message below:</label>
-    <textarea id="email_body" name="Body" style="display:block;width:400px" rows="6" cols="50">@Model.Body</textarea></div>
+    <textarea name="Body" id="Body" style="display:block;width:400px" rows="6" cols="50">@Model.Body</textarea></div>
+    <input type="hidden" name="ShortUrl" id="ShortUrl" value="@Model.ShortUrl"/>
     <div style="padding-bottom: 10px;"><input type="submit" value="Send Email"/></div>
     
 }

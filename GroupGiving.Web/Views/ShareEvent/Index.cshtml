@@ -12,27 +12,27 @@
 
 @section infobox
 {
+    <div class="infobox">
+        <div class="infobox_inner">
+            <span>
+            @if (Model.EmailSentSuccessfully.HasValue && Model.EmailSentSuccessfully.Value == true)
+            {
+                <p>The email was sent successfully</p>
+            }
+            </span>
+            <a href="#" class="close">hide this message</a>
+        </div>
+    </div>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('.infobox').hide();
+            $('.infobox a.close').click(function () { $('.infobox').slideUp(); });
     @if (Model.EmailSentSuccessfully.HasValue)
     {
-        <div class="infobox">
-            <div class="infobox_inner">
-                <span>
-                @if (Model.EmailSentSuccessfully.Value == true)
-                {
-                    <p>The email was sent successfully</p>
-                }
-                </span>
-                <a href="#" class="close">close</a>
-            </div>
-        </div>
-        <script type="text/javascript">
-            $(document).ready(function () {
-                $('.infobox').hide();
-                $('.infobox').slideDown();
-                $('.infobox a.close').click(function () { $('.infobox').slideUp(); });
-            });
-        </script>
+            <text>$('.infobox').slideDown();</text>
     }
+        });
+    </script>
 }
 
 <h2>Tell your friends about <span id="event-title">@Model.Event.Title</span></h2>
@@ -67,7 +67,7 @@
 <div id="fb-root" class=" fb_reset"><div style="position: absolute; top: -10000px; height: 0px; width: 0px; "></div></div>
 
 <div id="share-via-email"><a href="#" id="share-via-email-link">Share via Email</a></div>
-<div id="share-via-email-form" class="grayBox">
+<div id="share-via-email-form" class="grayBox" style="display:none">
 @Html.DisplayFor(m => m.ShareViaEmail);
 
 </div>
