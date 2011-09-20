@@ -121,6 +121,7 @@
     <Compile Include="Areas\Api\Controllers\EventsController.cs" />
     <Compile Include="Areas\Api\Models\ApiResponse.cs" />
     <Compile Include="Areas\Api\Models\EventModel.cs" />
+    <Compile Include="Areas\Api\Models\ResourceLink.cs" />
     <Compile Include="Code\CommaSeparatedEmailListValidatorAttribute.cs" />
     <Compile Include="Code\ContentDictionaries.cs" />
     <Compile Include="Code\ContentTypeAwareViewEngine.cs" />
