@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using EmailProcessing;
 using GroupGiving.Core.Data;
 using GroupGiving.Core.Domain;
 using Raven.Client;
@@ -82,5 +83,21 @@ namespace GroupGiving.Core.Services
         {
             return _eventRepository.Retrieve(e => e.ShortUrl == shortUrl);
         }
+
+        public void SendEventInvitationEmails(IEmailPackageRelayer emailPackageRelayer, string recipients, string body, string subject)
+        {
+            EmailPackage package = new EmailPackage();
+            package.Subject = subject;
+            package.Text = body;
+            package.From = "noreply@ticketmuffin.com";
+
+            string[] recipientList = recipients.Split(',');
+            foreach (var recipient in recipientList)
+            {
+                package.To.Add(recipient.Trim());
+            }
+            emailPackageRelayer.Relay(package);
+        }
+
     }
 }

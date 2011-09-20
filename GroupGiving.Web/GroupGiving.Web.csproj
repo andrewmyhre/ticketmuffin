@@ -117,11 +117,13 @@
     <Compile Include="App_Start\NinjectMVC3.cs" />
     <Compile Include="Areas\Api\ApiAreaRegistration.cs" />
     <Compile Include="Areas\Api\Code\AutoMappingConfiguration.cs" />
+    <Compile Include="Areas\Api\Code\XmlModelBinderProvider.cs" />
     <Compile Include="Areas\Api\Controllers\ApiControllerBase.cs" />
     <Compile Include="Areas\Api\Controllers\EventsController.cs" />
     <Compile Include="Areas\Api\Models\ApiResponse.cs" />
     <Compile Include="Areas\Api\Models\EventModel.cs" />
     <Compile Include="Areas\Api\Models\ResourceLink.cs" />
+    <Compile Include="Areas\Api\Models\ShareViaEmailRequest.cs" />
     <Compile Include="Code\CommaSeparatedEmailListValidatorAttribute.cs" />
     <Compile Include="Code\ContentDictionaries.cs" />
     <Compile Include="Code\ContentTypeAwareViewEngine.cs" />

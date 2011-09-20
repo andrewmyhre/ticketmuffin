@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Web.Mvc;
 using GroupGiving.Web.Models;
 
@@ -16,11 +17,11 @@ namespace GroupGiving.Web.Code
                 var ms = modelState[key];
                 foreach(var error in ms.Errors)
                 {
-                    errorList.Add(new Error{Key=key, ErrorMessage=error.ErrorMessage});
+                    errorList.Add(new Error{Field=key, ErrorMessage=error.ErrorMessage});
                 }
             }
 
-            response.Errors = errorList;
+            response = new ErrorResponse(errorList);
 
             return response;
         }

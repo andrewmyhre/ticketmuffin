@@ -31,7 +31,7 @@ namespace GroupGiving.Web.Areas.Api.Controllers
             return result;
         }
 
-        protected ActionResult Response<T>(T graph, HttpStatusCode statusCode)
+        protected ActionResult ApiResponse<T>(T graph, HttpStatusCode statusCode)
         {
             base.Response.StatusCode = (int)statusCode;
             if (Request.AcceptTypes.Contains("application/json"))
@@ -42,9 +42,9 @@ namespace GroupGiving.Web.Areas.Api.Controllers
             return Xml(graph);
         }
 
-        protected ActionResult Response<T>(T graph)
+        protected ActionResult ApiResponse<T>(T graph)
         {
-            return Response(graph, HttpStatusCode.OK);
+            return ApiResponse(graph, HttpStatusCode.OK);
         }
     }
 }

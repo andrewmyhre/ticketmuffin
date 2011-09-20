@@ -26,6 +26,7 @@ namespace GroupGiving.Web.Areas.Api
             );
 
             AutoMappingConfiguration.Configure();
+            ModelBinderProviders.BinderProviders.Add(new XmlModelBinderProvider());
         }
     }
 }

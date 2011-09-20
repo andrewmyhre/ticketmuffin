@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using EmailProcessing;
 using GroupGiving.Core.Domain;
 
 namespace GroupGiving.Core.Services
@@ -11,5 +12,6 @@ namespace GroupGiving.Core.Services
         bool ShortUrlAvailable(string shortUrl);
         GroupGivingEvent Retrieve(int eventId);
         GroupGivingEvent Retrieve(string shortUrl);
+        void SendEventInvitationEmails(IEmailPackageRelayer emailPackageRelayer, string recipients, string body, string subject);
     }
 }

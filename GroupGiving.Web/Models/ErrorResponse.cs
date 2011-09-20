@@ -6,17 +6,35 @@ using System.Web;
 
 namespace GroupGiving.Web.Models
 {
-    [DataContract(Name = "errors", Namespace = "http://schemas.ticketmuffin.com/2011")]
-    public class ErrorResponse
+    [CollectionDataContract(Name="errors", ItemName="error", Namespace="http://schemas.ticketmuffin.com/2011")]
+    public class ErrorResponse : List<Error>
     {
-        public IEnumerable<Error> Errors { get; set; } 
+        public ErrorResponse()
+        {
+            
+        }
+
+        public ErrorResponse(IEnumerable<Error> errorList)
+        {
+            base.AddRange(errorList);
+        }
+
+        public void AddRange(IEnumerable<Error> errors)
+        {
+            base.AddRange(errors);  
+        }
+
+        public void Add(Error error)
+        {
+            base.Add(error);
+        }
     }
 
     [DataContract(Name = "error", Namespace = "http://schemas.ticketmuffin.com/2011")]
     public class Error
     {
-        [DataMember(Name="key")]
-        public string Key { get; set; }
+        [DataMember(Name="field")]
+        public string Field { get; set; }
         [DataMember(Name="message")]
         public string ErrorMessage { get; set; }
     }
