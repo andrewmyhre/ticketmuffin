@@ -45,6 +45,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Base_Common", "packages\Pay
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Base_AA", "packages\PayPal\Base_AA\Base_AA.csproj", "{8F599E12-CF05-4EDF-BFC6-6F0B4EA4F36C}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PayPal.Test.Integration", "PayPal.Test.Integration\PayPal.Test.Integration.csproj", "{0440D3DE-820A-4E4C-835C-6E09195FD740}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -175,6 +177,16 @@ Global
 		{8F599E12-CF05-4EDF-BFC6-6F0B4EA4F36C}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{8F599E12-CF05-4EDF-BFC6-6F0B4EA4F36C}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{8F599E12-CF05-4EDF-BFC6-6F0B4EA4F36C}.Release|x86.ActiveCfg = Release|Any CPU
+		{0440D3DE-820A-4E4C-835C-6E09195FD740}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0440D3DE-820A-4E4C-835C-6E09195FD740}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0440D3DE-820A-4E4C-835C-6E09195FD740}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{0440D3DE-820A-4E4C-835C-6E09195FD740}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{0440D3DE-820A-4E4C-835C-6E09195FD740}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{0440D3DE-820A-4E4C-835C-6E09195FD740}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0440D3DE-820A-4E4C-835C-6E09195FD740}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0440D3DE-820A-4E4C-835C-6E09195FD740}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{0440D3DE-820A-4E4C-835C-6E09195FD740}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{0440D3DE-820A-4E4C-835C-6E09195FD740}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -182,5 +194,6 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{1F5FF00B-CE0F-40B8-9BC4-7B5ED2087266} = {401419B5-8BE5-4705-91E0-F391B53D7552}
 		{8F599E12-CF05-4EDF-BFC6-6F0B4EA4F36C} = {401419B5-8BE5-4705-91E0-F391B53D7552}
+		{0440D3DE-820A-4E4C-835C-6E09195FD740} = {401419B5-8BE5-4705-91E0-F391B53D7552}
 	EndGlobalSection
 EndGlobal
