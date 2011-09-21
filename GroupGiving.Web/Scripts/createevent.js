@@ -4,7 +4,7 @@ var myOptions;
 var map;
 var marker;
 
-$(function () {
+$(document).ready(function () {
     $("#startDate").datepicker({ dateFormat: 'dd/mm/yy' });
 
     $('#AddressLine').change(lookupAddress);
@@ -15,20 +15,29 @@ $(function () {
     //$('#Description').markItUp(markdownSettings);
 
     $('#Title').change(function () {
-        //if ($('#ShortUrl').val() == '') {
         $('#ShortUrl').val(sanitizeTitleForUrl($('#Title').val()));
-        //}
+        checkUrlAvailability();
     });
 
-    $('#ShortUrl').change(function () {
-        $.get('/createevent/check-url-availability?shortUrl='+escape($('#ShortUrl').val()),
-            function(response) { $('#urlAvailability').html(response); });
-    });
+    $('#ShortUrl').change(checkUrlAvailability);
+    $('#ShortUrl').focusout(checkUrlAvailability);
 });
+
+function checkUrlAvailability() {
+    $('#ShortUrl').val(sanitizeTitleForUrl($('#ShortUrl').val()));
+    
+    $.get('/api/events/' + $('#ShortUrl').val())
+            .success(function (response) {
+                $('#urlAvailability').html('<span class="url-not-available">This url is not available</span>');
+            })
+            .error(function (response) {
+                $('#urlAvailability').html('<span class="url-available">Available!</span>');
+            });
+}
 
 function sanitizeTitleForUrl(text)
 {
-    var patternLetters = /[öäüÖÄÜáàâéèêúùûóòôÁÀÂÉÈÊÚÙÛÓÒÔß]/g;
+    var patternLetters = /[öäüÖÄÜáàâéèêúùûóòôÁÀÂÉÈÊÚÙÛÓÒÔß ]/g;
 
     var lookupLetters = {
         "ä": "a", "ö": "o", "ü": "u",
@@ -48,10 +57,12 @@ function sanitizeTitleForUrl(text)
         return lookupLetters[match] || match;
     }
 
+    text = text.replace(/\//g, " ");
     text = text.replace(patternLetters, letterTranslator);
-    text = text.replace(/[^\w\s]|_/g, "")
-         .replace(/\s+/g, " ");
+    text = text.replace(/[^\w\s-_]/g, "-");
+    text = text.replace(/\s+/g, " ");
     text = text.replace(/ /gi, "-");
+    text = text.replace( /--/gi , "-");
     text = text.toLowerCase();
     return text;
 }

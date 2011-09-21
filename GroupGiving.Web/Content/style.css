@@ -412,3 +412,15 @@ label, .wholeline label {
     position: relative;
     right: 4px;
 }
+
+.url-available
+{
+    color: lime;
+    font-size: 1.2em;
+}
+
+.url-not-available
+{
+    color: red;
+    font-size: 1.2em;
+}

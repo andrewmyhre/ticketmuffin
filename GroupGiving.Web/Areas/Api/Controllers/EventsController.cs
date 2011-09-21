@@ -30,6 +30,9 @@ namespace GroupGiving.Web.Areas.Api.Controllers
         {
             var @event = _eventRepository.Retrieve(e => e.ShortUrl == shortUrl);
 
+            if (@event==null)
+                return new HttpNotFoundResult();
+
             return ApiResponse(@event);
         }
 
