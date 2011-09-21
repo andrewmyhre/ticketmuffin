@@ -119,6 +119,7 @@
     <Compile Include="Areas\Api\Code\Api.cs" />
     <Compile Include="Areas\Api\Code\AutoMappingConfiguration.cs" />
     <Compile Include="Areas\Api\Code\XmlModelBinderProvider.cs" />
+    <Compile Include="Areas\Api\Controllers\AccountsController.cs" />
     <Compile Include="Areas\Api\Controllers\ApiControllerBase.cs" />
     <Compile Include="Areas\Api\Controllers\EventsController.cs" />
     <Compile Include="Areas\Api\Models\ApiResponse.cs" />
@@ -961,6 +962,14 @@
     <ProjectReference Include="..\GroupGiving.PayPal\GroupGiving.PayPal.csproj">
       <Project>{69AC82E2-904E-4A5F-9A94-E5EDD91534AB}</Project>
       <Name>GroupGiving.PayPal</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\packages\PayPal\Base_AA\Base_AA.csproj">
+      <Project>{8F599E12-CF05-4EDF-BFC6-6F0B4EA4F36C}</Project>
+      <Name>Base_AA</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\packages\PayPal\Base_Common\Base_Common.csproj">
+      <Project>{1F5FF00B-CE0F-40B8-9BC4-7B5ED2087266}</Project>
+      <Name>Base_Common</Name>
     </ProjectReference>
     <ProjectReference Include="..\RavenDBMembership\RavenDBMembership.csproj">
       <Project>{07CCE5B6-9111-46DC-AAEC-00D80E19FE4A}</Project>

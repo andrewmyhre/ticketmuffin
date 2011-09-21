@@ -56,16 +56,19 @@ namespace GroupGiving.Web
             routes.MapRoute(
                 "ResetPassword",
                 "account/resetpassword/{token}",
-                new {controller = "Account", action = "ResetPassword"});
+                new {controller = "Account", action = "ResetPassword"},
+                new [] {"GroupGiving.Web.Controllers"});
 
             routes.MapRoute(
                 "SignUp",
                 "signup",
-                new { controller = "Account", action = "signup" });
+                new { controller = "Account", action = "signup" },
+                new[] { "GroupGiving.Web.Controllers" });
             routes.MapRoute(
                 "SignIn",
                 "signin",
-                new { controller = "Account", action = "signin" });
+                new { controller = "Account", action = "signin" },
+                new[] { "GroupGiving.Web.Controllers" });
         }
 
         private static void MapEventRoutes(RouteCollection routes)
