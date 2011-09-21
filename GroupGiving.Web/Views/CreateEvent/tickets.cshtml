@@ -14,53 +14,42 @@
 <div>
 @using (Html.BeginForm())
 {
-    <fieldset>
-        <legend>Event Details</legend>
-
+    <div class="graybox">
         <div class="formline">
             @Html.LabelFor(m => m.TicketPrice)
-            @Html.TextBoxFor(m => m.TicketPrice)
-        </div>
-        <div class="formvalidation">
+            @Html.TextBoxFor(m => m.TicketPrice, new { @class = "short" })
             @Html.ValidationMessageFor(m => m.TicketPrice)
         </div>
 
         <div class="formline">
             @Html.LabelFor(m => m.MinimumParticipants)
-            @Html.TextBoxFor(m => m.MinimumParticipants)
-        </div>
-        <div class="formvalidation">
+            @Html.TextBoxFor(m => m.MinimumParticipants, new { @class = "short" })
             @Html.ValidationMessageFor(m => m.MinimumParticipants)
         </div>
 
         <div class="formline">
             @Html.LabelFor(m => m.MaximumParticipants)
-            @Html.TextBoxFor(m => m.MaximumParticipants)
-        </div>
-        <div class="formvalidation">
+            @Html.TextBoxFor(m => m.MaximumParticipants, new { @class = "short" })
             @Html.ValidationMessageFor(m => m.MaximumParticipants)
         </div>
 
         <div class="formline">
             @Html.LabelFor(m => m.PaypalAccountEmailAddress)
             @Html.TextBoxFor(m => m.PaypalAccountEmailAddress)
-        </div>
-        <div class="formvalidation">
             @Html.ValidationMessageFor(m => m.PaypalAccountEmailAddress)
         </div>
 
         <div class="formline">
-            Sales end
+            <label>Sales end</label>
             @Html.TextBox("salesEndDate", Model.SalesEndDateTime.ToShortDateString())
-            @Html.DropDownList("salesEndTime",Model.SalesEndTimeOptions)
-        </div>
-        <div class="formvalidation">
+            @Html.DropDownList("salesEndTime", Model.SalesEndTimeOptions, new { style = "width:120px" })
             @Html.ValidationMessageFor(m => m.SalesEndDateTime)
         </div>
 
         <div class="formvalidation">
-            <input type="submit" value="Finish Creating Event" />
+            <label style="display: inline-block; width: 200px;"></label>
+            <input type="submit" value="Finish" style="font-size: 20px; font-weight: bold; padding: 7px 50px;" />
         </div>
-    </fieldset>
+    </div>
 }
 </div>

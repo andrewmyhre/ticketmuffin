@@ -16,6 +16,7 @@ using GroupGiving.PayPal.Model;
 using GroupGiving.Web.Code;
 using GroupGiving.Web.Models;
 using Ninject;
+using Raven.Client;
 using RavenDBMembership.Provider;
 using RavenDBMembership.Web.Models;
 
@@ -32,18 +33,20 @@ namespace GroupGiving.Web.Controllers
         private readonly IPaymentGateway _paymentGateway;
         private readonly ITaxAmountResolver _taxResolver;
         private readonly IPayPalConfiguration _paypalConfiguration;
+        private IEmailRelayService _emailRelayService;
 
-        public OrderController()
+        public OrderController(IRepository<GroupGivingEvent> eventRepository, IFormsAuthenticationService formsService, IMembershipService membershipService, IAccountService accountService, IPaymentGateway paymentGateway, ITaxAmountResolver taxResolver, IPayPalConfiguration paypalConfiguration, IDocumentStore documentStore, IEmailRelayService emailRelayService)
         {
-            _eventRepository = MvcApplication.Kernel.Get<IRepository<GroupGivingEvent>>();
-            _formsService = MvcApplication.Kernel.Get<IFormsAuthenticationService>();
-            _membershipService = MvcApplication.Kernel.Get<AccountMembershipService>();
-            _accountService = MvcApplication.Kernel.Get<IAccountService>();
-            _paymentGateway = MvcApplication.Kernel.Get<IPaymentGateway>();
-            _taxResolver = MvcApplication.Kernel.Get<ITaxAmountResolver>();
-            _paypalConfiguration = MvcApplication.Kernel.Get<IPayPalConfiguration>();
+            _eventRepository = eventRepository;
+            _formsService = formsService;
+            _membershipService = membershipService;
+            _accountService = accountService;
+            _paymentGateway = paymentGateway;
+            _taxResolver = taxResolver;
+            _paypalConfiguration = paypalConfiguration;
             ((RavenDBMembershipProvider)Membership.Provider).DocumentStore
-                = RavenDbDocumentStore.Instance;
+                = documentStore;
+            _emailRelayService = emailRelayService;
         }
 
         public ActionResult PaymentRequest()
@@ -59,8 +62,7 @@ namespace GroupGiving.Web.Controllers
 
             if (account == null)
             {
-                IEmailRelayService emailRelayService = MvcApplication.Kernel.Get<IEmailRelayService>();
-                account = _accountService.CreateIncompleteAccount(purchaseDetails.EmailAddress, emailRelayService);
+                account = _accountService.CreateIncompleteAccount(purchaseDetails.EmailAddress, _emailRelayService);
             }
 
             var action = new MakePledgeAction(_taxResolver, _eventRepository, _paymentGateway, _paypalConfiguration);

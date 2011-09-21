@@ -12,9 +12,9 @@ namespace GroupGiving.Web.Controllers
     {
         private readonly IEventService _eventService;
 
-        public HomeController()
+        public HomeController(IEventService eventService)
         {
-            _eventService = MvcApplication.Kernel.Get<IEventService>();
+            _eventService = eventService;
         }
 
         public ActionResult Index()

@@ -17,10 +17,10 @@ namespace GroupGiving.Web.Controllers
         IEmailFacade _emailFacade = null;
         private IRepository<GroupGivingEvent> _eventRepository=null;
 
-        public DiagnosticsController()
+        public DiagnosticsController(IRepository<GroupGivingEvent> eventRepository, IEmailFacade emailFacade)
         {
-            _eventRepository = MvcApplication.Kernel.Get<IRepository<GroupGivingEvent>>();
-            _emailFacade = MvcApplication.Kernel.Get<IEmailFacade>();
+            _eventRepository = eventRepository;
+            _emailFacade = emailFacade;
             _emailFacade.LoadTemplates();
         }
 

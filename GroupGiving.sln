@@ -17,7 +17,27 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GroupGiving.Test.Common", "
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LoadTest.Console", "LoadTest.Console\LoadTest.Console.csproj", "{262CCFC3-63FE-4D18-B9B9-394397CFD89E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EmailProcessing", "..\EmailProcessing\EmailProcessing\EmailProcessing.csproj", "{F511818D-59DF-4358-8946-10FB3933E5B2}"
+Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "eventmuffin html", "eventmuffin html\", "{5BFF87B6-9CAA-4B28-859A-ACAE90E9C261}"
+	ProjectSection(WebsiteProperties) = preProject
+		TargetFrameworkMoniker = ".NETFramework,Version%3Dv4.0"
+		Debug.AspNetCompiler.VirtualPath = "/eventmuffin html"
+		Debug.AspNetCompiler.PhysicalPath = "eventmuffin html\"
+		Debug.AspNetCompiler.TargetPath = "PrecompiledWeb\eventmuffin html\"
+		Debug.AspNetCompiler.Updateable = "true"
+		Debug.AspNetCompiler.ForceOverwrite = "true"
+		Debug.AspNetCompiler.FixedNames = "false"
+		Debug.AspNetCompiler.Debug = "True"
+		Release.AspNetCompiler.VirtualPath = "/eventmuffin html"
+		Release.AspNetCompiler.PhysicalPath = "eventmuffin html\"
+		Release.AspNetCompiler.TargetPath = "PrecompiledWeb\eventmuffin html\"
+		Release.AspNetCompiler.Updateable = "true"
+		Release.AspNetCompiler.ForceOverwrite = "true"
+		Release.AspNetCompiler.FixedNames = "false"
+		Release.AspNetCompiler.Debug = "False"
+		VWDPort = "52674"
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EmailProcessing", "EmailProcessing\EmailProcessing\EmailProcessing.csproj", "{F511818D-59DF-4358-8946-10FB3933E5B2}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -109,6 +129,16 @@ Global
 		{262CCFC3-63FE-4D18-B9B9-394397CFD89E}.Release|Mixed Platforms.Build.0 = Release|x86
 		{262CCFC3-63FE-4D18-B9B9-394397CFD89E}.Release|x86.ActiveCfg = Release|x86
 		{262CCFC3-63FE-4D18-B9B9-394397CFD89E}.Release|x86.Build.0 = Release|x86
+		{5BFF87B6-9CAA-4B28-859A-ACAE90E9C261}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5BFF87B6-9CAA-4B28-859A-ACAE90E9C261}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5BFF87B6-9CAA-4B28-859A-ACAE90E9C261}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{5BFF87B6-9CAA-4B28-859A-ACAE90E9C261}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{5BFF87B6-9CAA-4B28-859A-ACAE90E9C261}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{5BFF87B6-9CAA-4B28-859A-ACAE90E9C261}.Release|Any CPU.ActiveCfg = Debug|Any CPU
+		{5BFF87B6-9CAA-4B28-859A-ACAE90E9C261}.Release|Any CPU.Build.0 = Debug|Any CPU
+		{5BFF87B6-9CAA-4B28-859A-ACAE90E9C261}.Release|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{5BFF87B6-9CAA-4B28-859A-ACAE90E9C261}.Release|Mixed Platforms.Build.0 = Debug|Any CPU
+		{5BFF87B6-9CAA-4B28-859A-ACAE90E9C261}.Release|x86.ActiveCfg = Debug|Any CPU
 		{F511818D-59DF-4358-8946-10FB3933E5B2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{F511818D-59DF-4358-8946-10FB3933E5B2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F511818D-59DF-4358-8946-10FB3933E5B2}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU

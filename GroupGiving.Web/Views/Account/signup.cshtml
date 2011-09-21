@@ -1,0 +1,86 @@
+﻿@model GroupGiving.Web.Models.SignUpModel
+@{
+    ViewBag.Title = "Sign In";
+}
+
+@section scripts
+{
+<script type="text/javascript" src="/Scripts/signin.js"></script>
+}
+
+<a href="/" style="display: block; position: absolute; right:0px;">Connect using Facebook <img src="/content/img/fbconnect_big.jpg" /></a>   
+
+<div id="signUp" style="padding-top: 30px; position: relative;">
+@using (Html.BeginForm("signup", "account"))
+{
+        <h1>Sign up or @Html.ActionLink("Sign In", "SignIn", "Account", null, new {id="signInLink"})</h1>
+        
+        <div class="grayBox">
+        <p>@Html.ActionLink("Forgot your password?", "ForgotPassword", "Account")</p>
+          <div style="padding-bottom: 10px;">
+            <label style="display: inline-block; width: 200px;">Account type</label>
+            @Html.DropDownListFor(m=>m.AccountType, Model.AccountTypes, new {@class="mid"})
+            @Html.ValidationMessageFor(m=>m.AccountType)
+          </div>
+          <div style="padding-bottom: 10px;">
+            <label style="display: inline-block; width: 200px;">First name</label>
+            @Html.TextBoxFor(m=>m.FirstName)
+            @Html.ValidationMessageFor(m=>m.FirstName)
+          </div>
+          <div style="padding-bottom: 10px;">
+            <label style="display: inline-block; width: 200px;">Last name</label>
+            @Html.TextBoxFor(m=>m.LastName)
+            @Html.ValidationMessageFor(m => m.LastName)
+          </div>
+          <div style="padding-bottom: 10px;">
+            <label style="display: inline-block; width: 200px;">E-mail address</label>
+            @Html.TextBoxFor(m => m.Email)
+            @Html.ValidationMessageFor(m => m.Email)
+          </div>
+          <div style="padding-bottom: 10px;">
+            <label style="display: inline-block; width: 200px;">Password</label>
+            @Html.PasswordFor(m => m.NewPassword)
+            @Html.ValidationMessageFor(m => m.NewPassword)
+
+          </div>
+          <div style="padding-bottom: 10px;">
+            <label style="display: inline-block; width: 200px;">Confirm password</label>
+            @Html.PasswordFor(m => m.ConfirmPassword)
+            @Html.ValidationMessageFor(m => m.ConfirmPassword)
+          </div>
+          <div style="padding-bottom: 10px;">
+            <label style="display: inline-block; width: 200px;">Address line</label>
+            @Html.TextBoxFor(m => m.AddressLine)
+            @Html.ValidationMessageFor(m => m.AddressLine)
+          </div>
+          <div style="padding-bottom: 10px;">
+            <label style="display: inline-block; width: 200px;">Town / city</label>
+            @Html.TextBoxFor(m => m.Town)
+            @Html.ValidationMessageFor(m => m.Town)
+          </div>
+          <div style="padding-bottom: 10px;">
+            <label style="display: inline-block; width: 200px;">Post code</label>
+            @Html.TextBoxFor(m=>m.PostCode, new { @class = " short" })
+            @Html.ValidationMessageFor(m => m.PostCode)
+          </div>
+          <div style="padding-bottom: 10px;">
+            <label style="display: inline-block; width: 200px;">Country</label>
+            @Html.DropDownList("country", Model.Countries, new { @class="mid" })
+            @Html.ValidationMessage("country")
+          </div>
+          <div style="padding-bottom: 10px;">
+            <label style="display: inline-block; width: 200px;"></label>
+            @Html.CheckBoxFor(m=>m.AgreeToTermsAndConditions)
+            <span class="wholeline">@Html.LabelFor(m => m.AgreeToTermsAndConditions, "I agree to the terms and conditions")</span>
+            @Html.ValidationMessageFor(m=>m.AgreeToTermsAndConditions)
+          </div>
+          <div style="padding-bottom: 10px;">
+            <label style="display: inline-block; width: 200px;"></label>
+            @Html.Hidden("returnUrl", Request.QueryString["returnUrl"])
+            <input type="submit" style="font-size: 20px; font-weight: bold; padding: 7px 50px;" value="Sign up" />
+          </div>
+        </div>       
+}
+</div>
+
+<div class="clearfix" />

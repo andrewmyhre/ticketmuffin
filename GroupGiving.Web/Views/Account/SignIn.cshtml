@@ -1,44 +1,39 @@
-﻿@model RavenDBMembership.Web.Models.LogOnModel
+﻿@using GroupGiving.Web.Models
+@model SignInModel
 
 @{
     ViewBag.Title = "Log On";
 }
 
-<h2>Log On</h2>
-<p>
-    Please enter your username and password. @Html.ActionLink("Register", "Register") if you don't have an account.
-</p>
+<a href="/" style="display: block; position: absolute; right:0px;">Connect using Facebook <img src="/content/img/fbconnect_big.jpg" /></a>   
+
 @Html.ValidationSummary(true, "Login was unsuccessful. Please correct the errors and try again.")
 
-@using (Html.BeginForm()) {
-    <div>
-        <fieldset>
-            <legend>Account Information</legend>
-
-            <div class="editor-label">
-                @Html.LabelFor(m => m.UserName)
+<div id="signIn" style="padding-top: 30px; position: relative;">
+@using (Html.BeginForm("signin", "account"))
+{
+        <h1>Sign in or @Html.ActionLink("Sign Up", "signup", "Account", null, new { id = "signUpLink" })</h1>
+    
+        <div class="grayBox">
+        <p>@Html.ActionLink("Forgot your password?", "ForgotPassword", "Account")</p>
+            <div style="padding-bottom: 10px;">
+                <label style="display: inline-block; width: 200px;">Email</label>
+                @Html.TextBoxFor(m=>m.EmailAddress)
+                @Html.ValidationMessage("emailaddress")
             </div>
-            <div class="editor-field">
-                @Html.TextBoxFor(m => m.UserName)
-                @Html.ValidationMessageFor(m => m.UserName)
+            <div style="padding-bottom: 10px;">
+                <label style="display: inline-block; width: 200px;">Password</label>
+                @Html.PasswordFor(m=>m.Password)
+                @Html.ValidationMessage("password")
             </div>
-
-            <div class="editor-label">
-                @Html.LabelFor(m => m.Password)
+            <div style="padding-bottom: 10px;">
+                @Html.CheckBoxFor(m=>m.RememberMe)
+                @Html.Label("rememberMe", "Remember me")
             </div>
-            <div class="editor-field">
-                @Html.PasswordFor(m => m.Password)
-                @Html.ValidationMessageFor(m => m.Password)
+                @Html.Hidden("returnUrl", Request.QueryString["returnUrl"])
+            <div style="padding-bottom: 10px;">
+                <input type="submit" value="Sign In" />
             </div>
-
-            <div class="editor-label">
-                @Html.CheckBoxFor(m => m.RememberMe)
-                @Html.LabelFor(m => m.RememberMe)
-            </div>
-
-            <p>
-                <input type="submit" value="Log On" />
-            </p>
-        </fieldset>
-    </div>
+        </div>
 }
+</div>

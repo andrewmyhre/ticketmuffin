@@ -11,6 +11,7 @@ using GroupGiving.Core.Email;
 using GroupGiving.Core.Services;
 using GroupGiving.Web.Code;
 using GroupGiving.Web.Models;
+using Raven.Client;
 using log4net;
 using Ninject;
 using RavenDBMembership;
@@ -26,20 +27,22 @@ namespace GroupGiving.Web.Controllers
         private readonly IMembershipService _membershipService;
         private readonly IAccountService _accountService;
         private ICountryService _countryService;
+        private readonly IEmailRelayService _emailRelayService;
 
-        public AccountController()
+        public AccountController(IAccountService accountService, IFormsAuthenticationService formsService, IMembershipService accountMembershipService, ICountryService countryService, IDocumentStore documentStore, IEmailRelayService emailRelayService)
         {
-            _accountService = MvcApplication.Kernel.Get<IAccountService>();
-            _formsService = MvcApplication.Kernel.Get<IFormsAuthenticationService>();
-            _membershipService = MvcApplication.Kernel.Get<AccountMembershipService>();
-            _countryService = MvcApplication.Kernel.Get<ICountryService>();
+            _accountService = accountService;
+            _formsService = formsService;
+            _membershipService = accountMembershipService;
+            _countryService = countryService;
+            _emailRelayService = emailRelayService;
             ((RavenDBMembershipProvider) Membership.Provider).DocumentStore
-                = RavenDbDocumentStore.Instance;
+                = documentStore;
         }
 
         [AcceptVerbs(HttpVerbs.Get)]
-        [ActionName("signup-or-signin")]
-        public ActionResult SignUpOrSignIn()
+        [ActionName("signup")]
+        public ActionResult SignUp()
         {
             if (User.Identity.IsAuthenticated)
             {
@@ -49,6 +52,23 @@ namespace GroupGiving.Web.Controllers
                     Response.Redirect("/");
             }
 
+            var model = new SignUpModel();
+            model.Countries = new SelectList(_countryService.RetrieveAllCountries(), "Name", "Name");
+            model.AccountTypes = new SelectList(Enum.GetNames(typeof(AccountType)));
+            return View(model);
+        }
+
+        [HttpGet]
+        [ActionName("signin")]
+        public ActionResult SignIn()
+        {
+            if (User.Identity.IsAuthenticated)
+            {
+                if (Request.QueryString["returnUrl"] != null)
+                    Response.Redirect(Request.QueryString["returnUrl"]);
+                else
+                    Response.Redirect("/");
+            }
             var model = new SignInModel();
             model.Countries = new SelectList(_countryService.RetrieveAllCountries(), "Name", "Name");
             model.AccountTypes = new SelectList(Enum.GetNames(typeof(AccountType)));
@@ -65,7 +85,7 @@ namespace GroupGiving.Web.Controllers
                 model.AccountTypes = new SelectList(Enum.GetNames(typeof(AccountType)));
                 if (Request.AcceptTypes.Contains("application/json"))
                     return Json(new LogOnResultViewModel() { Success = false });
-                return View("signup-or-signin", model);
+                return View(model);
             }
 
             ((RavenDBMembershipProvider)Membership.Provider).DocumentStore = RavenDbDocumentStore.Instance;
@@ -89,12 +109,12 @@ namespace GroupGiving.Web.Controllers
             else
             {
                 ModelState.AddModelError("login", "The combination of email and password you entered did not match any user");
-                var model = new SignInModel();
+                var model = new SignUpModel();
                 model.Countries = new SelectList(_countryService.RetrieveAllCountries(), "Name", "Name");
                 model.AccountTypes = new SelectList(Enum.GetNames(typeof(AccountType)));
                 if (Request.AcceptTypes.Contains("application/json"))
                     return Json(new LogOnResultViewModel() { Success = false });
-                return View("signup-or-signin", model);
+                return View(model);
             }
         }
 
@@ -104,10 +124,9 @@ namespace GroupGiving.Web.Controllers
         {
             if (!ModelState.IsValid)
             {
-                var model = new SignInModel();
-                model.Countries = new SelectList(_countryService.RetrieveAllCountries(), "Name", "Name");
-                model.AccountTypes = new SelectList(Enum.GetNames(typeof(AccountType)));
-                return View("signup-or-signin", model);
+                request.Countries = new SelectList(_countryService.RetrieveAllCountries(), "Name", "Name");
+                request.AccountTypes = new SelectList(Enum.GetNames(typeof(AccountType)));
+                return View(request);
             }
 
             ((RavenDBMembershipProvider)Membership.Provider).DocumentStore = RavenDbDocumentStore.Instance;
@@ -137,7 +156,7 @@ namespace GroupGiving.Web.Controllers
                 var model = new SignInModel();
                 model.Countries = new SelectList(_countryService.RetrieveAllCountries(), "Name", "Name");
                 model.AccountTypes = new SelectList(Enum.GetNames(typeof(AccountType)));
-                return View("signup-or-signin", model);
+                return View(model);
             }
         }
 
@@ -191,8 +210,7 @@ namespace GroupGiving.Web.Controllers
                             createUserRequest.City = model.Town;
                             createUserRequest.PostCode = model.PostCode;
                             createUserRequest.Country = model.Country;
-                            var userService = MvcApplication.Kernel.Get<IAccountService>();
-                            userService.CreateUser(createUserRequest);
+                            _accountService.CreateUser(createUserRequest);
                             transaction.Complete();
 
                             _formsService.SignIn(model.Email, false /* createPersistentCookie */);
@@ -288,9 +306,7 @@ namespace GroupGiving.Web.Controllers
         [AcceptVerbs(HttpVerbs.Post)]
         public ActionResult ForgotPassword(string email)
         {
-            var userService = MvcApplication.Kernel.Get<IAccountService>();
-            var emailService = MvcApplication.Kernel.Get<IEmailRelayService>();
-            var result = userService.SendPasswordResetEmail(email, emailService);
+            var result = _accountService.SendPasswordResetEmail(email, _emailRelayService);
 
             if (result.AccountNotFound)
             {
@@ -311,8 +327,7 @@ namespace GroupGiving.Web.Controllers
         public ActionResult ResetPassword(string token)
         {
             var resetPasswordViewModel = new ResetPasswordViewModel();
-            var userService = MvcApplication.Kernel.Get<IAccountService>();
-            var account = userService.RetrieveAccountByPasswordResetToken(token);
+            var account = _accountService.RetrieveAccountByPasswordResetToken(token);
 
             if (account==null)
             {
@@ -331,10 +346,7 @@ namespace GroupGiving.Web.Controllers
             {
                 return View(resetPasswordViewModel);
             }
-            var userService = MvcApplication.Kernel.Get<IAccountService>();
-
-            var accountService = MvcApplication.Kernel.Get<IAccountService>();
-            var account = accountService.RetrieveAccountByPasswordResetToken(token);
+            var account = _accountService.RetrieveAccountByPasswordResetToken(token);
             if (account == null)
             {
                 return RedirectToAction("ResetPassword", new {token = token});
@@ -353,7 +365,7 @@ namespace GroupGiving.Web.Controllers
                 session.SaveChanges();
             }
             
-            userService.ResetPassword(token, resetPasswordViewModel.NewPassword);
+            _accountService.ResetPassword(token, resetPasswordViewModel.NewPassword);
 
             return RedirectToAction("PasswordHasBeenReset");
         }
@@ -367,9 +379,8 @@ namespace GroupGiving.Web.Controllers
         public ActionResult ContactDetails()
         {
             var viewModel = new ContactDetailsViewModel();
-            var accountService = MvcApplication.Kernel.Get<IAccountService>();
             var membershipUser = Membership.GetUser(true);
-            var account = accountService.RetrieveByEmailAddress(membershipUser.Email);
+            var account = _accountService.RetrieveByEmailAddress(membershipUser.Email);
             viewModel.AccountType = account.AccountType;
             viewModel.AddressLine = account.AddressLine;
             viewModel.Country = account.Country;
@@ -392,9 +403,8 @@ namespace GroupGiving.Web.Controllers
             if (ModelState.IsValid)
             {
                 // update
-                var accountService = MvcApplication.Kernel.Get<IAccountService>();
                 var membershipUser = Membership.GetUser(true);
-                var account = accountService.RetrieveByEmailAddress(membershipUser.Email);
+                var account = _accountService.RetrieveByEmailAddress(membershipUser.Email);
                 account.FirstName = viewModel.FirstName;
                 account.LastName = viewModel.LastName;
                 account.AccountType = viewModel.AccountType;
@@ -402,7 +412,7 @@ namespace GroupGiving.Web.Controllers
                 account.City = viewModel.Town;
                 account.PostCode = viewModel.PostCode;
                 account.Country = viewModel.Country;
-                accountService.UpdateAccount(account);
+                _accountService.UpdateAccount(account);
                 viewModel.UpdatedSuccessfully = true;
                 viewModel.Email = account.Email;
             }

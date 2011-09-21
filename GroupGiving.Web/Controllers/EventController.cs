@@ -1,7 +1,11 @@
 ﻿using System;
 using System.Configuration;
 using System.Linq;
+using System.Runtime.Serialization;
+using System.Text;
 using System.Web.Security;
+using System.Xml;
+using Raven.Client;
 using anrControls;
 using GroupGiving.Core.Actions.CreatePledge;
 using GroupGiving.Core.Data;
@@ -29,18 +33,20 @@ namespace GroupGiving.Web.Controllers
         private readonly ITaxAmountResolver _taxResolver;
         private IPayPalConfiguration _paypalConfiguration;
         private static Markdown _markdown =  new Markdown();
+        private IEmailRelayService _emailRelayService;
 
-        public EventController()
+        public EventController(IAccountService accountService, IRepository<GroupGivingEvent> eventRepository, IFormsAuthenticationService formsService, IMembershipService membershipService, IPaymentGateway paymentGateway, ITaxAmountResolver taxResolver, IPayPalConfiguration paypalConfiguration, IDocumentStore documentStore, IEmailRelayService emailRelayService)
         {
-            _accountService = MvcApplication.Kernel.Get<IAccountService>();
-            _eventRepository = MvcApplication.Kernel.Get<IRepository<GroupGivingEvent>>();
-            _formsService = MvcApplication.Kernel.Get<IFormsAuthenticationService>();
-            _membershipService = MvcApplication.Kernel.Get<AccountMembershipService>();
-            _paymentGateway = MvcApplication.Kernel.Get<IPaymentGateway>();
-            _taxResolver = MvcApplication.Kernel.Get<ITaxAmountResolver>();
-            _paypalConfiguration = MvcApplication.Kernel.Get<IPayPalConfiguration>();
+            _accountService = accountService;
+            _eventRepository = eventRepository;
+            _formsService = formsService;
+            _membershipService = membershipService;
+            _paymentGateway = paymentGateway;
+            _taxResolver = taxResolver;
+            _paypalConfiguration = paypalConfiguration;
             ((RavenDBMembershipProvider)Membership.Provider).DocumentStore
-                = RavenDbDocumentStore.Instance;
+                = documentStore;
+            _emailRelayService = emailRelayService;
         }
 
         //
@@ -92,17 +98,6 @@ namespace GroupGiving.Web.Controllers
                 viewModel.CountDown = true;
             }
 
-            return View(viewModel);
-        }
-
-        [AcceptVerbs(HttpVerbs.Get)]
-        [ActionName("share")]
-        public ActionResult Share(string shortUrl)
-        {
-            if (string.IsNullOrWhiteSpace(shortUrl))
-                return new HttpNotFoundResult();
-
-            var viewModel = new ShareEventViewModel();
             return View(viewModel);
         }
 
@@ -189,8 +184,7 @@ namespace GroupGiving.Web.Controllers
 
             if (account == null)
             {
-                IEmailRelayService emailRelayService = MvcApplication.Kernel.Get<IEmailRelayService>();
-                account = _accountService.CreateIncompleteAccount(request.EmailAddress, emailRelayService);
+                account = _accountService.CreateIncompleteAccount(request.EmailAddress, _emailRelayService);
             }
 
             if (request.OptInForOffers)

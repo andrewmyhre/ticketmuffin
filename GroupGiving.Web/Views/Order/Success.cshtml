@@ -1,6 +1,6 @@
 ﻿@model GroupGiving.Web.Models.OrderConfirmationViewModel
 @{
-    ViewBag.Title = "Return";
+    ViewBag.Title = "Thank your for pledging! - TicketMuffin";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
@@ -44,7 +44,7 @@
 
         @if (!Model.Event.IsFull)
         {
-            <div style="padding-top: 30px;"><input type="submit" class="bigButton" value="Invite" /></div>
+            <div style="padding-top: 30px;">@Html.ActionLink("Invite people to your event", "Share", "Event", new {shortUrl=Model.Event.ShortUrl}, new {@class="bigButton"})</div>
         }
 
         <div class="clearFix"></div>

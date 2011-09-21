@@ -34,8 +34,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="AutoMapper, Version=1.1.0.188, Culture=neutral, PublicKeyToken=be96cd2c38ef1005, processorArchitecture=MSIL">
-      <HintPath>..\packages\AutoMapper.1.1.0.118\lib\AutoMapper.dll</HintPath>
+    <Reference Include="AutoMapper, Version=2.0.0.231, Culture=neutral, PublicKeyToken=be96cd2c38ef1005, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\AutoMapper.2.0.0\lib\AutoMapper.dll</HintPath>
     </Reference>
     <Reference Include="FiftyOne.Foundation, Version=1.2.0.5, Culture=neutral, PublicKeyToken=e0b3a8da0bbce49c, processorArchitecture=MSIL">
       <HintPath>..\packages\51Degrees.mobi.1.2.0.5\lib\NET40\FiftyOne.Foundation.dll</HintPath>
@@ -44,21 +45,18 @@
       <HintPath>..\packages\log4net.1.2.10\lib\2.0\log4net.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
+    <Reference Include="Microsoft.Web.Infrastructure, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
     <Reference Include="Microsoft.Web.Mvc">
       <HintPath>..\packages\Microsoft.Web.Mvc.dll</HintPath>
     </Reference>
     <Reference Include="Ninject, Version=2.2.0.0, Culture=neutral, PublicKeyToken=c7192dc5380945e7, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\Ninject-2.2.1.3-release-net-4.0-mediumTrust\Ninject.dll</HintPath>
-    </Reference>
-    <Reference Include="Ninject.Web">
-      <HintPath>..\packages\Ninject.Web-2.2.0.0-release-net-4.0\Ninject.Web.dll</HintPath>
+      <HintPath>..\packages\Ninject.2.2.1.4\lib\net40-Full\Ninject.dll</HintPath>
     </Reference>
     <Reference Include="Ninject.Web.Mvc, Version=2.2.0.0, Culture=neutral, PublicKeyToken=c7192dc5380945e7, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\Ninject.Web.Mvc3-2.2.2.0-release-net-4.0\Ninject.Web.Mvc.dll</HintPath>
+      <HintPath>..\packages\Ninject.MVC3.2.2.2.0\lib\net40-Full\Ninject.Web.Mvc.dll</HintPath>
     </Reference>
     <Reference Include="Raven.Client.Lightweight, Version=1.0.0.0, Culture=neutral, PublicKeyToken=37f41c7f99471593, processorArchitecture=MSIL" />
+    <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Transactions" />
     <Reference Include="System.Web.Helpers, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <Private>True</Private>
@@ -116,13 +114,27 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="App_Start\NinjectMVC3.cs" />
+    <Compile Include="Areas\Api\ApiAreaRegistration.cs" />
+    <Compile Include="Areas\Api\Code\Api.cs" />
+    <Compile Include="Areas\Api\Code\AutoMappingConfiguration.cs" />
+    <Compile Include="Areas\Api\Code\XmlModelBinderProvider.cs" />
+    <Compile Include="Areas\Api\Controllers\ApiControllerBase.cs" />
+    <Compile Include="Areas\Api\Controllers\EventsController.cs" />
+    <Compile Include="Areas\Api\Models\ApiResponse.cs" />
+    <Compile Include="Areas\Api\Models\Error.cs" />
+    <Compile Include="Areas\Api\Models\ErrorResponse.cs" />
+    <Compile Include="Areas\Api\Models\EventModel.cs" />
+    <Compile Include="Areas\Api\Models\ResourceLink.cs" />
+    <Compile Include="Areas\Api\Models\ShareViaEmailRequest.cs" />
+    <Compile Include="Code\CommaSeparatedEmailListValidatorAttribute.cs" />
     <Compile Include="Code\ContentDictionaries.cs" />
     <Compile Include="Code\ContentTypeAwareViewEngine.cs" />
-    <Compile Include="Code\GroupGivingNinjectModule.cs" />
     <Compile Include="Code\HtmlHelperExtensions.cs" />
     <Compile Include="Code\Markdown.cs" />
     <Compile Include="Code\MarkdownViewModel.cs" />
     <Compile Include="Code\MobileSupport.cs" />
+    <Compile Include="Code\ModelStateExtensions.cs" />
     <Compile Include="Code\MustBeTrueAttribute.cs" />
     <Compile Include="Code\PageContent.cs" />
     <Compile Include="Code\RavenDbDocumentStore.cs" />
@@ -134,6 +146,7 @@
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\MarkdownController.cs" />
     <Compile Include="Controllers\OrderController.cs" />
+    <Compile Include="Controllers\ShareEventController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -157,6 +170,7 @@
     <Compile Include="Models\RefundViewModel.cs" />
     <Compile Include="Models\ResetPasswordViewModel.cs" />
     <Compile Include="Models\ShareEventViewModel.cs" />
+    <Compile Include="Models\ShareViaEmailViewModel.cs" />
     <Compile Include="Models\SignInModel.cs" />
     <Compile Include="Models\SignUpModel.cs" />
     <Compile Include="Models\UpdateEventViewModel.cs" />
@@ -166,8 +180,43 @@
     <Content Include="App_Data\web_browsers_patch.xml" />
     <Content Include="Content\editorstyle.css" />
     <Content Include="Content\emailTemplates\PledgeConfirmation.xml" />
+    <Content Include="Content\images\ui-bg_flat_0_aaaaaa_40x100.png" />
+    <Content Include="Content\images\ui-bg_flat_55_999999_40x100.png" />
+    <Content Include="Content\images\ui-bg_flat_75_aaaaaa_40x100.png" />
+    <Content Include="Content\images\ui-bg_flat_75_ffffff_40x100.png" />
+    <Content Include="Content\images\ui-bg_glass_45_0078ae_1x400.png" />
+    <Content Include="Content\images\ui-bg_glass_55_f8da4e_1x400.png" />
+    <Content Include="Content\images\ui-bg_glass_55_fbf9ee_1x400.png" />
+    <Content Include="Content\images\ui-bg_glass_65_ffffff_1x400.png" />
+    <Content Include="Content\images\ui-bg_glass_75_79c9ec_1x400.png" />
+    <Content Include="Content\images\ui-bg_glass_75_dadada_1x400.png" />
+    <Content Include="Content\images\ui-bg_glass_75_e6e6e6_1x400.png" />
+    <Content Include="Content\images\ui-bg_gloss-wave_45_e14f1c_500x100.png" />
+    <Content Include="Content\images\ui-bg_gloss-wave_50_6eac2c_500x100.png" />
+    <Content Include="Content\images\ui-bg_gloss-wave_75_2191c0_500x100.png" />
+    <Content Include="Content\images\ui-bg_highlight-soft_75_5587b6_1x100.png" />
+    <Content Include="Content\images\ui-bg_inset-hard_100_fcfdfd_1x100.png" />
+    <Content Include="Content\images\ui-bg_inset-soft_95_fef1ec_1x100.png" />
+    <Content Include="Content\images\ui-icons_0078ae_256x240.png" />
+    <Content Include="Content\images\ui-icons_056b93_256x240.png" />
+    <Content Include="Content\images\ui-icons_222222_256x240.png" />
+    <Content Include="Content\images\ui-icons_2e83ff_256x240.png" />
+    <Content Include="Content\images\ui-icons_454545_256x240.png" />
+    <Content Include="Content\images\ui-icons_888888_256x240.png" />
+    <Content Include="Content\images\ui-icons_cd0a0a_256x240.png" />
+    <Content Include="Content\images\ui-icons_d8e7f3_256x240.png" />
+    <Content Include="Content\images\ui-icons_e0fdff_256x240.png" />
+    <Content Include="Content\images\ui-icons_f5e175_256x240.png" />
+    <Content Include="Content\images\ui-icons_f7a50d_256x240.png" />
+    <Content Include="Content\images\ui-icons_fcd113_256x240.png" />
+    <Content Include="Content\images\ui-icons_ffffff_256x240.png" />
     <Content Include="Content\img\dinner.jpg" />
+    <Content Include="Content\img\fbconnect_big.jpg" />
     <Content Include="Content\img\howitworks.jpg" />
+    <Content Include="Content\img\iconCalendar.gif" />
+    <Content Include="Content\img\stepBlue.jpg" />
+    <Content Include="Content\img\stepGrey.jpg" />
+    <Content Include="Content\jquery-ui-1.8.16.custom.css" />
     <Content Include="Content\style.m.css" />
     <Content Include="Content\emailTemplates\AccountCreated.xml" />
     <Content Include="Content\emailTemplates\ResetYourPassword.xml" />
@@ -270,6 +319,8 @@
     <Content Include="markitup\templates\preview.css" />
     <Content Include="markitup\templates\preview.html" />
     <Content Include="Scripts\pledge.js" />
+    <Content Include="Scripts\share.js" />
+    <Content Include="Scripts\signin.js" />
     <Content Include="Scripts\tickets.js" />
     <Content Include="Scripts\createevent.js" />
     <Content Include="Scripts\global.js" />
@@ -857,6 +908,7 @@
     <Content Include="Views\Home\HowItWorks.cshtml" />
     <Content Include="App_Data\51Degrees.mobi.config" />
     <None Include="App_Data\wurfl.xml.gz" />
+    <Content Include="Areas\Api\Views\Web.config" />
     <None Include="tinymce\examples\media\sample.dcr" />
     <None Include="tinymce\examples\media\sample.flv" />
     <None Include="tinymce\examples\media\sample.ram" />
@@ -865,6 +917,9 @@
     <Content Include="Views\Markdown\_EditorLayout.cshtml" />
     <Content Include="Views\Markdown\Sample.cshtml" />
     <Content Include="Views\Event\EditorTemplates\ShortUrl.cshtml" />
+    <Content Include="Views\Event\ShareViaEmail.cshtml" />
+    <Content Include="Views\ShareEvent\DisplayTemplates\ShareViaEmailViewModel.cshtml" />
+    <Content Include="Views\ShareEvent\Index.cshtml" />
     <None Include="_bin_deployableAssemblies\System.Web.Mvc.dll" />
     <None Include="_bin_deployableAssemblies\WebMatrix.WebData.xml" />
     <None Include="_bin_deployableAssemblies\WebMatrix.WebData.dll" />
@@ -885,7 +940,9 @@
     <None Include="_bin_deployableAssemblies\Microsoft.Web.Infrastructure.xml" />
     <None Include="_bin_deployableAssemblies\Microsoft.Web.Infrastructure.dll" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Areas\Api\Views\Shared\" />
+  </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config" />
   </ItemGroup>
@@ -893,7 +950,7 @@
     <Content Include="Views\Event\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\EmailProcessing\EmailProcessing\EmailProcessing.csproj">
+    <ProjectReference Include="..\EmailProcessing\EmailProcessing\EmailProcessing.csproj">
       <Project>{F511818D-59DF-4358-8946-10FB3933E5B2}</Project>
       <Name>EmailProcessing</Name>
     </ProjectReference>
@@ -950,7 +1007,7 @@
     <Content Include="Views\CreateEvent\create.cshtml" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Views\Account\signup-or-signin.cshtml" />
+    <Content Include="Views\Account\signup.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Views\CreateEvent\tickets.cshtml" />

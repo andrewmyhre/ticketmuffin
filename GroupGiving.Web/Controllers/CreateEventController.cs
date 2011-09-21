@@ -18,13 +18,13 @@ namespace GroupGiving.Web.Controllers
         private readonly IEventService _eventService;
         private readonly ICountryService _countryService;
 
-        public CreateEventController()
+        public CreateEventController(IAccountService accountService, ICountryService countryService, IMembershipService membershipService, IFormsAuthenticationService formsAuthenticationService, IEventService eventService)
         {
-            _accountService = MvcApplication.Kernel.Get<IAccountService>();
-            _countryService = MvcApplication.Kernel.Get<ICountryService>();
-            _membershipService = MvcApplication.Kernel.Get<IMembershipService>();
-            _formsAuthenticationService = MvcApplication.Kernel.Get<IFormsAuthenticationService>();
-            _eventService = MvcApplication.Kernel.Get<IEventService>();
+            _accountService = accountService;
+            _countryService = countryService;
+            _membershipService = membershipService;
+            _formsAuthenticationService = formsAuthenticationService;
+            _eventService = eventService;
         }
 
         public CreateEventController(IAccountService accountService,
@@ -152,6 +152,10 @@ namespace GroupGiving.Web.Controllers
             {
                 ModelState.AddModelError("SalesEndDateTime", "Provide a valid date and time for ticket sales to end");
             }
+            else if (salesEndDateTime < DateTime.Now)
+            {
+                ModelState.AddModelError("SalesEndDateTime", "The date provided for sales to end is in the past, it must be in the future");
+            }
             else
             {
                 setTicketDetailsRequest.SalesEndDateTime = salesEndDateTime;
@@ -160,6 +164,7 @@ namespace GroupGiving.Web.Controllers
             if (!ModelState.IsValid)
             {
                 setTicketDetailsRequest.Times = TimeOptions();
+                setTicketDetailsRequest.SalesEndTimeOptions = TimeOptions();
                 return View(setTicketDetailsRequest);
             }
 
