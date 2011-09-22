@@ -1,10 +1,8 @@
-﻿$(function () {
-
+﻿var paypalVerified = false;
+$(document).ready(function () {
     $.ajaxSetup(
         { accept: 'application/json', dataType: 'json', contentType: 'application/json' }
     );
-
-    $("#salesEndDate").datepicker({ dateFormat: 'dd/mm/yy' });
 
     $('#PayPalEmail').change(function () { VerifyPayPalAccount(null); });
     $('#PayPalFirstName').change(function () { VerifyPayPalAccount(null); });
@@ -20,12 +18,11 @@
     if ($('#PayPalFirstName').val() + $('#PayPalLastName').val() + ($('#PayPalEmail').val()) != '') {
         VerifyPayPalAccount(null);
     }
-    $('#tickets-form input[type="submit"]').attr('disabled', 'disabled');
-
+    $('#paypal-form input[type="submit"]').attr('disabled', 'disabled');
 });
 
 function VerifyPayPalAccount(onVerified) {
-    $('#tickets-form input[type="submit"]').attr('disabled', 'disabled');
+    $('#paypal-form input[type="submit"]').attr('disabled', 'disabled');
     var firstname = $('#PayPalFirstName').val();
     var lastname = $('#PayPalLastName').val();
     var email = $('#PayPalEmail').val();
@@ -41,7 +38,7 @@ function VerifyPayPalAccount(onVerified) {
                         $('#pp-verify-result').html('<span style="color:lime">Your account exists but is unverified.</span>');
                     }
                     paypalVerified = true;
-                    $('#tickets-form input[type="submit"]').attr('disabled', false);
+                    $('#paypal-form input[type="submit"]').attr('disabled', false);
                     if (onVerified) {
                         onVerified();
                     }
@@ -49,7 +46,7 @@ function VerifyPayPalAccount(onVerified) {
                     $('#pp-verify-result').html('<span style="color:red">A PayPal account matching those credentials could not be found. Please ensure that the name and email address provided match the details for your PayPal account.</span>');
                     $('#paypal-name-container').slideDown();
                     paypalVerified = false;
-                    $('#tickets-form input[type="submit"]').attr('disabled', 'disabled');
+                    $('#paypal-form input[type="submit"]').attr('disabled', 'disabled');
                 }
             })
             .error(function () { });

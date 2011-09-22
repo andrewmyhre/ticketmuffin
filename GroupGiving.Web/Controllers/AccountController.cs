@@ -424,6 +424,29 @@ namespace GroupGiving.Web.Controllers
             return View(viewModel);
         }
 
+        public ActionResult PayPalSettings()
+        {
+            var viewModel = new PayPalSettingsModel();
+            var membershipUser = Membership.GetUser(true);
+            var account = _accountService.RetrieveByEmailAddress(membershipUser.Email);
+            viewModel.PayPalEmail = account.PayPalEmail;
+            viewModel.PayPalFirstName = account.PayPalFirstName;
+            viewModel.PayPalLastName = account.PayPalLastName;
+            return View(viewModel);
+        }
+
+        [HttpPost]
+        public ActionResult PayPalSettings(PayPalSettingsModel model)
+        {
+            var membershipUser = Membership.GetUser(true);
+            var account = _accountService.RetrieveByEmailAddress(membershipUser.Email);
+            account.PayPalEmail = model.PayPalEmail;
+            account.PayPalFirstName = model.PayPalFirstName;
+            account.PayPalLastName = model.PayPalLastName;
+            _accountService.UpdateAccount(account);
+            return RedirectToAction("PayPalSettings");
+        }
+
         #region Status Codes
         private static string ErrorCodeToString(MembershipCreateStatus createStatus)
         {

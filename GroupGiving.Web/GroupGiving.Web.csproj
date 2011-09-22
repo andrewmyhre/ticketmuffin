@@ -138,6 +138,7 @@
     <Compile Include="Code\ModelStateExtensions.cs" />
     <Compile Include="Code\MustBeTrueAttribute.cs" />
     <Compile Include="Code\PageContent.cs" />
+    <Compile Include="Code\PaypalAccountService.cs" />
     <Compile Include="Code\RavenDbDocumentStore.cs" />
     <Compile Include="Code\XmlContentProvider.cs" />
     <Compile Include="Controllers\AccountController.cs" />
@@ -167,6 +168,7 @@
     <Compile Include="Models\LogOnResultViewModel.cs" />
     <Compile Include="Models\OrderConfirmationViewModel.cs" />
     <Compile Include="Models\OrderRequestViewModel.cs" />
+    <Compile Include="Models\PayPalSettingsModel.cs" />
     <Compile Include="Models\PurchaseDetails.cs" />
     <Compile Include="Models\RefundViewModel.cs" />
     <Compile Include="Models\ResetPasswordViewModel.cs" />
@@ -338,6 +340,7 @@
     <Content Include="Scripts\modernizr-1.7.js" />
     <Content Include="Scripts\modernizr-1.7.min.js" />
     <Content Include="Scripts\order.js" />
+    <Content Include="Scripts\verify-pp.js" />
     <Content Include="tinymce\changelog.txt" />
     <Content Include="tinymce\examples\accessibility.html" />
     <Content Include="tinymce\examples\css\content.css" />
@@ -921,6 +924,8 @@
     <Content Include="Views\Event\ShareViaEmail.cshtml" />
     <Content Include="Views\ShareEvent\DisplayTemplates\ShareViaEmailViewModel.cshtml" />
     <Content Include="Views\ShareEvent\Index.cshtml" />
+    <Content Include="Views\Shared\VerifyPaypal.cshtml" />
+    <Content Include="Views\Account\PayPalSettings.cshtml" />
     <None Include="_bin_deployableAssemblies\System.Web.Mvc.dll" />
     <None Include="_bin_deployableAssemblies\WebMatrix.WebData.xml" />
     <None Include="_bin_deployableAssemblies\WebMatrix.WebData.dll" />

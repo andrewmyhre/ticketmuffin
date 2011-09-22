@@ -8,12 +8,9 @@ using System.Web;
 using System.Web.Mvc;
 using GroupGiving.Core.Data;
 using GroupGiving.Core.Domain;
-using GroupGiving.PayPal.AdaptiveAccounts;
 using GroupGiving.PayPal.Configuration;
 using GroupGiving.Web.Areas.Api.Models;
-using PayPal.Platform.SDK;
-using PayPal.Services.Private.AA;
-using AdaptiveAccounts = PayPal.Platform.SDK.AdaptiveAccounts;
+using GroupGiving.Web.Code;
 
 namespace GroupGiving.Web.Areas.Api.Controllers
 {
@@ -29,46 +26,10 @@ namespace GroupGiving.Web.Areas.Api.Controllers
         [ActionName("verify-paypal")]
         public ActionResult VerifyPaypalAccount(VerifyPaypalAccountRequest request)
         {
-                        var configuration =
+            var configuration =
     ConfigurationManager.GetSection("adaptiveAccounts") as PaypalAdaptiveAccountsConfigurationSection;
 
-            BaseAPIProfile profile = BaseApiProfileFactory.CreateFromConfiguration(configuration);
-
-            GetVerifiedStatusRequest getVerifiedStatusRequest = new GetVerifiedStatusRequest();
-            getVerifiedStatusRequest.emailAddress = request.Email;
-            getVerifiedStatusRequest.firstName = request.FirstName;
-            getVerifiedStatusRequest.lastName = request.LastName;
-            getVerifiedStatusRequest.matchCriteria = "NAME";
-            
-            AdaptiveAccounts aa = new AdaptiveAccounts();
-            aa.APIProfile = profile;
-            var response = new VerifyPaypalAccountResponse();
-            try
-            {
-                var verifyResponse = aa.GetVerifiedStatus(getVerifiedStatusRequest);
-
-                if (verifyResponse == null)
-                {
-                    response.Success = false;
-                    response.Verified = false;
-                    return ApiResponse(response);
-                } else if (verifyResponse.responseEnvelope.ack != AckCode.Success)
-                {
-                    response.Success = false;
-                    response.Verified = false;
-                    return ApiResponse(response);
-                }
-
-                response.Success = true;
-                response.Verified = verifyResponse.accountStatus == "VERIFIED";
-                return ApiResponse(response);
-            }
-            catch
-            {
-                response.Success = false;
-                response.Verified = false;
-                return ApiResponse(response);
-            }
+            return ApiResponse(new PaypalAccountService(configuration).VerifyPaypalAccount(request));
         }
 
     }
@@ -98,7 +59,7 @@ namespace GroupGiving.Web.Areas.Api.Controllers
         [DataMember(Name = "errors", EmitDefaultValue = false)]
         public ErrorResponse Errors { get; set; }
 
-        [DataMember(Name="verified", EmitDefaultValue = true)]
-        public bool Verified { get; set; }
+        [DataMember(Name="status")]
+        public string AccountStatus { get; set; }
     }
 }

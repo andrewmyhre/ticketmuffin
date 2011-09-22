@@ -12,7 +12,7 @@
 }
 
 <div>
-@using (Html.BeginForm())
+@using (Html.BeginForm("tickets", "CreateEvent", FormMethod.Post, new {id="tickets-form"}))
 {
     <div class="graybox">
         <div class="formline">
@@ -33,10 +33,15 @@
             @Html.ValidationMessageFor(m => m.MaximumParticipants)
         </div>
 
-        <div class="formline">
-            @Html.LabelFor(m => m.PaypalAccountEmailAddress)
-            @Html.TextBoxFor(m => m.PaypalAccountEmailAddress)
-            @Html.ValidationMessageFor(m => m.PaypalAccountEmailAddress)
+        <div class="formline" id="paypal-name-container" style="display:none">
+            <div><label for="PayPalFirstName">PayPal account first name:</label>@Html.TextBoxFor(m=>m.PayPalFirstName)</div>
+            <div><label for="PayPalLastName">PayPal account last name:</label>@Html.TextBoxFor(m=>m.PayPalLastName)</div>
+        </div>
+
+        <div class="formline" id="paypal-email-container">
+            @Html.LabelFor(m => m.PayPalEmail)
+            @Html.TextBoxFor(m => m.PayPalEmail) <span id="pp-verify-result"></span>
+            @Html.ValidationMessageFor(m => m.PayPalEmail)
         </div>
 
         <div class="formline">

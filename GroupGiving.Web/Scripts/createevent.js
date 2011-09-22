@@ -21,6 +21,9 @@ $(document).ready(function () {
 
     $('#ShortUrl').change(checkUrlAvailability);
     $('#ShortUrl').focusout(checkUrlAvailability);
+
+    $('#pp-verify-button').click(VerifyPayPalAccount);
+    $('#pp-email').change(VerifyPayPalAccount);
 });
 
 function checkUrlAvailability() {

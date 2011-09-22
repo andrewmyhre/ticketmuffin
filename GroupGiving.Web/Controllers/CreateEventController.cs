@@ -1,9 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
+using System.Net;
 using System.Text.RegularExpressions;
 using System.Web.Mvc;
+using System.Web.Security;
 using GroupGiving.Core.Services;
+using GroupGiving.PayPal.Configuration;
+using GroupGiving.Web.Areas.Api.Controllers;
+using GroupGiving.Web.Code;
 using Ninject;
+using Raven.Client;
 using RavenDBMembership.Web.Models;
 using System.Web.Routing;
 using System.Web;
@@ -18,13 +25,14 @@ namespace GroupGiving.Web.Controllers
         private readonly IEventService _eventService;
         private readonly ICountryService _countryService;
 
-        public CreateEventController(IAccountService accountService, ICountryService countryService, IMembershipService membershipService, IFormsAuthenticationService formsAuthenticationService, IEventService eventService)
+        public CreateEventController(IAccountService accountService, ICountryService countryService, IMembershipService membershipService, IFormsAuthenticationService formsAuthenticationService, IEventService eventService, IDocumentStore documentStore)
         {
             _accountService = accountService;
             _countryService = countryService;
             _membershipService = membershipService;
             _formsAuthenticationService = formsAuthenticationService;
             _eventService = eventService;
+            ((RavenDBMembership.Provider.RavenDBMembershipProvider) Membership.Provider).DocumentStore = documentStore;
         }
 
         public CreateEventController(IAccountService accountService,
@@ -131,9 +139,15 @@ namespace GroupGiving.Web.Controllers
         [Authorize]
         public ActionResult TicketDetails(int eventId)
         {
+            var membershipUser = _membershipService.GetUser(User.Identity.Name);
+            var account = _accountService.RetrieveByEmailAddress(membershipUser.Email);
+
             var viewModel = new SetTicketDetailsRequest();
             viewModel.SalesEndDateTime = DateTime.Now;
             viewModel.SalesEndTimeOptions = TimeOptions();
+            viewModel.PayPalEmail = account.PayPalEmail;
+            viewModel.PayPalFirstName = account.PayPalFirstName;
+            viewModel.PayPalLastName = account.PayPalLastName;
             return View(viewModel);
         }
 
@@ -161,6 +175,18 @@ namespace GroupGiving.Web.Controllers
                 setTicketDetailsRequest.SalesEndDateTime = salesEndDateTime;
             }
 
+            // paypal verification
+            var adaptiveAccountsConfiguration =
+            ConfigurationManager.GetSection("adaptiveAccounts") as PaypalAdaptiveAccountsConfigurationSection;
+            var paypalVerificationRequest = new VerifyPaypalAccountRequest()
+                {Email = setTicketDetailsRequest.PayPalEmail, FirstName = setTicketDetailsRequest.PayPalFirstName, LastName = setTicketDetailsRequest.PayPalLastName};
+            var accountVerification = new PaypalAccountService(adaptiveAccountsConfiguration).VerifyPaypalAccount(paypalVerificationRequest);
+            if (!accountVerification.Success)
+            {
+                ModelState.AddModelError("PayPalEmail", "A PayPal account matching the credentials your provided could not be found");
+            } 
+            
+
             if (!ModelState.IsValid)
             {
                 setTicketDetailsRequest.Times = TimeOptions();
@@ -169,6 +195,16 @@ namespace GroupGiving.Web.Controllers
             }
 
             _eventService.SetTicketDetails(setTicketDetailsRequest);
+
+            var membershipUser = _membershipService.GetUser(User.Identity.Name);
+            var account = _accountService.RetrieveByEmailAddress(membershipUser.Email);
+            if (string.IsNullOrWhiteSpace(account.PayPalEmail) && string.IsNullOrWhiteSpace(account.PayPalFirstName) && string.IsNullOrWhiteSpace(account.PayPalEmail))
+            {
+                account.PayPalEmail = setTicketDetailsRequest.PayPalEmail;
+                account.PayPalFirstName = setTicketDetailsRequest.PayPalFirstName;
+                account.PayPalLastName = setTicketDetailsRequest.PayPalLastName;
+                _accountService.UpdateAccount(account);
+            }
 
             var @event = _eventService.Retrieve(setTicketDetailsRequest.EventId);
 

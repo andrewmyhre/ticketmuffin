@@ -1,0 +1,26 @@
+﻿@using GroupGiving.Web.Models
+@model PayPalSettingsModel
+
+@{
+    ViewBag.Title = "PayPalSettings";
+}
+
+@section scripts{
+    <script type="text/javascript" src="/Scripts/verify-pp.js"></script>
+}
+
+<h2>PayPalSettings</h2>
+
+@using (Html.BeginForm("PayPalSettings", "Account", FormMethod.Post, new {id="paypal-form"}))
+{
+    <div id="paypal-name-container">
+        <div><label for="PayPalFirstName">First name:</label>@Html.TextBoxFor(m=>m.PayPalFirstName)</div>
+        <div><label for="PayPalLastName">Last name:</label>@Html.TextBoxFor(m=>m.PayPalLastName)</div>
+    </div>
+
+    <div id="paypal-email-container">
+        <div><label for="PayPalEmail">Email:</label>@Html.TextBoxFor(m=>m.PayPalEmail) <span id="pp-verify-result"></span></div>
+        <div><input type="submit" value="Save Settings"/></div>
+    </div>
+
+}
