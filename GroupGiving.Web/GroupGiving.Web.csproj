@@ -926,6 +926,8 @@
     <Content Include="Views\ShareEvent\Index.cshtml" />
     <Content Include="Views\Shared\VerifyPaypal.cshtml" />
     <Content Include="Views\Account\PayPalSettings.cshtml" />
+    <Content Include="Views\Account\Index.cshtml" />
+    <Content Include="Views\Account\YourEvents.cshtml" />
     <None Include="_bin_deployableAssemblies\System.Web.Mvc.dll" />
     <None Include="_bin_deployableAssemblies\WebMatrix.WebData.xml" />
     <None Include="_bin_deployableAssemblies\WebMatrix.WebData.dll" />

@@ -1,12 +1,12 @@
 ﻿@if(Request.IsAuthenticated) {
-    <text>Welcome <strong>@User.Identity.Name</strong>!
+    <text>Welcome back! [ @Html.ActionLink("Account", "Index", "Account") ]
     [ @Html.ActionLink("SIGN OUT", "SignOut", "Account") ]</text>
 }
 else {
     @:[ <a href="#" id="showSignIn">SIGN IN</a> ]
     @:[ @Html.ActionLink("SIGN UP", "signup", "Account") ]
 
-    <div id="signInForm" style="display:none;">
+    <div id="popup-signIn" style="display:none;">
         <form id="signin" action="@Url.Action("signin", "account")">
             <label for="emailaddress">Username: </label><input type="text" name="emailaddress" /><br />
             <label for="password">Password: </label><input type="password" name="password" /><br />

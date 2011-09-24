@@ -40,6 +40,13 @@ namespace GroupGiving.Web.Controllers
                 = documentStore;
         }
 
+        [HttpGet]
+        [Authorize]
+        public ActionResult Index()
+        {
+            return View();
+        }
+
         [AcceptVerbs(HttpVerbs.Get)]
         [ActionName("signup")]
         public ActionResult SignUp()
@@ -486,5 +493,16 @@ namespace GroupGiving.Web.Controllers
             }
         }
         #endregion
+
+        public ActionResult YourEvents()
+        {
+            var viewModel = new EventListViewModel();
+            return View(viewModel);
+        }
+    }
+
+    public class EventListViewModel
+    {
+        public IEnumerable<GroupGivingEvent> Events { get; set; } 
     }
 }
