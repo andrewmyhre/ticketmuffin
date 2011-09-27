@@ -1,6 +1,7 @@
 using System.Configuration;
 using EmailProcessing;
 using EmailProcessing.Configuration;
+using GroupGiving.Core.Configuration;
 using GroupGiving.Core.Data;
 using GroupGiving.Core.Domain;
 using GroupGiving.Core.Email;

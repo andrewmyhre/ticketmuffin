@@ -16,7 +16,7 @@ namespace PayPal.Platform.SDK
     /// <summary>
     /// AdaptiveAccounts Wrapper class
     /// </summary>
-    public class AdaptiveAccounts : CallerServices
+    public class AdaptiveAccountsSdk : CallerServices
     {
         private const string aaEndpoint = "AdaptiveAccounts/";
         private string result = string.Empty;

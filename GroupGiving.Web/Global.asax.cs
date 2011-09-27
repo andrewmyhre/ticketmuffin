@@ -3,6 +3,7 @@ using System.Web.Mvc;
 using System.Web.Routing;
 using EmailProcessing;
 using GroupGiving.Web.Code;
+using Microsoft.Web.Mvc.Resources;
 using log4net;
 using Ninject;
 using System.Configuration;
@@ -137,6 +138,8 @@ namespace GroupGiving.Web
             ViewEngines.Engines.AddIPhone<RazorViewEngine>();
             ViewEngines.Engines.AddGenericMobile<RazorViewEngine>();
             ViewEngines.Engines.Add(new RazorViewEngine());
+
+            ModelBinders.Binders.DefaultBinder = new ResourceModelBinder();
 
             try
             {

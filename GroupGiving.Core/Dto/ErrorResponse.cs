@@ -1,9 +1,9 @@
 using System.Collections.Generic;
 using System.Runtime.Serialization;
 
-namespace GroupGiving.Web.Areas.Api.Models
+namespace GroupGiving.Core.Dto
 {
-    [CollectionDataContract(Name = "errors", ItemName = "error", Namespace = Areas.Api.Code.Api.Namespace)]
+    [CollectionDataContract(Name = "errors", ItemName = "error", Namespace = Core.Api.Namespace)]
     public class ErrorResponse : List<Error>
     {
         public ErrorResponse()

@@ -45,7 +45,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AdaptiveAccounts.cs" />
+    <Compile Include="AdaptiveAccountsSdk.cs" />
     <Compile Include="Stub\AdaptiveAccounts.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

@@ -34,7 +34,9 @@
     <Reference Include="log4net">
       <HintPath>..\packages\log4net.1.2.10\lib\2.0\log4net.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.Build.Framework" />
     <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Runtime.Serialization" />
@@ -51,15 +53,17 @@
     <Compile Include="Configuration\PaypalAdaptiveAccountsConfigurationSection.cs" />
     <Compile Include="Configuration\PaypalEnvironment.cs" />
     <Compile Include="IApiClient.cs" />
-    <Compile Include="IPaymentGateway.cs" />
-    <Compile Include="IPayPalConfiguration.cs" />
     <Compile Include="Model\ClientDetails.cs" />
+    <Compile Include="Model\CreatePayPalAccountRequest.cs" />
+    <Compile Include="Model\CreatePaypalAccountResponse.cs" />
     <Compile Include="Model\PayRequest.cs" />
-    <Compile Include="Model\PaymentGatewayRequest.cs" />
     <Compile Include="Model\PaymentGatewayResponse.cs" />
     <Compile Include="Model\Receiver.cs" />
     <Compile Include="Model\ReceiverList.cs" />
     <Compile Include="Model\RequestEnvelope.cs" />
+    <Compile Include="Model\VerifyPaypalAccountRequest.cs" />
+    <Compile Include="Model\VerifyPaypalAccountResponse.cs" />
+    <Compile Include="PaypalAccountService.cs" />
     <Compile Include="PayPalConfiguration.cs" />
     <Compile Include="PayPalPaymentGateway.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -71,6 +75,14 @@
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\GroupGiving.Core\GroupGiving.Core.csproj">
+      <Project>{665762CC-21C5-4DF4-A0AD-AB23C449DDF9}</Project>
+      <Name>GroupGiving.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\packages\PayPal\Base_AA\Base_AA.csproj">
+      <Project>{8F599E12-CF05-4EDF-BFC6-6F0B4EA4F36C}</Project>
+      <Name>Base_AA</Name>
+    </ProjectReference>
     <ProjectReference Include="..\packages\PayPal\Base_Common\Base_Common.csproj">
       <Project>{1F5FF00B-CE0F-40B8-9BC4-7B5ED2087266}</Project>
       <Name>Base_Common</Name>

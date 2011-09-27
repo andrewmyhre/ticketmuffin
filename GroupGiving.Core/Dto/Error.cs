@@ -1,8 +1,8 @@
 using System.Runtime.Serialization;
 
-namespace GroupGiving.Web.Areas.Api.Models
+namespace GroupGiving.Core.Dto
 {
-    [DataContract(Name = "error", Namespace = Areas.Api.Code.Api.Namespace)]
+    [DataContract(Name = "error", Namespace = Core.Api.Namespace)]
     public class Error
     {
         [DataMember(Name="field")]

@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using GroupGiving.Core.Configuration;
+using GroupGiving.Core.Dto;
 using GroupGiving.PayPal;
 using GroupGiving.PayPal.Model;
 using NUnit.Framework;

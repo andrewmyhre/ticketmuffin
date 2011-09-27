@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Web.Mvc;
+using GroupGiving.Core.Dto;
 using GroupGiving.Web.Areas.Api.Models;
 using GroupGiving.Web.Models;
 

@@ -1,13 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using EmailProcessing;
+using GroupGiving.Core.Configuration;
 using GroupGiving.Core.Data;
 using GroupGiving.Core.Domain;
-using GroupGiving.Core.Email;
+using GroupGiving.Core.Dto;
 using GroupGiving.Core.Services;
-using GroupGiving.PayPal;
-using GroupGiving.PayPal.Model;
 
 namespace GroupGiving.Core.Actions.CreatePledge
 {

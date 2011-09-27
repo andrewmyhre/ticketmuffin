@@ -5,11 +5,11 @@ using System.Linq;
 using System.Text;
 using GroupGiving.PayPal.AdaptiveAccounts;
 using GroupGiving.PayPal.Configuration;
+using GroupGiving.PayPal.Model;
 using NUnit.Framework;
 using PayPal.Platform.SDK;
 using PayPal.Services.Private.AA;
 using log4net;
-using AdaptiveAccounts = PayPal.Platform.SDK.AdaptiveAccounts;
 
 namespace PayPal.Test.Integration
 {
@@ -69,7 +69,7 @@ namespace PayPal.Test.Integration
             getVerifiedStatusRequest.lastName = lastName;
             getVerifiedStatusRequest.matchCriteria = "NAME";
             
-            AdaptiveAccounts aa = new AdaptiveAccounts();
+            AdaptiveAccountsSdk aa = new AdaptiveAccountsSdk();
             aa.APIProfile = profile;
 
             try
@@ -93,6 +93,41 @@ namespace PayPal.Test.Integration
             Assert.That(getVerifiedStatusRes, Is.Not.Null);
             Assert.That(getVerifiedStatusRes.responseEnvelope.ack, Is.EqualTo(AckCode.Success));
             Console.WriteLine("account status: {0}", getVerifiedStatusRes.accountStatus);
+        }
+
+        [Test]
+        [Category("Slow")]
+        public void Can_create_a_business_PayPal_account()
+        {
+            CreatePayPalAccountRequest request = new CreatePayPalAccountRequest();
+            request.Salutation = "Mr.";
+            request.FirstName = "Andrew";
+            request.LastName = "Myhre";
+            request.DateOfBirth = new DateTime(1980, 12, 22);
+            request.ContactEmailAddress = "andrew.myhre."+Guid.NewGuid().ToString()+"@gmail.com";
+            request.AddressLine1 = "122 Antill Road";
+            request.AddressLine2 = "Hackney";
+            request.City = "London";
+            request.PostCode = "E35BN";
+            request.CountryCode = "UK";
+            request.CurrencyCode = "GBP";
+            request.ContactPhoneNumber = "0123456789";
+            request.MerchantWebsiteAddress = "http://www.ticketmuffin.com";
+            request.OrganisationDateOfEstablisment = new DateTime(2001,01,01);
+
+            
+
+            var configuration =
+                ConfigurationManager.GetSection("adaptiveAccounts") as PaypalAdaptiveAccountsConfigurationSection;
+            BaseAPIProfile profile = BaseApiProfileFactory.CreateFromConfiguration(configuration);
+
+            var service = new GroupGiving.PayPal.PaypalAccountService(configuration);
+
+            var response = service.CreateAccount(request);
+
+            Assert.That(response.Success, Is.True);
+            Console.WriteLine(response.RedirectUrl);
+
         }
     }
 }

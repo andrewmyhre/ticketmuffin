@@ -5,6 +5,7 @@ using System.Runtime.Serialization;
 using System.Text;
 using System.Web.Security;
 using System.Xml;
+using GroupGiving.Core.Configuration;
 using Raven.Client;
 using anrControls;
 using GroupGiving.Core.Actions.CreatePledge;
@@ -211,7 +212,7 @@ namespace GroupGiving.Web.Controllers
                 return View(viewModel);
             }
 
-            PaymentGatewayResponse response = result.GatewayResponse;
+            var response = result.GatewayResponse;
 
             if (!result.Succeeded)
             {

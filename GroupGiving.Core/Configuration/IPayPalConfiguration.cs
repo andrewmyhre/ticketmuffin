@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace GroupGiving.PayPal
+namespace GroupGiving.Core.Configuration
 {
     public interface IPayPalConfiguration
     {

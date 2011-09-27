@@ -7,6 +7,7 @@ using System.Web.Mvc;
 using System.Web.Security;
 using EmailProcessing;
 using GroupGiving.Core.Actions.CreatePledge;
+using GroupGiving.Core.Configuration;
 using GroupGiving.Core.Data;
 using GroupGiving.Core.Domain;
 using GroupGiving.Core.Email;
@@ -76,7 +77,7 @@ namespace GroupGiving.Web.Controllers
 
             var viewModel = new OrderRequestViewModel();
 
-            PaymentGatewayResponse response = result.GatewayResponse;
+            var response = result.GatewayResponse;
             viewModel.PayPalPostUrl = response.PaymentPageUrl;
             viewModel.Ack = response.ResponseEnvelope.Ack;
             viewModel.PayKey = response.TransactionId;

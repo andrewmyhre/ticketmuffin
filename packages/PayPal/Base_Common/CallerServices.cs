@@ -132,6 +132,7 @@ namespace PayPal.Platform.SDK
                         log.Info("####" + this.apiProfile.RequestDataformat + "####");
                         log.Info(this.payLoad);
                         log.Info("Request Ends");
+                        Console.WriteLine(this.payLoad);
                     }
                 }
 
@@ -146,6 +147,7 @@ namespace PayPal.Platform.SDK
                             log.Info("Response Starts");
                             log.Info(responseString);
                             log.Info("Response Ends");
+                            Console.WriteLine(responseString);
                         }
 
                         return responseString;

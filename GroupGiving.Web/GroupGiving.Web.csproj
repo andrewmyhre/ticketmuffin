@@ -116,15 +116,12 @@
   <ItemGroup>
     <Compile Include="App_Start\NinjectMVC3.cs" />
     <Compile Include="Areas\Api\ApiAreaRegistration.cs" />
-    <Compile Include="Areas\Api\Code\Api.cs" />
     <Compile Include="Areas\Api\Code\AutoMappingConfiguration.cs" />
     <Compile Include="Areas\Api\Code\XmlModelBinderProvider.cs" />
     <Compile Include="Areas\Api\Controllers\AccountsController.cs" />
     <Compile Include="Areas\Api\Controllers\ApiControllerBase.cs" />
     <Compile Include="Areas\Api\Controllers\EventsController.cs" />
     <Compile Include="Areas\Api\Models\ApiResponse.cs" />
-    <Compile Include="Areas\Api\Models\Error.cs" />
-    <Compile Include="Areas\Api\Models\ErrorResponse.cs" />
     <Compile Include="Areas\Api\Models\EventModel.cs" />
     <Compile Include="Areas\Api\Models\ResourceLink.cs" />
     <Compile Include="Areas\Api\Models\ShareViaEmailRequest.cs" />
@@ -138,7 +135,6 @@
     <Compile Include="Code\ModelStateExtensions.cs" />
     <Compile Include="Code\MustBeTrueAttribute.cs" />
     <Compile Include="Code\PageContent.cs" />
-    <Compile Include="Code\PaypalAccountService.cs" />
     <Compile Include="Code\RavenDbDocumentStore.cs" />
     <Compile Include="Code\XmlContentProvider.cs" />
     <Compile Include="Controllers\AccountController.cs" />
@@ -183,6 +179,9 @@
     <Content Include="App_Data\web_browsers_patch.xml" />
     <Content Include="Content\editorstyle.css" />
     <Content Include="Content\emailTemplates\PledgeConfirmation.xml" />
+    <Content Include="Content\images\ajax-loader.gif" />
+    <Content Include="Content\images\cross.png" />
+    <Content Include="Content\images\tick.png" />
     <Content Include="Content\images\ui-bg_flat_0_aaaaaa_40x100.png" />
     <Content Include="Content\images\ui-bg_flat_55_999999_40x100.png" />
     <Content Include="Content\images\ui-bg_flat_75_aaaaaa_40x100.png" />

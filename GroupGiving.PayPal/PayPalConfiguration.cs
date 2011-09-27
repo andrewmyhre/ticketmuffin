@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Configuration;
+using GroupGiving.Core.Configuration;
 
 namespace GroupGiving.PayPal
 {
