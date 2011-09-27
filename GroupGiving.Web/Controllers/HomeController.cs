@@ -1,4 +1,6 @@
-﻿using System.Web.Mvc;
+﻿using System;
+using System.Web.Mvc;
+using GroupGiving.Core.Data;
 using GroupGiving.Core.Domain;
 using GroupGiving.Core.Services;
 using GroupGiving.Web.Code;
@@ -10,17 +12,21 @@ namespace GroupGiving.Web.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly IEventService _eventService;
+        private readonly IRepository<GroupGivingEvent> _eventRepository;
 
-        public HomeController(IEventService eventService)
+        public HomeController(IRepository<GroupGivingEvent> eventRepository)
         {
-            _eventService = eventService;
+            _eventRepository = eventRepository;
         }
 
         public ActionResult Index()
         {
             var viewModel = new HomePageViewModel();
-            viewModel.Events = _eventService.RetrieveAllEvents();
+            viewModel.Events = _eventRepository
+                .Query(e=>e.StartDate > DateTime.Now 
+                && e.City.Contains("London")
+                && e.IsFeatured
+                && e.State == EventState.SalesReady);
 
             return View(viewModel);
         }

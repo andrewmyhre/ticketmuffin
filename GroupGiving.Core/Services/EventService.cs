@@ -62,6 +62,7 @@ namespace GroupGiving.Core.Services
             ggEvent.SalesEndDateTime = setTicketDetailsRequest.SalesEndDateTime;
             ggEvent.AdditionalBenefits = setTicketDetailsRequest.AdditionalBenefits;
             ggEvent.PaypalAccountEmailAddress = setTicketDetailsRequest.PaypalAccountEmailAddress;
+            ggEvent.State = EventState.SalesReady;
 
             _eventRepository.SaveOrUpdate(ggEvent);
             _eventRepository.CommitUpdates();

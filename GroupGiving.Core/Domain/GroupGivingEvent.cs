@@ -22,6 +22,7 @@ namespace GroupGiving.Core.Domain
         public string PhoneNumber { get; set; }
         public float Latitude { get; set; }
         public float Longitude { get; set; }
+        public EventState State { get; set; }
 
         public decimal TicketPrice { get; set; }
 
@@ -71,5 +72,13 @@ namespace GroupGiving.Core.Domain
         {
             Pledges = new List<EventPledge>();
         }
+    }
+
+    public enum EventState
+    {
+        Creating,
+        SalesReady,
+        SalesClosed,
+        Completed
     }
 }

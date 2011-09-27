@@ -249,6 +249,14 @@ namespace GroupGiving.Web.Controllers
             var groupGivingEvent = _eventRepository.Retrieve(e => e.ShortUrl == shortUrl);
             this.TryUpdateModel(groupGivingEvent);
 
+            if (groupGivingEvent.SalesEndDateTime > DateTime.Now)
+                groupGivingEvent.State = EventState.SalesReady;
+            else if (groupGivingEvent.StartDate > DateTime.Now)
+                groupGivingEvent.State = EventState.SalesClosed;
+            else
+                groupGivingEvent.State = EventState.Completed;
+            
+
             _eventRepository.SaveOrUpdate(groupGivingEvent);
             _eventRepository.CommitUpdates();
 
