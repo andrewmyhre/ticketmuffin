@@ -27,10 +27,18 @@
             @Html.ValidationMessageFor(m => m.MinimumParticipants)
         </div>
 
-        <div class="formline">
+        <div class="formline" style="margin-bottom:2px">
             @Html.LabelFor(m => m.MaximumParticipants)
             @Html.TextBoxFor(m => m.MaximumParticipants, new { @class = "short" })
             @Html.ValidationMessageFor(m => m.MaximumParticipants)
+        </div>
+
+        <div class="formline grayBox" style="background-color:#ffcccc;margin-bottom:8px;margin-top:0;">
+            <strong>We're currently in Sandbox mode.</strong><br/>
+            Please use the following credentials as your PayPal account:<br/>
+            First Name: Andrew<br/>
+            Last Name: Myhre<br/>
+            Email: seller_1304843436_biz@gmail.com <br/>
         </div>
 
         <div class="formline" id="paypal-name-container" style="display:none">
@@ -45,7 +53,7 @@
         </div>
 
         <div class="formline">
-            <label>Sales end</label>
+            <label>Sales End</label>
             @Html.TextBox("salesEndDate", Model.SalesEndDateTime.ToShortDateString())
             @Html.DropDownList("salesEndTime", Model.SalesEndTimeOptions, new { style = "width:120px" })
             @Html.ValidationMessageFor(m => m.SalesEndDateTime)
