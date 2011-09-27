@@ -909,9 +909,9 @@
     <Content Include="Views\Event\event-pledges.cshtml" />
     <Content Include="Views\Event\refund-pledge.cshtml" />
     <Content Include="Views\Home\HowItWorks.cshtml" />
+    <Content Include="Areas\Api\Views\Web.config" />
     <Content Include="App_Data\51Degrees.mobi.config" />
     <None Include="App_Data\wurfl.xml.gz" />
-    <Content Include="Areas\Api\Views\Web.config" />
     <None Include="tinymce\examples\media\sample.dcr" />
     <None Include="tinymce\examples\media\sample.flv" />
     <None Include="tinymce\examples\media\sample.ram" />

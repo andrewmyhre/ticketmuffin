@@ -6,6 +6,7 @@ using System.Web;
 using System.Web.Mvc;
 using System.Web.Routing;
 using System.Web.Security;
+using GroupGiving.Core.Data;
 using GroupGiving.Core.Domain;
 using GroupGiving.Core.Email;
 using GroupGiving.Core.Services;
@@ -28,14 +29,22 @@ namespace GroupGiving.Web.Controllers
         private readonly IAccountService _accountService;
         private ICountryService _countryService;
         private readonly IEmailRelayService _emailRelayService;
+        private readonly IRepository<GroupGivingEvent> _eventRepository;
 
-        public AccountController(IAccountService accountService, IFormsAuthenticationService formsService, IMembershipService accountMembershipService, ICountryService countryService, IDocumentStore documentStore, IEmailRelayService emailRelayService)
+        public AccountController(IAccountService accountService, 
+            IFormsAuthenticationService formsService, 
+            IMembershipService accountMembershipService, 
+            ICountryService countryService, 
+            IDocumentStore documentStore, 
+            IEmailRelayService emailRelayService,
+            IRepository<GroupGivingEvent> eventRepository)
         {
             _accountService = accountService;
             _formsService = formsService;
             _membershipService = accountMembershipService;
             _countryService = countryService;
             _emailRelayService = emailRelayService;
+            _eventRepository = eventRepository;
             ((RavenDBMembershipProvider) Membership.Provider).DocumentStore
                 = documentStore;
         }
@@ -496,7 +505,10 @@ namespace GroupGiving.Web.Controllers
 
         public ActionResult YourEvents()
         {
+            var membershipUser = Membership.GetUser(true);
+            var account = _accountService.RetrieveByEmailAddress(membershipUser.Email);
             var viewModel = new EventListViewModel();
+            viewModel.Events = _eventRepository.RetrieveAll();
             return View(viewModel);
         }
     }
