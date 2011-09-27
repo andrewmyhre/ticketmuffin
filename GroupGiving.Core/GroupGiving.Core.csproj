@@ -60,6 +60,7 @@
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.configuration" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Web.Mvc, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="Microsoft.CSharp" />
@@ -73,7 +74,9 @@
     <Compile Include="Actions\SettlePledge\ConfirmPledgePaymentAction.cs" />
     <Compile Include="Actions\SettlePledge\SettlePledgeRequest.cs" />
     <Compile Include="Actions\SettlePledge\SettlePledgeResponse.cs" />
+    <Compile Include="Api.cs" />
     <Compile Include="BCrypt.cs" />
+    <Compile Include="Configuration\IPayPalConfiguration.cs" />
     <Compile Include="Data\Fakes\FakeRepository.cs" />
     <Compile Include="Data\IRepository.cs" />
     <Compile Include="Data\RavenDBRepositoryBase.cs" />
@@ -85,6 +88,12 @@
     <Compile Include="Domain\Account.cs" />
     <Compile Include="Domain\IDomainObject.cs" />
     <Compile Include="Domain\PaymentStatus.cs" />
+    <Compile Include="Dto\Error.cs" />
+    <Compile Include="Dto\ErrorResponse.cs" />
+    <Compile Include="Dto\IPaymentGatewayResponse.cs" />
+    <Compile Include="Dto\IResponseEnvelope.cs" />
+    <Compile Include="Dto\PaymentGatewayRequest.cs" />
+    <Compile Include="Dto\ResponseError.cs" />
     <Compile Include="Email\EmailTemplate.cs" />
     <Compile Include="Email\SimpleSmtpEmailRelayService.cs" />
     <Compile Include="Email\IEmailTemplate.cs" />
@@ -99,6 +108,7 @@
     <Compile Include="Services\IEmailCreationService.cs" />
     <Compile Include="Services\IEventService.cs" />
     <Compile Include="Services\IAccountService.cs" />
+    <Compile Include="Services\IPaymentGateway.cs" />
     <Compile Include="Services\ITaxAmountResolver.cs" />
     <Compile Include="Services\ResetPasswordResult.cs" />
     <Compile Include="Services\SendPasswordResetResult.cs" />
@@ -116,15 +126,12 @@
       <Project>{F511818D-59DF-4358-8946-10FB3933E5B2}</Project>
       <Name>EmailProcessing</Name>
     </ProjectReference>
-    <ProjectReference Include="..\GroupGiving.PayPal\GroupGiving.PayPal.csproj">
-      <Project>{69AC82E2-904E-4A5F-9A94-E5EDD91534AB}</Project>
-      <Name>GroupGiving.PayPal</Name>
-    </ProjectReference>
     <ProjectReference Include="..\RavenDBMembership\RavenDBMembership.csproj">
       <Project>{07CCE5B6-9111-46DC-AAEC-00D80E19FE4A}</Project>
       <Name>RavenDBMembership</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

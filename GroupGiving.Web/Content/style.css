@@ -45,14 +45,13 @@ a#fbconnect {
   display: block;
   position: absolute;
   top: 30px;
-  right: 140px;
+  right: 360px;
 }
 div#loginArea {
   position: absolute;
   top: 32px;
   right: 0;
   font-size: 12px;
-  color: #e5e5e5;
 }
 div.clearFix {
   height: 1px;
@@ -426,8 +425,6 @@ label, .wholeline label {
 {
     color: red;
     font-size: 1.2em;
-<<<<<<< Updated upstream
-=======
 }
 
 #popup-signIn
@@ -510,5 +507,4 @@ label, .wholeline label {
 .centered, .centered p {
     text-align: center;
     height: auto;
->>>>>>> Stashed changes
 }

@@ -21,11 +21,6 @@ namespace GroupGiving.Core.Services
         [Required]
         public int? MaximumParticipants { get; set; }
 
-        [Required(ErrorMessage = "In order to receive money from ticket sales you must provide a PayPal account")]
-        [DataType(DataType.EmailAddress)]
-        [Display(Name = "Email address")]
-        public string PaypalAccountEmailAddress { get; set; }
-
         public DateTime SalesEndDateTime { get; set; }
 
         public string SalesEndDate { get; set; }
@@ -37,5 +32,14 @@ namespace GroupGiving.Core.Services
         public SelectList Times { get; set; }
 
         public SelectList SalesEndTimeOptions { get; set; }
+
+        [Required(ErrorMessage = "In order to receive money from ticket sales you must provide a PayPal account")]
+        [DataType(DataType.EmailAddress)]
+        [Display(Name = "PayPal Account Email Address")]
+        public string PayPalEmail { get; set; }
+
+        public string PayPalFirstName { get; set; }
+
+        public string PayPalLastName { get; set; }
     }
 }

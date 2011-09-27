@@ -3,6 +3,7 @@ using System.Web.Mvc;
 using System.Web.Routing;
 using EmailProcessing;
 using GroupGiving.Web.Code;
+using Microsoft.Web.Mvc.Resources;
 using log4net;
 using Ninject;
 using System.Configuration;
@@ -56,16 +57,19 @@ namespace GroupGiving.Web
             routes.MapRoute(
                 "ResetPassword",
                 "account/resetpassword/{token}",
-                new {controller = "Account", action = "ResetPassword"});
+                new {controller = "Account", action = "ResetPassword"},
+                new [] {"GroupGiving.Web.Controllers"});
 
             routes.MapRoute(
                 "SignUp",
                 "signup",
-                new { controller = "Account", action = "signup" });
+                new { controller = "Account", action = "signup" },
+                new[] { "GroupGiving.Web.Controllers" });
             routes.MapRoute(
                 "SignIn",
                 "signin",
-                new { controller = "Account", action = "signin" });
+                new { controller = "Account", action = "signin" },
+                new[] { "GroupGiving.Web.Controllers" });
         }
 
         private static void MapEventRoutes(RouteCollection routes)
@@ -134,6 +138,8 @@ namespace GroupGiving.Web
             ViewEngines.Engines.AddIPhone<RazorViewEngine>();
             ViewEngines.Engines.AddGenericMobile<RazorViewEngine>();
             ViewEngines.Engines.Add(new RazorViewEngine());
+
+            ModelBinders.Binders.DefaultBinder = new ResourceModelBinder();
 
             try
             {

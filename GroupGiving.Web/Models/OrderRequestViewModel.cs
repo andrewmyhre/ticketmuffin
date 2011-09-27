@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using GroupGiving.Core.Dto;
 using GroupGiving.PayPal;
 
 namespace GroupGiving.Web.Models

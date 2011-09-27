@@ -1,7 +1,9 @@
 ﻿using System;
 using GroupGiving.Core.Actions.CreatePledge;
+using GroupGiving.Core.Configuration;
 using GroupGiving.Core.Data;
 using GroupGiving.Core.Domain;
+using GroupGiving.Core.Dto;
 using GroupGiving.Core.Email;
 using GroupGiving.Core.Services;
 using GroupGiving.PayPal;

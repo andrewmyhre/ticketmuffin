@@ -68,6 +68,10 @@ namespace GroupGiving.Core.Domain
 
         public string Postcode { get; set; }
 
+        public string PayPalAccountFirstName { get; set; }
+
+        public string PayPalAccountLastName { get; set; }
+
         public GroupGivingEvent()
         {
             Pledges = new List<EventPledge>();

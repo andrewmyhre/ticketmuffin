@@ -61,7 +61,9 @@ namespace GroupGiving.Core.Services
             ggEvent.MaximumParticipants = setTicketDetailsRequest.MaximumParticipants;
             ggEvent.SalesEndDateTime = setTicketDetailsRequest.SalesEndDateTime;
             ggEvent.AdditionalBenefits = setTicketDetailsRequest.AdditionalBenefits;
-            ggEvent.PaypalAccountEmailAddress = setTicketDetailsRequest.PaypalAccountEmailAddress;
+            ggEvent.PaypalAccountEmailAddress = setTicketDetailsRequest.PayPalEmail;
+            ggEvent.PayPalAccountFirstName = setTicketDetailsRequest.PayPalFirstName;
+            ggEvent.PayPalAccountLastName = setTicketDetailsRequest.PayPalLastName;
             ggEvent.State = EventState.SalesReady;
 
             _eventRepository.SaveOrUpdate(ggEvent);

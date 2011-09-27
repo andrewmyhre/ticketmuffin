@@ -8,7 +8,7 @@ using GroupGiving.Web.Code;
 
 namespace GroupGiving.Web.Areas.Api.Models
 {
-    [DataContract(Name="shareViaEmail", Namespace=Code.Api.Namespace)]
+    [DataContract(Name="shareViaEmail", Namespace=Core.Api.Namespace)]
     public class ShareViaEmailRequest
     {
         [CommaSeparatedEmailListValidator(ErrorMessage = "One or more of the email addresses you provided weren't valid")]

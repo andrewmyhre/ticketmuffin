@@ -1,8 +1,8 @@
 ﻿$(document).ready(function () {
     $('#showSignIn').click(function () {
-        $('#signInForm').show();
-        $("#signInForm input:first").focus();
-        $('#signInForm .hide').click(function () { $('#signInForm').hide(); });
+        $('#popup-signIn').show();
+        $("#popup-signIn input:first").focus();
+        $('#popup-signIn .hide').click(function () { $('#popup-signIn').hide(); });
     });
 
     $('form#signin')

@@ -1,5 +1,6 @@
 using System.Runtime.Serialization;
 using GroupGiving.Core.Domain;
+using GroupGiving.Core.Dto;
 using GroupGiving.Web.Areas.Api.Controllers;
 using GroupGiving.Web.Models;
 

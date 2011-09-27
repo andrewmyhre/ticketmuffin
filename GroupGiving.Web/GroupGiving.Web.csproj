@@ -116,14 +116,12 @@
   <ItemGroup>
     <Compile Include="App_Start\NinjectMVC3.cs" />
     <Compile Include="Areas\Api\ApiAreaRegistration.cs" />
-    <Compile Include="Areas\Api\Code\Api.cs" />
     <Compile Include="Areas\Api\Code\AutoMappingConfiguration.cs" />
     <Compile Include="Areas\Api\Code\XmlModelBinderProvider.cs" />
+    <Compile Include="Areas\Api\Controllers\AccountsController.cs" />
     <Compile Include="Areas\Api\Controllers\ApiControllerBase.cs" />
     <Compile Include="Areas\Api\Controllers\EventsController.cs" />
     <Compile Include="Areas\Api\Models\ApiResponse.cs" />
-    <Compile Include="Areas\Api\Models\Error.cs" />
-    <Compile Include="Areas\Api\Models\ErrorResponse.cs" />
     <Compile Include="Areas\Api\Models\EventModel.cs" />
     <Compile Include="Areas\Api\Models\ResourceLink.cs" />
     <Compile Include="Areas\Api\Models\ShareViaEmailRequest.cs" />
@@ -166,6 +164,7 @@
     <Compile Include="Models\LogOnResultViewModel.cs" />
     <Compile Include="Models\OrderConfirmationViewModel.cs" />
     <Compile Include="Models\OrderRequestViewModel.cs" />
+    <Compile Include="Models\PayPalSettingsModel.cs" />
     <Compile Include="Models\PurchaseDetails.cs" />
     <Compile Include="Models\RefundViewModel.cs" />
     <Compile Include="Models\ResetPasswordViewModel.cs" />
@@ -180,6 +179,9 @@
     <Content Include="App_Data\web_browsers_patch.xml" />
     <Content Include="Content\editorstyle.css" />
     <Content Include="Content\emailTemplates\PledgeConfirmation.xml" />
+    <Content Include="Content\images\ajax-loader.gif" />
+    <Content Include="Content\images\cross.png" />
+    <Content Include="Content\images\tick.png" />
     <Content Include="Content\images\ui-bg_flat_0_aaaaaa_40x100.png" />
     <Content Include="Content\images\ui-bg_flat_55_999999_40x100.png" />
     <Content Include="Content\images\ui-bg_flat_75_aaaaaa_40x100.png" />
@@ -337,6 +339,7 @@
     <Content Include="Scripts\modernizr-1.7.js" />
     <Content Include="Scripts\modernizr-1.7.min.js" />
     <Content Include="Scripts\order.js" />
+    <Content Include="Scripts\verify-pp.js" />
     <Content Include="tinymce\changelog.txt" />
     <Content Include="tinymce\examples\accessibility.html" />
     <Content Include="tinymce\examples\css\content.css" />
@@ -920,6 +923,10 @@
     <Content Include="Views\Event\ShareViaEmail.cshtml" />
     <Content Include="Views\ShareEvent\DisplayTemplates\ShareViaEmailViewModel.cshtml" />
     <Content Include="Views\ShareEvent\Index.cshtml" />
+    <Content Include="Views\Shared\VerifyPaypal.cshtml" />
+    <Content Include="Views\Account\PayPalSettings.cshtml" />
+    <Content Include="Views\Account\Index.cshtml" />
+    <Content Include="Views\Account\YourEvents.cshtml" />
     <None Include="_bin_deployableAssemblies\System.Web.Mvc.dll" />
     <None Include="_bin_deployableAssemblies\WebMatrix.WebData.xml" />
     <None Include="_bin_deployableAssemblies\WebMatrix.WebData.dll" />
@@ -961,6 +968,14 @@
     <ProjectReference Include="..\GroupGiving.PayPal\GroupGiving.PayPal.csproj">
       <Project>{69AC82E2-904E-4A5F-9A94-E5EDD91534AB}</Project>
       <Name>GroupGiving.PayPal</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\packages\PayPal\Base_AA\Base_AA.csproj">
+      <Project>{8F599E12-CF05-4EDF-BFC6-6F0B4EA4F36C}</Project>
+      <Name>Base_AA</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\packages\PayPal\Base_Common\Base_Common.csproj">
+      <Project>{1F5FF00B-CE0F-40B8-9BC4-7B5ED2087266}</Project>
+      <Name>Base_Common</Name>
     </ProjectReference>
     <ProjectReference Include="..\RavenDBMembership\RavenDBMembership.csproj">
       <Project>{07CCE5B6-9111-46DC-AAEC-00D80E19FE4A}</Project>

@@ -3,14 +3,15 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Xml.Serialization;
+using GroupGiving.Core.Dto;
 
 namespace GroupGiving.PayPal.Model
 {
     [XmlRoot(ElementName="PayResponse")]
-    public class PaymentGatewayResponse
+    public class PaymentGatewayResponse : IPaymentGatewayResponse
     {
         [XmlElement(ElementName="responseEnvelope", Order=0)]
-        public ResponseEnvelope ResponseEnvelope { get; set; }
+        public IResponseEnvelope ResponseEnvelope { get; set; }
         [XmlElement(ElementName="payKey", Order=1)]
         public string TransactionId { get; set; }
         [XmlElement(ElementName = "paymentExecStatus", Order = 2)]
@@ -22,7 +23,7 @@ namespace GroupGiving.PayPal.Model
     }
 
     [XmlRoot(ElementName="responseEnvelope")]
-    public class ResponseEnvelope
+    public class ResponseEnvelope : IResponseEnvelope
     {
         [XmlElement(ElementName = "timestamp", Order = 0)]
         public DateTime Timestamp { get; set; }
