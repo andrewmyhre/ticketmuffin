@@ -5,7 +5,7 @@ obj/
 *.suo
 *.resharper
 logs/
-App_Data
+App_Data/RavenDb
 *Publish.xml
 packages/RavenDB.1.0.0.371/server/Data
 packages/RavenDB.1.0.0.371/server/*.log*
