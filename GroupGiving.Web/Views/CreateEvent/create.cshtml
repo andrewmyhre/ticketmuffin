@@ -43,8 +43,8 @@
 
           <div style="padding-bottom: 10px;">
             <label style="display: inline-block; width: 200px;">@Html.LabelFor(m => m.StartDate)</label>
-            @Html.TextBox("startDate", Model.StartDateTime.ToShortDateString())
-            @Html.DropDownList("startTime", Model.StartTimes)
+            @Html.TextBox("startDate", Model.StartDateTime.ToShortDateString(), new {style="width:155px"})
+            @Html.DropDownList("startTime", Model.StartTimes, new { style = "width:140px" })
             @Html.ValidationMessageFor(m => m.StartDateTime)
           </div>
         
