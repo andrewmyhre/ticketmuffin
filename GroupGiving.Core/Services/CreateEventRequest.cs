@@ -67,5 +67,7 @@ namespace GroupGiving.Core.Services
         public SelectList StartTimes { get; set; }
 
         public string OrganiserName { get; set; }
+
+        public IEnumerable<SelectListItem> Countries { get; set; }
     }
 }

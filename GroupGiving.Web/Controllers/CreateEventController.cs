@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Configuration;
+using System.Linq;
 using System.Net;
 using System.Text.RegularExpressions;
 using System.Web.Mvc;
@@ -9,6 +10,7 @@ using GroupGiving.Core.Services;
 using GroupGiving.PayPal;
 using GroupGiving.PayPal.Configuration;
 using GroupGiving.PayPal.Model;
+using GroupGiving.Web.App_Start;
 using GroupGiving.Web.Areas.Api.Controllers;
 using GroupGiving.Web.Code;
 using Ninject;
@@ -70,7 +72,8 @@ namespace GroupGiving.Web.Controllers
             var viewModel = new CreateEventRequest();
             viewModel.StartDateTime = DateTime.Now;
             viewModel.StartTimes = TimeOptions();
-            
+            viewModel.Countries = new SelectList(CountriesStore.Countries, "Name", "Name", "United Kingdom");
+
             return View(viewModel);
         }
 
@@ -100,6 +103,7 @@ namespace GroupGiving.Web.Controllers
             {
                 request.StartDateTime = DateTime.Now;
                 request.StartTimes = TimeOptions();
+                request.Countries = new SelectList(CountriesStore.Countries, "Name", "Name", request.Country);
                 return View(request);
             }
 

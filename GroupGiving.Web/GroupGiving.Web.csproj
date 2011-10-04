@@ -114,6 +114,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="App_Start\CountriesStore.cs" />
     <Compile Include="App_Start\NinjectMVC3.cs" />
     <Compile Include="Areas\Api\ApiAreaRegistration.cs" />
     <Compile Include="Areas\Api\Code\AutoMappingConfiguration.cs" />
@@ -128,6 +129,7 @@
     <Compile Include="Code\CommaSeparatedEmailListValidatorAttribute.cs" />
     <Compile Include="Code\ContentDictionaries.cs" />
     <Compile Include="Code\ContentTypeAwareViewEngine.cs" />
+    <Compile Include="Code\CSVReader.cs" />
     <Compile Include="Code\HtmlHelperExtensions.cs" />
     <Compile Include="Code\Markdown.cs" />
     <Compile Include="Code\MarkdownViewModel.cs" />
@@ -136,6 +138,7 @@
     <Compile Include="Code\MustBeTrueAttribute.cs" />
     <Compile Include="Code\PageContent.cs" />
     <Compile Include="Code\RavenDbDocumentStore.cs" />
+    <Compile Include="Code\StringConverter.cs" />
     <Compile Include="Code\XmlContentProvider.cs" />
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\CreateEventController.cs" />
@@ -911,6 +914,7 @@
     <Content Include="Views\Home\HowItWorks.cshtml" />
     <Content Include="Areas\Api\Views\Web.config" />
     <Content Include="App_Data\51Degrees.mobi.config" />
+    <None Include="App_Data\countrylist.csv" />
     <None Include="App_Data\wurfl.xml.gz" />
     <None Include="tinymce\examples\media\sample.dcr" />
     <None Include="tinymce\examples\media\sample.flv" />
