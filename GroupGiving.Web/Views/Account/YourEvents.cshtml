@@ -9,6 +9,6 @@
 
 @foreach(var e in Model.Events)
 {
-    <p>@e.Title</p>
+    <p>@Html.ActionLink(e.Title, "index", "Event", new {shortUrl=e.ShortUrl}, null)</p>
 
 }
