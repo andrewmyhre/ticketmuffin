@@ -325,7 +325,7 @@ input[type="checkbox"] {
   margin-right: 10px;
 }
 input.short, select.short {
-  width: 80px;
+  width: 120px;
 }
 select.mid
 {

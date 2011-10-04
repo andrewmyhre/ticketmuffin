@@ -43,8 +43,8 @@
 
           <div style="padding-bottom: 10px;">
             <label style="display: inline-block; width: 200px;">@Html.LabelFor(m => m.StartDate)</label>
-            @Html.TextBox("startDate", Model.StartDateTime.ToShortDateString(), new {style="width:155px"})
-            @Html.DropDownList("startTime", Model.StartTimes, new { style = "width:140px" })
+            @Html.TextBox("startDate", Model.StartDateTime.ToShortDateString(), new { style = "width:120px" })
+            @Html.DropDownList("startTime", Model.StartTimes, new { style = "width:175px" })
             @Html.ValidationMessageFor(m => m.StartDateTime)
           </div>
         
@@ -75,7 +75,7 @@
 
           <div style="padding-bottom: 10px;">
             <label style="display: inline-block; width: 200px;">@Html.LabelFor(m => m.Country)</label>
-            @Html.DropDownList("Country", Model.Countries, new {style="width:200px;"})
+            @Html.DropDownList("Country", Model.Countries, new {style="width:318px;"})
             @Html.ValidationMessageFor(vm => vm.Country)
         </div>
 
@@ -84,7 +84,7 @@
 
           <div style="padding-bottom: 10px;">
             <label style="display: inline-block; width: 200px; float:left;">@Html.LabelFor(m => m.Description)</label>
-            @Html.TextArea("Description", "", 6, 50, new {style="width:400px"})
+            @Html.TextArea("Description", "", 6, 50, null)
             @Html.ValidationMessageFor(m => m.Description)
           </div>
 
