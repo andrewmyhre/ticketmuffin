@@ -389,9 +389,9 @@
     <Content Include="Views\Home\HowItWorks.cshtml" />
     <Content Include="Areas\Api\Views\Web.config" />
     <Content Include="App_Data\51Degrees.mobi.config" />
-    <None Include="App_Data\countrylist.csv">
+    <Content Include="App_Data\countrylist.csv">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
+    </Content>
     <Content Include="App_Data\wurfl.xml.gz">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
