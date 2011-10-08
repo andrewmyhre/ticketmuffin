@@ -18,6 +18,7 @@ namespace GroupGiving.Web.App_Start
         public static List<Country> Countries { get; set; } 
         public static void LoadCountries()
         {
+            _log.Debug("loading countries...");
             try
             {
                 Countries = new List<Country>();
