@@ -1,11 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
+using System.IO;
 using System.Linq;
+using System.Text;
 using System.Web;
+using System.Web.Hosting;
 using System.Web.Mvc;
+using Com.StellmanGreene.CSVReader;
 using EmailProcessing;
 using GroupGiving.Core.Data;
 using GroupGiving.Core.Domain;
+using GroupGiving.Core.Services;
+using GroupGiving.Web.App_Start;
 using Ninject;
 
 namespace GroupGiving.Web.Controllers
@@ -59,5 +66,34 @@ namespace GroupGiving.Web.Controllers
             return Json("Ok");
         }
 
+        [AcceptVerbs(HttpVerbs.Get)]
+        public string LoadCountries()
+        {
+            Response.Write("loading countries...<br/>");
+            try
+            {
+                CountriesStore.Countries = new List<Country>();
+                using (var filestream = System.IO.File.OpenRead(HostingEnvironment.MapPath("~/App_Data/countrylist.csv")))
+                using (var reader = new StreamReader(filestream))
+                {
+                    CSVReader csv = new CSVReader(reader);
+                    var table = csv.CreateDataTable(true);
+                    foreach (DataRow row in table.Rows)
+                    {
+                        CountriesStore.Countries.Add(new Country((string)row["Common Name"]));
+                        Response.Write((string)row["Common Name"] + "<br/>");
+                        Response.Flush();
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Response.Write("failed<br/>");
+                Response.Write(ex.Message);
+                Response.Write(ex.StackTrace);
+            }
+
+            return "finished";
+        }
     }
 }
