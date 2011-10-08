@@ -125,7 +125,7 @@ namespace GroupGiving.Web.Controllers
             else
             {
                 ModelState.AddModelError("login", "The combination of email and password you entered did not match any user");
-                var model = new SignUpModel();
+                var model = new SignInModel();
                 model.Countries = new SelectList(_countryService.RetrieveAllCountries(), "Name", "Name");
                 model.AccountTypes = new SelectList(Enum.GetNames(typeof(AccountType)));
                 if (Request.AcceptTypes.Contains("application/json"))

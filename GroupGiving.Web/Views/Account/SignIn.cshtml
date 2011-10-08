@@ -7,7 +7,6 @@
 
 <a href="/" style="display: block; position: absolute; right:0px;">Connect using Facebook <img src="/content/img/fbconnect_big.jpg" /></a>   
 
-@Html.ValidationSummary(true, "Login was unsuccessful. Please correct the errors and try again.")
 
 <div id="signIn" style="padding-top: 30px; position: relative;">
 @using (Html.BeginForm("signin", "account"))
@@ -15,7 +14,7 @@
         <h1>Sign in or @Html.ActionLink("Sign Up", "signup", "Account", null, new { id = "signUpLink" })</h1>
     
         <div class="grayBox">
-        <p>@Html.ActionLink("Forgot your password?", "ForgotPassword", "Account")</p>
+        
             <div style="padding-bottom: 10px;">
                 <label style="display: inline-block; width: 200px;">Email</label>
                 @Html.TextBoxFor(m=>m.EmailAddress)
@@ -25,6 +24,7 @@
                 <label style="display: inline-block; width: 200px;">Password</label>
                 @Html.PasswordFor(m=>m.Password)
                 @Html.ValidationMessage("password")
+                @Html.ValidationMessage("login", "We couldn't find an account matching those credentials")
             </div>
             <div style="padding-bottom: 10px;">
                 @Html.CheckBoxFor(m=>m.RememberMe)
@@ -34,6 +34,7 @@
             <div style="padding-bottom: 10px;">
                 <input type="submit" value="Sign In" />
             </div>
+        <p>@Html.ActionLink("Forgot your password?", "ForgotPassword", "Account")</p>
         </div>
 }
 </div>
