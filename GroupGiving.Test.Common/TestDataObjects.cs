@@ -13,12 +13,12 @@ namespace GroupGiving.Test.Common
         {
             return new CreateUserRequest()
             {
-                FirstName = "firstname",
+                FirstName = "ui test user",
                 LastName = "lastname",
                 AddressLine1 = "address line",
                 City = "city",
                 Country = "country",
-                Email = "email@server.com",
+                Email = Guid.NewGuid().ToString()+"@server.com",
                 PostCode = "postcode"
             };
         }

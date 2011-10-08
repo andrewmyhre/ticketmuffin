@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
 using System.Net;
+using System.Security.Principal;
 using System.Text.RegularExpressions;
 using System.Web.Mvc;
 using System.Web.Security;
@@ -28,27 +29,18 @@ namespace GroupGiving.Web.Controllers
         private readonly IFormsAuthenticationService _formsAuthenticationService;
         private readonly IEventService _eventService;
         private readonly ICountryService _countryService;
+        private readonly IIdentity _userIdentity;
 
-        public CreateEventController(IAccountService accountService, ICountryService countryService, IMembershipService membershipService, IFormsAuthenticationService formsAuthenticationService, IEventService eventService, IDocumentStore documentStore)
+        public CreateEventController(IAccountService accountService, ICountryService countryService, IMembershipService membershipService, 
+            IFormsAuthenticationService formsAuthenticationService, IEventService eventService, IDocumentStore documentStore, IIdentity userIdentity)
         {
             _accountService = accountService;
             _countryService = countryService;
             _membershipService = membershipService;
             _formsAuthenticationService = formsAuthenticationService;
             _eventService = eventService;
+            _userIdentity = userIdentity;
             ((RavenDBMembership.Provider.RavenDBMembershipProvider) Membership.Provider).DocumentStore = documentStore;
-        }
-
-        public CreateEventController(IAccountService accountService,
-            IMembershipService membershipService,
-            IFormsAuthenticationService formsAuthenticationService,
-            IEventService eventService, ICountryService countryService)
-        {
-            _accountService = accountService;
-            _countryService = countryService;
-            _membershipService = membershipService;
-            _formsAuthenticationService = formsAuthenticationService;
-            _eventService = eventService;
         }
 
         [AcceptVerbs(HttpVerbs.Get)]
@@ -107,13 +99,14 @@ namespace GroupGiving.Web.Controllers
                 return View(request);
             }
 
-            var account = _accountService.RetrieveByEmailAddress(User.Identity.Name);
-            request.OrganiserName = string.Format("{0} {1}", account.FirstName, account.LastName);
-            var result = _eventService.CreateEvent(request);
+            var account = _accountService.RetrieveByEmailAddress(_userIdentity.Name);
+            request.OrganiserAccountId = account.Id;
 
+            var result = _eventService.CreateEvent(request);
+            
             if (result.Success)
             {
-                return RedirectToRoute("CreateEvent_TicketDetails", new { eventId = result.EventId });
+                return RedirectToRoute("CreateEvent_TicketDetails", new { eventId = result.Event.Id});
             }
 
             ModelState.AddModelError("createevent", "There was a problem with the information you provided");
@@ -145,7 +138,7 @@ namespace GroupGiving.Web.Controllers
         [Authorize]
         public ActionResult TicketDetails(int eventId)
         {
-            var membershipUser = _membershipService.GetUser(User.Identity.Name);
+            var membershipUser = _membershipService.GetUser(_userIdentity.Name);
             var account = _accountService.RetrieveByEmailAddress(membershipUser.Email);
 
             var viewModel = new SetTicketDetailsRequest();
@@ -207,7 +200,7 @@ namespace GroupGiving.Web.Controllers
 
             _eventService.SetTicketDetails(setTicketDetailsRequest);
 
-            var membershipUser = _membershipService.GetUser(User.Identity.Name);
+            var membershipUser = _membershipService.GetUser(_userIdentity.Name);
             var account = _accountService.RetrieveByEmailAddress(membershipUser.Email);
             if (string.IsNullOrWhiteSpace(account.PayPalEmail) && string.IsNullOrWhiteSpace(account.PayPalFirstName) && string.IsNullOrWhiteSpace(account.PayPalEmail))
             {

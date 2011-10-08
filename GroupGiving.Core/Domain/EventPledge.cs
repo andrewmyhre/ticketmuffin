@@ -7,6 +7,7 @@ namespace GroupGiving.Core.Domain
 {
     public class EventPledge
     {
+        public string AccountId { get; set; }
         public string AccountName { get; set; }
         public DateTime DatePledged { get; set; }
         public DateTime? DateRefunded { get; set; }

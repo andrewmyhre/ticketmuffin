@@ -38,8 +38,8 @@ namespace GroupGiving.Test.Unit
             EventCreationAlwaysSuccessful();
             AnyShortUrlIsAvailable();
 
-            var controller = new CreateEventController(accountService.Object, membershipService.Object,
-                                                       formsAuthenticationService.Object, eventService.Object, null);
+            var controller = new CreateEventController(accountService.Object, null, membershipService.Object,
+                                                       formsAuthenticationService.Object, eventService.Object, null, null);
 
             var createEventRequest = new CreateEventRequest();
             createEventRequest.StartDate = DateTime.Now.AddDays(10).ToString("dd/MM/yyyy");
@@ -71,8 +71,8 @@ namespace GroupGiving.Test.Unit
                 .Setup(m => m.CreateEvent(It.IsAny<CreateEventRequest>()))
                 .Returns(new CreateEventResult() { Success = false });
 
-            var controller = new CreateEventController(accountService.Object, membershipService.Object,
-                                                       formsAuthenticationService.Object, eventService.Object, null);
+            var controller = new CreateEventController(accountService.Object, null, membershipService.Object,
+                                                       formsAuthenticationService.Object, eventService.Object, null, null);
             controller.ModelState.AddModelError("*", "invalid model state");
 
             var result = controller.EventDetails(new CreateEventRequest()) as ViewResult;
@@ -89,9 +89,9 @@ namespace GroupGiving.Test.Unit
                 .Setup(m => m.Retrieve(It.IsAny<int>()))
                 .Returns(groupGivingEvent);
 
-            var controller = new CreateEventController(accountService.Object,
+            var controller = new CreateEventController(accountService.Object, null,
                                                        membershipService.Object, formsAuthenticationService.Object,
-                                                       eventService.Object, null);
+                                                       eventService.Object, null, null);
 
             var setTicketDetailsRequest = new SetTicketDetailsRequest() {EventId = 1};
             setTicketDetailsRequest.SalesEndDate = DateTime.Now.AddDays(10).ToString("dd/MM/yyyy");
@@ -106,9 +106,9 @@ namespace GroupGiving.Test.Unit
         [Test]
         public void InvalidTicketDetailsProvided_ReturnsRedirectToShareEvent()
         {
-            var controller = new CreateEventController(accountService.Object,
+            var controller = new CreateEventController(accountService.Object, null,
                                                        membershipService.Object, formsAuthenticationService.Object,
-                                                       eventService.Object, null);
+                                                       eventService.Object, null, null);
             controller.ModelState.AddModelError("*", "Invalid model state");
 
             var result = controller.TicketDetails(new SetTicketDetailsRequest()) as ViewResult;

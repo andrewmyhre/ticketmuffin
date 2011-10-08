@@ -17,39 +17,24 @@ using Raven.Client.Document;
 namespace GroupGiving.Test.Integration
 {
     [TestFixture]
-    [Ignore("embedded ravendb storage doesn't work properly, sets readonly after first run, subsequent runs fail with IO exception")]
-    public class GivenCreatingAnAccount
+    public class GivenCreatingAnAccount : ApplicationTestsBase
     {
-        private IDocumentStore storage = null;
-        private Mock<IEmailFacade> _emailFacade = null;
-        private Mock<IEmailRelayService> _emailRelayService;
 
         [SetUp]
         public void Setup()
         {
-            string storagePath = Path.Combine(Environment.CurrentDirectory, "ravenStore");
-            if (Directory.Exists(storagePath))
-            Directory.Delete(storagePath);
-            storage = new Raven.Client.Embedded.EmbeddableDocumentStore()
-                          {
-                              DataDirectory = storagePath
-                          };
-            storage.Initialize();
-
-            _emailFacade = new Mock<IEmailFacade>();
         }
 
         [Test]
         public void WhenRequestIsValid_ThenUserAccountIsCreated()
         {
             // arrange
-            using (var session = storage.OpenSession())
+            using (var session = _storage.OpenSession())
             {
                 try
                 {
                     IRepository<Account> accountRepository = new RavenDBRepositoryBase<Account>(session);
-                    _emailRelayService = new Mock<IEmailRelayService>();
-                    IAccountService accountService = new AccountService(accountRepository, _emailFacade.Object);
+                    IAccountService accountService = new AccountService(accountRepository, _emailService);
 
                     CreateUserRequest createUserRequest = TestDataObjects.CreateValidCreateUserRequest();
                     // act

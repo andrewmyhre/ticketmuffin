@@ -1,4 +1,5 @@
 ﻿using System;
+using GroupGiving.Core.Domain;
 
 namespace GroupGiving.Core.Services
 {
@@ -6,6 +7,6 @@ namespace GroupGiving.Core.Services
     {
         public bool Success { get; set; }
 
-        public int EventId { get; set; }
+        public GroupGivingEvent Event { get; set; }
     }
 }

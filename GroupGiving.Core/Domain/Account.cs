@@ -23,5 +23,7 @@ namespace GroupGiving.Core.Domain
         public string PayPalEmail { get; set; }
         public string PayPalFirstName { get; set; }
         public string PayPalLastName { get; set; }
+
+        public List<GroupGivingEvent> Events { get; set; }
     }
 }

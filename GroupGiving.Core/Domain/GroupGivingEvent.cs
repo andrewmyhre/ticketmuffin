@@ -72,6 +72,8 @@ namespace GroupGiving.Core.Domain
 
         public string PayPalAccountLastName { get; set; }
 
+        public string OrganiserId { get; set; }
+
         public GroupGivingEvent()
         {
             Pledges = new List<EventPledge>();

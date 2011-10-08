@@ -37,14 +37,15 @@ namespace GroupGiving.Core.Services
                 IsPrivate = request.IsPrivate,
                 IsFeatured = request.IsFeatured,
                 PhoneNumber = request.PhoneNumber,
-                OrganiserName = request.OrganiserName
+                OrganiserId = request.OrganiserAccountId,
+                State = EventState.Creating
             };
-
+            
             _eventRepository.SaveOrUpdate(ggEvent);
             _eventRepository.CommitUpdates();
 
             int eventId = int.Parse(ggEvent.Id.Substring(ggEvent.Id.IndexOf('/') + 1));
-            return new CreateEventResult() {Success = true, EventId = eventId};
+            return new CreateEventResult() {Success = true, Event = ggEvent};
         }
 
         public void SetTicketDetails(SetTicketDetailsRequest setTicketDetailsRequest)
