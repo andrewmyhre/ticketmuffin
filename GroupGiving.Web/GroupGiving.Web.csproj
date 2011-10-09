@@ -114,7 +114,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="App_Start\CountriesStore.cs" />
     <Compile Include="App_Start\NinjectMVC3.cs" />
     <Compile Include="Areas\Api\ApiAreaRegistration.cs" />
     <Compile Include="Areas\Api\Code\AutoMappingConfiguration.cs" />

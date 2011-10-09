@@ -75,17 +75,23 @@ namespace GroupGiving.Web.Controllers
             Response.Write("loading countries...<br/>");
             try
             {
-                CountriesStore.Countries = new List<Country>();
                 using (var filestream = System.IO.File.OpenRead(HostingEnvironment.MapPath("~/App_Data/countrylist.csv")))
                 using (var session = _storage.OpenSession())
                 using (var reader = new StreamReader(filestream))
                 {
+
+                    var countries = session.Query<Country>().ToList();
+                    foreach(var country in countries)
+                    {
+                        session.Delete(country);
+                    }
+                    session.SaveChanges();
+
                     CSVReader csv = new CSVReader(reader);
                     var table = csv.CreateDataTable(true);
                     foreach (DataRow row in table.Rows)
                     {
                         var country = new Country((string) row["Common Name"]);
-                        CountriesStore.Countries.Add(country);
                         session.Store(country);
                         Response.Write((string)row["Common Name"] + "<br/>");
                         Response.Flush();

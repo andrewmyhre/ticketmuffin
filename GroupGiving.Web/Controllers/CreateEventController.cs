@@ -30,9 +30,10 @@ namespace GroupGiving.Web.Controllers
         private readonly IEventService _eventService;
         private readonly ICountryService _countryService;
         private readonly IIdentity _userIdentity;
+        private readonly IDocumentStore _storage;
 
         public CreateEventController(IAccountService accountService, ICountryService countryService, IMembershipService membershipService, 
-            IFormsAuthenticationService formsAuthenticationService, IEventService eventService, IDocumentStore documentStore, IIdentity userIdentity)
+            IFormsAuthenticationService formsAuthenticationService, IEventService eventService, IDocumentStore documentStore, IIdentity userIdentity, IDocumentStore storage)
         {
             _accountService = accountService;
             _countryService = countryService;
@@ -40,6 +41,7 @@ namespace GroupGiving.Web.Controllers
             _formsAuthenticationService = formsAuthenticationService;
             _eventService = eventService;
             _userIdentity = userIdentity;
+            _storage = storage;
             ((RavenDBMembership.Provider.RavenDBMembershipProvider) Membership.Provider).DocumentStore = documentStore;
         }
 
@@ -64,7 +66,11 @@ namespace GroupGiving.Web.Controllers
             var viewModel = new CreateEventRequest();
             viewModel.StartDateTime = DateTime.Now;
             viewModel.StartTimes = TimeOptions();
-            viewModel.Countries = new SelectList(CountriesStore.Countries, "Name", "Name", "United Kingdom");
+
+            using (var session = _storage.OpenSession())
+            {
+                viewModel.Countries = new SelectList(session.Query<Country>().ToList(), "Name", "Name", "United Kingdom");
+            }
 
             return View(viewModel);
         }
@@ -95,7 +101,10 @@ namespace GroupGiving.Web.Controllers
             {
                 request.StartDateTime = DateTime.Now;
                 request.StartTimes = TimeOptions();
-                request.Countries = new SelectList(CountriesStore.Countries, "Name", "Name", request.Country);
+                using (var session = _storage.OpenSession())
+                {
+                    request.Countries = new SelectList(session.Query<Country>().ToList(), "Name", "Name", "United Kingdom");
+                }
                 return View(request);
             }
 
