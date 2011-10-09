@@ -14,6 +14,7 @@ using GroupGiving.Core.Domain;
 using GroupGiving.Core.Services;
 using GroupGiving.Web.App_Start;
 using Ninject;
+using Raven.Client;
 
 namespace GroupGiving.Web.Controllers
 {
@@ -22,12 +23,14 @@ namespace GroupGiving.Web.Controllers
         //
         // GET: /Diagnostics/
         IEmailFacade _emailFacade = null;
+        private readonly IDocumentStore _storage;
         private IRepository<GroupGivingEvent> _eventRepository=null;
 
-        public DiagnosticsController(IRepository<GroupGivingEvent> eventRepository, IEmailFacade emailFacade)
+        public DiagnosticsController(IRepository<GroupGivingEvent> eventRepository, IEmailFacade emailFacade, IDocumentStore storage)
         {
             _eventRepository = eventRepository;
             _emailFacade = emailFacade;
+            _storage = storage;
             _emailFacade.LoadTemplates();
         }
 
@@ -74,16 +77,20 @@ namespace GroupGiving.Web.Controllers
             {
                 CountriesStore.Countries = new List<Country>();
                 using (var filestream = System.IO.File.OpenRead(HostingEnvironment.MapPath("~/App_Data/countrylist.csv")))
+                using (var session = _storage.OpenSession())
                 using (var reader = new StreamReader(filestream))
                 {
                     CSVReader csv = new CSVReader(reader);
                     var table = csv.CreateDataTable(true);
                     foreach (DataRow row in table.Rows)
                     {
-                        CountriesStore.Countries.Add(new Country((string)row["Common Name"]));
+                        var country = new Country((string) row["Common Name"]);
+                        CountriesStore.Countries.Add(country);
+                        session.Store(country);
                         Response.Write((string)row["Common Name"] + "<br/>");
                         Response.Flush();
                     }
+                    session.SaveChanges();
                 }
             }
             catch (Exception ex)
