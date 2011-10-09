@@ -1,4 +1,4 @@
-<%@ Page Language="C#" Inherits="System.Web.Mvc.ViewPage" %>
+<%@ Page Language="C#" Inherits="System.Web.Mvc.ViewPage<GroupGiving.Web.Models.DiagnosticsDashboardViewModel>" %>
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
@@ -23,6 +23,12 @@
         </li>
         <li>
             <a href="<%=Url.Action("SendTest", "Diagnostics") %>" class="emailTest" templateName="ResetYourPassword">send Reset Password test</a>
+        </li>
+    </ul>
+    <h2>Data</h2>
+    <ul>
+        <li>
+            <%=Html.ActionLink("Refresh country list ("+ Model.CountryCount +")", "LoadCountries", "Diagnostics")%>
         </li>
     </ul>
 

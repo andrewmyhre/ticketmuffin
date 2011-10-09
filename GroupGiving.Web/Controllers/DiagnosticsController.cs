@@ -13,6 +13,7 @@ using GroupGiving.Core.Data;
 using GroupGiving.Core.Domain;
 using GroupGiving.Core.Services;
 using GroupGiving.Web.App_Start;
+using GroupGiving.Web.Models;
 using Ninject;
 using Raven.Client;
 
@@ -36,7 +37,12 @@ namespace GroupGiving.Web.Controllers
 
         public ActionResult Index()
         {
-            return View();
+            var viewModel = new DiagnosticsDashboardViewModel();
+            using (var session = _storage.OpenSession())
+            {
+                viewModel.CountryCount = session.Query<Country>().Count();
+            }
+            return View(viewModel);
         }
 
         [AcceptVerbs(HttpVerbs.Post)]
