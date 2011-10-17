@@ -58,6 +58,12 @@
             @Html.DropDownList("salesEndTime", Model.SalesEndTimeOptions, new { style = "width:120px" })
             @Html.ValidationMessageFor(m => m.SalesEndDateTime)
         </div>
+        <div class="formline">
+            <label style="display: inline-block; width: 200px; float:left;">@Html.LabelFor(m => m.AdditionalBenefits)
+            <br /></label>
+            @Html.TextArea("AdditionalBenefits", "", 6, 50, null)
+            @Html.ValidationMessageFor(m=>m.AdditionalBenefits)
+        </div>
 
         <div class="formvalidation">
             <label style="display: inline-block; width: 200px;"></label>

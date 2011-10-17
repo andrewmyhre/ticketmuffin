@@ -33,6 +33,7 @@ namespace GroupGiving.Core.Services
 
         public string SalesEndTime { get; set; }
 
+        [DisplayName("Additional Benefits")]
         public string AdditionalBenefits { get; set; }
 
         public SelectList Times { get; set; }

@@ -69,7 +69,7 @@ namespace GroupGiving.Web.Controllers
 
             using (var session = _storage.OpenSession())
             {
-                viewModel.Countries = new SelectList(session.Query<Country>().ToList(), "Name", "Name", "United Kingdom");
+                viewModel.Countries = new SelectList(session.Query<Country>().Take(600).ToList(), "Name", "Name", "United Kingdom");
             }
 
             return View(viewModel);
@@ -103,7 +103,7 @@ namespace GroupGiving.Web.Controllers
                 request.StartTimes = TimeOptions();
                 using (var session = _storage.OpenSession())
                 {
-                    request.Countries = new SelectList(session.Query<Country>().ToList(), "Name", "Name", "United Kingdom");
+                    request.Countries = new SelectList(session.Query<Country>().Take(600).ToList(), "Name", "Name", "United Kingdom");
                 }
                 return View(request);
             }
@@ -115,7 +115,7 @@ namespace GroupGiving.Web.Controllers
             
             if (result.Success)
             {
-                return RedirectToRoute("CreateEvent_TicketDetails", new { eventId = result.Event.Id});
+                return RedirectToRoute("CreateEvent_TicketDetails", new { eventId = result.Event.Id.Substring(result.Event.Id.IndexOf('/')+1)});
             }
 
             ModelState.AddModelError("createevent", "There was a problem with the information you provided");
