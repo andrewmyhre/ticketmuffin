@@ -58,11 +58,12 @@
       <HintPath>..\packages\Ninject.MVC3.2.2.2.0\lib\net40-Full\Ninject.Web.Mvc.dll</HintPath>
     </Reference>
     <Reference Include="Raven.Client.Lightweight, Version=1.0.0.0, Culture=neutral, PublicKeyToken=37f41c7f99471593, processorArchitecture=MSIL" />
+    <Reference Include="RouteDebugger, Version=2.1.1.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\routedebugger.2.1.1\lib\net40\RouteDebugger.dll</HintPath>
+    </Reference>
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="System.Runtime.Serialization" />
-    <Reference Include="RouteDebugger">
-      <HintPath>..\packages\routedebugger.2.0.0.7\lib\net40\RouteDebugger.dll</HintPath>
-    </Reference>
     <Reference Include="System.Transactions" />
     <Reference Include="System.Web.Extensions" />
     <Reference Include="System.Web.Helpers, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
@@ -135,17 +136,20 @@
     <Compile Include="Code\CultureConstraint.cs" />
     <Compile Include="Code\CultureViewEngine.cs" />
     <Compile Include="Code\HtmlHelperExtensions.cs" />
+    <Compile Include="Code\IContentProvider.cs" />
     <Compile Include="Code\Markdown.cs" />
     <Compile Include="Code\MarkdownViewModel.cs" />
     <Compile Include="Code\MobileSupport.cs" />
     <Compile Include="Code\ModelStateExtensions.cs" />
     <Compile Include="Code\MultiCultureMvcRouteHandler.cs" />
     <Compile Include="Code\MustBeTrueAttribute.cs" />
-    <Compile Include="Code\PageContent.cs" />
+    <Compile Include="Code\PageContentService.cs" />
+    <Compile Include="Code\RavenDbContentProvider.cs" />
     <Compile Include="Code\RavenDbDocumentStore.cs" />
     <Compile Include="Code\StringConverter.cs" />
     <Compile Include="Code\XmlContentProvider.cs" />
     <Compile Include="Controllers\AccountController.cs" />
+    <Compile Include="Controllers\ContentManagerController.cs" />
     <Compile Include="Controllers\CreateEventController.cs" />
     <Compile Include="Controllers\DiagnosticsController.cs" />
     <Compile Include="Controllers\EventController.cs" />
@@ -281,7 +285,6 @@
     <Content Include="Content\themes\base\jquery.ui.tabs.css" />
     <Content Include="Content\themes\base\jquery.ui.theme.css" />
     <Content Include="Global.asax" />
-    <Content Include="license.txt" />
     <Content Include="markitup\sets\markDown\images\bold.png" />
     <Content Include="markitup\sets\markDown\images\clean.png" />
     <Content Include="markitup\sets\markDown\images\image.png" />
@@ -295,6 +298,7 @@
     <Content Include="markitup\sets\markDown\set.js" />
     <Content Include="markitup\sets\markDown\style.css" />
     <Content Include="Mobile\Default.aspx" />
+    <Content Include="Scripts\content-management.js" />
     <Content Include="Scripts\diagnostics.js" />
     <Content Include="Scripts\editevent.js" />
     <Content Include="Scripts\jquery.countdown.min.js" />
@@ -430,6 +434,7 @@
     <Content Include="Views\Event\pl\PersonalDetailsSignedIn.cshtml" />
     <Content Include="Views\Event\pl\Pledge.cshtml" />
     <Content Include="Views\Event\pl\refund-pledge.cshtml" />
+    <Content Include="Views\ContentManager\Index.cshtml" />
     <None Include="_bin_deployableAssemblies\System.Web.Mvc.dll" />
     <None Include="_bin_deployableAssemblies\WebMatrix.WebData.xml" />
     <None Include="_bin_deployableAssemblies\WebMatrix.WebData.dll" />

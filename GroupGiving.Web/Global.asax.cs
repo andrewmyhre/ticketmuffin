@@ -17,7 +17,6 @@ namespace GroupGiving.Web
 
     public class MvcApplication : System.Web.HttpApplication
     {
-        public static XmlContentProvider PageContent = new XmlContentProvider();
         public static EmailFacade EmailFacade { get; private set; }
         private static ILog _logger = LogManager.GetLogger(typeof(MvcApplication));
 
@@ -35,6 +34,15 @@ namespace GroupGiving.Web
             MapEventRoutes(routes);
             MapPurchaseRoutes(routes);
 
+            routes.MapRoute(
+                "ContentManagement-Update",
+                "contentmanager/pagecontents/{pageId}/{contentLabel}/{culture}",
+                new {controller = "ContentManager", action = "UpdateContentDefinition"});
+            routes.MapRoute(
+                "ContentManagement-Add",
+                "contentmanager/pagecontents/{pageId}/{contentLabel}",
+                new { controller = "ContentManager", action = "UpdateContentDefinition" });
+
             //MapCultureRoutes(routes);
 
             /*routes.MapRoute(
@@ -50,6 +58,7 @@ namespace GroupGiving.Web
                 "{controller}/{action}/{id}", // URL with parameters
                 new { controller = "Home", action = "Index", id = UrlParameter.Optional } // Parameter defaults
             );
+
             
         }
 
@@ -177,7 +186,7 @@ namespace GroupGiving.Web
 
             RegisterGlobalFilters(GlobalFilters.Filters);
             RegisterRoutes(RouteTable.Routes);
-            PageContent.Initialise(System.Web.Hosting.HostingEnvironment.MapPath("~/content/PageContent"));
+            //PageContent.Initialise(System.Web.Hosting.HostingEnvironment.MapPath("~/content/PageContent"));
 
             ViewEngines.Engines.Clear();
             ViewEngines.Engines.AddIPhone<CultureViewEngine>();
@@ -195,6 +204,8 @@ namespace GroupGiving.Web
             {
                 _logger.Fatal("Failed to load email sender", e);
             }
+
+            
         }
     }
 
