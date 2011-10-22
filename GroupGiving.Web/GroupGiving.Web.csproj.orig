@@ -58,11 +58,14 @@
       <HintPath>..\packages\Ninject.MVC3.2.2.2.0\lib\net40-Full\Ninject.Web.Mvc.dll</HintPath>
     </Reference>
     <Reference Include="Raven.Client.Lightweight, Version=1.0.0.0, Culture=neutral, PublicKeyToken=37f41c7f99471593, processorArchitecture=MSIL" />
+<<<<<<< HEAD
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="System.Runtime.Serialization" />
+=======
     <Reference Include="RouteDebugger">
       <HintPath>..\packages\routedebugger.2.0.0.7\lib\net40\RouteDebugger.dll</HintPath>
     </Reference>
+>>>>>>> localisation
     <Reference Include="System.Transactions" />
     <Reference Include="System.Web.Extensions" />
     <Reference Include="System.Web.Helpers, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
@@ -131,15 +134,22 @@
     <Compile Include="Code\CommaSeparatedEmailListValidatorAttribute.cs" />
     <Compile Include="Code\ContentDictionaries.cs" />
     <Compile Include="Code\ContentTypeAwareViewEngine.cs" />
+<<<<<<< HEAD
     <Compile Include="Code\CSVReader.cs" />
+=======
     <Compile Include="Code\CultureConstraint.cs" />
     <Compile Include="Code\CultureViewEngine.cs" />
+    <Compile Include="Code\GroupGivingNinjectModule.cs" />
+>>>>>>> localisation
     <Compile Include="Code\HtmlHelperExtensions.cs" />
     <Compile Include="Code\Markdown.cs" />
     <Compile Include="Code\MarkdownViewModel.cs" />
     <Compile Include="Code\MobileSupport.cs" />
+<<<<<<< HEAD
     <Compile Include="Code\ModelStateExtensions.cs" />
+=======
     <Compile Include="Code\MultiCultureMvcRouteHandler.cs" />
+>>>>>>> localisation
     <Compile Include="Code\MustBeTrueAttribute.cs" />
     <Compile Include="Code\PageContent.cs" />
     <Compile Include="Code\RavenDbDocumentStore.cs" />
@@ -406,6 +416,7 @@
     <Content Include="Views\Markdown\_EditorLayout.cshtml" />
     <Content Include="Views\Markdown\Sample.cshtml" />
     <Content Include="Views\Event\EditorTemplates\ShortUrl.cshtml" />
+<<<<<<< HEAD
     <Content Include="Views\Event\ShareViaEmail.cshtml" />
     <Content Include="Views\ShareEvent\DisplayTemplates\ShareViaEmailViewModel.cshtml" />
     <Content Include="Views\ShareEvent\Index.cshtml" />
@@ -414,6 +425,7 @@
     <Content Include="Views\Account\Index.cshtml" />
     <Content Include="Views\Account\YourEvents.cshtml" />
     <Content Include="Views\Diagnostics\Index.cshtml" />
+=======
     <Content Include="Views\Shared\SwitchCulture.cshtml" />
     <Content Include="Views\Home\pl\HowItWorks.cshtml" />
     <Content Include="Views\Home\pl\Index.cshtml" />
@@ -430,6 +442,7 @@
     <Content Include="Views\Event\pl\PersonalDetailsSignedIn.cshtml" />
     <Content Include="Views\Event\pl\Pledge.cshtml" />
     <Content Include="Views\Event\pl\refund-pledge.cshtml" />
+>>>>>>> localisation
     <None Include="_bin_deployableAssemblies\System.Web.Mvc.dll" />
     <None Include="_bin_deployableAssemblies\WebMatrix.WebData.xml" />
     <None Include="_bin_deployableAssemblies\WebMatrix.WebData.dll" />

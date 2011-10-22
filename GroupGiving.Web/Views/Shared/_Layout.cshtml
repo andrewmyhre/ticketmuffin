@@ -30,10 +30,11 @@
     <div id="mainArea">
 
       <div id="topArea">
-        <a href="/" id="logo"><img src="/content/img/logo.png" /></a>
+        <a href="@Url.Action("Index", "Home", new {culture=Culture})" id="logo"><img src="/content/img/logo.png" /></a>
         <a href="/" id="fbconnect"><img src="/content/img/fbconnect.png" /></a>
           <div id="loginArea">
             @Html.Partial("_LogOnPartial")
+            @Html.Partial("SwitchCulture")
           </div>
       </div>
         

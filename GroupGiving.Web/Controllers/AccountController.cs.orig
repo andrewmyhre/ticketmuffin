@@ -440,6 +440,7 @@ namespace GroupGiving.Web.Controllers
             return View(viewModel);
         }
 
+<<<<<<< HEAD
         public ActionResult PayPalSettings()
         {
             var viewModel = new PayPalSettingsModel();
@@ -461,8 +462,7 @@ namespace GroupGiving.Web.Controllers
             account.PayPalLastName = model.PayPalLastName;
             _accountService.UpdateAccount(account);
             return RedirectToAction("PayPalSettings");
-        }
-
+=======
         public ActionResult ChangeCulture(string lang, string returnUrl)
         {
             if (returnUrl.Length >= 6)
@@ -471,6 +471,7 @@ namespace GroupGiving.Web.Controllers
             }
 
             return Redirect("/" + lang + returnUrl);
+>>>>>>> localisation
         }
 
         #region Status Codes

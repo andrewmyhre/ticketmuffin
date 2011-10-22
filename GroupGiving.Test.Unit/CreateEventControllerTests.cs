@@ -39,7 +39,7 @@ namespace GroupGiving.Test.Unit
             AnyShortUrlIsAvailable();
 
             var controller = new CreateEventController(accountService.Object, null, membershipService.Object,
-                                                       formsAuthenticationService.Object, eventService.Object, null, null);
+                                                       formsAuthenticationService.Object, eventService.Object, null, null, null);
 
             var createEventRequest = new CreateEventRequest();
             createEventRequest.StartDate = DateTime.Now.AddDays(10).ToString("dd/MM/yyyy");
@@ -72,7 +72,7 @@ namespace GroupGiving.Test.Unit
                 .Returns(new CreateEventResult() { Success = false });
 
             var controller = new CreateEventController(accountService.Object, null, membershipService.Object,
-                                                       formsAuthenticationService.Object, eventService.Object, null, null);
+                                                       formsAuthenticationService.Object, eventService.Object, null, null, null);
             controller.ModelState.AddModelError("*", "invalid model state");
 
             var result = controller.EventDetails(new CreateEventRequest()) as ViewResult;
@@ -91,7 +91,7 @@ namespace GroupGiving.Test.Unit
 
             var controller = new CreateEventController(accountService.Object, null,
                                                        membershipService.Object, formsAuthenticationService.Object,
-                                                       eventService.Object, null, null);
+                                                       eventService.Object, null, null, null);
 
             var setTicketDetailsRequest = new SetTicketDetailsRequest() {EventId = 1};
             setTicketDetailsRequest.SalesEndDate = DateTime.Now.AddDays(10).ToString("dd/MM/yyyy");
@@ -108,7 +108,7 @@ namespace GroupGiving.Test.Unit
         {
             var controller = new CreateEventController(accountService.Object, null,
                                                        membershipService.Object, formsAuthenticationService.Object,
-                                                       eventService.Object, null, null);
+                                                       eventService.Object, null, null, null);
             controller.ModelState.AddModelError("*", "Invalid model state");
 
             var result = controller.TicketDetails(new SetTicketDetailsRequest()) as ViewResult;

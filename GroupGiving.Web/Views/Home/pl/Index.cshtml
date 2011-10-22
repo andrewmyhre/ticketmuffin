@@ -1,0 +1,26 @@
+﻿@using GroupGiving.Web.Code
+@model GroupGiving.Web.Models.HomePageViewModel
+@{
+    ViewBag.Title = Html.Content("homepage", "heading");
+}
+
+@section scripts {
+<script type="text/javascript" src="/scripts/jquery.expander.js"></script>
+<script type="text/javascript" src="/scripts/home.js"></script>
+}
+
+<p>@Html.ActionLink("Create an event...", "create", "CreateEvent", new {culture=Culture.Substring(0,2)}, null)</p>
+
+<h2>[polish] upcoming evengs in longon</h2>
+
+<p>You don't need to recompile to update a view, just save the file and reload the page in the browser.</p>
+
+hello world
+
+@foreach(var e in Model.Events)
+{
+    <p>@Html.ActionLink(e.Title + " " + Culture.Substring(0, 2), "Index", "Event", new { shortUrl = e.ShortUrl, culture = Culture.Substring(0, 2) }, null) @e.City <text>20 June, 2011</text></p>
+    <p class="expandable">@Html.Raw(e.Description)</p>
+}
+
+
