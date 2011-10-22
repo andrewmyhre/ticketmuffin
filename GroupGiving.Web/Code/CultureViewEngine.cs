@@ -16,7 +16,8 @@ namespace GroupGiving.Web.Code
 
         public override ViewEngineResult FindView(ControllerContext controllerContext, string viewName, string masterName, bool useCache)
         {
-            var culture = (string)controllerContext.RouteData.Values["culture"] ?? "en";
+            //var culture = (string)controllerContext.RouteData.Values["culture"] ?? "en";
+            var culture = controllerContext.RequestContext.HttpContext.Request.Cookies["culture"] != null ? controllerContext.RequestContext.HttpContext.Request.Cookies["culture"].Value : "en";
             var result = base.FindView(controllerContext, culture + "/" + viewName, masterName, useCache);
 
             if (result != null && result.View != null)
@@ -28,7 +29,8 @@ namespace GroupGiving.Web.Code
 
         public override ViewEngineResult FindPartialView(ControllerContext controllerContext, string partialViewName, bool useCache)
         {
-            var culture = (string) controllerContext.RouteData.Values["culture"] ?? "en";
+            //var culture = (string) controllerContext.RouteData.Values["culture"] ?? "en";
+            var culture = controllerContext.RequestContext.HttpContext.Request.Cookies["culture"] != null ? controllerContext.RequestContext.HttpContext.Request.Cookies["culture"].Value : "en";
             var result = base.FindPartialView(controllerContext, culture + "/" + partialViewName, useCache);
 
             if (result != null && result.View != null)

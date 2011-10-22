@@ -470,7 +470,20 @@ namespace GroupGiving.Web.Controllers
                 returnUrl = returnUrl.Substring(6);
             }
 
-            return Redirect("/" + lang + returnUrl);
+            var cultureCookie = Request.Cookies["culture"];
+            if (cultureCookie == null)
+            {
+                cultureCookie = new HttpCookie("culture", lang);
+            }
+            else
+            {
+                cultureCookie.Value = lang;
+            }
+
+            cultureCookie.Expires = DateTime.Now.AddDays(7);
+            Response.SetCookie(cultureCookie);
+
+            return Redirect("/" + returnUrl);
         }
 
         #region Status Codes

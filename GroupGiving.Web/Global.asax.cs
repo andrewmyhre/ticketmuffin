@@ -35,15 +35,15 @@ namespace GroupGiving.Web
             MapEventRoutes(routes);
             MapPurchaseRoutes(routes);
 
-            MapCultureRoutes(routes);
+            //MapCultureRoutes(routes);
 
-            routes.MapRoute(
+            /*routes.MapRoute(
                 "CultureDefault", // Route name
                 "{culture}/{controller}/{action}/{id}", // URL with parameters
                 new { controller = "Home", action = "Index", id = UrlParameter.Optional, culture="en" },
                 new {culture = new CultureConstraint("en", "pl")}// Parameter defaults
-            );
-            ((Route)routes["CultureDefault"]).RouteHandler = new MultiCultureMvcRouteHandler();
+            );*/
+            //((Route)routes["CultureDefault"]).RouteHandler = new MultiCultureMvcRouteHandler();
 
             routes.MapRoute(
                 "Default", // Route name
