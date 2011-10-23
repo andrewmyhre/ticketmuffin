@@ -36,6 +36,19 @@
     .content-culture-definition-edit-link
     {
     }
+    
+    .editing
+    {
+        
+    }
+    
+    .selected
+    {
+        background-color:#ffffaa;
+        padding:6px;
+        border-radius: 6px;
+        -moz-border-radius:6px;
+    }
 </style>
 }
 
@@ -62,12 +75,12 @@
                     <dl class="content-definition" style="display:none;">
                         @foreach (var cultureContent in content.ContentByCulture)
                         {
-                            <div>
-                                <dt><a href="#" class="content-culture-definition-heading">@cultureContent.Key</a> <a href="#" class="content-culture-definition-edit-link">Edit</a></dt>
-                                <dd class="content-culture-definition" id="@page.Id/@content.Label/@cultureContent.Key" style="display:none;">@Html.Raw(cultureContent.Value)</dd>
+                            <div class="grayBox">
+                                <dt>@cultureContent.Key <a href="#" class="content-culture-definition-edit-link">Edit</a></dt>
+                                <dd class="content-culture-definition" id="@page.Id/@content.Label/@cultureContent.Key">@Html.Raw(cultureContent.Value)</dd>
                             </div>
                         }
-                        <dt id="@page.Id/@content.Label"><a href="#" class="add-culture-link">Add Culture</a></dt>
+                        <dt id="@page.Id/@content.Label"><a href="#" class="add-culture-link">Add Translation</a></dt>
                     </dl>
                 </li>
             }

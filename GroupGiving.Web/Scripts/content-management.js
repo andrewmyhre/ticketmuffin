@@ -1,14 +1,15 @@
 ﻿$(document).ready(function () {
     $('.content-definition-heading').click(function () {
         $('.content-definition').hide();
-        $('.content-culture-definition').hide();
+        $('.selected').removeClass('selected');
         $(this).parent().children('.content-definition').show();
+        $(this).parent().addClass('selected');
     });
 
-    $('.content-culture-definition-heading').click(function () {
-        $('.content-culture-definition').hide();
-        $(this).parent().siblings('.content-culture-definition').show();
-    });
+    /*$('.content-culture-definition-heading').click(function () {
+    $('.content-culture-definition').hide();
+    $(this).parent().siblings('.content-culture-definition').show();
+    });*/
 
     $('.content-culture-definition').click(function () {
         edit($(this));
@@ -30,7 +31,7 @@ function cancelEdit(element) {
     if ($(element).length == 0)
         return;
     
-    var content = $(element).children('form').children('textarea').val();
+    var content = $(element).children('div').children('form').children('div').children('textarea').val();
 
     $(element).html(content);
     $(element).removeClass('editing');
@@ -40,14 +41,19 @@ function edit(element) {
     var content = $(element).html();
     var container = $('<div></div>');
     var form = $('<form method="post" action="/contentmanager/' + $(element).attr('id') + '"></form');
+    var editorLabel = $('<label for="content">Content:</label>');
     var editor = $('<textarea name="content">' + content + '</textarea>');
     var saveButton = $('<input type="submit" value="Save" />');
+    var cancelButton = $('<a href="#">Cancel</a>');
+
+    $(cancelButton).click(function() { cancelEdit($(element)); });
 
     $(container).append(form);
-    $(form).append(editor);
+    $(form).append($('<div class="formline wholeline"></div>').append(editorLabel).append(editor));
     $(form).append(saveButton);
+    $(form).append(cancelButton);
 
-    $(element).html(form);
+    $(element).html(container);
     $(element).unbind('click');
 
     $(element).addClass('editing');
@@ -56,17 +62,27 @@ function edit(element) {
 function add(element) {
     var container = $('<div></div>');
     var form = $('<form method="post" action="/contentmanager/' + $(element).attr('id') + '"></form');
-    var cultureLabel = $('<label for="culture">Culture code (e.g: pl):</label>');
-    var cultureInput = $('<input type="text" name="culture" />');
+    var cultureLabel = $('<label for="culture">Culture code:</label>');
+    var cultureSelection = $('<select name="culture"></select>');
+    cultureSelection.append('<option value="en">English</option>');
+    cultureSelection.append('<option value="pl">Polski</option>');
+    var editorLabel = $('<label for="content">Content:</label>');
     var editor = $('<textarea name="content"></textarea>');
     var saveButton = $('<input type="submit" value="Save" />');
+    var cancelButton = $('<a href="#">Cancel</a>');
+
+    $(cancelButton).click(function () { cancelEdit($(element)); });
 
     $(container).append(form);
+    $(form).append($('<div class="formline wholeline"></div>').append(cultureLabel).append(cultureSelection));
     $(form).append(cultureLabel);
-    $(form).append(cultureInput);
-    $(form).append(editor);
+    $(form).append(cultureSelection);
+    $(form).append($('<div class="formline wholeline"></div>').append(editorLabel).append(editor));
     $(form).append(saveButton);
+    $(form).append(cancelButton);
 
-    $(element).html(form);
+    $(element).html(container);
     $(element).unbind('click');
+
+    $(element).addClass('editing');
 }
