@@ -47,7 +47,9 @@
           </div>
           <div id="eventName"><h1>@Model.Title</h1></div>
 
-          <div id="eventDetails"><strong>@Model.Venue</strong>, @Model.City, @Model.Country, @Model.StartDate.ToString("dddd, MMMM dd, yyyy, HH:mm tt"), @Model.AddressLine
+          <div id="eventDetails">@Model.StartDate.ToString("HH:mm tt dddd MMMM dd, yyyy")<br />
+          <strong>@Model.Venue</strong>, @Model.AddressLine, @Model.City, @Model.Country
+          
           @{
               if (Model.UserIsEventOwner)
               {
