@@ -161,6 +161,7 @@ input.smallButton {
   line-height: 25px;
   font-weight: bold;
   font-size: 18px;
+    padding: 0;
 }
 div#pledgeInfo {
  background: url("/content/img/pledgeInfo_bg.jpg") repeat-x scroll center top #86B8E9;
