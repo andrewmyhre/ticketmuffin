@@ -8,6 +8,15 @@ using Raven.Client;
 
 namespace GroupGiving.Web.Controllers
 {
+    public class ContentSearch
+    {
+        public string Id { get; set; }
+        public string Address { get; set; }
+        public string Label { get; set; }
+        public string Key { get; set; }
+        public string Content { get; set; }
+    }
+
     public class ContentManagerController : Controller
     {
         private readonly IDocumentStore _store;
@@ -20,13 +29,26 @@ namespace GroupGiving.Web.Controllers
         //
         // GET: /Content/
 
-        public ActionResult Index()
+        public ActionResult Index(string q)
         {
             var viewModel = new ContentListViewModel();
             using (var session = _store.OpenSession())
             {
-                viewModel.Pages = session.Query<PageContent>().Take(1024);
+                if (!string.IsNullOrWhiteSpace(q))
+                {
+                    // load items from index
+                    viewModel.Pages = session.Advanced.LuceneQuery<PageContent>("contentSearch")
+                        .WhereContains("Content", q)
+                        .OrElse().WhereContains("Label", q)
+                        .OrElse().WhereContains("Address", q);
+                    
+                } else
+                {
+                    viewModel.Pages = session.Query<PageContent>().Take(1024);
+                }
+
             }
+            viewModel.Query = q;
             return View(viewModel);
         }
 
@@ -80,6 +102,8 @@ namespace GroupGiving.Web.Controllers
 
     public class ContentListViewModel
     {
-        public IQueryable<PageContent> Pages { get; set; }
+        public IEnumerable<PageContent> Pages { get; set; }
+
+        public string Query { get; set; }
     }
 }
