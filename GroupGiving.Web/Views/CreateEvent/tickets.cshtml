@@ -48,7 +48,7 @@
 
         <div class="formline" id="paypal-email-container">
             @Html.LabelFor(m => m.PayPalEmail)
-            @Html.TextBoxFor(m => m.PayPalEmail) <span id="pp-verify-result"></span>
+            @Html.TextBoxFor(m => m.PayPalEmail) <span id="pp-verify-result"></span> Need to create a PayPal account? <a href="https://www.paypal.com/en/cgi-bin/webscr?cmd=_registration-run" target="_blank">Click here</a>.
             @Html.ValidationMessageFor(m => m.PayPalEmail)
         </div>
 
