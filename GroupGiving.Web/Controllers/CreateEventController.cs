@@ -115,7 +115,7 @@ namespace GroupGiving.Web.Controllers
             
             if (result.Success)
             {
-                return RedirectToRoute("CreateEvent_TicketDetails", new { eventId = result.Event.Id.Substring(result.Event.Id.IndexOf('/')+1)});
+                return RedirectToRoute("CreateEvent_TicketDetails", new { shortUrl = result.Event.ShortUrl});
             }
 
             ModelState.AddModelError("createevent", "There was a problem with the information you provided");
@@ -145,7 +145,7 @@ namespace GroupGiving.Web.Controllers
         [AcceptVerbs(HttpVerbs.Get)]
         [ActionName("tickets")]
         [Authorize]
-        public ActionResult TicketDetails(int eventId)
+        public ActionResult TicketDetails(string shortUrl)
         {
             var membershipUser = _membershipService.GetUser(_userIdentity.Name);
             var account = _accountService.RetrieveByEmailAddress(membershipUser.Email);
@@ -169,6 +169,11 @@ namespace GroupGiving.Web.Controllers
         [Authorize]
         public ActionResult TicketDetails(SetTicketDetailsRequest setTicketDetailsRequest)
         {
+            var @event = _eventService.Retrieve(setTicketDetailsRequest.ShortUrl);
+            if (@event == null)
+            {
+                return RedirectToAction("create");
+            }
             if (setTicketDetailsRequest.MaximumParticipants < setTicketDetailsRequest.MinimumParticipants)
             {
                 ModelState.AddModelError("MaximumParticipants", "Maximum participants can't be less than the minimum");
@@ -219,7 +224,7 @@ namespace GroupGiving.Web.Controllers
                 _accountService.UpdateAccount(account);
             }
 
-            var @event = _eventService.Retrieve(setTicketDetailsRequest.EventId);
+            
 
             return RedirectToRoute("Event_ShareYourEvent", new { shortUrl = @event.ShortUrl });
         }

@@ -93,7 +93,7 @@ namespace GroupGiving.Test.Unit
                                                        membershipService.Object, formsAuthenticationService.Object,
                                                        eventService.Object, null, null, null);
 
-            var setTicketDetailsRequest = new SetTicketDetailsRequest() {EventId = 1};
+            var setTicketDetailsRequest = new SetTicketDetailsRequest() {ShortUrl="test-event"};
             setTicketDetailsRequest.SalesEndDate = DateTime.Now.AddDays(10).ToString("dd/MM/yyyy");
             setTicketDetailsRequest.SalesEndTime = "10:00PM";
             var result = controller.TicketDetails(setTicketDetailsRequest) as RedirectToRouteResult;

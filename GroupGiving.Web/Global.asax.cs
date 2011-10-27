@@ -174,7 +174,7 @@ namespace GroupGiving.Web
                 new { controller = "CreateEvent", action = "create" });
             routes.MapRoute(
                 "CreateEvent_TicketDetails",
-                "events/create/{eventId}/tickets",
+                "events/create/{shortUrl}/tickets",
                 new { controller = "CreateEvent", action = "tickets" });
 
         }

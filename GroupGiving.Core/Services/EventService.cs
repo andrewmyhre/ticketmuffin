@@ -51,8 +51,7 @@ namespace GroupGiving.Core.Services
         public void SetTicketDetails(SetTicketDetailsRequest setTicketDetailsRequest)
         {
             var ggEvent =
-                _eventRepository.Retrieve(
-                    e => e.Id == string.Format("groupgivingevents/{0}", setTicketDetailsRequest.EventId));
+                _eventRepository.Retrieve(e => e.ShortUrl == setTicketDetailsRequest.ShortUrl);
 
             if (ggEvent==null)
                 throw new ArgumentException("Event not found");
