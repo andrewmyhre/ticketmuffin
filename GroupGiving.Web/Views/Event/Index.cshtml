@@ -107,6 +107,7 @@
                 <div id="timeLeft">Time left to pledge</div>
                 </div>
             }
+
           <div id="shareBox">
             <div>Share with your friends</div>
           </div>
@@ -165,12 +166,12 @@ setTimeout("inicjalizacja()",1000);
               <input type="submit" class="smallButton" value="Contact" />
             </div>
           </div>
-        <//div>                                    
+        </div>                                    
         <div id="eventRight">
           <div id="eventDesc">
             @Html.Raw(Model.DescriptionMarkedDown)
             @Html.Raw(Model.AdditionalBenefitsMarkedDown)
-            <div id="fb-root"></div><script src="http://connect.facebook.net/en_US/all.js#xfbml=1"></script><fb:comments href="ticketmuffin.com/events/seedcamp-dinner" num_posts="1" width="680"></fb:comments>            
+            <div id="fb-root"></div><script src="http://connect.facebook.net/en_US/all.js#xfbml=1"></script><fb:comments href="@Request.Url" num_posts="1" width="680"></fb:comments>            
           </div>
         </div>
 
