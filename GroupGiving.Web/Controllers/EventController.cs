@@ -113,6 +113,11 @@ namespace GroupGiving.Web.Controllers
             if (givingEvent == null)
                 return HttpNotFound();
 
+            if (givingEvent.SalesEndDateTime < DateTime.Now)
+            {
+                return RedirectToAction("Index", new {shortUrl = givingEvent.ShortUrl});
+            }
+
             EventPledgeViewModel viewModel = BuildEventPageViewModel(givingEvent);
 
             return View(viewModel);
