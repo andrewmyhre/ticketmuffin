@@ -1,4 +1,5 @@
-﻿@model GroupGiving.Web.Models.ContactDetailsViewModel
+﻿@using GroupGiving.Web.App_Start
+@model GroupGiving.Web.Models.ContactDetailsViewModel
 
 @{
     ViewBag.Title = "ContactDetails";
@@ -75,7 +76,7 @@
             @Html.LabelFor(m => m.Country)
         </div>
         <div class="editor-field">
-            @Html.DropDownListFor(m=>m.Country, Model.Countries)
+            @Html.DropDownListFor(m=>m.Country, new SelectList(CountriesStore.Countries, "Name", "Name", "United Kingdom"))
             @Html.ValidationMessageFor(m => m.Country)
         </div>
 

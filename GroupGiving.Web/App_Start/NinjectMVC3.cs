@@ -1,6 +1,9 @@
 using System.Configuration;
+using System.Security.Principal;
+using System.Web;
 using EmailProcessing;
 using EmailProcessing.Configuration;
+using GroupGiving.Core.Configuration;
 using GroupGiving.Core.Data;
 using GroupGiving.Core.Domain;
 using GroupGiving.Core.Email;
@@ -95,6 +98,8 @@ namespace GroupGiving.Web.App_Start
             });
             kernel.Bind<IPaymentGateway>().To<PayPalPaymentGateway>();
             kernel.Bind<ITaxAmountResolver>().To<NilTax>();
+            kernel.Bind<IIdentity>().ToMethod(x=>HttpContext.Current.User.Identity);
+            kernel.Bind<IContentProvider>().To<RavenDbContentProvider>();
         }        
     }
 }

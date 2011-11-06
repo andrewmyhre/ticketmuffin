@@ -12,7 +12,7 @@
 }
 
 <div>
-@using (Html.BeginForm())
+@using (Html.BeginForm("tickets", "CreateEvent", FormMethod.Post, new {id="tickets-form"}))
 {
     <div class="graybox">
         <div class="formline">
@@ -27,23 +27,42 @@
             @Html.ValidationMessageFor(m => m.MinimumParticipants)
         </div>
 
-        <div class="formline">
+        <div class="formline" style="margin-bottom:2px">
             @Html.LabelFor(m => m.MaximumParticipants)
             @Html.TextBoxFor(m => m.MaximumParticipants, new { @class = "short" })
             @Html.ValidationMessageFor(m => m.MaximumParticipants)
         </div>
 
-        <div class="formline">
-            @Html.LabelFor(m => m.PaypalAccountEmailAddress)
-            @Html.TextBoxFor(m => m.PaypalAccountEmailAddress)
-            @Html.ValidationMessageFor(m => m.PaypalAccountEmailAddress)
+        <div class="formline grayBox" style="background-color:#ffcccc;margin-bottom:8px;margin-top:0;">
+            <strong>We're currently in Sandbox mode.</strong><br/>
+            Please use the following credentials as your PayPal account:<br/>
+            First Name: Andrew<br/>
+            Last Name: Myhre<br/>
+            Email: seller_1304843436_biz@gmail.com <br/>
+        </div>
+
+        <div class="formline" id="paypal-name-container" style="display:none">
+            <div><label for="PayPalFirstName">PayPal account first name:</label>@Html.TextBoxFor(m=>m.PayPalFirstName)</div>
+            <div><label for="PayPalLastName">PayPal account last name:</label>@Html.TextBoxFor(m=>m.PayPalLastName)</div>
+        </div>
+
+        <div class="formline" id="paypal-email-container">
+            @Html.LabelFor(m => m.PayPalEmail)
+            @Html.TextBoxFor(m => m.PayPalEmail) <span id="pp-verify-result"></span> Need to create a PayPal account? <a href="https://www.paypal.com/en/cgi-bin/webscr?cmd=_registration-run" target="_blank">Click here</a>.
+            @Html.ValidationMessageFor(m => m.PayPalEmail)
         </div>
 
         <div class="formline">
-            <label>Sales end</label>
+            <label>Sales End</label>
             @Html.TextBox("salesEndDate", Model.SalesEndDateTime.ToShortDateString())
             @Html.DropDownList("salesEndTime", Model.SalesEndTimeOptions, new { style = "width:120px" })
             @Html.ValidationMessageFor(m => m.SalesEndDateTime)
+        </div>
+        <div class="formline">
+            <label style="display: inline-block; width: 200px; float:left;">@Html.LabelFor(m => m.AdditionalBenefits)
+            <br /></label>
+            @Html.TextArea("AdditionalBenefits", "", 6, 50, null)
+            @Html.ValidationMessageFor(m=>m.AdditionalBenefits)
         </div>
 
         <div class="formvalidation">

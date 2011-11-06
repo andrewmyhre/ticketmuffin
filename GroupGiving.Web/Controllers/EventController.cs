@@ -5,6 +5,7 @@ using System.Runtime.Serialization;
 using System.Text;
 using System.Web.Security;
 using System.Xml;
+using GroupGiving.Core.Configuration;
 using Raven.Client;
 using anrControls;
 using GroupGiving.Core.Actions.CreatePledge;
@@ -112,6 +113,11 @@ namespace GroupGiving.Web.Controllers
             if (givingEvent == null)
                 return HttpNotFound();
 
+            if (givingEvent.SalesEndDateTime < DateTime.Now)
+            {
+                return RedirectToAction("Index", new {shortUrl = givingEvent.ShortUrl});
+            }
+
             EventPledgeViewModel viewModel = BuildEventPageViewModel(givingEvent);
 
             return View(viewModel);
@@ -211,7 +217,7 @@ namespace GroupGiving.Web.Controllers
                 return View(viewModel);
             }
 
-            PaymentGatewayResponse response = result.GatewayResponse;
+            var response = result.GatewayResponse;
 
             if (!result.Succeeded)
             {
@@ -248,6 +254,14 @@ namespace GroupGiving.Web.Controllers
 
             var groupGivingEvent = _eventRepository.Retrieve(e => e.ShortUrl == shortUrl);
             this.TryUpdateModel(groupGivingEvent);
+
+            if (groupGivingEvent.SalesEndDateTime > DateTime.Now)
+                groupGivingEvent.State = EventState.SalesReady;
+            else if (groupGivingEvent.StartDate > DateTime.Now)
+                groupGivingEvent.State = EventState.SalesClosed;
+            else
+                groupGivingEvent.State = EventState.Completed;
+            
 
             _eventRepository.SaveOrUpdate(groupGivingEvent);
             _eventRepository.CommitUpdates();

@@ -19,5 +19,11 @@ namespace GroupGiving.Core.Domain
         public DateTime ResetPasswordTokenExpiry { get; set; }
         public AccountType AccountType { get; set; }
         public bool OptInForOffers { get; set; }
+
+        public string PayPalEmail { get; set; }
+        public string PayPalFirstName { get; set; }
+        public string PayPalLastName { get; set; }
+
+        public List<GroupGivingEvent> Events { get; set; }
     }
 }

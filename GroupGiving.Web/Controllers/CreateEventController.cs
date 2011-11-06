@@ -1,9 +1,21 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
+using System.Linq;
+using System.Net;
+using System.Security.Principal;
 using System.Text.RegularExpressions;
 using System.Web.Mvc;
+using System.Web.Security;
 using GroupGiving.Core.Services;
+using GroupGiving.PayPal;
+using GroupGiving.PayPal.Configuration;
+using GroupGiving.PayPal.Model;
+using GroupGiving.Web.App_Start;
+using GroupGiving.Web.Areas.Api.Controllers;
+using GroupGiving.Web.Code;
 using Ninject;
+using Raven.Client;
 using RavenDBMembership.Web.Models;
 using System.Web.Routing;
 using System.Web;
@@ -17,26 +29,20 @@ namespace GroupGiving.Web.Controllers
         private readonly IFormsAuthenticationService _formsAuthenticationService;
         private readonly IEventService _eventService;
         private readonly ICountryService _countryService;
+        private readonly IIdentity _userIdentity;
+        private readonly IDocumentStore _storage;
 
-        public CreateEventController(IAccountService accountService, ICountryService countryService, IMembershipService membershipService, IFormsAuthenticationService formsAuthenticationService, IEventService eventService)
+        public CreateEventController(IAccountService accountService, ICountryService countryService, IMembershipService membershipService, 
+            IFormsAuthenticationService formsAuthenticationService, IEventService eventService, IDocumentStore documentStore, IIdentity userIdentity, IDocumentStore storage)
         {
             _accountService = accountService;
             _countryService = countryService;
             _membershipService = membershipService;
             _formsAuthenticationService = formsAuthenticationService;
             _eventService = eventService;
-        }
-
-        public CreateEventController(IAccountService accountService,
-            IMembershipService membershipService,
-            IFormsAuthenticationService formsAuthenticationService,
-            IEventService eventService, ICountryService countryService)
-        {
-            _accountService = accountService;
-            _countryService = countryService;
-            _membershipService = membershipService;
-            _formsAuthenticationService = formsAuthenticationService;
-            _eventService = eventService;
+            _userIdentity = userIdentity;
+            _storage = storage;
+            ((RavenDBMembership.Provider.RavenDBMembershipProvider) Membership.Provider).DocumentStore = documentStore;
         }
 
         [AcceptVerbs(HttpVerbs.Get)]
@@ -60,7 +66,12 @@ namespace GroupGiving.Web.Controllers
             var viewModel = new CreateEventRequest();
             viewModel.StartDateTime = DateTime.Now;
             viewModel.StartTimes = TimeOptions();
-            
+
+            using (var session = _storage.OpenSession())
+            {
+                viewModel.Countries = new SelectList(session.Query<Country>().Take(600).ToList(), "Name", "Name", "United Kingdom");
+            }
+
             return View(viewModel);
         }
 
@@ -90,16 +101,21 @@ namespace GroupGiving.Web.Controllers
             {
                 request.StartDateTime = DateTime.Now;
                 request.StartTimes = TimeOptions();
+                using (var session = _storage.OpenSession())
+                {
+                    request.Countries = new SelectList(session.Query<Country>().Take(600).ToList(), "Name", "Name", "United Kingdom");
+                }
                 return View(request);
             }
 
-            var account = _accountService.RetrieveByEmailAddress(User.Identity.Name);
-            request.OrganiserName = string.Format("{0} {1}", account.FirstName, account.LastName);
-            var result = _eventService.CreateEvent(request);
+            var account = _accountService.RetrieveByEmailAddress(_userIdentity.Name);
+            request.OrganiserAccountId = account.Id;
 
+            var result = _eventService.CreateEvent(request);
+            
             if (result.Success)
             {
-                return RedirectToRoute("CreateEvent_TicketDetails", new { eventId = result.EventId });
+                return RedirectToRoute("CreateEvent_TicketDetails", new { shortUrl = result.Event.ShortUrl});
             }
 
             ModelState.AddModelError("createevent", "There was a problem with the information you provided");
@@ -129,11 +145,22 @@ namespace GroupGiving.Web.Controllers
         [AcceptVerbs(HttpVerbs.Get)]
         [ActionName("tickets")]
         [Authorize]
-        public ActionResult TicketDetails(int eventId)
+        public ActionResult TicketDetails(string shortUrl)
         {
+            var membershipUser = _membershipService.GetUser(_userIdentity.Name);
+            var account = _accountService.RetrieveByEmailAddress(membershipUser.Email);
+
             var viewModel = new SetTicketDetailsRequest();
             viewModel.SalesEndDateTime = DateTime.Now;
             viewModel.SalesEndTimeOptions = TimeOptions();
+            viewModel.PayPalEmail = account.PayPalEmail;
+            viewModel.PayPalFirstName = account.PayPalFirstName;
+            viewModel.PayPalLastName = account.PayPalLastName;
+
+            // sandbox details
+            viewModel.PayPalEmail = "seller_1304843436_biz@gmail.com";
+            viewModel.PayPalFirstName = "Andrew";
+            viewModel.PayPalLastName = "Myhre";
             return View(viewModel);
         }
 
@@ -142,6 +169,11 @@ namespace GroupGiving.Web.Controllers
         [Authorize]
         public ActionResult TicketDetails(SetTicketDetailsRequest setTicketDetailsRequest)
         {
+            var @event = _eventService.Retrieve(setTicketDetailsRequest.ShortUrl);
+            if (@event == null)
+            {
+                return RedirectToAction("create");
+            }
             if (setTicketDetailsRequest.MaximumParticipants < setTicketDetailsRequest.MinimumParticipants)
             {
                 ModelState.AddModelError("MaximumParticipants", "Maximum participants can't be less than the minimum");
@@ -161,6 +193,18 @@ namespace GroupGiving.Web.Controllers
                 setTicketDetailsRequest.SalesEndDateTime = salesEndDateTime;
             }
 
+            // paypal verification
+            var adaptiveAccountsConfiguration =
+            ConfigurationManager.GetSection("adaptiveAccounts") as PaypalAdaptiveAccountsConfigurationSection;
+            var paypalVerificationRequest = new VerifyPaypalAccountRequest()
+                {Email = setTicketDetailsRequest.PayPalEmail, FirstName = setTicketDetailsRequest.PayPalFirstName, LastName = setTicketDetailsRequest.PayPalLastName};
+            var accountVerification = new PaypalAccountService(adaptiveAccountsConfiguration).VerifyPaypalAccount(paypalVerificationRequest);
+            if (!accountVerification.Success)
+            {
+                ModelState.AddModelError("PayPalEmail", "A PayPal account matching the credentials your provided could not be found");
+            } 
+            
+
             if (!ModelState.IsValid)
             {
                 setTicketDetailsRequest.Times = TimeOptions();
@@ -170,7 +214,17 @@ namespace GroupGiving.Web.Controllers
 
             _eventService.SetTicketDetails(setTicketDetailsRequest);
 
-            var @event = _eventService.Retrieve(setTicketDetailsRequest.EventId);
+            var membershipUser = _membershipService.GetUser(_userIdentity.Name);
+            var account = _accountService.RetrieveByEmailAddress(membershipUser.Email);
+            if (string.IsNullOrWhiteSpace(account.PayPalEmail) && string.IsNullOrWhiteSpace(account.PayPalFirstName) && string.IsNullOrWhiteSpace(account.PayPalEmail))
+            {
+                account.PayPalEmail = setTicketDetailsRequest.PayPalEmail;
+                account.PayPalFirstName = setTicketDetailsRequest.PayPalFirstName;
+                account.PayPalLastName = setTicketDetailsRequest.PayPalLastName;
+                _accountService.UpdateAccount(account);
+            }
+
+            
 
             return RedirectToRoute("Event_ShareYourEvent", new { shortUrl = @event.ShortUrl });
         }

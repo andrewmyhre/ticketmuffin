@@ -1,0 +1,14 @@
+﻿@using GroupGiving.Web.Controllers
+@model EventListViewModel
+
+@{
+    ViewBag.Title = "Your Events - TicketMuffin";
+}
+
+<h2>Your Events</h2>
+
+@foreach(var e in Model.Events)
+{
+    <p>@Html.ActionLink(e.Title, "index", "Event", new {shortUrl=e.ShortUrl}, null)</p>
+
+}

@@ -10,12 +10,12 @@
         $(document).ready(function () {
             $('#countdown').countdown({  
                 until: new Date(
-                            @Model.StartDate.Year,
-                            @Model.StartDate.Month-1,
-                            @Model.StartDate.Day,
-                            @Model.StartDate.Hour,
-                            @Model.StartDate.Minute,
-                            @Model.StartDate.Second),
+                            @Model.SalesEndDateTime.Year,
+                            @Model.SalesEndDateTime.Month-1,
+                            @Model.SalesEndDateTime.Day,
+                            @Model.SalesEndDateTime.Hour,
+                            @Model.SalesEndDateTime.Minute,
+                            @Model.SalesEndDateTime.Second),
                 layout: '<div class="timeBox">'+
               '<div class="name">DAYS</div>'+
               '<div class="number">{dn}</div>'+
@@ -34,6 +34,8 @@
             '</div>'
             });
         });
+        
+        
     </script>
 }
 
@@ -45,17 +47,19 @@
           </div>
           <div id="eventName"><h1>@Model.Title</h1></div>
 
-          <div id="eventDetails"><strong>@Model.Venue</strong>, @Model.City, @Model.Country, @Model.StartDate.ToString("dddd, MMMM dd, yyyy, HH:mm tt"), @Model.AddressLine
+          <div id="eventDetails">@Model.StartDate.ToString("HH:mm tt dddd MMMM dd, yyyy")<br />
+          <strong>@Model.Venue</strong>, @Model.AddressLine, @Model.City, @Model.Country
+          
           @{
-                if (Model.UserIsEventOwner)
-                {
-                    <text>@Html.ActionLink("Edit this event", "edit-event", new {shortUrl=Model.ShortUrl})</text>
-                }
+              if (Model.UserIsEventOwner)
+              {
+                    <text>@Html.ActionLink("Edit this event", "edit-event", new { shortUrl = Model.ShortUrl })</text>
+              }
               }</div>
           <div id="howItWorks">@Html.ActionLink("How it works", "HowItWorks", "Home")</div>
         </div>
         <div id="eventLeft">
-        @if (!Model.EventIsFull)
+        @if (!Model.EventIsFull && Model.SalesEndDateTime > DateTime.Now)
         {
           <div id="pledge">
             @using (Html.BeginForm("Pledge", "Event", FormMethod.Get))
@@ -64,31 +68,48 @@
             }
           </div>
         }
-          <div id="pledgeInfo">
-            @if (Model.EventIsFull)
+            @if (Model.SalesEndDateTime < DateTime.Now)
             {
-                <div id="count">Sold out!</div>
-            }
-            else if (Model.EventIsOn)
-            { 
-                <div id="count">@(Model.MaximumParticipants - Model.PledgeCount)</div>
-
-                <div id="countInfo">Spaces left!</div>
+              <div id="pledgeInfo">
+                    <div id="count">Sales ended</div>    
+                    <div id="countBar">
+                        <div id="barProgress" style="width: @Model.RequiredPledgesPercentage%;"></div>
+                    </div>
+                    <div id="peopleInfo">@Model.PledgeCount people have pledged to attend the event</div>
+                    <div id="countdown"></div>
+                    <div class="clearFix"></div>
+                    <div id="timeLeft">Time left to pledge</div>
+              </div>
             }
             else
             {
-            <div id="count">@(Model.MinimumParticipants - Model.PledgeCount)</div>
+              <div id="pledgeInfo">
+                @if (Model.EventIsFull)
+                {
+                     <div id="count">Sold out!</div>    
+                }
+                else if (Model.EventIsOn)
+                {
+                        <div id="count">@(Model.MaximumParticipants - Model.PledgeCount)</div>
 
-            <div id="countInfo">Pledges needed to fund the event</div>
+                        <div id="countInfo">Spaces left!</div>
+                }
+                else
+                {
+                        <div id="count">@(Model.MinimumParticipants - Model.PledgeCount)</div>
+
+                        <div id="countInfo">Pledges needed to fund the event</div>
+                }
+                <div id="countBar">
+                    <div id="barProgress" style="width: @Model.RequiredPledgesPercentage%;"></div>
+                </div>
+                <div id="peopleInfo">@Model.PledgeCount people have already pledged to attend the event</div>
+                <div id="countdown"></div>
+                <div class="clearFix"></div>
+                <div id="timeLeft">Time left to pledge</div>
+                </div>
             }
-            <div id="countBar">
-              <div id="barProgress" style="width: @Model.RequiredPledgesPercentage%;"></div>
-            </div>
-            <div id="peopleInfo">@Model.PledgeCount people have already pledged to the event</div>
-            <div id="countdown"></div>
-            <div class="clearFix"></div>
-            <div id="timeLeft">Time left to pledge</div>
-          </div>
+
           <div id="shareBox">
             <div>Share with your friends</div>
           </div>
@@ -97,7 +118,7 @@
           <div class="eventBox">
             <div class="eventBoxTop">Date, time</div>
             <div class="eventBoxBottom">
-              @Model.StartDate.ToString("dddd, MMMM dd, yyyy"),<br />
+              @Model.StartDate.ToString("dddd, MMMM dd, yyyy")<br />
               at @Model.StartDate.ToString("HH.mm tt")
             </div>
           </div>
@@ -150,9 +171,9 @@ setTimeout("inicjalizacja()",1000);
         </div>                                    
         <div id="eventRight">
           <div id="eventDesc">
-            <p>@Html.Raw(Model.DescriptionMarkedDown)</p>
-            <p>@Model.AdditionalBenefitsMarkedDown</p>
-            <div id="fb-root"></div><script src="http://connect.facebook.net/en_US/all.js#xfbml=1"></script><fb:comments href="ticketmuffin.com/events/seedcamp-dinner" num_posts="1" width="680"></fb:comments>            
+            @Html.Raw(Model.DescriptionMarkedDown)
+            @Html.Raw(Model.AdditionalBenefitsMarkedDown)
+            <div id="fb-root"></div><script src="http://connect.facebook.net/en_US/all.js#xfbml=1"></script><fb:comments href="@Request.Url" num_posts="1" width="680"></fb:comments>            
           </div>
         </div>
 

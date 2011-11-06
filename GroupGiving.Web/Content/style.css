@@ -45,14 +45,13 @@ a#fbconnect {
   display: block;
   position: absolute;
   top: 30px;
-  right: 140px;
+  right: 360px;
 }
 div#loginArea {
   position: absolute;
   top: 32px;
   right: 0;
   font-size: 12px;
-  color: #e5e5e5;
 }
 div.clearFix {
   height: 1px;
@@ -133,6 +132,7 @@ input[type="submit"], a.bigButton {
 a.bigButton
 {
     padding: 12px !important;
+    display: inline-block;
 }
 input[type="submit"]:hover {
   opacity: 0.8;
@@ -161,6 +161,7 @@ input.smallButton {
   line-height: 25px;
   font-weight: bold;
   font-size: 18px;
+    padding: 0;
 }
 div#pledgeInfo {
  background: url("/content/img/pledgeInfo_bg.jpg") repeat-x scroll center top #86B8E9;
@@ -309,7 +310,9 @@ div.grayBox {
   background: #f3f3f3;
   border: solid 1px #e6e6e6;
   padding: 20px;
-  margin-top: 30px; 
+  margin-top: 30px;
+  border-radius: 6px;
+  -moz-border-radius: 6px;
 }
 input[type="text"], input[type="password"], textarea, select {
   border: solid 1px #e6e6e6;
@@ -323,7 +326,7 @@ input[type="checkbox"] {
   margin-right: 10px;
 }
 input.short, select.short {
-  width: 80px;
+  width: 120px;
 }
 select.mid
 {
@@ -423,4 +426,86 @@ label, .wholeline label {
 {
     color: red;
     font-size: 1.2em;
+}
+
+#popup-signIn
+{
+  background-color: white;
+    border: 2px solid #5587B6;
+    border-radius: 4px 4px 4px 4px;
+    color: #5587B6;
+    margin: 3px;
+    padding: 6px;
+    position: absolute;
+    right: 0;
+    width: 333px;
+}
+
+#popup-signIn input
+{
+    margin-bottom: 6px;
+}
+
+.pp-verified, .pp-notfound, .pp-unverified
+{
+    padding-left: 80px;
+    height: 70px;
+    line-height: 66px;
+    vertical-align:middle;
+    margin-top: 8px;
+    margin-bottom: 8px;
+}
+.pp-verified
+{
+    background: url('/content/images/tick.png') no-repeat;
+    color: lime;
+}
+.pp-unverified
+{
+    color: orange;
+}
+.pp-notfound
+{
+    background: url('/content/images/cross.png') no-repeat;
+    color: red;
+}
+
+.pp-checking
+{
+    background: url('/content/images/ajax-loader.gif') no-repeat;
+    color: #5587B6;
+    height: 31px;
+    line-height: 31px;
+    padding-left: 35px;
+    vertical-align:middle;
+    margin-top: 8px;
+    margin-bottom: 8px;
+}
+
+.twocol
+{
+    float: left;
+    width: 480px;
+    padding: 4px;
+    margin: 0;
+    border: 0;
+}
+
+.threecol
+ {
+    float: left;
+    width: 272px;
+    padding: 4px;
+    margin: 4px;
+    border: 0;
+    padding-left: 15px;
+    padding-right: 15px;
+    min-height: 110px;
+}
+.clear {
+    clear: both;
+}
+.centered, .centered p {
+    text-align: center;
+    height: auto;
 }

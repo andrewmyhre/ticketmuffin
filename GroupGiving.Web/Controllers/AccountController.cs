@@ -6,6 +6,7 @@ using System.Web;
 using System.Web.Mvc;
 using System.Web.Routing;
 using System.Web.Security;
+using GroupGiving.Core.Data;
 using GroupGiving.Core.Domain;
 using GroupGiving.Core.Email;
 using GroupGiving.Core.Services;
@@ -28,16 +29,31 @@ namespace GroupGiving.Web.Controllers
         private readonly IAccountService _accountService;
         private ICountryService _countryService;
         private readonly IEmailRelayService _emailRelayService;
+        private readonly IRepository<GroupGivingEvent> _eventRepository;
 
-        public AccountController(IAccountService accountService, IFormsAuthenticationService formsService, IMembershipService accountMembershipService, ICountryService countryService, IDocumentStore documentStore, IEmailRelayService emailRelayService)
+        public AccountController(IAccountService accountService, 
+            IFormsAuthenticationService formsService, 
+            IMembershipService accountMembershipService, 
+            ICountryService countryService, 
+            IDocumentStore documentStore, 
+            IEmailRelayService emailRelayService,
+            IRepository<GroupGivingEvent> eventRepository)
         {
             _accountService = accountService;
             _formsService = formsService;
             _membershipService = accountMembershipService;
             _countryService = countryService;
             _emailRelayService = emailRelayService;
+            _eventRepository = eventRepository;
             ((RavenDBMembershipProvider) Membership.Provider).DocumentStore
                 = documentStore;
+        }
+
+        [HttpGet]
+        [Authorize]
+        public ActionResult Index()
+        {
+            return View();
         }
 
         [AcceptVerbs(HttpVerbs.Get)]
@@ -109,7 +125,7 @@ namespace GroupGiving.Web.Controllers
             else
             {
                 ModelState.AddModelError("login", "The combination of email and password you entered did not match any user");
-                var model = new SignUpModel();
+                var model = new SignInModel();
                 model.Countries = new SelectList(_countryService.RetrieveAllCountries(), "Name", "Name");
                 model.AccountTypes = new SelectList(Enum.GetNames(typeof(AccountType)));
                 if (Request.AcceptTypes.Contains("application/json"))
@@ -424,6 +440,52 @@ namespace GroupGiving.Web.Controllers
             return View(viewModel);
         }
 
+        public ActionResult PayPalSettings()
+        {
+            var viewModel = new PayPalSettingsModel();
+            var membershipUser = Membership.GetUser(true);
+            var account = _accountService.RetrieveByEmailAddress(membershipUser.Email);
+            viewModel.PayPalEmail = account.PayPalEmail;
+            viewModel.PayPalFirstName = account.PayPalFirstName;
+            viewModel.PayPalLastName = account.PayPalLastName;
+            return View(viewModel);
+        }
+
+        [HttpPost]
+        public ActionResult PayPalSettings(PayPalSettingsModel model)
+        {
+            var membershipUser = Membership.GetUser(true);
+            var account = _accountService.RetrieveByEmailAddress(membershipUser.Email);
+            account.PayPalEmail = model.PayPalEmail;
+            account.PayPalFirstName = model.PayPalFirstName;
+            account.PayPalLastName = model.PayPalLastName;
+            _accountService.UpdateAccount(account);
+            return RedirectToAction("PayPalSettings");
+        }
+
+        public ActionResult ChangeCulture(string lang, string returnUrl)
+        {
+            if (returnUrl.Length >= 6)
+            {
+                returnUrl = returnUrl.Substring(6);
+            }
+
+            var cultureCookie = Request.Cookies["culture"];
+            if (cultureCookie == null)
+            {
+                cultureCookie = new HttpCookie("culture", lang);
+            }
+            else
+            {
+                cultureCookie.Value = lang;
+            }
+
+            cultureCookie.Expires = DateTime.Now.AddDays(7);
+            Response.SetCookie(cultureCookie);
+
+            return Redirect("/" + returnUrl);
+        }
+
         #region Status Codes
         private static string ErrorCodeToString(MembershipCreateStatus createStatus)
         {
@@ -463,5 +525,19 @@ namespace GroupGiving.Web.Controllers
             }
         }
         #endregion
+
+        public ActionResult YourEvents()
+        {
+            var membershipUser = Membership.GetUser(true);
+            var account = _accountService.RetrieveByEmailAddress(membershipUser.Email);
+            var viewModel = new EventListViewModel();
+            viewModel.Events = _eventRepository.RetrieveAll();
+            return View(viewModel);
+        }
+    }
+
+    public class EventListViewModel
+    {
+        public IEnumerable<GroupGivingEvent> Events { get; set; } 
     }
 }

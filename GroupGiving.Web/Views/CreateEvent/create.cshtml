@@ -28,6 +28,8 @@
     <div class="grayBox">
         <div id="dialectics"></div>
 
+        <div id="map" style="width:300px;height:250px;float:right;display:none;"></div>
+
           <div style="padding-bottom: 10px;">
             <label style="display: inline-block; width: 200px;">@Html.LabelFor(m => m.Title)</label>
             @Html.TextBoxFor(m => m.Title)
@@ -36,19 +38,18 @@
 
           <div style="padding-bottom: 10px;">
             <label style="display: inline-block; width: 200px;">@Html.LabelFor(m => m.ShortUrl)</label>
-            http://groupgiving.com/@Html.TextBoxFor(m => m.ShortUrl, new { style = "width:460px" })
+            http://groupgiving.com/@Html.TextBoxFor(m => m.ShortUrl, new { style = "width:155px" })
             <span id="urlAvailability"></span>
             @Html.ValidationMessageFor(m => m.ShortUrl)
           </div>
 
           <div style="padding-bottom: 10px;">
             <label style="display: inline-block; width: 200px;">@Html.LabelFor(m => m.StartDate)</label>
-            @Html.TextBox("startDate", Model.StartDateTime.ToShortDateString())
-            @Html.DropDownList("startTime", Model.StartTimes)
+            @Html.TextBox("startDate", Model.StartDateTime.ToShortDateString(), new { style = "width:120px" })
+            @Html.DropDownList("startTime", Model.StartTimes, new { style = "width:175px" })
             @Html.ValidationMessageFor(m => m.StartDateTime)
           </div>
         
-        <div id="map" style="width:300px;height:250px;float:right;display:none;"></div>
           <div style="padding-bottom: 10px;">
             <label style="display: inline-block; width: 200px;">@Html.LabelFor(m => m.Venue)</label>
             @Html.TextBoxFor(m => m.Venue)
@@ -75,10 +76,7 @@
 
           <div style="padding-bottom: 10px;">
             <label style="display: inline-block; width: 200px;">@Html.LabelFor(m => m.Country)</label>
-            <select name="Country" id="Country">
-                <option selected="selected">United Kingdom</option>
-                <option>Poland</option>
-            </select>
+            @Html.DropDownList("Country", Model.Countries, new {style="width:318px;"})
             @Html.ValidationMessageFor(vm => vm.Country)
         </div>
 
@@ -87,7 +85,7 @@
 
           <div style="padding-bottom: 10px;">
             <label style="display: inline-block; width: 200px; float:left;">@Html.LabelFor(m => m.Description)</label>
-            @Html.TextArea("Description", "", 6, 50, new {style="width:400px"})
+            @Html.TextArea("Description", "", 6, 50, null)
             @Html.ValidationMessageFor(m => m.Description)
           </div>
 

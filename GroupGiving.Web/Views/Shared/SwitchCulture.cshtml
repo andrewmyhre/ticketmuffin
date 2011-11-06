@@ -1,0 +1,3 @@
+﻿@using GroupGiving.Web.Code
+@Html.ActionLink("English", "ChangeCulture", "Account", new {lang="en", returnUrl = Context.Request.Url.ToString()}, null)
+@Html.ActionLink("Polski", "ChangeCulture", "Account", new {lang="pl", returnUrl = Context.Request.Url.ToString()}, null)

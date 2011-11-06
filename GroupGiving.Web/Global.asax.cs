@@ -1,8 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Web.Mvc;
 using System.Web.Routing;
 using EmailProcessing;
 using GroupGiving.Web.Code;
+using Microsoft.Web.Mvc.Resources;
 using log4net;
 using Ninject;
 using System.Configuration;
@@ -15,7 +17,6 @@ namespace GroupGiving.Web
 
     public class MvcApplication : System.Web.HttpApplication
     {
-        public static XmlContentProvider PageContent = new XmlContentProvider();
         public static EmailFacade EmailFacade { get; private set; }
         private static ILog _logger = LogManager.GetLogger(typeof(MvcApplication));
 
@@ -34,11 +35,65 @@ namespace GroupGiving.Web
             MapPurchaseRoutes(routes);
 
             routes.MapRoute(
+                "ContentManagement-Update",
+                "contentmanager/pagecontents/{pageId}/{contentLabel}/{culture}",
+                new {controller = "ContentManager", action = "UpdateContentDefinition"});
+            routes.MapRoute(
+                "ContentManagement-Add",
+                "contentmanager/pagecontents/{pageId}/{contentLabel}",
+                new { controller = "ContentManager", action = "UpdateContentDefinition" });
+
+            //MapCultureRoutes(routes);
+
+            /*routes.MapRoute(
+                "CultureDefault", // Route name
+                "{culture}/{controller}/{action}/{id}", // URL with parameters
+                new { controller = "Home", action = "Index", id = UrlParameter.Optional, culture="en" },
+                new {culture = new CultureConstraint("en", "pl")}// Parameter defaults
+            );*/
+            //((Route)routes["CultureDefault"]).RouteHandler = new MultiCultureMvcRouteHandler();
+
+            routes.MapRoute(
                 "Default", // Route name
                 "{controller}/{action}/{id}", // URL with parameters
                 new { controller = "Home", action = "Index", id = UrlParameter.Optional } // Parameter defaults
             );
 
+            
+        }
+
+        private static void MapCultureRoutes(RouteCollection routes)
+        {
+            List<RouteBase> newRoutes = new List<RouteBase>();
+            foreach(Route route in routes)
+            {
+                if (!(route.RouteHandler is SingleCultureMvcRouteHandler))
+                {
+                    var newRoute = new Route("{culture}/" + route.Url, new MultiCultureMvcRouteHandler());
+                    newRoute.Defaults = route.Defaults;
+                    newRoute.Constraints = route.Constraints;
+
+                    if (newRoute.Defaults == null)
+                    {
+                        newRoute.Defaults = new RouteValueDictionary();
+                    }
+                    newRoute.Defaults.Add("culture", "en");
+
+                    if (newRoute.Constraints == null)
+                    {
+                        newRoute.Constraints = new RouteValueDictionary();
+                    }
+                    newRoute.Constraints.Add("culture", new CultureConstraint("en", "pl"));
+                    newRoutes.Add(newRoute);
+                }
+            }
+
+            int index = 0;
+            foreach (var route in newRoutes)
+            {
+                //routes.Insert(index++, route);
+                routes.Add(route);
+            }
         }
 
         private static void MapPurchaseRoutes(RouteCollection routes)
@@ -56,16 +111,19 @@ namespace GroupGiving.Web
             routes.MapRoute(
                 "ResetPassword",
                 "account/resetpassword/{token}",
-                new {controller = "Account", action = "ResetPassword"});
+                new {controller = "Account", action = "ResetPassword"},
+                new [] {"GroupGiving.Web.Controllers"});
 
             routes.MapRoute(
                 "SignUp",
                 "signup",
-                new { controller = "Account", action = "signup" });
+                new { controller = "Account", action = "signup" },
+                new[] { "GroupGiving.Web.Controllers" });
             routes.MapRoute(
                 "SignIn",
                 "signin",
-                new { controller = "Account", action = "signin" });
+                new { controller = "Account", action = "signin" },
+                new[] { "GroupGiving.Web.Controllers" });
         }
 
         private static void MapEventRoutes(RouteCollection routes)
@@ -116,7 +174,7 @@ namespace GroupGiving.Web
                 new { controller = "CreateEvent", action = "create" });
             routes.MapRoute(
                 "CreateEvent_TicketDetails",
-                "events/create/{eventId}/tickets",
+                "events/create/{shortUrl}/tickets",
                 new { controller = "CreateEvent", action = "tickets" });
 
         }
@@ -128,12 +186,14 @@ namespace GroupGiving.Web
 
             RegisterGlobalFilters(GlobalFilters.Filters);
             RegisterRoutes(RouteTable.Routes);
-            PageContent.Initialise(System.Web.Hosting.HostingEnvironment.MapPath("~/content/PageContent"));
+            //PageContent.Initialise(System.Web.Hosting.HostingEnvironment.MapPath("~/content/PageContent"));
 
             ViewEngines.Engines.Clear();
-            ViewEngines.Engines.AddIPhone<RazorViewEngine>();
-            ViewEngines.Engines.AddGenericMobile<RazorViewEngine>();
-            ViewEngines.Engines.Add(new RazorViewEngine());
+            ViewEngines.Engines.AddIPhone<CultureViewEngine>();
+            ViewEngines.Engines.AddGenericMobile<CultureViewEngine>();
+            ViewEngines.Engines.Add(new CultureViewEngine());
+
+            ModelBinders.Binders.DefaultBinder = new ResourceModelBinder();
 
             try
             {
@@ -144,6 +204,8 @@ namespace GroupGiving.Web
             {
                 _logger.Fatal("Failed to load email sender", e);
             }
+
+            
         }
     }
 

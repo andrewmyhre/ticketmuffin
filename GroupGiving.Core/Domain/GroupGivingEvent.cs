@@ -22,6 +22,7 @@ namespace GroupGiving.Core.Domain
         public string PhoneNumber { get; set; }
         public float Latitude { get; set; }
         public float Longitude { get; set; }
+        public EventState State { get; set; }
 
         public decimal TicketPrice { get; set; }
 
@@ -67,9 +68,23 @@ namespace GroupGiving.Core.Domain
 
         public string Postcode { get; set; }
 
+        public string PayPalAccountFirstName { get; set; }
+
+        public string PayPalAccountLastName { get; set; }
+
+        public string OrganiserId { get; set; }
+
         public GroupGivingEvent()
         {
             Pledges = new List<EventPledge>();
         }
+    }
+
+    public enum EventState
+    {
+        Creating,
+        SalesReady,
+        SalesClosed,
+        Completed
     }
 }

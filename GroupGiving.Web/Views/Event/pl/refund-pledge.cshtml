@@ -1,0 +1,26 @@
+﻿@model GroupGiving.Web.Models.RefundViewModel
+
+@{
+    ViewBag.Title = "refund-pledge";
+}
+
+<h2>Refund</h2>
+
+<p>Pledge to be refunded:</p>
+<p>Order Number: @Model.PledgeToBeRefunded.OrderNumber</p>
+<p>Account Name: @Model.PledgeToBeRefunded.AccountName</p>
+<p>Account Email: @Model.PledgeToBeRefunded.AccountEmailAddress</p>
+<p>Attendees: @string.Join(", ", Model.PledgeToBeRefunded.Attendees.Select(a=>a.FullName).ToArray())</p>
+<p>Subtotal: @Model.PledgeToBeRefunded.SubTotal.ToString("c")</p>
+<p>Tax: @Model.PledgeToBeRefunded.Tax.ToString("c")</p>
+<p>Total: @Model.PledgeToBeRefunded.Total.ToString("c")</p>
+<p>Date Paid: @Model.PledgeToBeRefunded.DatePledged.ToString("dd/MM/yyyy HH:mm")</p>
+
+@using (Html.BeginForm())
+{
+    <h2>Confirmation</h2>
+    <p><strong>Are you sure you want to refund this pledge? This cannot be undone!</strong></p>
+    <input type="checkbox" id="confirm" name="confirm" value="true" /><label for="confirm">Yes I definitely want to refund this pledge.</label>
+    @Html.ValidationSummary()
+    <input type="submit" value="Refund Pledge" />
+}

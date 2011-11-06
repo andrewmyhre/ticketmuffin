@@ -22,7 +22,7 @@
             @Html.ValidationSummary()
             <div><strong>Event:</strong> @Model.Title</div><br />
             <select name="quantity" class="short">
-                @for (int i = 1; i <= 3; i++)
+                @for (int i = 1; i <= Model.MaximumParticipants - Model.PledgeCount; i++)
                 {
                 <option @if (Model.AttendeeName != null && Model.AttendeeName.Count() == i)
                         { <text>selected="selected"</text> }>@i</option>

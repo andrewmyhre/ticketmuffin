@@ -1,0 +1,98 @@
+﻿@using GroupGiving.Web.Controllers
+@model ContentListViewModel
+
+@{
+    ViewBag.Title = "Manage Content";
+}
+
+@section css
+{
+<style>
+    .delete-link
+    {
+        float:right;
+    }
+    .content-page
+    {
+        width:100%;
+    }
+    .content-page:hover
+    {
+        background-color:#e8eef4;
+    }
+    
+    .content-definition-heading
+    {
+    }
+    
+    .content-definition
+    {
+    }
+    
+    .content-culture-definition
+    {
+    }
+    
+    .content-culture-definition-edit-link
+    {
+    }
+    
+    .editing
+    {
+        
+    }
+    
+    .selected
+    {
+        background-color:#ffffaa;
+        padding:6px;
+        border-radius: 6px;
+        -moz-border-radius:6px;
+    }
+</style>
+}
+
+@section scripts
+{
+<script type="text/javascript" src="/Scripts/content-management.js">
+</script>
+}
+
+<h2>Content</h2>
+
+<div class="grayBox">
+    <form>
+        <div class="formLine">
+            <input type="text" name="q" value="@Model.Query" />
+            <input type="submit" value="Filter"/>
+        </div>
+    </form>
+</div>
+
+<ul>
+
+@foreach(var page in Model.Pages)
+{
+    <li>
+        <div class="content-page">@page.Address @Html.ActionLink("Delete", "DeletePage", new { id = page.Id.Substring(page.Id.IndexOf('/') + 1) }, new { @class = "delete-link" })</div>
+        <ul>
+            @foreach (var content in page.Content)
+            {
+                <li>
+                    <a href="#" class="content-definition-heading">@content.Label</a>
+                    <dl class="content-definition" style="display:none;">
+                        @foreach (var cultureContent in content.ContentByCulture)
+                        {
+                            <div class="grayBox">
+                                <dt>@cultureContent.Key <a href="#" class="content-culture-definition-edit-link">Edit</a></dt>
+                                <dd class="content-culture-definition" id="@page.Id/@content.Label/@cultureContent.Key">@Html.Raw(cultureContent.Value)</dd>
+                            </div>
+                        }
+                        <dt id="@page.Id/@content.Label"><a href="#" class="add-culture-link">Add Translation</a></dt>
+                    </dl>
+                </li>
+            }
+        </ul>
+    </li>
+}
+</ul>

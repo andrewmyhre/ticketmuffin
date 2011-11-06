@@ -37,21 +37,21 @@ namespace GroupGiving.Core.Services
                 IsPrivate = request.IsPrivate,
                 IsFeatured = request.IsFeatured,
                 PhoneNumber = request.PhoneNumber,
-                OrganiserName = request.OrganiserName
+                OrganiserId = request.OrganiserAccountId,
+                State = EventState.Creating
             };
-
+            
             _eventRepository.SaveOrUpdate(ggEvent);
             _eventRepository.CommitUpdates();
 
             int eventId = int.Parse(ggEvent.Id.Substring(ggEvent.Id.IndexOf('/') + 1));
-            return new CreateEventResult() {Success = true, EventId = eventId};
+            return new CreateEventResult() {Success = true, Event = ggEvent};
         }
 
         public void SetTicketDetails(SetTicketDetailsRequest setTicketDetailsRequest)
         {
             var ggEvent =
-                _eventRepository.Retrieve(
-                    e => e.Id == string.Format("groupgivingevents/{0}", setTicketDetailsRequest.EventId));
+                _eventRepository.Retrieve(e => e.ShortUrl == setTicketDetailsRequest.ShortUrl);
 
             if (ggEvent==null)
                 throw new ArgumentException("Event not found");
@@ -61,7 +61,10 @@ namespace GroupGiving.Core.Services
             ggEvent.MaximumParticipants = setTicketDetailsRequest.MaximumParticipants;
             ggEvent.SalesEndDateTime = setTicketDetailsRequest.SalesEndDateTime;
             ggEvent.AdditionalBenefits = setTicketDetailsRequest.AdditionalBenefits;
-            ggEvent.PaypalAccountEmailAddress = setTicketDetailsRequest.PaypalAccountEmailAddress;
+            ggEvent.PaypalAccountEmailAddress = setTicketDetailsRequest.PayPalEmail;
+            ggEvent.PayPalAccountFirstName = setTicketDetailsRequest.PayPalFirstName;
+            ggEvent.PayPalAccountLastName = setTicketDetailsRequest.PayPalLastName;
+            ggEvent.State = EventState.SalesReady;
 
             _eventRepository.SaveOrUpdate(ggEvent);
             _eventRepository.CommitUpdates();

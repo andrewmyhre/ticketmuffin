@@ -37,6 +37,9 @@
     <Reference Include="Esent.Interop">
       <HintPath>..\packages\RavenDB-Embedded.1.0.0.371\lib\net40\Esent.Interop.dll</HintPath>
     </Reference>
+    <Reference Include="GroupGiving.Web">
+      <HintPath>..\GroupGiving.Test.Unit\bin\Debug\GroupGiving.Web.dll</HintPath>
+    </Reference>
     <Reference Include="ICSharpCode.NRefactory">
       <HintPath>..\packages\RavenDB-Embedded.1.0.0.371\lib\net40\ICSharpCode.NRefactory.dll</HintPath>
     </Reference>
@@ -101,6 +104,7 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Web.Mvc, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -108,10 +112,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ApplicationTestsBase.cs" />
     <Compile Include="GivenCreatingAnAccount.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="App.config" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
@@ -126,6 +132,10 @@
     <ProjectReference Include="..\GroupGiving.Test.Common\GroupGiving.Test.Common.csproj">
       <Project>{8D1BC929-6F29-4B15-902E-5644935575B1}</Project>
       <Name>GroupGiving.Test.Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\RavenDBMembership\RavenDBMembership.csproj">
+      <Project>{07CCE5B6-9111-46DC-AAEC-00D80E19FE4A}</Project>
+      <Name>RavenDBMembership</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -1,11 +1,10 @@
-﻿using System;
-using GroupGiving.PayPal.Model;
+﻿using GroupGiving.Core.Dto;
 
 namespace GroupGiving.Core.Actions.CreatePledge
 {
     public class CreatePledgeActionResult
     {
-        public PaymentGatewayResponse GatewayResponse { get; set; }
+        public IPaymentGatewayResponse GatewayResponse { get; set; }
 
         public bool Succeeded { get; set; }
     }

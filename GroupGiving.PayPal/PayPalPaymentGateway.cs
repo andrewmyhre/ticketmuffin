@@ -1,4 +1,7 @@
 ﻿using System;
+using GroupGiving.Core.Configuration;
+using GroupGiving.Core.Dto;
+using GroupGiving.Core.Services;
 using GroupGiving.PayPal.Model;
 
 namespace GroupGiving.PayPal
@@ -14,7 +17,7 @@ namespace GroupGiving.PayPal
             _payPalConfiguration = payPalConfiguration;
         }
 
-        public PaymentGatewayResponse MakeRequest(PaymentGatewayRequest request)
+        public IPaymentGatewayResponse MakeRequest(PaymentGatewayRequest request)
         {
             Uri successCallback, failureCallback;
             
