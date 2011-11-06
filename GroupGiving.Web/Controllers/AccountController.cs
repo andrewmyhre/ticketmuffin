@@ -169,7 +169,7 @@ namespace GroupGiving.Web.Controllers
             else
             {
                 ModelState.AddModelError("signup", "There was a problem with the details you provided");
-                var model = new SignInModel();
+                var model = new SignUpModel();
                 model.Countries = new SelectList(_countryService.RetrieveAllCountries(), "Name", "Name");
                 model.AccountTypes = new SelectList(Enum.GetNames(typeof(AccountType)));
                 return View(model);
