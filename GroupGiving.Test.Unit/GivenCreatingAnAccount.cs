@@ -19,6 +19,7 @@ namespace GroupGiving.Test.Unit
     {
         Mock<IRepository<Account>> _accountRepository = new Mock<IRepository<Account>>();
         Mock<IEmailFacade> _emailFacade = new Mock<IEmailFacade>();
+        Mock<IDocumentStore> _documentStore = new Mock<IDocumentStore>();
 
         [SetUp]
         public void SetUp()
@@ -34,7 +35,7 @@ namespace GroupGiving.Test.Unit
             _emailFacade
                 .Setup(m=>m.Send(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<object>()))
                 .Verifiable();
-            IAccountService accountService = new AccountService(_accountRepository.Object, _emailFacade.Object);
+            IAccountService accountService = new AccountService(_accountRepository.Object, _emailFacade.Object, _documentStore.Object);
             var createUserRequest = TestDataObjects.CreateValidCreateUserRequest();
 
             // act
@@ -51,7 +52,7 @@ namespace GroupGiving.Test.Unit
             _accountRepository
                 .Setup(m=>m.SaveOrUpdate(It.IsAny<Account>()))
                 .Verifiable();
-            IAccountService accountService = new AccountService(_accountRepository.Object, _emailFacade.Object);
+            IAccountService accountService = new AccountService(_accountRepository.Object, _emailFacade.Object, _documentStore.Object);
             var createUserRequest = TestDataObjects.CreateValidCreateUserRequest();
 
             // act

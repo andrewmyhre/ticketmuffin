@@ -4,6 +4,7 @@ namespace GroupGiving.PayPal
 {
     public interface IApiClient
     {
-        PaymentGatewayResponse SendPayRequest(PayRequest request);
+        PayResponse SendPayRequest(PayRequest request);
+        PaymentDetailsResponse SendPaymentDetailsRequest(PaymentDetailsRequest request);
     }
 }

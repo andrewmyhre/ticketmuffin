@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using GroupGiving.Core.Configuration;
 using GroupGiving.Core.Data;
@@ -26,7 +27,7 @@ namespace GroupGiving.Core.Actions.CreatePledge
             _paypalConfiguration = paypalConfiguration;
         }
 
-        public CreatePledgeActionResult Attempt(GroupGivingEvent @event, Account account, MakePledgeRequest request)
+        public CreatePledgeActionResult Attempt(GroupGivingEvent @event, Account pledgerAccount, Account organiserAccount, MakePledgeRequest request)
         {
             var result = new CreatePledgeActionResult();
             var pledge = new EventPledge();
@@ -51,27 +52,39 @@ namespace GroupGiving.Core.Actions.CreatePledge
 
             // apply tax
             pledge.TaxRateApplied = _tax.LookupTax(@event.Country);
-            pledge.Tax = pledge.TaxRateApplied * pledge.SubTotal;
-            pledge.Total = pledge.SubTotal + pledge.Tax;
+            pledge.ServiceChargeRateApplied = TicketMuffinFees.ServiceCharge;
+            pledge.ServiceCharge = TicketMuffinFees.ServiceCharge*pledge.SubTotal;
+            pledge.Tax = pledge.TaxRateApplied * (pledge.SubTotal + pledge.ServiceCharge);
+            pledge.Total = pledge.SubTotal + pledge.ServiceChargeRateApplied + pledge.Tax;
             pledge.Attendees = (from a in request.AttendeeNames select new EventPledgeAttendee() {FullName = a}).ToList();
             pledge.AccountEmailAddress = request.PayPalEmailAddress;
             pledge.OrderNumber = Guid.NewGuid().ToString().Replace("{", "").Replace("}", "").Replace("-", "");
 
+            // calculate split
+
             // make request to payment gateway
-            var gatewayResponse = _paymentGateway.MakeRequest(
-                new PaymentGatewayRequest()
-                    {
-                        Amount = pledge.Total,
-                        OrderMemo = "Tickets for " + @event.Title,
-                        SuccessCallbackUrl = _paypalConfiguration.SuccessCallbackUrl,
-                        FailureCallbackUrl = _paypalConfiguration.FailureCallbackUrl
-                    });
+            var paymentGatewayRequest = new PaymentGatewayRequest()
+                                            {
+                                                Amount = pledge.Total,
+                                                OrderMemo = "Tickets for " + @event.Title,
+                                                SuccessCallbackUrl = _paypalConfiguration.SuccessCallbackUrl,
+                                                FailureCallbackUrl = _paypalConfiguration.FailureCallbackUrl,
+                                                Recipients = new List<PaymentRecipient>()
+                                                                 {
+                                                                     new PaymentRecipient(_paypalConfiguration.TicketMuffinPayPalAccountEmail,
+                                                                                          pledge.ServiceCharge, true),
+                                                                     // TicketMuffin.com
+                                                                     new PaymentRecipient(organiserAccount.PayPalEmail,
+                                                                                          pledge.Total - pledge.ServiceCharge, false)
+                                                                 }
+                                            };
+            var gatewayResponse = _paymentGateway.CreatePayment(paymentGatewayRequest);
 
             result.GatewayResponse = gatewayResponse;
-            if (result.GatewayResponse.Errors == null || result.GatewayResponse.Errors.Count() == 0)
+            if (result.GatewayResponse.PaymentExecStatus == "CREATED")
             {
                 result.Succeeded = true;
-                pledge.TransactionId = gatewayResponse.TransactionId;
+                pledge.TransactionId = gatewayResponse.payKey;
 
                 @event.Pledges.Add(pledge);
                 _eventRepository.SaveOrUpdate(@event);

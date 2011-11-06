@@ -166,6 +166,7 @@ namespace GroupGiving.Web.Controllers
             EventPledgeViewModel viewModel = null;
             var eventDetails = _eventRepository.Retrieve(e => e.ShortUrl == request.ShortUrl);
             var account = _accountService.RetrieveByEmailAddress(request.EmailAddress);
+            var organiserAccount = _accountService.RetrieveById(eventDetails.OrganiserId);
 
             if (!request.AcceptTerms)
             {
@@ -209,7 +210,7 @@ namespace GroupGiving.Web.Controllers
             CreatePledgeActionResult result = null;
             try
             {
-                result = action.Attempt(eventDetails, account, makePledgeRequest);
+                result = action.Attempt(eventDetails, account, organiserAccount, makePledgeRequest);
             } catch (InvalidOperationException ex)
             {
                 ModelState.AddModelError("_form", ex.Message);
@@ -225,7 +226,7 @@ namespace GroupGiving.Web.Controllers
                 return View(viewModel);
             }
 
-            return Redirect(string.Format(response.PaymentPageUrl, response.TransactionId));
+            return Redirect(string.Format(response.PaymentPageUrl, response.payKey));
         }
 
         [ActionName("edit-event")]

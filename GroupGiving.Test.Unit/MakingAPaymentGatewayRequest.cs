@@ -26,8 +26,8 @@ namespace GroupGiving.Test.Unit
         {
             PaymentGatewayRequest request=ValidPaymentGatewayRequest();
             request.SuccessCallbackUrl = "";
-            
-            Assert.Throws<ArgumentException>(()=>_gateway.MakeRequest(request), "Success callback url is required");
+
+            Assert.Throws<ArgumentException>(() => _gateway.CreatePayment(null), "Success callback url is required");
         }
 
         [Test]
@@ -36,7 +36,7 @@ namespace GroupGiving.Test.Unit
             PaymentGatewayRequest request = ValidPaymentGatewayRequest();
             request.FailureCallbackUrl = "";
 
-            Assert.Throws<ArgumentException>(() => _gateway.MakeRequest(request), "Failure callback url is required");
+            Assert.Throws<ArgumentException>(() => _gateway.CreatePayment(null), "Failure callback url is required");
         }
 
         [Test]
@@ -45,7 +45,7 @@ namespace GroupGiving.Test.Unit
             var request = ValidPaymentGatewayRequest();
             request.OrderMemo = "";
 
-            Assert.Throws<ArgumentException>(() => _gateway.MakeRequest(request), "Order memo is required");
+            Assert.Throws<ArgumentException>(() => _gateway.CreatePayment(null), "Order memo is required");
         }
     }
 

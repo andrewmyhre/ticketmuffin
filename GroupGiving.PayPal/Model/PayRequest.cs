@@ -6,7 +6,7 @@ namespace GroupGiving.PayPal.Model
 {
     [DataContract(Name = "PayRequest", Namespace = "http://svcs.paypal.com/types/ap")]
     [XmlRoot(ElementName = "PayRequest")]
-    public class PayRequest
+    public class PayRequest : IPayPalRequest
     {
         public PayRequest()
         {
@@ -18,7 +18,7 @@ namespace GroupGiving.PayPal.Model
                 PartnerName = "MyCompanyName"
 
             };
-            Receivers = new List<Receiver>();
+            Receivers = new Receiver[0];
             RequestEnvelope = new RequestEnvelope();
         }
 
@@ -49,6 +49,6 @@ namespace GroupGiving.PayPal.Model
         [DataMember(Order = 8)]
         [XmlArray(ElementName="receiverList", Order = 8)]
         [XmlArrayItem(ElementName = "receiver")]
-        public List<Receiver> Receivers { get; set; }
+        public Receiver[] Receivers { get; set; }
     }
 }

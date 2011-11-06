@@ -59,34 +59,34 @@ namespace GroupGiving.Web.Controllers
         public ActionResult StartRequest(PurchaseDetails purchaseDetails)
         {
             var eventDetails = _eventRepository.Retrieve(e => e.ShortUrl == purchaseDetails.ShortUrl);
-            var account = _accountService.RetrieveByEmailAddress(purchaseDetails.EmailAddress);
-
-            if (account == null)
+            var pledgerAccount = _accountService.RetrieveByEmailAddress(purchaseDetails.EmailAddress);
+            var organiserAccount = _accountService.RetrieveById(@eventDetails.OrganiserId);
+            if (pledgerAccount == null)
             {
-                account = _accountService.CreateIncompleteAccount(purchaseDetails.EmailAddress, _emailRelayService);
+                pledgerAccount = _accountService.CreateIncompleteAccount(purchaseDetails.EmailAddress, _emailRelayService);
             }
 
             var action = new MakePledgeAction(_taxResolver, _eventRepository, _paymentGateway, _paypalConfiguration);
             var request = new MakePledgeRequest()
             {
                 AttendeeNames = purchaseDetails.AttendeeName,
-                PayPalEmailAddress = account.Email
+                PayPalEmailAddress = pledgerAccount.Email
             };
 
-            var result = action.Attempt(eventDetails, account, request);
+            var result = action.Attempt(eventDetails, pledgerAccount, organiserAccount, request);
 
             var viewModel = new OrderRequestViewModel();
 
             var response = result.GatewayResponse;
             viewModel.PayPalPostUrl = response.PaymentPageUrl;
             viewModel.Ack = response.ResponseEnvelope.Ack;
-            viewModel.PayKey = response.TransactionId;
+            viewModel.PayKey = response.payKey;
             viewModel.Errors = response.Errors;
 
             if (!result.Succeeded)
                 return View(viewModel);
 
-            return Redirect(string.Format(ConfigurationManager.AppSettings["PayFlowProPaymentPage"], response.TransactionId));
+            return Redirect(string.Format(ConfigurationManager.AppSettings["PayFlowProPaymentPage"], response.payKey));
         }
 
         public ActionResult Success(string payKey)

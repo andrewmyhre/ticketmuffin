@@ -47,5 +47,11 @@ namespace GroupGiving.PayPal
             get { return (string)this["payFlowProPaymentPage"]; }
             set { this["payFlowProPaymentPage"] = value; }
         }
+
+        [ConfigurationProperty("ticketMuffinPayPalAccountEmail", IsRequired=true)]
+        public string TicketMuffinPayPalAccountEmail
+        {
+            get { return (string)this["ticketMuffinPayPalAccountEmail"]; }
+        }
     }
 }

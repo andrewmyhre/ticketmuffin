@@ -25,6 +25,10 @@ namespace GroupGiving.Core.Domain
 
         public PaymentStatus PaymentStatus { get; set; }
 
+        public decimal ServiceChargeRateApplied { get; set; }
+
+        public decimal ServiceCharge { get; set; }
+
         public EventPledge()
         {
             Attendees = new List<EventPledgeAttendee>();

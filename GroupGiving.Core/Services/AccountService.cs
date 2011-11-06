@@ -6,6 +6,7 @@ using EmailProcessing;
 using GroupGiving.Core.Data;
 using GroupGiving.Core.Domain;
 using GroupGiving.Core.Email;
+using Raven.Client;
 
 namespace GroupGiving.Core.Services
 {
@@ -13,12 +14,15 @@ namespace GroupGiving.Core.Services
     {
         private readonly IRepository<Account> _accountRepository;
         private readonly IEmailFacade _emailFacade;
+        private readonly IDocumentStore _documentStore;
 
         public AccountService(IRepository<Account> accountRepository,
-            IEmailFacade emailFacade)
+            IEmailFacade emailFacade,
+            IDocumentStore documentStore)
         {
             _accountRepository = accountRepository;
             _emailFacade = emailFacade;
+            _documentStore = documentStore;
         }
 
         public Account CreateUser(CreateUserRequest request)
@@ -145,6 +149,14 @@ namespace GroupGiving.Core.Services
             SendGetYourAccountStartedEmail(emailAddress, emailRelayService);
 
             return account;
+        }
+
+        public Account RetrieveById(string accountId)
+        {
+            using (var session = _documentStore.OpenSession())
+            {
+                return session.Load<Account>(accountId);
+            }
         }
     }
 }

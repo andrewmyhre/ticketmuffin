@@ -14,5 +14,6 @@ namespace GroupGiving.Core.Services
         Account RetrieveByEmailAddress(string email);
         void UpdateAccount(Account account);
         Account CreateIncompleteAccount(string emailAddress, IEmailRelayService emailRelayService);
+        Account RetrieveById(string accountId);
     }
 }

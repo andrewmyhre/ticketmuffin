@@ -34,7 +34,7 @@ namespace GroupGiving.Test.Integration
                 try
                 {
                     IRepository<Account> accountRepository = new RavenDBRepositoryBase<Account>(session);
-                    IAccountService accountService = new AccountService(accountRepository, _emailService);
+                    IAccountService accountService = new AccountService(accountRepository, _emailService, _documentStore.Object);
 
                     CreateUserRequest createUserRequest = TestDataObjects.CreateValidCreateUserRequest();
                     // act

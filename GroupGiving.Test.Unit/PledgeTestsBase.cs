@@ -9,6 +9,7 @@ using GroupGiving.Core.Services;
 using GroupGiving.PayPal;
 using GroupGiving.PayPal.Model;
 using Moq;
+using Raven.Client;
 
 namespace GroupGiving.Test.Unit
 {
@@ -19,12 +20,36 @@ namespace GroupGiving.Test.Unit
         protected Mock<IRepository<GroupGivingEvent>> eventRepositoryMock = new Mock<IRepository<GroupGivingEvent>>();
         protected Mock<ITaxAmountResolver> taxResolverMock = new Mock<ITaxAmountResolver>();
         protected Mock<IPayPalConfiguration> _paypalConfiguration = new Mock<IPayPalConfiguration>();
+        protected Mock<IDocumentStore> _documentStore = new Mock<IDocumentStore>();
+        protected Mock<IDocumentSession> _documentSession = new Mock<IDocumentSession>();
         protected GroupGivingEvent _event;
         protected string _paypalPayKey;
 
         protected void SetDummyPaypalConfiguration()
         {
             _paypalConfiguration.SetupAllProperties();
+        }
+
+        protected void SetUpDocumentStore()
+        {
+            _documentStore
+                .Setup(m => m.OpenSession())
+                .Returns(_documentSession.Object);
+        }
+
+        protected void SessionLoadsAccount(Account account)
+        {
+            _documentSession
+                .Setup(m => m.Load<Account>(It.IsAny<string>()))
+                .Returns(account);
+        }
+
+        protected Account ValidAccount()
+        {
+            return new Account()
+                       {
+                           PayPalEmail = "testuser@gmail.com"
+                       };
         }
 
         protected void SetTaxRateForCountry(string country, decimal tax)
@@ -44,15 +69,15 @@ namespace GroupGiving.Test.Unit
         protected void AnyPayPalRequestReturnsPayKey(string paypalPayKey)
         {
             paypalService
-                .Setup(m => m.MakeRequest(It.IsAny<PaymentGatewayRequest>()))
-                .Returns(new PaymentGatewayResponse() {TransactionId = paypalPayKey});
+                .Setup(m => m.CreatePayment(It.IsAny<PaymentGatewayRequest>()))
+                .Returns(new PaymentGatewayResponse() { payKey = paypalPayKey });
         }
 
         protected void PaypalGatewayReturnsAnErrorWhenMakingPaymentRequest()
         {
             paypalService
-                .Setup(m => m.MakeRequest(It.IsAny<PaymentGatewayRequest>()))
-                .Returns(new PaymentGatewayResponse() { Errors = new[] { new ResponseError() { Message = "failed" } } });
+                .Setup(m => m.CreatePayment(It.IsAny<PaymentGatewayRequest>()))
+                .Throws(new HttpChannelException(new FaultMessage() {Error = new PayPalError(){Message="failed"}}));
         }
 
         protected void EventRepositoryStoresEventWithVerification()
@@ -65,8 +90,8 @@ namespace GroupGiving.Test.Unit
         protected void PayPalGatewayReturnsTransactionIdWithVerification()
         {
             paypalService
-                .Setup(m=>m.MakeRequest(It.IsAny<PaymentGatewayRequest>()))
-                .Returns(new PaymentGatewayResponse() { TransactionId = _paypalPayKey })
+                .Setup(m => m.CreatePayment(It.IsAny<PaymentGatewayRequest>()))
+                .Returns(new PaymentGatewayResponse() { payKey = _paypalPayKey })
                 .Verifiable();
         }
     }

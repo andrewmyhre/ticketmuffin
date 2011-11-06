@@ -1,7 +1,9 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual Studio 2010
-Project("{00000000-0000-0000-0000-000000000000}") = "GroupGiving.Web", "GroupGiving.Web\GroupGiving.Web.csproj", "{B75BD700-F6ED-4B72-AB58-19875F157585}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "PayPal.AdaptivePayments", "PayPal.AdaptivePayments", "{401419B5-8BE5-4705-91E0-F391B53D7552}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GroupGiving.Web", "GroupGiving.Web\GroupGiving.Web.csproj", "{B75BD700-F6ED-4B72-AB58-19875F157585}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GroupGiving.PayPal", "GroupGiving.PayPal\GroupGiving.PayPal.csproj", "{69AC82E2-904E-4A5F-9A94-E5EDD91534AB}"
 EndProject
@@ -39,13 +41,15 @@ Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "eventmuffin html", "eventmu
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EmailProcessing", "EmailProcessing\EmailProcessing\EmailProcessing.csproj", "{F511818D-59DF-4358-8946-10FB3933E5B2}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "PayPal.AdaptivePayments", "PayPal.AdaptivePayments", "{401419B5-8BE5-4705-91E0-F391B53D7552}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Base_Common", "packages\PayPal\Base_Common\Base_Common.csproj", "{1F5FF00B-CE0F-40B8-9BC4-7B5ED2087266}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Base_AA", "packages\PayPal\Base_AA\Base_AA.csproj", "{8F599E12-CF05-4EDF-BFC6-6F0B4EA4F36C}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PayPal.Test.Integration", "PayPal.Test.Integration\PayPal.Test.Integration.csproj", "{0440D3DE-820A-4E4C-835C-6E09195FD740}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GroupGiving.PayPal.Tests.Integration", "GroupGiving.PayPal.Tests.Integration\GroupGiving.PayPal.Tests.Integration.csproj", "{79BCC8D8-4E55-4779-AA29-223AFC153A50}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GroupGiving.PayPal.Tests.Unit", "GroupGiving.PayPal.Tests.Unit\GroupGiving.PayPal.Tests.Unit.csproj", "{2D583BAA-F5B8-42A2-9A82-465DB39BC8BB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -182,6 +186,26 @@ Global
 		{0440D3DE-820A-4E4C-835C-6E09195FD740}.Release|Any CPU.Build.0 = Release|Any CPU
 		{0440D3DE-820A-4E4C-835C-6E09195FD740}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{0440D3DE-820A-4E4C-835C-6E09195FD740}.Release|x86.ActiveCfg = Release|Any CPU
+		{79BCC8D8-4E55-4779-AA29-223AFC153A50}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{79BCC8D8-4E55-4779-AA29-223AFC153A50}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{79BCC8D8-4E55-4779-AA29-223AFC153A50}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{79BCC8D8-4E55-4779-AA29-223AFC153A50}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{79BCC8D8-4E55-4779-AA29-223AFC153A50}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{79BCC8D8-4E55-4779-AA29-223AFC153A50}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{79BCC8D8-4E55-4779-AA29-223AFC153A50}.Release|Any CPU.Build.0 = Release|Any CPU
+		{79BCC8D8-4E55-4779-AA29-223AFC153A50}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{79BCC8D8-4E55-4779-AA29-223AFC153A50}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{79BCC8D8-4E55-4779-AA29-223AFC153A50}.Release|x86.ActiveCfg = Release|Any CPU
+		{2D583BAA-F5B8-42A2-9A82-465DB39BC8BB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2D583BAA-F5B8-42A2-9A82-465DB39BC8BB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2D583BAA-F5B8-42A2-9A82-465DB39BC8BB}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{2D583BAA-F5B8-42A2-9A82-465DB39BC8BB}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{2D583BAA-F5B8-42A2-9A82-465DB39BC8BB}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{2D583BAA-F5B8-42A2-9A82-465DB39BC8BB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2D583BAA-F5B8-42A2-9A82-465DB39BC8BB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2D583BAA-F5B8-42A2-9A82-465DB39BC8BB}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{2D583BAA-F5B8-42A2-9A82-465DB39BC8BB}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{2D583BAA-F5B8-42A2-9A82-465DB39BC8BB}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

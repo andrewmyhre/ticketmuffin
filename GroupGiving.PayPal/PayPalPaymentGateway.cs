@@ -1,5 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using GroupGiving.Core.Configuration;
+using GroupGiving.Core.Domain;
 using GroupGiving.Core.Dto;
 using GroupGiving.Core.Services;
 using GroupGiving.PayPal.Model;
@@ -17,6 +20,7 @@ namespace GroupGiving.PayPal
             _payPalConfiguration = payPalConfiguration;
         }
 
+        /*
         public IPaymentGatewayResponse MakeRequest(PaymentGatewayRequest request)
         {
             Uri successCallback, failureCallback;
@@ -33,15 +37,61 @@ namespace GroupGiving.PayPal
             
 
             var paypalRequest = new PayRequest();
-            paypalRequest.ActionType = "PAY";
+            paypalRequest.ActionType = PayRequestActionType(request.ActionType);
             paypalRequest.CurrencyCode = "GBP";
             paypalRequest.FeesPayer = "EACHRECEIVER";
             paypalRequest.Memo = request.OrderMemo;
             paypalRequest.CancelUrl = request.FailureCallbackUrl;
             paypalRequest.ReturnUrl = request.SuccessCallbackUrl;
-            paypalRequest.Receivers.Add(new Receiver(request.Amount.ToString("#.00"), "seller_1304843436_biz@gmail.com"));
-            paypalRequest.Receivers.Add(new Receiver(request.Amount.ToString("#.00"), "sellr2_1304843519_biz@gmail.com"));
+            foreach(var recipient in request.Recipients)
+            {
+                paypalRequest.Receivers.Add(new Receiver(recipient.AmountToReceive.ToString("#.00"), recipient.EmailAddress));
+            }
             return _apiClient.SendPayRequest(paypalRequest);
+        }*/
+
+        private string PayRequestActionType(PaymentGatewayRequest.ActionTypeEnum type)
+        {
+            switch (type)
+            {
+                case PaymentGatewayRequest.ActionTypeEnum.Immediate:
+                    return "PAY";
+                case PaymentGatewayRequest.ActionTypeEnum.Delayed:
+                    return "PAY_PRIMARY";
+            }
+            return "";
+        }
+
+        public PaymentGatewayResponse CreatePayment(PaymentGatewayRequest request)
+        {
+            PayRequest payRequest = new PayRequest()
+            {
+                ActionType = "PAY",
+                CancelUrl = _payPalConfiguration.FailureCallbackUrl,
+                ReturnUrl = _payPalConfiguration.SuccessCallbackUrl,
+                Memo = request.OrderMemo,
+                CurrencyCode = "GBP",
+                Receivers = (from r in request.Recipients orderby r.AmountToReceive descending select new Receiver(r.AmountToReceive.ToString("#.00"), r.EmailAddress)).ToArray()
+            };
+
+            var response = _apiClient.SendPayRequest(payRequest);
+
+            return new PaymentGatewayResponse()
+                       {
+                           PaymentExecStatus = response.paymentExecStatus,
+                           PaymentPageUrl = string.Format(_payPalConfiguration.PayFlowProPaymentPage, response.payKey),
+                           payKey = response.payKey
+                       };
+        }
+
+        public TResponse RetrievePaymentDetails<TRequest, TResponse>(TRequest request)
+        {
+            throw new NotImplementedException();
+        }
+
+        public TResponse Refund<TRequest, TResponse>(TRequest request)
+        {
+            throw new NotImplementedException();
         }
     }
 }

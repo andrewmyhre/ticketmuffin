@@ -18,6 +18,8 @@ namespace GroupGiving.Test.Integration
         protected Mock<ICountryService> _countryService = new Mock<ICountryService>();
         protected Mock<IMembershipService> _membershipService = new Mock<IMembershipService>();
         protected Mock<IFormsAuthenticationService> _formsAuthenticationService = new Mock<IFormsAuthenticationService>();
+        protected Mock<IDocumentStore> _documentStore = new Mock<IDocumentStore>();
+        protected Mock<IDocumentSession> _documentSession = new Mock<IDocumentSession>();
         
         protected IDocumentStore _storage;
 
@@ -36,6 +38,9 @@ namespace GroupGiving.Test.Integration
             _eventService
                 .Setup(x => x.ShortUrlAvailable("takenUrl"))
                 .Returns(false);
+            _documentStore
+                .Setup(m => m.OpenSession())
+                .Returns(_documentSession.Object);
         }
 
         protected void SetAccountServiceToReturn(Account account)
@@ -49,7 +54,7 @@ namespace GroupGiving.Test.Integration
         public Account CreateTestUserAccount(IDocumentSession session)
         {
             IRepository<Account> accountRepository = new RavenDBRepositoryBase<Account>(session);
-            IAccountService accountService = new AccountService(accountRepository, _emailService);
+            IAccountService accountService = new AccountService(accountRepository, _emailService, _documentStore.Object);
 
             CreateUserRequest createUserRequest = TestDataObjects.CreateValidCreateUserRequest();
             // act
