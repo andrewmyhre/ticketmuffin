@@ -34,8 +34,8 @@ namespace GroupGiving.Web.Controllers
 
             var viewModel = new ShareEventViewModel();
             viewModel.Event = _eventService.Retrieve(shortUrl);
-            viewModel.ShareUrl = string.Format("{0}://{1}/{2}", Request.Url.Scheme, Request.Url.Authority,
-                                               viewModel.Event.ShortUrl);
+
+            viewModel.ShareUrl = Url.Action("Index", "Event", new {shortUrl = shortUrl});
 
             viewModel.ShareViaEmail = new ShareViaEmailViewModel();
             viewModel.ShareViaEmail.ShortUrl = shortUrl;
