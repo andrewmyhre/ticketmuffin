@@ -6,5 +6,6 @@ namespace GroupGiving.PayPal
     {
         PayResponse SendPayRequest(PayRequest request);
         PaymentDetailsResponse SendPaymentDetailsRequest(PaymentDetailsRequest request);
+        RefundResponse Refund(RefundRequest request);
     }
 }

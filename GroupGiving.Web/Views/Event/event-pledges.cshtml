@@ -4,6 +4,8 @@
     ViewBag.Title = "Pledges for " + Model.Title;
 }
 
+@Html.ActionLink("back to event management console", "management-console", new {shortUrl = Model.ShortUrl})
+
 <h2>Pledges for @Model.Title</h2>
 
 @foreach (var pledge in Model.Pledges)

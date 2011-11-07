@@ -7,6 +7,7 @@ using GroupGiving.Core.Configuration;
 using GroupGiving.Core.Dto;
 using GroupGiving.PayPal.Model;
 using NUnit.Framework;
+using RefundRequest = GroupGiving.PayPal.Model.RefundRequest;
 
 namespace GroupGiving.PayPal.Tests.Integration
 {

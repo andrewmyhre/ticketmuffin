@@ -6,6 +6,8 @@ using GroupGiving.Core.Domain;
 using GroupGiving.Core.Dto;
 using GroupGiving.Core.Services;
 using GroupGiving.PayPal.Model;
+using RefundRequest = GroupGiving.Core.Dto.RefundRequest;
+using RefundResponse = GroupGiving.Core.Dto.RefundResponse;
 
 namespace GroupGiving.PayPal
 {
@@ -19,36 +21,6 @@ namespace GroupGiving.PayPal
             _apiClient = apiClient;
             _payPalConfiguration = payPalConfiguration;
         }
-
-        /*
-        public IPaymentGatewayResponse MakeRequest(PaymentGatewayRequest request)
-        {
-            Uri successCallback, failureCallback;
-            
-            if (!Uri.TryCreate(_payPalConfiguration.SuccessCallbackUrl, UriKind.Absolute, out successCallback))
-                throw new ArgumentException("Success callback url is required");
-
-            if (!Uri.TryCreate(_payPalConfiguration.FailureCallbackUrl, UriKind.Absolute, out failureCallback))
-                throw new ArgumentException("Failure callback url is required");
-
-            if (string.IsNullOrWhiteSpace(request.OrderMemo))
-                throw new ArgumentException("Order memo is required");
-
-            
-
-            var paypalRequest = new PayRequest();
-            paypalRequest.ActionType = PayRequestActionType(request.ActionType);
-            paypalRequest.CurrencyCode = "GBP";
-            paypalRequest.FeesPayer = "EACHRECEIVER";
-            paypalRequest.Memo = request.OrderMemo;
-            paypalRequest.CancelUrl = request.FailureCallbackUrl;
-            paypalRequest.ReturnUrl = request.SuccessCallbackUrl;
-            foreach(var recipient in request.Recipients)
-            {
-                paypalRequest.Receivers.Add(new Receiver(recipient.AmountToReceive.ToString("#.00"), recipient.EmailAddress));
-            }
-            return _apiClient.SendPayRequest(paypalRequest);
-        }*/
 
         private string PayRequestActionType(PaymentGatewayRequest.ActionTypeEnum type)
         {
@@ -104,9 +76,32 @@ namespace GroupGiving.PayPal
             throw new NotImplementedException();
         }
 
-        public TResponse Refund<TRequest, TResponse>(TRequest request)
+        public RefundResponse Refund(RefundRequest request)
         {
-            throw new NotImplementedException();
+            if (string.IsNullOrWhiteSpace(request.TransactionId))
+            {
+                throw new ArgumentException("Transaction Id must be provided", "request.TransactionId");
+            }
+
+            Model.RefundResponse response = null;
+
+            try
+            {
+                response = _apiClient.Refund(new Model.RefundRequest(request.TransactionId));
+            } catch (Exception ex)
+            {
+                return new RefundResponse()
+                           {
+                               Successful = false,
+                               RawResponse = ex
+                           };
+            }
+
+            return new RefundResponse()
+                       {
+                           Successful = response.ResponseEnvelope.ack.StartsWith("Success"),
+                           RawResponse = response
+                       };
         }
     }
 }

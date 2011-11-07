@@ -1,7 +1,13 @@
-﻿@model object
+﻿@using GroupGiving.Web.Controllers
+@model EventCancelledViewModel
 
 @{
     ViewBag.Title = "title";
 }
 
 <h2>The event was cancelled</h2>
+
+@if (Model.Failures)
+{
+    <p>There were some errors</p>
+}

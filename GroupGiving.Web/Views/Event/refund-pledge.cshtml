@@ -24,3 +24,8 @@
     @Html.ValidationSummary()
     <input type="submit" value="Refund Pledge" />
 }
+
+@if (Model.RefundFailed)
+{
+    <p>The refund failed</p>
+}

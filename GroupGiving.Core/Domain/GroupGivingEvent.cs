@@ -85,6 +85,7 @@ namespace GroupGiving.Core.Domain
         Creating,
         SalesReady,
         SalesClosed,
-        Completed
+        Completed,
+        Cancelled
     }
 }

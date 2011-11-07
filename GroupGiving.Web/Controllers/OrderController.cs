@@ -7,6 +7,7 @@ using System.Web.Mvc;
 using System.Web.Security;
 using EmailProcessing;
 using GroupGiving.Core.Actions.CreatePledge;
+using GroupGiving.Core.Actions.SettlePledge;
 using GroupGiving.Core.Configuration;
 using GroupGiving.Core.Data;
 using GroupGiving.Core.Domain;
@@ -109,11 +110,12 @@ namespace GroupGiving.Web.Controllers
                 return new HttpNotFoundResult();
 
             // user may just be reloading the page - fine, don't do any updates and present the view
-            if (!pledge.Paid)
+            if (!pledge.Paid && pledge.PaymentStatus == PaymentStatus.PaidPendingReconciliation)
             {
-                pledge.Paid = true;
-                pledge.PaymentStatus = PaymentStatus.PaidPendingReconciliation;
-                pledge.DatePledged = DateTime.Now;
+                GroupGiving.Core.Actions.SettlePledge.ConfirmPledgePaymentAction action
+                    = new ConfirmPledgePaymentAction(_eventRepository);
+
+                action.ConfirmPayment(new SettlePledgeRequest() {PayPalPayKey = payKey});
 
                 // send a purchase confirmation email
                 MvcApplication.EmailFacade.Send(pledge.AccountEmailAddress,

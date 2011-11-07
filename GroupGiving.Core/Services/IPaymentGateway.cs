@@ -7,6 +7,6 @@ namespace GroupGiving.Core.Services
     {
         PaymentGatewayResponse CreatePayment(PaymentGatewayRequest request);
         TResponse RetrievePaymentDetails<TRequest, TResponse>(TRequest request);
-        TResponse Refund<TRequest, TResponse>(TRequest request);
+        RefundResponse Refund(RefundRequest request);
     }
 }

@@ -8,5 +8,7 @@ namespace GroupGiving.Web.Models
         public GroupGivingEvent Event { get; set; }
 
         public EventPledge PledgeToBeRefunded { get; set; }
+
+        public bool RefundFailed { get; set; }
     }
 }

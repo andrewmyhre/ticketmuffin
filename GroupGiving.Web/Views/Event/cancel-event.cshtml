@@ -4,4 +4,12 @@
     ViewBag.Title = "title";
 }
 
-<h2>title</h2>
+<h2>Are you sure you want to cancel this event?</h2>
+<p>Refunds will be sent to each person who purchased tickets</p>
+
+@using (Html.BeginForm())
+{
+    <p>To confirm your request, type the word 'cancel' into the box below:</p>
+    <p><input type="text" name="confirmationCode" /> @Html.ValidationMessage("confirmationCode")</p>
+    <p><input type="submit" value="Cancel the event and refund pledgers"/></p>
+}

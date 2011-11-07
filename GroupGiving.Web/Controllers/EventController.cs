@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
 using System.Runtime.Serialization;
@@ -22,6 +23,7 @@ using System.Web.Mvc;
 using Ninject;
 using RavenDBMembership.Provider;
 using RavenDBMembership.Web.Models;
+using RefundRequest = GroupGiving.Core.Dto.RefundRequest;
 
 namespace GroupGiving.Web.Controllers
 {
@@ -34,6 +36,7 @@ namespace GroupGiving.Web.Controllers
         private readonly IPaymentGateway _paymentGateway;
         private readonly ITaxAmountResolver _taxResolver;
         private IPayPalConfiguration _paypalConfiguration;
+        private readonly IDocumentStore _documentStore;
         private static Markdown _markdown =  new Markdown();
         private IEmailRelayService _emailRelayService;
         private readonly IIdentity _userIdentity;
@@ -50,6 +53,7 @@ namespace GroupGiving.Web.Controllers
             _paymentGateway = paymentGateway;
             _taxResolver = taxResolver;
             _paypalConfiguration = paypalConfiguration;
+            _documentStore = documentStore;
             ((RavenDBMembershipProvider)Membership.Provider).DocumentStore
                 = documentStore;
             _emailRelayService = emailRelayService;
@@ -68,7 +72,12 @@ namespace GroupGiving.Web.Controllers
             if (givingEvent == null)
                 return HttpNotFound();
 
-            var userAccount = _accountService.RetrieveByEmailAddress(_userIdentity.Name);
+            Account userAccount = null;
+            if (_userIdentity.IsAuthenticated)
+            {
+                userAccount = _accountService.RetrieveByEmailAddress(_userIdentity.Name);
+                viewModel.UserIsEventOwner = givingEvent.OrganiserId == userAccount.Id;
+            }
 
             viewModel.EventId = givingEvent.Id;
             viewModel.StartDate = givingEvent.StartDate;
@@ -92,7 +101,7 @@ namespace GroupGiving.Web.Controllers
             viewModel.EventIsOn = givingEvent.IsOn;
             viewModel.EventIsFull = givingEvent.IsFull;
             viewModel.ContactName = givingEvent.OrganiserName;
-            viewModel.UserIsEventOwner = givingEvent.OrganiserId == userAccount.Id;
+            
 
             viewModel.PledgeCount = givingEvent.PledgeCount;
             viewModel.RequiredPledgesPercentage = (int)Math.Round(((double) viewModel.PledgeCount/(double) Math.Max(givingEvent.MinimumParticipants, 1))*100, 0);
@@ -314,6 +323,52 @@ namespace GroupGiving.Web.Controllers
         [HttpPost]
         public ActionResult CancelEvent(string shortUrl, string confirmationCode)
         {
+            if (confirmationCode != "cancel")
+            {
+                ModelState.AddModelError("confirmationCode", "Incorrect confirmation");
+            }
+
+            if (!ModelState.IsValid)
+            {
+                return View();
+            }
+
+            // cancel the event - refund each pledger
+            Dictionary<string, GroupGiving.Core.Dto.RefundResponse> results =
+                new Dictionary<string, GroupGiving.Core.Dto.RefundResponse>();
+            using (var session = _documentStore.OpenSession())
+            {
+                var @event = session.Query<GroupGivingEvent>().Where(e=>e.ShortUrl==shortUrl).SingleOrDefault();
+                var pledges =
+                    @event.Pledges.Where(
+                        p =>
+                        p.PaymentStatus == PaymentStatus.Reconciled ||
+                        p.PaymentStatus == PaymentStatus.PaidPendingReconciliation);
+                foreach (var pledge in pledges)
+                {
+                    var refundResult = _paymentGateway.Refund(new RefundRequest() {TransactionId = pledge.TransactionId});
+                    results.Add(pledge.TransactionId, refundResult);
+                    if (refundResult.Successful)
+                    {
+                        pledge.Paid = false;
+                        pledge.PaymentStatus = PaymentStatus.Refunded;
+                        pledge.DateRefunded = DateTime.Now;
+                    }
+                }
+
+                @event.State = EventState.Cancelled;
+                session.SaveChanges();
+            }
+
+            if (results.Any(r=>!r.Value.Successful))
+            {
+                TempData["failures"] = true;
+            }
+            else
+            {
+                TempData["failures"] = false;
+            }
+
             return RedirectToAction("event-cancelled", new {shortUrl = shortUrl});
         }
 
@@ -321,7 +376,9 @@ namespace GroupGiving.Web.Controllers
         [HttpGet]
         public ActionResult EventCancelled(string shortUrl)
         {
-            return View();
+            var eventCancelledViewModel = new EventCancelledViewModel();
+            eventCancelledViewModel.Failures = (bool) TempData["failures"];
+            return View(eventCancelledViewModel);
         }
 
         [ActionName("refund-pledge")]
@@ -349,6 +406,8 @@ namespace GroupGiving.Web.Controllers
         {
             var @event = _eventRepository.Retrieve(e => e.ShortUrl == shortUrl);
             var pledge = @event.Pledges.Where(p => p.OrderNumber == orderNumber).FirstOrDefault();
+            RefundViewModel viewModel = null;
+
             if (pledge == null)
             {
                 ModelState.AddModelError("ordernumber", "We couldn't locate a pledge with that order number.");
@@ -362,22 +421,36 @@ namespace GroupGiving.Web.Controllers
 
             if (!ModelState.IsValid)
             {
-                var viewModel = new GroupGiving.Web.Models.RefundViewModel();
                 viewModel.Event = @event;
                 viewModel.PledgeToBeRefunded = pledge;
 
                 return View(viewModel);
             }
 
-            pledge.DateRefunded = DateTime.Now;
-            pledge.PaymentStatus = PaymentStatus.Refunded;
-            pledge.Paid = false;
-            _eventRepository.SaveOrUpdate(@event);
-            _eventRepository.CommitUpdates();
+            var refundResult = _paymentGateway.Refund(new RefundRequest() {TransactionId = pledge.TransactionId});
 
-            TempData["refunded"] = true;
+            if (refundResult.Successful)
+            {
+                pledge.DateRefunded = DateTime.Now;
+                pledge.PaymentStatus = PaymentStatus.Refunded;
+                pledge.Paid = false;
+                _eventRepository.SaveOrUpdate(@event);
+                _eventRepository.CommitUpdates();
+                TempData["refunded"] = true;
+                return RedirectToAction("event-pledges", new { shortUrl = shortUrl });
+            }
 
-            return RedirectToAction("event-pledges", new {shortUrl = shortUrl});
+            viewModel.Event = @event;
+            viewModel.PledgeToBeRefunded = pledge;
+            viewModel.RefundFailed = true;
+
+            return View();
+
         }
+    }
+
+    public class EventCancelledViewModel
+    {
+        public bool Failures { get; set; }
     }
 }

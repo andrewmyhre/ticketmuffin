@@ -4,6 +4,8 @@ using GroupGiving.Core.Configuration;
 using GroupGiving.Core.Dto;
 using GroupGiving.PayPal.Model;
 using log4net;
+using RefundRequest = GroupGiving.PayPal.Model.RefundRequest;
+using RefundResponse = GroupGiving.PayPal.Model.RefundResponse;
 
 namespace GroupGiving.PayPal
 {
