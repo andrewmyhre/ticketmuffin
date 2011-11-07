@@ -81,6 +81,16 @@ namespace GroupGiving.PayPal.Tests.Integration
 
         }
 
+        [TestCase("AP-8YM45525JA853393V")]
+        [TestCase("AP-38W574546F953893A")]
+        public void Can_check_the_details_of_an_approved_payment(string payKey)
+        {
+            var detailsResponse = _apiClient.SendPaymentDetailsRequest(new PaymentDetailsRequest(payKey));
+
+
+            Assert.That(detailsResponse, Is.Not.Null);
+        }
+
         [Test]
         public void Can_refund_a_payment()
         {

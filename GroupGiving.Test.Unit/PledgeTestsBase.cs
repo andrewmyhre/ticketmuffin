@@ -16,31 +16,32 @@ namespace GroupGiving.Test.Unit
 {
     public class PledgeTestsBase
     {
-        protected Mock<IEmailRelayService> _emailFacade = new Mock<IEmailRelayService>();
-        protected Mock<IPaymentGateway> paypalGateway = new Mock<IPaymentGateway>();
-        protected Mock<IRepository<GroupGivingEvent>> eventRepositoryMock = new Mock<IRepository<GroupGivingEvent>>();
-        protected Mock<ITaxAmountResolver> taxResolverMock = new Mock<ITaxAmountResolver>();
-        protected Mock<IPayPalConfiguration> _paypalConfiguration = new Mock<IPayPalConfiguration>();
-        protected Mock<IDocumentStore> _documentStore = new Mock<IDocumentStore>();
-        protected Mock<IDocumentSession> _documentSession = new Mock<IDocumentSession>();
-        protected GroupGivingEvent _event;
-        protected string _paypalPayKey;
+        protected Mock<IEmailRelayService> EmailRelayService = new Mock<IEmailRelayService>();
+        protected Mock<IPaymentGateway> PaymentGateway = new Mock<IPaymentGateway>();
+        protected Mock<IRepository<GroupGivingEvent>> EventRepositoryMock = new Mock<IRepository<GroupGivingEvent>>();
+        protected Mock<ITaxAmountResolver> TaxResolverMock = new Mock<ITaxAmountResolver>();
+        protected Mock<IPayPalConfiguration> PaypalConfiguration = new Mock<IPayPalConfiguration>();
+        protected Mock<IDocumentStore> DocumentStore = new Mock<IDocumentStore>();
+        protected Mock<IDocumentSession> DocumentSession = new Mock<IDocumentSession>();
+        protected Mock<IAccountService> AccountService = new Mock<IAccountService>();
+        protected GroupGivingEvent Event;
+        protected string PaypalPayKey;
 
         protected void SetDummyPaypalConfiguration()
         {
-            _paypalConfiguration.SetupAllProperties();
+            PaypalConfiguration.SetupAllProperties();
         }
 
         protected void SetUpDocumentStore()
         {
-            _documentStore
+            DocumentStore
                 .Setup(m => m.OpenSession())
-                .Returns(_documentSession.Object);
+                .Returns(DocumentSession.Object);
         }
 
         protected void SessionLoadsAccount(Account account)
         {
-            _documentSession
+            DocumentSession
                 .Setup(m => m.Load<Account>(It.IsAny<string>()))
                 .Returns(account);
         }
@@ -55,47 +56,47 @@ namespace GroupGiving.Test.Unit
 
         protected void SetTaxRateForCountry(string country, decimal tax)
         {
-            taxResolverMock
+            TaxResolverMock
                 .Setup(m => m.LookupTax(country))
                 .Returns(tax);
         }
 
         protected void EventRepositoryReturns(GroupGivingEvent @event)
         {
-            eventRepositoryMock
+            EventRepositoryMock
                 .Setup(m => m.Retrieve(It.IsAny<Func<GroupGivingEvent, bool>>()))
                 .Returns(@event);
-            eventRepositoryMock
+            EventRepositoryMock
                 .Setup(m => m.Query(It.IsAny<Func<GroupGivingEvent, bool>>()))
                 .Returns(new []{@event});
         }
 
         protected void PaymentRequestIsSuccessful(string paypalPayKey)
         {
-            paypalGateway
+            PaymentGateway
                 .Setup(m => m.CreatePayment(It.IsAny<PaymentGatewayRequest>()))
                 .Returns(new PaymentGatewayResponse() { payKey = paypalPayKey, PaymentExecStatus = "CREATED"});
         }
 
         protected void PaypalGatewayReturnsAnErrorWhenMakingPaymentRequest()
         {
-            paypalGateway
+            PaymentGateway
                 .Setup(m => m.CreatePayment(It.IsAny<PaymentGatewayRequest>()))
                 .Throws(new HttpChannelException(new FaultMessage() {Error = new PayPalError(){Message="failed"}}));
         }
 
         protected void EventRepositoryStoresEventWithVerification()
         {
-            eventRepositoryMock
-                .Setup(m => m.SaveOrUpdate(_event))
+            EventRepositoryMock
+                .Setup(m => m.SaveOrUpdate(Event))
                 .Verifiable();
         }
 
         protected void PayPalGatewayReturnsTransactionIdWithVerification()
         {
-            paypalGateway
+            PaymentGateway
                 .Setup(m => m.CreatePayment(It.IsAny<PaymentGatewayRequest>()))
-                .Returns(new PaymentGatewayResponse() { payKey = _paypalPayKey, PaymentExecStatus = "CREATED"})
+                .Returns(new PaymentGatewayResponse() { payKey = PaypalPayKey, PaymentExecStatus = "CREATED"})
                 .Verifiable();
         }
     }

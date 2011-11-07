@@ -1,0 +1,72 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<xs:schema id="NewDataSet" targetNamespace="http://svcs.paypal.com/types/ap" xmlns:mstns="http://svcs.paypal.com/types/ap" xmlns="http://svcs.paypal.com/types/ap" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" attributeFormDefault="qualified" elementFormDefault="qualified">
+  <xs:element name="PaymentDetailsResponse" msdata:Prefix="ns2">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="cancelUrl" form="unqualified" type="xs:string" minOccurs="0" />
+        <xs:element name="currencyCode" form="unqualified" type="xs:string" minOccurs="0" />
+        <xs:element name="memo" form="unqualified" type="xs:string" minOccurs="0" />
+        <xs:element name="returnUrl" form="unqualified" type="xs:string" minOccurs="0" />
+        <xs:element name="senderEmail" form="unqualified" type="xs:string" minOccurs="0" />
+        <xs:element name="status" form="unqualified" type="xs:string" minOccurs="0" />
+        <xs:element name="payKey" form="unqualified" type="xs:string" minOccurs="0" />
+        <xs:element name="actionType" form="unqualified" type="xs:string" minOccurs="0" />
+        <xs:element name="feesPayer" form="unqualified" type="xs:string" minOccurs="0" />
+        <xs:element name="reverseAllParallelPaymentsOnError" form="unqualified" type="xs:string" minOccurs="0" />
+        <xs:element name="responseEnvelope" form="unqualified">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="timestamp" form="unqualified" type="xs:string" minOccurs="0" />
+              <xs:element name="ack" form="unqualified" type="xs:string" minOccurs="0" />
+              <xs:element name="correlationId" form="unqualified" type="xs:string" minOccurs="0" />
+              <xs:element name="build" form="unqualified" type="xs:string" minOccurs="0" />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="paymentInfoList" form="unqualified">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="paymentInfo" form="unqualified" minOccurs="0" maxOccurs="unbounded">
+                <xs:complexType>
+                  <xs:sequence>
+                    <xs:element name="transactionId" form="unqualified" type="xs:string" minOccurs="0" />
+                    <xs:element name="transactionStatus" form="unqualified" type="xs:string" minOccurs="0" />
+                    <xs:element name="refundedAmount" form="unqualified" type="xs:string" minOccurs="0" />
+                    <xs:element name="pendingRefund" form="unqualified" type="xs:string" minOccurs="0" />
+                    <xs:element name="senderTransactionId" form="unqualified" type="xs:string" minOccurs="0" />
+                    <xs:element name="senderTransactionStatus" form="unqualified" type="xs:string" minOccurs="0" />
+                    <xs:element name="receiver" form="unqualified" minOccurs="0" maxOccurs="unbounded">
+                      <xs:complexType>
+                        <xs:sequence>
+                          <xs:element name="amount" form="unqualified" type="xs:string" minOccurs="0" />
+                          <xs:element name="email" form="unqualified" type="xs:string" minOccurs="0" />
+                          <xs:element name="primary" form="unqualified" type="xs:string" minOccurs="0" />
+                          <xs:element name="paymentType" form="unqualified" type="xs:string" minOccurs="0" />
+                        </xs:sequence>
+                      </xs:complexType>
+                    </xs:element>
+                  </xs:sequence>
+                </xs:complexType>
+              </xs:element>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="sender" form="unqualified">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="email" form="unqualified" type="xs:string" minOccurs="0" />
+              <xs:element name="useCredentials" form="unqualified" type="xs:string" minOccurs="0" />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="NewDataSet" msdata:IsDataSet="true" msdata:UseCurrentLocale="true" msdata:Prefix="ns2">
+    <xs:complexType>
+      <xs:choice minOccurs="0" maxOccurs="unbounded">
+        <xs:element ref="PaymentDetailsResponse" />
+      </xs:choice>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>

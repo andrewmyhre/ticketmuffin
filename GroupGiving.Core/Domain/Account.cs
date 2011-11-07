@@ -25,5 +25,7 @@ namespace GroupGiving.Core.Domain
         public string PayPalLastName { get; set; }
 
         public List<GroupGivingEvent> Events { get; set; }
+
+        public string PendingTransactionId { get; set; }
     }
 }

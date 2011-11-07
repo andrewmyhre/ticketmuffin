@@ -4,14 +4,23 @@
     ViewBag.Title = "Pledges for " + Model.Title;
 }
 
+<style>
+    #pledgeList span
+    {
+        margin-right:10px;
+    }
+</style>
+
 @Html.ActionLink("back to event management console", "management-console", new {shortUrl = Model.ShortUrl})
 
 <h2>Pledges for @Model.Title</h2>
 
 @foreach (var pledge in Model.Pledges)
 {
-<div>
+<div id="pledgeList">
+    <span>#@pledge.DatePledged</span>
     <span><strong>#@pledge.OrderNumber</strong></span>
+    <span>#@pledge.TransactionId</span>
     <span>@string.Join(", ", pledge.Attendees.Select(a=>a.FullName).ToArray())</span>
     <span>@pledge.Total.ToString("c")</span>
     @if (pledge.Paid) {
@@ -19,6 +28,7 @@
     } else if (pledge.PaymentStatus == GroupGiving.Core.Domain.PaymentStatus.Refunded)
     {
         <text><span>Refunded</span></text>
+        <span>@pledge.DateRefunded.Value.ToString("dd-MM-yyyy hh:mm")</span>
     }
     else if (pledge.PaymentStatus == GroupGiving.Core.Domain.PaymentStatus.Unpaid)
     {

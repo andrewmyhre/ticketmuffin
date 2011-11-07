@@ -6,6 +6,7 @@ using GroupGiving.Core.Domain;
 using GroupGiving.Core.Dto;
 using GroupGiving.Core.Services;
 using GroupGiving.PayPal.Model;
+using PaymentDetailsResponse = GroupGiving.Core.Dto.PaymentDetailsResponse;
 using RefundRequest = GroupGiving.Core.Dto.RefundRequest;
 using RefundResponse = GroupGiving.Core.Dto.RefundResponse;
 
@@ -84,9 +85,17 @@ namespace GroupGiving.PayPal
             return SendPaymentRequest(request, "PAY_PRIMARY");
         }
 
-        public TResponse RetrievePaymentDetails<TRequest, TResponse>(TRequest request)
+        public PaymentDetailsResponse RetrievePaymentDetails(Core.Dto.PaymentDetailsRequest request)
         {
-            throw new NotImplementedException();
+            var result = _apiClient.SendPaymentDetailsRequest(
+                new PaymentDetailsRequest(request.TransactionId));
+
+            return new PaymentDetailsResponse()
+                       {
+                           Status = result.status,
+                           SenderEmailAddress = result.senderEmail,
+                           RawResponse = result
+                       };
         }
 
         public RefundResponse Refund(RefundRequest request)

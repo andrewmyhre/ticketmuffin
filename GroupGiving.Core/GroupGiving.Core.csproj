@@ -108,6 +108,8 @@
     <Compile Include="Dto\ErrorResponse.cs" />
     <Compile Include="Dto\IPaymentGatewayResponse.cs" />
     <Compile Include="Dto\IResponseEnvelope.cs" />
+    <Compile Include="Dto\PaymentDetailsRequest.cs" />
+    <Compile Include="Dto\PaymentDetailsResponse.cs" />
     <Compile Include="Dto\PaymentGatewayRequest.cs" />
     <Compile Include="Dto\PaymentGatewayResponse.cs" />
     <Compile Include="Dto\RefundRequest.cs" />

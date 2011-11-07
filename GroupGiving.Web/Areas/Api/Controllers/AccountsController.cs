@@ -17,7 +17,7 @@ namespace GroupGiving.Web.Areas.Api.Controllers
     {
         //
         // GET: /Api/Accounts/
-        public AccountsController(IRepository<GroupGivingEvent> eventRepository) : base(eventRepository)
+        public AccountsController(IRepository<GroupGivingEvent> eventRepository)
         {
         }
 

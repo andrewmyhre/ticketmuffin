@@ -11,80 +11,110 @@ namespace GroupGiving.Core.Services
 {
     public class EventService : IEventService
     {
-        private readonly IRepository<GroupGivingEvent> _eventRepository;
+        private readonly IDocumentStore _documentStore;
 
-        public EventService(IRepository<GroupGivingEvent> eventRepository)
+        public EventService(IDocumentStore documentStore)
         {
-            _eventRepository = eventRepository;
+            _documentStore = documentStore;
         }
 
         public IEnumerable<GroupGivingEvent> RetrieveAllEvents()
         {
-            return _eventRepository.RetrieveAll();
+            using (var session = _documentStore.OpenSession())
+            {
+                return session.Query<GroupGivingEvent>().Take(1024);
+            }
         }
 
         public CreateEventResult CreateEvent(CreateEventRequest request)
         {
-            GroupGivingEvent ggEvent = new GroupGivingEvent()
+            using (var session = _documentStore.OpenSession())
             {
-                Title = request.Title,
-                Description = request.Description,
-                City = request.City,
-                StartDate = request.StartDateTime,
-                Venue = request.Venue,
-                AddressLine = request.AddressLine,
-                ShortUrl = request.ShortUrl,
-                IsPrivate = request.IsPrivate,
-                IsFeatured = request.IsFeatured,
-                PhoneNumber = request.PhoneNumber,
-                OrganiserId = request.OrganiserAccountId,
-                State = EventState.Creating
-            };
-            
-            _eventRepository.SaveOrUpdate(ggEvent);
-            _eventRepository.CommitUpdates();
+                if (session.Query<GroupGivingEvent>().Any(e=>e.ShortUrl == request.ShortUrl))
+                {
+                    throw new InvalidOperationException("Short url is not available");
+                }
 
-            int eventId = int.Parse(ggEvent.Id.Substring(ggEvent.Id.IndexOf('/') + 1));
-            return new CreateEventResult() {Success = true, Event = ggEvent};
+                GroupGivingEvent ggEvent = new GroupGivingEvent()
+                                               {
+                                                   Title = request.Title,
+                                                   Description = request.Description,
+                                                   City = request.City,
+                                                   StartDate = request.StartDateTime,
+                                                   Venue = request.Venue,
+                                                   AddressLine = request.AddressLine,
+                                                   ShortUrl = request.ShortUrl,
+                                                   IsPrivate = request.IsPrivate,
+                                                   IsFeatured = request.IsFeatured,
+                                                   PhoneNumber = request.PhoneNumber,
+                                                   OrganiserId = request.OrganiserAccountId,
+                                                   State = EventState.Creating
+                                               };
+
+                session.Store(ggEvent);
+                session.SaveChanges();
+
+                int eventId = int.Parse(ggEvent.Id.Substring(ggEvent.Id.IndexOf('/') + 1));
+                return new CreateEventResult() { Success = true, Event = ggEvent };
+            }
+
         }
 
         public void SetTicketDetails(SetTicketDetailsRequest setTicketDetailsRequest)
         {
-            var ggEvent =
-                _eventRepository.Retrieve(e => e.ShortUrl == setTicketDetailsRequest.ShortUrl);
+            using (var session = _documentStore.OpenSession())
+            {
+                var @event = GetEventByShortUrl(setTicketDetailsRequest.ShortUrl, session);
 
-            if (ggEvent==null)
-                throw new ArgumentException("Event not found");
+                if (@event == null)
+                    throw new ArgumentException("Event not found");
 
-            ggEvent.TicketPrice = setTicketDetailsRequest.TicketPrice.Value;
-            ggEvent.MinimumParticipants = setTicketDetailsRequest.MinimumParticipants.Value;
-            ggEvent.MaximumParticipants = setTicketDetailsRequest.MaximumParticipants;
-            ggEvent.SalesEndDateTime = setTicketDetailsRequest.SalesEndDateTime;
-            ggEvent.AdditionalBenefits = setTicketDetailsRequest.AdditionalBenefits;
-            ggEvent.PaypalAccountEmailAddress = setTicketDetailsRequest.PayPalEmail;
-            ggEvent.PayPalAccountFirstName = setTicketDetailsRequest.PayPalFirstName;
-            ggEvent.PayPalAccountLastName = setTicketDetailsRequest.PayPalLastName;
-            ggEvent.State = EventState.SalesReady;
+                @event.TicketPrice = setTicketDetailsRequest.TicketPrice.Value;
+                @event.MinimumParticipants = setTicketDetailsRequest.MinimumParticipants.Value;
+                @event.MaximumParticipants = setTicketDetailsRequest.MaximumParticipants;
+                @event.SalesEndDateTime = setTicketDetailsRequest.SalesEndDateTime;
+                @event.AdditionalBenefits = setTicketDetailsRequest.AdditionalBenefits;
+                @event.PaypalAccountEmailAddress = setTicketDetailsRequest.PayPalEmail;
+                @event.PayPalAccountFirstName = setTicketDetailsRequest.PayPalFirstName;
+                @event.PayPalAccountLastName = setTicketDetailsRequest.PayPalLastName;
+                @event.State = EventState.SalesReady;
 
-            _eventRepository.SaveOrUpdate(ggEvent);
-            _eventRepository.CommitUpdates();
+                session.SaveChanges();
+            }
+        }
+
+        private static GroupGivingEvent GetEventByShortUrl(string shortUrl,
+                                                           IDocumentSession session)
+        {
+            var @event =
+                session.Query<GroupGivingEvent>().Where(e => e.ShortUrl == shortUrl)
+                    .FirstOrDefault();
+            return @event;
         }
 
         public bool ShortUrlAvailable(string shortUrl)
         {
-            var ggEvent = _eventRepository.Retrieve(
-                e => e.ShortUrl == shortUrl);
-            return ggEvent == null;
+            using (var session = _documentStore.OpenSession())
+            {
+                return !session.Query<GroupGivingEvent>().Any(e => e.ShortUrl == shortUrl);
+            }
         }
 
         public GroupGivingEvent Retrieve(int eventId)
         {
-            return _eventRepository.Retrieve(e => e.Id == string.Format("groupgivingevents/{0}",eventId));
+            using (var session = _documentStore.OpenSession())
+            {
+                return session.Load<GroupGivingEvent>(eventId);
+            }
         }
 
         public GroupGivingEvent Retrieve(string shortUrl)
         {
-            return _eventRepository.Retrieve(e => e.ShortUrl == shortUrl);
+            using (var session = _documentStore.OpenSession())
+            {
+                var @event = session.Query<GroupGivingEvent>().Where(e => e.ShortUrl == shortUrl).FirstOrDefault();
+                return @event;
+            }
         }
 
         public void SendEventInvitationEmails(IEmailPackageRelayer emailPackageRelayer, string recipients, string body, string subject)

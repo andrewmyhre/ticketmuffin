@@ -20,7 +20,7 @@ namespace GroupGiving.Web.Areas.Api.Controllers
         //
         // GET: /Api/Event/
 
-        public EventsController(IRepository<GroupGivingEvent> eventRepository, IEmailPackageRelayer emailRelayer, IEventService eventService) : base(eventRepository)
+        public EventsController(IEmailPackageRelayer emailRelayer, IEventService eventService)
         {
             _emailRelayer = emailRelayer;
             _eventService = eventService;
@@ -28,7 +28,7 @@ namespace GroupGiving.Web.Areas.Api.Controllers
 
         public ActionResult Index(string shortUrl)
         {
-            var @event = _eventRepository.Retrieve(e => e.ShortUrl == shortUrl);
+            var @event = _eventService.Retrieve(shortUrl);
 
             if (@event==null)
                 return new HttpNotFoundResult();
@@ -46,7 +46,7 @@ namespace GroupGiving.Web.Areas.Api.Controllers
                 return ApiResponse(response, HttpStatusCode.BadRequest);
             }
 
-            var @event = _eventRepository.Retrieve(e => e.ShortUrl == shortUrl);
+            var @event = _eventService.Retrieve(shortUrl);
             var eventModel = AutoMapper.Mapper.Map<GroupGivingEvent>(@event);
 
             _eventService.SendEventInvitationEmails(_emailRelayer, request.Recipients, request.Body, request.Subject);

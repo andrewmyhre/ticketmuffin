@@ -56,39 +56,7 @@ namespace GroupGiving.Web.Controllers
             return View();
         }
 
-        [AcceptVerbs(HttpVerbs.Post)]
-        public ActionResult StartRequest(PurchaseDetails purchaseDetails)
-        {
-            var eventDetails = _eventRepository.Retrieve(e => e.ShortUrl == purchaseDetails.ShortUrl);
-            var pledgerAccount = _accountService.RetrieveByEmailAddress(purchaseDetails.EmailAddress);
-            var organiserAccount = _accountService.RetrieveById(@eventDetails.OrganiserId);
-            if (pledgerAccount == null)
-            {
-                pledgerAccount = _accountService.CreateIncompleteAccount(purchaseDetails.EmailAddress, _emailRelayService);
-            }
-
-            var action = new MakePledgeAction(_taxResolver, _eventRepository, _paymentGateway, _paypalConfiguration);
-            var request = new MakePledgeRequest()
-            {
-                AttendeeNames = purchaseDetails.AttendeeName,
-                PayPalEmailAddress = pledgerAccount.Email
-            };
-
-            var result = action.Attempt(eventDetails, pledgerAccount, organiserAccount, request);
-
-            var viewModel = new OrderRequestViewModel();
-
-            var response = result.GatewayResponse;
-            viewModel.PayPalPostUrl = response.PaymentPageUrl;
-            viewModel.Ack = response.ResponseEnvelope.Ack;
-            viewModel.PayKey = response.payKey;
-            viewModel.Error = response.Error;
-
-            if (!result.Succeeded)
-                return View(viewModel);
-
-            return Redirect(string.Format(ConfigurationManager.AppSettings["PayFlowProPaymentPage"], response.payKey));
-        }
+        
 
         public ActionResult Success(string payKey)
         {
@@ -103,7 +71,6 @@ namespace GroupGiving.Web.Controllers
                         .Where(e => e.Pledges.Any(p => p.TransactionId == payKey))
                         .FirstOrDefault();
                 pledge = @event.Pledges.Where(p => p.TransactionId == payKey).FirstOrDefault();
-                account = _accountService.RetrieveByEmailAddress(pledge.AccountEmailAddress);
 
                 if (@event == null || pledge == null)
                     return new HttpNotFoundResult();
@@ -112,7 +79,7 @@ namespace GroupGiving.Web.Controllers
                 if (!pledge.Paid && pledge.PaymentStatus == PaymentStatus.Unpaid)
                 {
                     ConfirmPledgePaymentAction action
-                        = new ConfirmPledgePaymentAction(_eventRepository);
+                        = new ConfirmPledgePaymentAction(_eventRepository, _paymentGateway, _accountService, _emailRelayService);
 
                     var paymentConfirmationResult = action.ConfirmPayment(new SettlePledgeRequest() {PayPalPayKey = payKey});
 

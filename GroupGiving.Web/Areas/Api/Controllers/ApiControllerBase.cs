@@ -6,18 +6,13 @@ using System.Xml;
 using GroupGiving.Core.Data;
 using GroupGiving.Core.Domain;
 using System.Linq;
+using GroupGiving.Core.Services;
 using Ninject;
 
 namespace GroupGiving.Web.Areas.Api.Controllers
 {
     public class ApiControllerBase : Controller
     {
-        protected IRepository<GroupGivingEvent> _eventRepository = null;
-        public ApiControllerBase(IRepository<GroupGivingEvent> eventRepository)
-        {
-            _eventRepository = eventRepository;
-        }
-
         protected ContentResult Xml<T>(T graph)
         {
             DataContractSerializer dcs = new DataContractSerializer(typeof(T));

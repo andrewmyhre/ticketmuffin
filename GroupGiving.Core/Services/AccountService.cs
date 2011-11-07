@@ -125,8 +125,10 @@ namespace GroupGiving.Core.Services
 
         public Account RetrieveByEmailAddress(string email)
         {
-            var account = _accountRepository.Retrieve(a => a.Email == email);
-            return account;
+            using (var session = _documentStore.OpenSession())
+            {
+                return session.Query<Account>().Where(a => a.Email == email).FirstOrDefault();
+            }
         }
 
         public void UpdateAccount(Account account)
@@ -135,20 +137,41 @@ namespace GroupGiving.Core.Services
             _accountRepository.CommitUpdates();
         }
 
+        public Account CreateAnonymousAccountPendingTransaction(string transactionId, bool optInForSpecialOffers)
+        {
+            using (var session = _documentStore.OpenSession())
+            {
+                var account = new Account()
+                                  {
+                                      PendingTransactionId = transactionId,
+                                      OptInForOffers = optInForSpecialOffers
+                                  };
+                session.Store(account);
+                session.SaveChanges();
+
+                return account;
+            }
+
+        }
+
         public Account CreateIncompleteAccount(string emailAddress, IEmailRelayService emailRelayService)
         {
-            var account = new Account()
-                              {
-                                  Email = emailAddress,
-                                  ResetPasswordToken = Guid.NewGuid().ToString(),
-                                  ResetPasswordTokenExpiry = DateTime.MaxValue
-                              };
-            _accountRepository.SaveOrUpdate(account);
-            _accountRepository.CommitUpdates();
+            using (var session = _documentStore.OpenSession())
+            {
+                var account = new Account()
+                {
+                    Email = emailAddress,
+                    ResetPasswordToken = Guid.NewGuid().ToString(),
+                    ResetPasswordTokenExpiry = DateTime.MaxValue
+                };
+                session.Store(account);
+                session.SaveChanges();
 
-            SendGetYourAccountStartedEmail(emailAddress, emailRelayService);
+                SendGetYourAccountStartedEmail(emailAddress, emailRelayService);
 
-            return account;
+                return account;
+            }
+
         }
 
         public Account RetrieveById(string accountId)

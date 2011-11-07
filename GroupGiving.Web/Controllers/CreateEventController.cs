@@ -168,7 +168,7 @@ namespace GroupGiving.Web.Controllers
             viewModel.PayPalLastName = account.PayPalLastName;
 
             // sandbox details
-            viewModel.PayPalEmail = "seller_1304843436_biz@gmail.com";
+            viewModel.PayPalEmail = "sellr2_1304843519_biz@gmail.com";
             viewModel.PayPalFirstName = "Andrew";
             viewModel.PayPalLastName = "Myhre";
             return View(viewModel);

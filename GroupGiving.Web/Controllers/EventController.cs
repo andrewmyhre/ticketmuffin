@@ -29,7 +29,6 @@ namespace GroupGiving.Web.Controllers
 {
     public class EventController : Controller
     {
-        private readonly IRepository<GroupGivingEvent> _eventRepository;
         private readonly IFormsAuthenticationService _formsService;
         private readonly IMembershipService _membershipService;
         private readonly IAccountService _accountService;
@@ -40,14 +39,14 @@ namespace GroupGiving.Web.Controllers
         private static Markdown _markdown =  new Markdown();
         private IEmailRelayService _emailRelayService;
         private readonly IIdentity _userIdentity;
+        private readonly IEventService _eventService;
 
-        public EventController(IAccountService accountService, IRepository<GroupGivingEvent> eventRepository, 
+        public EventController(IAccountService accountService, 
             IFormsAuthenticationService formsService, IMembershipService membershipService, IPaymentGateway paymentGateway, 
             ITaxAmountResolver taxResolver, IPayPalConfiguration paypalConfiguration, IDocumentStore documentStore, 
-            IEmailRelayService emailRelayService, IIdentity userIdentity)
+            IEmailRelayService emailRelayService, IIdentity userIdentity, IEventService eventService)
         {
             _accountService = accountService;
-            _eventRepository = eventRepository;
             _formsService = formsService;
             _membershipService = membershipService;
             _paymentGateway = paymentGateway;
@@ -58,6 +57,7 @@ namespace GroupGiving.Web.Controllers
                 = documentStore;
             _emailRelayService = emailRelayService;
             _userIdentity = userIdentity;
+            _eventService = eventService;
         }
 
         //
@@ -68,7 +68,7 @@ namespace GroupGiving.Web.Controllers
                 return new HttpNotFoundResult();
 
             var viewModel = new EventViewModel();
-            var givingEvent = _eventRepository.Retrieve(e=>e.ShortUrl==shortUrl);
+            var givingEvent = _eventService.Retrieve(shortUrl);
             if (givingEvent == null)
                 return HttpNotFound();
 
@@ -126,7 +126,7 @@ namespace GroupGiving.Web.Controllers
             if (string.IsNullOrWhiteSpace(shortUrl))
                 return new HttpNotFoundResult();
 
-            var givingEvent = _eventRepository.Retrieve(e => e.ShortUrl == shortUrl);
+            var givingEvent = _eventService.Retrieve(shortUrl);
             if (givingEvent == null)
                 return HttpNotFound();
 
@@ -181,7 +181,7 @@ namespace GroupGiving.Web.Controllers
         public ActionResult Pledge(EventPledgeViewModel request)
         {
             EventPledgeViewModel viewModel = null;
-            var eventDetails = _eventRepository.Retrieve(e => e.ShortUrl == request.ShortUrl);
+            var eventDetails = _eventService.Retrieve(request.ShortUrl);
             var account = _accountService.RetrieveByEmailAddress(request.EmailAddress);
             var organiserAccount = _accountService.RetrieveById(eventDetails.OrganiserId);
 
@@ -205,29 +205,18 @@ namespace GroupGiving.Web.Controllers
                 return View(viewModel);
             }
 
-
-            if (account == null)
-            {
-                account = _accountService.CreateIncompleteAccount(request.EmailAddress, _emailRelayService);
-            }
-
-            if (request.OptInForOffers)
-            {
-                account.OptInForOffers = true;
-                _accountService.UpdateAccount(account);
-            }
-
-            var action = new MakePledgeAction(_taxResolver, _eventRepository, _paymentGateway, _paypalConfiguration);
+            var action = new MakePledgeAction(_taxResolver, _paymentGateway, _paypalConfiguration, _documentStore);
             var makePledgeRequest = new MakePledgeRequest()
             {
                 AttendeeNames = request.AttendeeName,
-                PayPalEmailAddress = request.EmailAddress
+                PayPalEmailAddress = request.EmailAddress,
+                OptInForOffers = request.OptInForOffers
             };
 
             CreatePledgeActionResult result = null;
             try
             {
-                result = action.Attempt(eventDetails, account, organiserAccount, makePledgeRequest);
+                result = action.Attempt(eventDetails.Id, organiserAccount, makePledgeRequest);
             } catch (InvalidOperationException ex)
             {
                 ModelState.AddModelError("_form", ex.Message);
@@ -251,7 +240,7 @@ namespace GroupGiving.Web.Controllers
         public ActionResult Edit(string shortUrl)
         {
             var viewModel = new UpdateEventViewModel();
-            var groupGivingEvent = _eventRepository.Retrieve(e => e.ShortUrl == shortUrl);
+            var groupGivingEvent = _eventService.Retrieve(shortUrl);
 
             AutoMapper.Mapper.CreateMap<GroupGivingEvent, UpdateEventViewModel>();
             viewModel = AutoMapper.Mapper.Map<GroupGivingEvent, UpdateEventViewModel>(groupGivingEvent);
@@ -270,20 +259,21 @@ namespace GroupGiving.Web.Controllers
                 return View(viewModel);
             }
 
-            var groupGivingEvent = _eventRepository.Retrieve(e => e.ShortUrl == shortUrl);
-            this.TryUpdateModel(groupGivingEvent);
+            using (var session = _documentStore.OpenSession())
+            {
+                var groupGivingEvent = session.Load<GroupGivingEvent>(viewModel.Id);
+                this.TryUpdateModel(groupGivingEvent);
 
-            if (groupGivingEvent.SalesEndDateTime > DateTime.Now)
-                groupGivingEvent.State = EventState.SalesReady;
-            else if (groupGivingEvent.StartDate > DateTime.Now)
-                groupGivingEvent.State = EventState.SalesClosed;
-            else
-                groupGivingEvent.State = EventState.Completed;
-            
+                if (groupGivingEvent.SalesEndDateTime > DateTime.Now)
+                    groupGivingEvent.State = EventState.SalesReady;
+                else if (groupGivingEvent.StartDate > DateTime.Now)
+                    groupGivingEvent.State = EventState.SalesClosed;
+                else
+                    groupGivingEvent.State = EventState.Completed;
 
-            _eventRepository.SaveOrUpdate(groupGivingEvent);
-            _eventRepository.CommitUpdates();
 
+                session.SaveChanges();
+            }
             return RedirectToAction("edit-event", new {shortUrl=shortUrl});
         }
 
@@ -291,7 +281,7 @@ namespace GroupGiving.Web.Controllers
         [AcceptVerbs(HttpVerbs.Get)]
         public ActionResult ListPledges(string shortUrl)
         {
-            var groupGivingEvent = _eventRepository.Retrieve(e => e.ShortUrl == shortUrl);
+            var groupGivingEvent = _eventService.Retrieve(shortUrl);
 
             AutoMapper.Mapper.CreateMap<GroupGivingEvent, UpdateEventViewModel>();
             var viewModel = AutoMapper.Mapper.Map<GroupGivingEvent, UpdateEventViewModel>(groupGivingEvent);
@@ -303,7 +293,7 @@ namespace GroupGiving.Web.Controllers
         [HttpGet]
         public ActionResult ManagementConsole(string shortUrl)
         {
-            var groupGivingEvent = _eventRepository.Retrieve(e => e.ShortUrl == shortUrl);
+            var groupGivingEvent = _eventService.Retrieve(shortUrl);
 
             AutoMapper.Mapper.CreateMap<GroupGivingEvent, UpdateEventViewModel>();
             var viewModel = AutoMapper.Mapper.Map<GroupGivingEvent, UpdateEventViewModel>(groupGivingEvent);
@@ -385,9 +375,9 @@ namespace GroupGiving.Web.Controllers
         [AcceptVerbs(HttpVerbs.Get)]
         public ActionResult RefundPledge(string shortUrl, string orderNumber)
         {
-            var @event = _eventRepository.Retrieve(e => e.ShortUrl == shortUrl);
+            var @event = _eventService.Retrieve(shortUrl);
             var pledge = @event.Pledges.Where(p => p.OrderNumber == orderNumber).FirstOrDefault();
-            if (pledge==null)
+            if (pledge == null)
             {
                 ModelState.AddModelError("ordernumber", "We couldn't locate a pledge with that order number.");
                 return View();
@@ -404,48 +394,49 @@ namespace GroupGiving.Web.Controllers
         [AcceptVerbs(HttpVerbs.Post)]
         public ActionResult RefundPledge(string shortUrl, string orderNumber, bool? confirm)
         {
-            var @event = _eventRepository.Retrieve(e => e.ShortUrl == shortUrl);
-            var pledge = @event.Pledges.Where(p => p.OrderNumber == orderNumber).FirstOrDefault();
-            RefundViewModel viewModel = null;
-
-            if (pledge == null)
+            using (var session = _documentStore.OpenSession())
             {
-                ModelState.AddModelError("ordernumber", "We couldn't locate a pledge with that order number.");
-            }
+                var @event = session.Query<GroupGivingEvent>().Where(e => e.ShortUrl == shortUrl).FirstOrDefault();
+                var pledge = @event.Pledges.Where(p => p.OrderNumber == orderNumber).FirstOrDefault();
+                RefundViewModel viewModel = null;
 
-            if (!confirm.HasValue || !confirm.Value)
-            {
-                ModelState.AddModelError("confirm",
-                                         "You have to confirm that you definitely want to refund this pledge.");
-            }
+                if (pledge == null)
+                {
+                    ModelState.AddModelError("ordernumber", "We couldn't locate a pledge with that order number.");
+                }
 
-            if (!ModelState.IsValid)
-            {
+                if (!confirm.HasValue || !confirm.Value)
+                {
+                    ModelState.AddModelError("confirm",
+                                             "You have to confirm that you definitely want to refund this pledge.");
+                }
+
+                if (!ModelState.IsValid)
+                {
+                    viewModel.Event = @event;
+                    viewModel.PledgeToBeRefunded = pledge;
+
+                    return View(viewModel);
+                }
+
+                var refundResult = _paymentGateway.Refund(new RefundRequest() {TransactionId = pledge.TransactionId});
+
+                if (refundResult.Successful)
+                {
+                    pledge.DateRefunded = DateTime.Now;
+                    pledge.PaymentStatus = PaymentStatus.Refunded;
+                    pledge.Paid = false;
+                    session.SaveChanges();
+                    TempData["refunded"] = true;
+                    return RedirectToAction("event-pledges", new {shortUrl = shortUrl});
+                }
+
                 viewModel.Event = @event;
                 viewModel.PledgeToBeRefunded = pledge;
+                viewModel.RefundFailed = true;
 
-                return View(viewModel);
+                return View();
             }
-
-            var refundResult = _paymentGateway.Refund(new RefundRequest() {TransactionId = pledge.TransactionId});
-
-            if (refundResult.Successful)
-            {
-                pledge.DateRefunded = DateTime.Now;
-                pledge.PaymentStatus = PaymentStatus.Refunded;
-                pledge.Paid = false;
-                _eventRepository.SaveOrUpdate(@event);
-                _eventRepository.CommitUpdates();
-                TempData["refunded"] = true;
-                return RedirectToAction("event-pledges", new { shortUrl = shortUrl });
-            }
-
-            viewModel.Event = @event;
-            viewModel.PledgeToBeRefunded = pledge;
-            viewModel.RefundFailed = true;
-
-            return View();
-
         }
     }
 

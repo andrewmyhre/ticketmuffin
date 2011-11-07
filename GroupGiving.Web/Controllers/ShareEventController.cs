@@ -15,13 +15,11 @@ namespace GroupGiving.Web.Controllers
 {
     public class ShareEventController : Controller
     {
-        private readonly IRepository<GroupGivingEvent> _eventRepository;
         private readonly IEmailPackageRelayer _emailRelayer;
         private readonly IEventService _eventService;
 
-        public ShareEventController(IRepository<GroupGivingEvent> eventRepository, IEmailPackageRelayer emailRelayer, IEventService eventService)
+        public ShareEventController(IEmailPackageRelayer emailRelayer, IEventService eventService)
         {
-            _eventRepository = eventRepository;
             _emailRelayer = emailRelayer;
             _eventService = eventService;
         }
@@ -35,7 +33,7 @@ namespace GroupGiving.Web.Controllers
                 return new HttpNotFoundResult();
 
             var viewModel = new ShareEventViewModel();
-            viewModel.Event = _eventRepository.Retrieve(e => e.ShortUrl == shortUrl);
+            viewModel.Event = _eventService.Retrieve(shortUrl);
             viewModel.ShareUrl = string.Format("{0}://{1}/{2}", Request.Url.Scheme, Request.Url.Authority,
                                                viewModel.Event.ShortUrl);
 
@@ -69,7 +67,7 @@ Thanks!", viewModel.ShareUrl);
                 var viewModel = new ShareEventViewModel();
                 viewModel.ShareViaEmail = request;
 
-                viewModel.Event = _eventRepository.Retrieve(e => e.ShortUrl == shortUrl);
+                viewModel.Event = _eventService.Retrieve(shortUrl);
                 viewModel.ShareUrl = string.Format("{0}://{1}/{2}", Request.Url.Scheme, Request.Url.Authority,
                                                    viewModel.Event.ShortUrl);
                 return View("Index", viewModel);
