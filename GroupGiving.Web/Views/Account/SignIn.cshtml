@@ -24,7 +24,7 @@
                 <label style="display: inline-block; width: 200px;">Password</label>
                 @Html.PasswordFor(m=>m.Password)
                 @Html.ValidationMessage("password")
-                @Html.ValidationMessage("login", "We couldn't find an account matching those credentials")
+                @Html.ValidationMessage("login")
             </div>
             <div style="padding-bottom: 10px;">
                 @Html.CheckBoxFor(m=>m.RememberMe)
