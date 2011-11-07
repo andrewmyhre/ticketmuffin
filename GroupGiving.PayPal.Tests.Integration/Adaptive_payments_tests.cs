@@ -45,8 +45,8 @@ namespace GroupGiving.PayPal.Tests.Integration
                         CurrencyCode = "GBP",
                         Receivers = new []
                                         {
-                                            new Receiver("100", "seller_1304843436_biz@gmail.com"),
-                                            new Receiver("90", "sellr2_1304843519_biz@gmail.com")
+                                            new Receiver("100", "seller_1304843436_biz@gmail.com", true),
+                                            new Receiver("90", "sellr2_1304843519_biz@gmail.com", false)
                                         }
                     });
 
@@ -68,8 +68,8 @@ namespace GroupGiving.PayPal.Tests.Integration
                         CurrencyCode = "GBP",
                         Receivers = new []
                                         {
-                                            new Receiver("100", "seller_1304843436_biz@gmail.com"),
-                                            new Receiver("90", "sellr2_1304843519_biz@gmail.com")
+                                            new Receiver("100", "seller_1304843436_biz@gmail.com", true),
+                                            new Receiver("90", "sellr2_1304843519_biz@gmail.com", false)
                                         }
                     });
 
@@ -95,8 +95,8 @@ namespace GroupGiving.PayPal.Tests.Integration
                     CurrencyCode = "GBP",
                     Receivers = new []
                                         {
-                                            new Receiver("100", "seller_1304843436_biz@gmail.com"),
-                                            new Receiver("90", "sellr2_1304843519_biz@gmail.com")
+                                            new Receiver("100", "seller_1304843436_biz@gmail.com", true),
+                                            new Receiver("90", "sellr2_1304843519_biz@gmail.com", false)
                                         }
                 });
 
@@ -128,8 +128,8 @@ namespace GroupGiving.PayPal.Tests.Integration
                         ReturnUrl = _paypalConfiguration.SuccessCallbackUrl,
                         Receivers = new []
                                         {
-                                            new Receiver("100", "seller_1304843436_biz@gmail.com"),
-                                            new Receiver("95", "sellr2_1304843519_biz@gmail.com")
+                                            new Receiver("100", "seller_1304843436_biz@gmail.com", true),
+                                            new Receiver("95", "sellr2_1304843519_biz@gmail.com", false)
                                         }
                     });
 
@@ -157,8 +157,8 @@ namespace GroupGiving.PayPal.Tests.Integration
                     ReturnUrl = _paypalConfiguration.SuccessCallbackUrl,
                     Receivers = new []
                                         {
-                                            new Receiver("100", "seller_1304843436_biz@gmail.com"),
-                                            new Receiver("95", "sellr2_1304843519_biz@gmail.com")
+                                            new Receiver("100", "seller_1304843436_biz@gmail.com", true),
+                                            new Receiver("95", "sellr2_1304843519_biz@gmail.com", false)
                                         }
                 });
 

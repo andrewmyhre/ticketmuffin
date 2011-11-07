@@ -21,10 +21,11 @@ namespace GroupGiving.PayPal.Model
         [XmlElement(Order = 2, ElementName = "primary")]
         public bool Primary { get; set; }
 
-        public Receiver(string amount, string email)
+        public Receiver(string amount, string email, bool primary)
         {
             Amount = amount;
             Email = email;
+            Primary = primary;
         }
 
         public Receiver()

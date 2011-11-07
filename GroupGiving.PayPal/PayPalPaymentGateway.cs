@@ -36,6 +36,11 @@ namespace GroupGiving.PayPal
 
         public PaymentGatewayResponse CreatePayment(PaymentGatewayRequest request)
         {
+            return SendPaymentRequest(request, "PAY");
+        }
+
+        private PaymentGatewayResponse SendPaymentRequest(PaymentGatewayRequest request, string paymentActionType)
+        {
             if (string.IsNullOrWhiteSpace(request.OrderMemo))
             {
                 throw new ArgumentException("Order memo must be provided", "request.OrderMemo");
@@ -52,14 +57,17 @@ namespace GroupGiving.PayPal
             }
 
             PayRequest payRequest = new PayRequest()
-            {
-                ActionType = "PAY",
-                CancelUrl = _payPalConfiguration.FailureCallbackUrl,
-                ReturnUrl = _payPalConfiguration.SuccessCallbackUrl,
-                Memo = request.OrderMemo,
-                CurrencyCode = "GBP",
-                Receivers = (from r in request.Recipients orderby r.AmountToReceive descending select new Receiver(r.AmountToReceive.ToString("#.00"), r.EmailAddress)).ToArray()
-            };
+                                        {
+                                            ActionType = paymentActionType,
+                                            CancelUrl = _payPalConfiguration.FailureCallbackUrl,
+                                            ReturnUrl = _payPalConfiguration.SuccessCallbackUrl,
+                                            Memo = request.OrderMemo,
+                                            CurrencyCode = "GBP",
+                                            Receivers = (from r in request.Recipients
+                                                         orderby r.AmountToReceive descending
+                                                         select new Receiver(r.AmountToReceive.ToString("#.00"), r.EmailAddress, r.AmountToReceive==request.Recipients.Max(rc=>rc.AmountToReceive)))
+                                                .ToArray()
+                                        };
 
             var response = _apiClient.SendPayRequest(payRequest);
 
@@ -69,6 +77,11 @@ namespace GroupGiving.PayPal
                            PaymentPageUrl = string.Format(_payPalConfiguration.PayFlowProPaymentPage, response.payKey),
                            payKey = response.payKey
                        };
+        }
+
+        public PaymentGatewayResponse CreateDelayedPayment(PaymentGatewayRequest request)
+        {
+            return SendPaymentRequest(request, "PAY_PRIMARY");
         }
 
         public TResponse RetrievePaymentDetails<TRequest, TResponse>(TRequest request)

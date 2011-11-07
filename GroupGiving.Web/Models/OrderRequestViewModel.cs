@@ -11,7 +11,7 @@ namespace GroupGiving.Web.Models
 
         public string Ack { get; set; }
 
-        public IEnumerable<ResponseError> Errors { get; set; }
+        public ResponseError Error { get; set; }
 
         public string PayPalPostUrl { get; set; }
     }

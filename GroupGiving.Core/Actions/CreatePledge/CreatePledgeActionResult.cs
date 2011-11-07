@@ -1,4 +1,5 @@
-﻿using GroupGiving.Core.Dto;
+﻿using System;
+using GroupGiving.Core.Dto;
 
 namespace GroupGiving.Core.Actions.CreatePledge
 {
@@ -7,5 +8,7 @@ namespace GroupGiving.Core.Actions.CreatePledge
         public IPaymentGatewayResponse GatewayResponse { get; set; }
 
         public bool Succeeded { get; set; }
+
+        public Exception Exception { get; set; }
     }
 }

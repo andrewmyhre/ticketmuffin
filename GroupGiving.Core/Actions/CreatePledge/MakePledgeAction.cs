@@ -82,10 +82,21 @@ namespace GroupGiving.Core.Actions.CreatePledge
             PaymentGatewayResponse gatewayResponse = null;
             try
             {
-                gatewayResponse = _paymentGateway.CreatePayment(paymentGatewayRequest);
+                gatewayResponse = _paymentGateway.CreateDelayedPayment(paymentGatewayRequest);
             } catch (HttpChannelException exception)
             {
-                return new CreatePledgeActionResult() {Succeeded = false};
+                return new CreatePledgeActionResult()
+                           {
+                               Succeeded = false, 
+                               Exception = exception,
+                               GatewayResponse = new PaymentGatewayResponse()
+                                                     {
+                                                         Error = new ResponseError()
+                                                                     {
+                                                                         Message = exception.Message
+                                                                     }
+                                                     }
+                           };
             }
 
             result.GatewayResponse = gatewayResponse;

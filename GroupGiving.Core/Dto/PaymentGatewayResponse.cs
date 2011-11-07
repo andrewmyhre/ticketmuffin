@@ -1,3 +1,5 @@
+using System;
+
 namespace GroupGiving.Core.Dto
 {
     public class PaymentGatewayResponse : IPaymentGatewayResponse
@@ -10,6 +12,9 @@ namespace GroupGiving.Core.Dto
 
         public string PaymentPageUrl { get; set; }
 
-        public ResponseError[] Errors { get; set; }
+        public ResponseError Error { get; set; }
+
+        public object RawResponse { get; set; }
+        public Exception ExceptionDetails { get; set; }
     }
 }

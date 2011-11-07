@@ -7,7 +7,7 @@
 
 <h2>There was a problem with the request:</h2>
 
-@foreach (var error in Model.Errors)
+@foreach (var error in Model.Error)
 {
     <li>@error.Parameter: @error.Message</li>
 }

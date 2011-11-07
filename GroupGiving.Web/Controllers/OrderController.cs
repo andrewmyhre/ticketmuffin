@@ -82,7 +82,7 @@ namespace GroupGiving.Web.Controllers
             viewModel.PayPalPostUrl = response.PaymentPageUrl;
             viewModel.Ack = response.ResponseEnvelope.Ack;
             viewModel.PayKey = response.payKey;
-            viewModel.Errors = response.Errors;
+            viewModel.Error = response.Error;
 
             if (!result.Succeeded)
                 return View(viewModel);
@@ -104,41 +104,39 @@ namespace GroupGiving.Web.Controllers
                         .FirstOrDefault();
                 pledge = @event.Pledges.Where(p => p.TransactionId == payKey).FirstOrDefault();
                 account = _accountService.RetrieveByEmailAddress(pledge.AccountEmailAddress);
-            }
 
-            if (@event==null || pledge == null)
-                return new HttpNotFoundResult();
+                if (@event == null || pledge == null)
+                    return new HttpNotFoundResult();
 
-            // user may just be reloading the page - fine, don't do any updates and present the view
-            if (!pledge.Paid && pledge.PaymentStatus == PaymentStatus.PaidPendingReconciliation)
-            {
-                GroupGiving.Core.Actions.SettlePledge.ConfirmPledgePaymentAction action
-                    = new ConfirmPledgePaymentAction(_eventRepository);
-
-                action.ConfirmPayment(new SettlePledgeRequest() {PayPalPayKey = payKey});
-
-                // send a purchase confirmation email
-                MvcApplication.EmailFacade.Send(pledge.AccountEmailAddress,
-                                                "PledgeConfirmation",
-                                                new {Event = @event, Pledge = pledge, Account=account});
-
-                // this pledge has activated the event);
-                if (@event.IsOn 
-                    && (@event.PledgeCount - pledge.Attendees.Count < @event.MinimumParticipants))
+                // user may just be reloading the page - fine, don't do any updates and present the view
+                if (!pledge.Paid && pledge.PaymentStatus == PaymentStatus.Unpaid)
                 {
-                    foreach(var eventPledge in @event.Pledges)
+                    ConfirmPledgePaymentAction action
+                        = new ConfirmPledgePaymentAction(_eventRepository);
+
+                    var paymentConfirmationResult = action.ConfirmPayment(new SettlePledgeRequest() {PayPalPayKey = payKey});
+
+                    // send a purchase confirmation email
+                    MvcApplication.EmailFacade.Send(pledge.AccountEmailAddress,
+                                                    "PledgeConfirmation",
+                                                    new {Event = @event, Pledge = pledge, Account = account});
+
+                    // this pledge has activated the event);
+                    if (@event.IsOn
+                        && (@event.PledgeCount - pledge.Attendees.Count < @event.MinimumParticipants))
                     {
-                        MvcApplication.EmailFacade.Send(
-                            eventPledge.AccountEmailAddress,
-                            "EventActivated",
-                            new {Event=@event,Pledge=pledge});
+                        foreach (var eventPledge in @event.Pledges)
+                        {
+                            MvcApplication.EmailFacade.Send(
+                                eventPledge.AccountEmailAddress,
+                                "EventActivated",
+                                new {Event = @event, Pledge = pledge});
+                        }
                     }
+
+                    session.SaveChanges();
                 }
-
-                _eventRepository.SaveOrUpdate(@event);
-                _eventRepository.CommitUpdates();
             }
-
             var viewModel = new OrderConfirmationViewModel();
             viewModel.Event = @event;
             viewModel.PledgesRequired = viewModel.Event.MinimumParticipants -

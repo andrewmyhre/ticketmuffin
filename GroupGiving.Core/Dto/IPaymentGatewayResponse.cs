@@ -14,7 +14,7 @@ namespace GroupGiving.Core.Dto
         string PaymentExecStatus { get; set; }
 
         [XmlArrayItem(ElementName = "errors")]
-        ResponseError[] Errors { get; set; }
+        ResponseError Error { get; set; }
 
         [XmlElement(ElementName = "paymentPageUrl")]
         string PaymentPageUrl { get; set; }
