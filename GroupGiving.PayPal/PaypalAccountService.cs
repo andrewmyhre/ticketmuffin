@@ -8,7 +8,7 @@ using PayPal.Services.Private.AA;
 
 namespace GroupGiving.PayPal
 {
-    public class PaypalAccountService
+    public class PaypalAccountService : IPaypalAccountService
     {
         private readonly PaypalAdaptiveAccountsConfigurationSection _configuration;
 

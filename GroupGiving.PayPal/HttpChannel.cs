@@ -3,6 +3,7 @@ using System.Net;
 using System.Text;
 using System.Xml.Linq;
 using System.Xml.Serialization;
+using GroupGiving.Core;
 using GroupGiving.PayPal.Model;
 
 namespace GroupGiving.PayPal

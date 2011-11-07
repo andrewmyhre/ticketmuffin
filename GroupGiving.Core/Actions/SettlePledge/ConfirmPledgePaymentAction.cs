@@ -30,6 +30,7 @@ namespace GroupGiving.Core.Actions.SettlePledge
                 throw new InvalidOperationException("Pledge is not pending payment");
 
             pledge.PaymentStatus = PaymentStatus.PaidPendingReconciliation;
+            pledge.Paid = true;
             pledge.DatePledged = DateTime.Now;
 
             _eventRepository.SaveOrUpdate(@event);

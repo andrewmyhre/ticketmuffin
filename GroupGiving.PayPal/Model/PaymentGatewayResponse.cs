@@ -101,6 +101,11 @@ namespace GroupGiving.PayPal.Model
 
         [XmlElement("error", Form = System.Xml.Schema.XmlSchemaForm.Unqualified)]
         public PayPalError Error { get; set; }
+
+        public override string ToString()
+        {
+            return string.Format("{0}:{1}", Error.Parameter, Error.Message);
+        }
     }
 
     [XmlType(AnonymousType = true, Namespace="http://svcs.paypal.com/types/ap")]

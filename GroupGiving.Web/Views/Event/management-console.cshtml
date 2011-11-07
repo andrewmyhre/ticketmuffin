@@ -1,0 +1,14 @@
+﻿@using GroupGiving.Web.Models
+@model UpdateEventViewModel
+
+@{
+    ViewBag.Title = "title";
+}
+
+<h2>Event Management Console</h2>
+
+<ul>
+<li>@Html.ActionLink("Edit the event details", "edit-event", new {shortUrl = Model.ShortUrl})</li>
+<li>@Html.ActionLink("View pledges for the event", "event-pledges", new { shortUrl = Model.ShortUrl })</li>
+<li>@Html.ActionLink("Cancel the event", "cancel-event", new {shortUrl = Model.ShortUrl})</li>
+</ul>

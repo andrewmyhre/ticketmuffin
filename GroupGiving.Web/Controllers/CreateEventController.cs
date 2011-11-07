@@ -31,9 +31,13 @@ namespace GroupGiving.Web.Controllers
         private readonly ICountryService _countryService;
         private readonly IIdentity _userIdentity;
         private readonly IDocumentStore _storage;
+        private readonly IMembershipProviderLocator _membershipProviderLocator;
+        private readonly IPaypalAccountService _paypalAccountService;
 
         public CreateEventController(IAccountService accountService, ICountryService countryService, IMembershipService membershipService, 
-            IFormsAuthenticationService formsAuthenticationService, IEventService eventService, IDocumentStore documentStore, IIdentity userIdentity, IDocumentStore storage)
+            IFormsAuthenticationService formsAuthenticationService, IEventService eventService, 
+            IDocumentStore documentStore, IIdentity userIdentity, IDocumentStore storage, IMembershipProviderLocator membershipProviderLocator,
+            IPaypalAccountService paypalAccountService)
         {
             _accountService = accountService;
             _countryService = countryService;
@@ -42,7 +46,15 @@ namespace GroupGiving.Web.Controllers
             _eventService = eventService;
             _userIdentity = userIdentity;
             _storage = storage;
-            ((RavenDBMembership.Provider.RavenDBMembershipProvider) Membership.Provider).DocumentStore = documentStore;
+            
+            _membershipProviderLocator = membershipProviderLocator;
+            _paypalAccountService = paypalAccountService;
+
+            if (_membershipProviderLocator.Provider() is RavenDBMembership.Provider.RavenDBMembershipProvider)
+            {
+                ((RavenDBMembership.Provider.RavenDBMembershipProvider) _membershipProviderLocator.Provider()).
+                    DocumentStore = documentStore;
+            }
         }
 
         [AcceptVerbs(HttpVerbs.Get)]
@@ -101,10 +113,8 @@ namespace GroupGiving.Web.Controllers
             {
                 request.StartDateTime = DateTime.Now;
                 request.StartTimes = TimeOptions();
-                using (var session = _storage.OpenSession())
-                {
-                    request.Countries = new SelectList(session.Query<Country>().Take(600).ToList(), "Name", "Name", "United Kingdom");
-                }
+                
+                request.Countries = new SelectList(_countryService.RetrieveAllCountries(), "Name", "Name", "United Kingdom");
                 return View(request);
             }
 
@@ -194,11 +204,9 @@ namespace GroupGiving.Web.Controllers
             }
 
             // paypal verification
-            var adaptiveAccountsConfiguration =
-            ConfigurationManager.GetSection("adaptiveAccounts") as PaypalAdaptiveAccountsConfigurationSection;
             var paypalVerificationRequest = new VerifyPaypalAccountRequest()
                 {Email = setTicketDetailsRequest.PayPalEmail, FirstName = setTicketDetailsRequest.PayPalFirstName, LastName = setTicketDetailsRequest.PayPalLastName};
-            var accountVerification = new PaypalAccountService(adaptiveAccountsConfiguration).VerifyPaypalAccount(paypalVerificationRequest);
+            var accountVerification = _paypalAccountService.VerifyPaypalAccount(paypalVerificationRequest);
             if (!accountVerification.Success)
             {
                 ModelState.AddModelError("PayPalEmail", "A PayPal account matching the credentials your provided could not be found");

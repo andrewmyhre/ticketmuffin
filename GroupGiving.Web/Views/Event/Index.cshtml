@@ -53,7 +53,8 @@
           @{
               if (Model.UserIsEventOwner)
               {
-                    <text>@Html.ActionLink("Edit this event", "edit-event", new { shortUrl = Model.ShortUrl })</text>
+                    <p><text>@Html.ActionLink("Edit this event", "edit-event", new { shortUrl = Model.ShortUrl })</text></p>
+                    <p><text>@Html.ActionLink("Go to the event management console", "management-console", new {shortUrl = Model.ShortUrl})</text></p>
               }
               }</div>
           <div id="howItWorks">@Html.ActionLink("How it works", "HowItWorks", "Home")</div>

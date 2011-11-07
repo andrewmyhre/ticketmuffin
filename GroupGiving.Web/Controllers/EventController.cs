@@ -2,6 +2,7 @@
 using System.Configuration;
 using System.Linq;
 using System.Runtime.Serialization;
+using System.Security.Principal;
 using System.Text;
 using System.Web.Security;
 using System.Xml;
@@ -35,8 +36,12 @@ namespace GroupGiving.Web.Controllers
         private IPayPalConfiguration _paypalConfiguration;
         private static Markdown _markdown =  new Markdown();
         private IEmailRelayService _emailRelayService;
+        private readonly IIdentity _userIdentity;
 
-        public EventController(IAccountService accountService, IRepository<GroupGivingEvent> eventRepository, IFormsAuthenticationService formsService, IMembershipService membershipService, IPaymentGateway paymentGateway, ITaxAmountResolver taxResolver, IPayPalConfiguration paypalConfiguration, IDocumentStore documentStore, IEmailRelayService emailRelayService)
+        public EventController(IAccountService accountService, IRepository<GroupGivingEvent> eventRepository, 
+            IFormsAuthenticationService formsService, IMembershipService membershipService, IPaymentGateway paymentGateway, 
+            ITaxAmountResolver taxResolver, IPayPalConfiguration paypalConfiguration, IDocumentStore documentStore, 
+            IEmailRelayService emailRelayService, IIdentity userIdentity)
         {
             _accountService = accountService;
             _eventRepository = eventRepository;
@@ -48,6 +53,7 @@ namespace GroupGiving.Web.Controllers
             ((RavenDBMembershipProvider)Membership.Provider).DocumentStore
                 = documentStore;
             _emailRelayService = emailRelayService;
+            _userIdentity = userIdentity;
         }
 
         //
@@ -61,6 +67,8 @@ namespace GroupGiving.Web.Controllers
             var givingEvent = _eventRepository.Retrieve(e=>e.ShortUrl==shortUrl);
             if (givingEvent == null)
                 return HttpNotFound();
+
+            var userAccount = _accountService.RetrieveByEmailAddress(_userIdentity.Name);
 
             viewModel.EventId = givingEvent.Id;
             viewModel.StartDate = givingEvent.StartDate;
@@ -84,7 +92,7 @@ namespace GroupGiving.Web.Controllers
             viewModel.EventIsOn = givingEvent.IsOn;
             viewModel.EventIsFull = givingEvent.IsFull;
             viewModel.ContactName = givingEvent.OrganiserName;
-            viewModel.UserIsEventOwner = true; // todo
+            viewModel.UserIsEventOwner = givingEvent.OrganiserId == userAccount.Id;
 
             viewModel.PledgeCount = givingEvent.PledgeCount;
             viewModel.RequiredPledgesPercentage = (int)Math.Round(((double) viewModel.PledgeCount/(double) Math.Max(givingEvent.MinimumParticipants, 1))*100, 0);
@@ -280,6 +288,40 @@ namespace GroupGiving.Web.Controllers
             var viewModel = AutoMapper.Mapper.Map<GroupGivingEvent, UpdateEventViewModel>(groupGivingEvent);
 
             return View(viewModel);
+        }
+
+        [ActionName("management-console")]
+        [HttpGet]
+        public ActionResult ManagementConsole(string shortUrl)
+        {
+            var groupGivingEvent = _eventRepository.Retrieve(e => e.ShortUrl == shortUrl);
+
+            AutoMapper.Mapper.CreateMap<GroupGivingEvent, UpdateEventViewModel>();
+            var viewModel = AutoMapper.Mapper.Map<GroupGivingEvent, UpdateEventViewModel>(groupGivingEvent);
+
+            return View(viewModel);
+            
+        }
+
+        [ActionName("cancel-event")]
+        [HttpGet]
+        public ActionResult CancelEventAreYouSure(string shortUrl)
+        {
+            return View();
+        }
+
+        [ActionName("cancel-event")]
+        [HttpPost]
+        public ActionResult CancelEvent(string shortUrl, string confirmationCode)
+        {
+            return RedirectToAction("event-cancelled", new {shortUrl = shortUrl});
+        }
+
+        [ActionName("event-cancelled")]
+        [HttpGet]
+        public ActionResult EventCancelled(string shortUrl)
+        {
+            return View();
         }
 
         [ActionName("refund-pledge")]

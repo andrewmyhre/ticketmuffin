@@ -30,42 +30,52 @@ namespace GroupGiving.Test.Unit.Pledging
         {
             _taxRate = 0.15m;
             _attendee = new string[] { "some guy" };
-            _expectedTaxValue = 15;
-            _expectedTotalCharge = 115;
+            _expectedTaxValue = 15.75m;
+            _expectedTotalCharge = 115.8m;
             _paypalPayKey = "12345";
-            _event = new GroupGivingEvent() { Id = "events/1", Country = "some country", TicketPrice = 100, MaximumParticipants = 100, MinimumParticipants = 10};
-            var organiserAccount = ValidAccount();
+            _event = new GroupGivingEvent() { Id = "events/1", Country = "some country", 
+                TicketPrice = 100, 
+                MaximumParticipants = 100, MinimumParticipants = 10};
 
             SetDummyPaypalConfiguration();
-            AnyPayPalRequestReturnsPayKey(_paypalPayKey);
             EventRepositoryReturns(_event);
             SetTaxRateForCountry(_event.Country, _taxRate);
             PayPalGatewayReturnsTransactionIdWithVerification();
             EventRepositoryStoresEventWithVerification();
             SetUpDocumentStore();
             SessionLoadsAccount(ValidAccount());
-
-            var request = new MakePledgeRequest() { AttendeeNames = _attendee };
-            var action = new MakePledgeAction(taxResolverMock.Object, eventRepositoryMock.Object, 
-                paypalService.Object, _paypalConfiguration.Object);
-            _result = action.Attempt(_event, new Account(), organiserAccount, request);
         }
 
         [Test]
         public void PledgeIsCreated()
         {
+            var organiserAccount = ValidAccount();
+            var request = new MakePledgeRequest() { AttendeeNames = _attendee };
+            var action = new MakePledgeAction(taxResolverMock.Object, eventRepositoryMock.Object,
+                paypalGateway.Object, _paypalConfiguration.Object);
+            _result = action.Attempt(_event, new Account(), organiserAccount, request);
             Assert.That(_event.Pledges, Has.Count.EqualTo(1));
         }
 
         [Test]
         public void PledgeIsSaved()
         {
+            var organiserAccount = ValidAccount();
+            var request = new MakePledgeRequest() { AttendeeNames = _attendee };
+            var action = new MakePledgeAction(taxResolverMock.Object, eventRepositoryMock.Object,
+                paypalGateway.Object, _paypalConfiguration.Object);
+            _result = action.Attempt(_event, new Account(), organiserAccount, request);
             eventRepositoryMock.Verify();
         }
 
         [Test]
         public void SubTotalIsTicketPriceTimesAttendeeCount()
         {
+            var organiserAccount = ValidAccount();
+            var request = new MakePledgeRequest() { AttendeeNames = _attendee };
+            var action = new MakePledgeAction(taxResolverMock.Object, eventRepositoryMock.Object,
+                paypalGateway.Object, _paypalConfiguration.Object);
+            _result = action.Attempt(_event, new Account(), organiserAccount, request);
             var pledge = _event.Pledges.LastOrDefault();
 
             Assert.That(pledge.SubTotal, Is.EqualTo(_event.TicketPrice));
@@ -74,6 +84,11 @@ namespace GroupGiving.Test.Unit.Pledging
         [Test]
         public void TaxIsAddedToSubTotal()
         {
+            var organiserAccount = ValidAccount();
+            var request = new MakePledgeRequest() { AttendeeNames = _attendee };
+            var action = new MakePledgeAction(taxResolverMock.Object, eventRepositoryMock.Object,
+                paypalGateway.Object, _paypalConfiguration.Object);
+            _result = action.Attempt(_event, new Account(), organiserAccount, request);
             var pledge = _event.Pledges.LastOrDefault();
 
             Assert.That(pledge.Tax, Is.EqualTo(_expectedTaxValue));
@@ -82,6 +97,11 @@ namespace GroupGiving.Test.Unit.Pledging
         [Test]
         public void TotalIsSubTotalPlusTax()
         {
+            var organiserAccount = ValidAccount();
+            var request = new MakePledgeRequest() { AttendeeNames = _attendee };
+            var action = new MakePledgeAction(taxResolverMock.Object, eventRepositoryMock.Object,
+                paypalGateway.Object, _paypalConfiguration.Object);
+            _result = action.Attempt(_event, new Account(), organiserAccount, request);
             var pledge = _event.Pledges.LastOrDefault();
 
             Assert.That(pledge.Total, Is.EqualTo(_expectedTotalCharge));
@@ -90,20 +110,25 @@ namespace GroupGiving.Test.Unit.Pledging
         [Test]
         public void StatusIsUnpaid()
         {
+            var organiserAccount = ValidAccount();
+            var request = new MakePledgeRequest() { AttendeeNames = _attendee };
+            var action = new MakePledgeAction(taxResolverMock.Object, eventRepositoryMock.Object,
+                paypalGateway.Object, _paypalConfiguration.Object);
+            _result = action.Attempt(_event, new Account(), organiserAccount, request);
             var pledge = _event.Pledges.LastOrDefault();
 
             Assert.That(pledge.PaymentStatus, Is.EqualTo(PaymentStatus.Unpaid));
-        }
-
-        [Test]
-        public void PaymentGatewayRequestIsMade()
-        {
-            //paypalService.Verify(m=>m.MakeRequest(It.IsAny<PaymentGatewayRequest>()));
+            Assert.That(pledge.Paid, Is.False);
         }
 
         [Test]
         public void ResultContainsGatewayResponse()
         {
+            var organiserAccount = ValidAccount();
+            var request = new MakePledgeRequest() { AttendeeNames = _attendee };
+            var action = new MakePledgeAction(taxResolverMock.Object, eventRepositoryMock.Object,
+                paypalGateway.Object, _paypalConfiguration.Object);
+            _result = action.Attempt(_event, new Account(), organiserAccount, request);
             Assert.That(_result.GatewayResponse, Is.Not.Null);
             Assert.That(_result.GatewayResponse.payKey, Is.EqualTo(_paypalPayKey));
         }
@@ -111,6 +136,11 @@ namespace GroupGiving.Test.Unit.Pledging
         [Test]
         public void ResultSuccessful()
         {
+            var organiserAccount = ValidAccount();
+            var request = new MakePledgeRequest() { AttendeeNames = _attendee };
+            var action = new MakePledgeAction(taxResolverMock.Object, eventRepositoryMock.Object,
+                paypalGateway.Object, _paypalConfiguration.Object);
+            _result = action.Attempt(_event, new Account(), organiserAccount, request);
             Assert.That(_result.Succeeded, Is.True);
         }
     }
@@ -139,27 +169,59 @@ namespace GroupGiving.Test.Unit.Pledging
             SetTaxRateForCountry(_event.Country, TaxRate);
             EventRepositoryStoresEventWithVerification();
 
-            var organiserAccount = ValidAccount();
-            var request = new MakePledgeRequest() { AttendeeNames = Attendee };
-            var action = new MakePledgeAction(taxResolverMock.Object, eventRepositoryMock.Object, 
-                paypalService.Object, _paypalConfiguration.Object);
-            _result = action.Attempt(_event, new Account(), organiserAccount, request);
         }
 
         [Test]
         public void PledgeActionSucceededIsFalse()
         {
+            var organiserAccount = ValidAccount();
+            var request = new MakePledgeRequest() { AttendeeNames = Attendee };
+            var action = new MakePledgeAction(taxResolverMock.Object, eventRepositoryMock.Object,
+                paypalGateway.Object, _paypalConfiguration.Object);
+            _result = action.Attempt(_event, new Account(), organiserAccount, request);
             Assert.That(_result.Succeeded, Is.False);
         }
     }
 
     [TestFixture]
-    public class PledgePaymentCompleted : MakingAPledgeWithValidRequest
+    public class PledgePaymentCompleted : PledgeTestsBase
     {
+        protected decimal _expectedTotalCharge;
+        protected decimal _expectedTaxValue;
+        protected string[] _attendee;
+        protected decimal _taxRate;
+        private CreatePledgeActionResult _result;
+
         [SetUp]
-        public void Setup()
+        public virtual void SetUp()
         {
-            base.SetUp();
+            _taxRate = 0.15m;
+            _attendee = new string[] { "some guy" };
+            _expectedTaxValue = 15.75m;
+            _expectedTotalCharge = 115.8m;
+            _paypalPayKey = "12345";
+            _event = new GroupGivingEvent()
+            {
+                Id = "events/1",
+                Country = "some country",
+                TicketPrice = 100,
+                MaximumParticipants = 100,
+                MinimumParticipants = 10
+            };
+
+            SetDummyPaypalConfiguration();
+            EventRepositoryReturns(_event);
+            SetTaxRateForCountry(_event.Country, _taxRate);
+            PayPalGatewayReturnsTransactionIdWithVerification();
+            EventRepositoryStoresEventWithVerification();
+            SetUpDocumentStore();
+            SessionLoadsAccount(ValidAccount());
+
+            var organiserAccount = ValidAccount();
+            var request = new MakePledgeRequest() { AttendeeNames = _attendee };
+            var action = new MakePledgeAction(taxResolverMock.Object, eventRepositoryMock.Object,
+                paypalGateway.Object, _paypalConfiguration.Object);
+            _result = action.Attempt(_event, new Account(), organiserAccount, request);
         }
 
         [Test]
@@ -171,6 +233,7 @@ namespace GroupGiving.Test.Unit.Pledging
 
             var pledge = _event.Pledges.LastOrDefault();
             Assert.That(pledge.PaymentStatus, Is.EqualTo(PaymentStatus.PaidPendingReconciliation));
+            Assert.That(pledge.Paid, Is.True);
         }
 
         [Test]
@@ -220,9 +283,10 @@ namespace GroupGiving.Test.Unit.Pledging
                               {
                                   new EventPledge()
                                       {
+                                          Paid=true,
+                                          PaymentStatus = PaymentStatus.Reconciled,
                                           Attendees = new List<EventPledgeAttendee>()
                                                           {
-                                                              new EventPledgeAttendee(){FullName="attendee"},
                                                               new EventPledgeAttendee(){FullName="attendee"},
                                                               new EventPledgeAttendee(){FullName="attendee"},
                                                               new EventPledgeAttendee(){FullName="attendee"},
@@ -232,7 +296,7 @@ namespace GroupGiving.Test.Unit.Pledging
                               }};
 
             SetDummyPaypalConfiguration();
-            AnyPayPalRequestReturnsPayKey(_paypalPayKey);
+            PaymentRequestIsSuccessful(_paypalPayKey);
             EventRepositoryReturns(_event);
             SetTaxRateForCountry(_event.Country, _taxRate);
             PayPalGatewayReturnsTransactionIdWithVerification();
@@ -244,11 +308,11 @@ namespace GroupGiving.Test.Unit.Pledging
         {
             var request = new MakePledgeRequest()
             {
-                AttendeeNames = new[] { "attendee1", "attendee2", "attendee3" }
+                AttendeeNames = new[] { "attendee1", "attendee2", "attendee3", "attendee4" }
             };
             var organiserAccount = ValidAccount();
             var action = new MakePledgeAction(taxResolverMock.Object, eventRepositoryMock.Object, 
-                paypalService.Object, _paypalConfiguration.Object);
+                paypalGateway.Object, _paypalConfiguration.Object);
 
             Assert.Throws<InvalidOperationException>(() => action.Attempt(_event, new Account(), organiserAccount, request), "Number of attendees exceeded");
         }
@@ -281,6 +345,9 @@ namespace GroupGiving.Test.Unit.Pledging
                               {
                                   new EventPledge()
                                       {
+                                          Paid=true,
+                                          PaymentStatus = PaymentStatus.Reconciled,
+                                          TransactionId = "1234",
                                           Attendees = new List<EventPledgeAttendee>()
                                                           {
                                                               new EventPledgeAttendee(){FullName="attendee"},
@@ -289,12 +356,27 @@ namespace GroupGiving.Test.Unit.Pledging
                                                               new EventPledgeAttendee(){FullName="attendee"},
                                                               new EventPledgeAttendee(){FullName="attendee"}
                                                           }
-                                      }
+                                      },
+                                      new EventPledge()
+                                          {
+                                              Paid=false,
+                                              PaymentStatus = PaymentStatus.Unpaid,
+                                              TransactionId = _paypalPayKey,
+                                              Attendees = new List<EventPledgeAttendee>()
+                                                              {
+                                                                  new EventPledgeAttendee() {FullName="attendee"},
+                                                                  new EventPledgeAttendee() {FullName="attendee"},
+                                                                  new EventPledgeAttendee() {FullName="attendee"},
+                                                                  new EventPledgeAttendee() {FullName="attendee"},
+                                                                  new EventPledgeAttendee() {FullName="attendee"},
+                                                                  new EventPledgeAttendee() {FullName="attendee"},
+                                                              }
+                                          }
                               }
             };
 
             SetDummyPaypalConfiguration();
-            AnyPayPalRequestReturnsPayKey(_paypalPayKey);
+            PaymentRequestIsSuccessful(_paypalPayKey);
             EventRepositoryReturns(_event);
             SetTaxRateForCountry(_event.Country, _taxRate);
             PayPalGatewayReturnsTransactionIdWithVerification();
@@ -302,17 +384,19 @@ namespace GroupGiving.Test.Unit.Pledging
         }
 
         [Test]
-        public void ToManyAttendeesFails()
+        public void MinimumAttendeesReachedThenEventIsOn()
         {
             var request = new MakePledgeRequest()
             {
                 AttendeeNames = new[] { "attendee1", "attendee2", "attendee3" }
             };
-            var organiserAccount = ValidAccount();
-            var action = new MakePledgeAction(taxResolverMock.Object, eventRepositoryMock.Object,
-                paypalService.Object, _paypalConfiguration.Object);
 
-            var result = action.Attempt(_event, new Account(), organiserAccount, request);
+            var organiserAccount = ValidAccount();
+
+            var completeAction =
+                new GroupGiving.Core.Actions.SettlePledge.ConfirmPledgePaymentAction(eventRepositoryMock.Object);
+            completeAction.ConfirmPayment(new SettlePledgeRequest() { PayPalPayKey = _paypalPayKey });
+
 
             Assert.That(_event.IsOn, Is.True);
         }

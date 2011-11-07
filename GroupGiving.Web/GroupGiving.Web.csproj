@@ -144,6 +144,7 @@
     <Compile Include="Code\IContentProvider.cs" />
     <Compile Include="Code\Markdown.cs" />
     <Compile Include="Code\MarkdownViewModel.cs" />
+    <Compile Include="Code\RavenDbMembershipProviderLocator.cs" />
     <Compile Include="Code\MobileSupport.cs" />
     <Compile Include="Code\ModelStateExtensions.cs" />
     <Compile Include="Code\MultiCultureMvcRouteHandler.cs" />
@@ -440,6 +441,9 @@
     <Content Include="Views\Event\pl\Pledge.cshtml" />
     <Content Include="Views\Event\pl\refund-pledge.cshtml" />
     <Content Include="Views\ContentManager\Index.cshtml" />
+    <Content Include="Views\Event\management-console.cshtml" />
+    <Content Include="Views\Event\cancel-event.cshtml" />
+    <Content Include="Views\Event\event-cancelled.cshtml" />
     <None Include="_bin_deployableAssemblies\System.Web.Mvc.dll" />
     <None Include="_bin_deployableAssemblies\WebMatrix.WebData.xml" />
     <None Include="_bin_deployableAssemblies\WebMatrix.WebData.dll" />

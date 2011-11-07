@@ -8,29 +8,4 @@ namespace GroupGiving.Core.Services
     {
         IEnumerable<Country> RetrieveAllCountries();
     }
-
-    public class CountryService : ICountryService
-    {
-        public IEnumerable<Country> RetrieveAllCountries()
-        {
-            return new[]
-                       {
-                           new Country("Poland"),
-                           new Country("United Kingdom"), 
-                           new Country("United States of America"),
-                           new Country("New Zealand")
-                       };
-        }
-    }
-
-    public class Country
-    {
-        public Country(string name)
-        {
-            this.Name = name;
-        }
-
-        public string Id { get; set; }
-        public string Name { get; set; }
-    }
 }

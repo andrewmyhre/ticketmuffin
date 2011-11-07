@@ -9,6 +9,7 @@ using GroupGiving.Core.Domain;
 using GroupGiving.Core.Email;
 using GroupGiving.Core.Services;
 using GroupGiving.PayPal;
+using GroupGiving.PayPal.Configuration;
 using GroupGiving.Web.Code;
 using GroupGiving.Web.Controllers;
 using Raven.Client;
@@ -100,6 +101,10 @@ namespace GroupGiving.Web.App_Start
             kernel.Bind<ITaxAmountResolver>().To<NilTax>();
             kernel.Bind<IIdentity>().ToMethod(x=>HttpContext.Current.User.Identity);
             kernel.Bind<IContentProvider>().To<RavenDbContentProvider>();
+            kernel.Bind<IMembershipProviderLocator>().To<RavenDbMembershipProviderLocator>();
+            kernel.Bind<IPaypalAccountService>().To<PaypalAccountService>();
+            kernel.Bind<PaypalAdaptiveAccountsConfigurationSection>().ToMethod(r => 
+                ConfigurationManager.GetSection("adaptiveAccounts") as PaypalAdaptiveAccountsConfigurationSection);
         }        
     }
 }

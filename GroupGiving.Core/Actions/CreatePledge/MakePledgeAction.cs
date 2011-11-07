@@ -78,15 +78,26 @@ namespace GroupGiving.Core.Actions.CreatePledge
                                                                                           pledge.Total - pledge.ServiceCharge, false)
                                                                  }
                                             };
-            var gatewayResponse = _paymentGateway.CreatePayment(paymentGatewayRequest);
+
+            PaymentGatewayResponse gatewayResponse = null;
+            try
+            {
+                gatewayResponse = _paymentGateway.CreatePayment(paymentGatewayRequest);
+            } catch (HttpChannelException exception)
+            {
+                return new CreatePledgeActionResult() {Succeeded = false};
+            }
 
             result.GatewayResponse = gatewayResponse;
-            if (result.GatewayResponse.PaymentExecStatus == "CREATED")
+            if (gatewayResponse.PaymentExecStatus == "CREATED")
             {
                 result.Succeeded = true;
                 pledge.TransactionId = gatewayResponse.payKey;
 
+                pledge.Paid = false;
+                pledge.PaymentStatus = PaymentStatus.Unpaid;
                 @event.Pledges.Add(pledge);
+                
                 _eventRepository.SaveOrUpdate(@event);
                 _eventRepository.CommitUpdates();
             }

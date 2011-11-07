@@ -46,7 +46,7 @@ namespace GroupGiving.Core.Domain
         [JsonIgnore]
         public bool IsFull
         {
-            get { return PledgeCount >= MaximumParticipants; }
+            get { return Pledges.Count >= MaximumParticipants; }
         }
 
         [JsonIgnore]

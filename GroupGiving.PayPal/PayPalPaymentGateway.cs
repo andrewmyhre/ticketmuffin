@@ -64,6 +64,21 @@ namespace GroupGiving.PayPal
 
         public PaymentGatewayResponse CreatePayment(PaymentGatewayRequest request)
         {
+            if (string.IsNullOrWhiteSpace(request.OrderMemo))
+            {
+                throw new ArgumentException("Order memo must be provided", "request.OrderMemo");
+            }
+
+            if (string.IsNullOrWhiteSpace(request.FailureCallbackUrl))
+            {
+                throw new ArgumentException("Failure callback url must be provided", "request.FailureCallbackUrl");
+            }
+
+            if (string.IsNullOrWhiteSpace(request.SuccessCallbackUrl))
+            {
+                throw new ArgumentException("Success callback url must be provided", "request.SuccessCallbackUrl");
+            }
+
             PayRequest payRequest = new PayRequest()
             {
                 ActionType = "PAY",
