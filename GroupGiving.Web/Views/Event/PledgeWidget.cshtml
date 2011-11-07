@@ -1,0 +1,56 @@
+﻿@using GroupGiving.Core.Domain
+@model GroupGiving.Web.Models.EventViewModel
+
+@if (Model.State == EventState.Cancelled)
+{
+}
+else if (Model.CanAcceptPledges)
+{
+    <div id="pledge">
+    @using (Html.BeginForm("Pledge", "Event", FormMethod.Get))
+    {
+        <input type="submit" class="bigButton" value="@Model.TicketPrice.ToString("c") Pledge" />
+    }
+    </div>
+}
+else if (Model.SalesEndDateTime < DateTime.Now)
+{
+    <div id="pledgeInfo">
+        <div id="count">Sales ended</div>    
+        <div id="countBar">
+            <div id="barProgress" style="width: @Model.RequiredPledgesPercentage%;"></div>
+        </div>
+        <div id="peopleInfo">@Model.PledgeCount people have pledged to attend the event</div>
+        <div id="countdown"></div>
+        <div class="clearFix"></div>
+        <div id="timeLeft">Time left to pledge</div>
+    </div>
+}
+else
+{
+    <div id="pledgeInfo">
+    @if (Model.EventIsFull)
+    {
+            <div id="count">Sold out!</div>    
+    }
+    else if (Model.EventIsOn)
+    {
+            <div id="count">@(Model.MaximumParticipants - Model.PledgeCount)</div>
+
+            <div id="countInfo">Spaces left!</div>
+    }
+    else
+    {
+            <div id="count">@(Model.MinimumParticipants - Model.PledgeCount)</div>
+
+            <div id="countInfo">Pledges needed to fund the event</div>
+    }
+    <div id="countBar">
+        <div id="barProgress" style="width: @Model.RequiredPledgesPercentage%;"></div>
+    </div>
+    <div id="peopleInfo">@Model.PledgeCount people have already pledged to attend the event</div>
+    <div id="countdown"></div>
+    <div class="clearFix"></div>
+    <div id="timeLeft">Time left to pledge</div>
+    </div>
+}

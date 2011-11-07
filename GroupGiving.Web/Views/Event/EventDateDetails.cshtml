@@ -1,0 +1,7 @@
+﻿@model GroupGiving.Web.Models.EventViewModel
+
+<div class="eventBoxTop">Date, time</div>
+            <div class="eventBoxBottom">
+              @Model.StartDate.ToString("dddd, MMMM dd, yyyy")<br />
+              at @Model.StartDate.ToString("HH.mm tt")
+            </div>

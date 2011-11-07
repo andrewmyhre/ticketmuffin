@@ -1,4 +1,5 @@
-﻿@using GroupGiving.Web.Models
+﻿@using GroupGiving.Core.Domain
+@using GroupGiving.Web.Models
 @model UpdateEventViewModel
 
 @{
@@ -7,8 +8,46 @@
 
 <h2>Event Management Console</h2>
 
+@switch (Model.State)
+{
+    case EventState.SalesReady:
+        {
+            <p>Your event is ready to take pledges</p>
+        }
+    break;
+    case EventState.SalesClosed:
+        {
+            <p>Sales for this event have finished</p>
+            if (Model.Pledges.Count >= Model.MinimumParticipants)
+            {
+                <p>You have received enough pledges to fund this event - the event is now on!</p>
+            } else
+            {
+                <p>Your event did not receive enough pledges to reach minimum funding. If you want to cancel the event you can do so.</p>
+            }
+        }
+    break;
+    case EventState.Cancelled:
+        {
+            <p>This event has been cancelled</p>
+        }
+    break;
+    case EventState.Completed:
+        {
+            <p>This event has already taken place. Hope it was successful!</p>
+        }
+    break;
+}
+
 <ul>
-<li>@Html.ActionLink("Edit the event details", "edit-event", new {shortUrl = Model.ShortUrl})</li>
-<li>@Html.ActionLink("View pledges for the event", "event-pledges", new { shortUrl = Model.ShortUrl })</li>
-<li>@Html.ActionLink("Cancel the event", "cancel-event", new {shortUrl = Model.ShortUrl})</li>
+    <li>@Html.ActionLink("View the event page", "index", new {shortUrl = Model.ShortUrl})</li>
+@if (Model.State != EventState.Cancelled && Model.State != EventState.Completed)
+{
+    <li>@Html.ActionLink("Edit the event details", "edit-event", new {shortUrl = Model.ShortUrl})</li>
+}
+    <li>@Html.ActionLink("View pledges for the event", "event-pledges", new { shortUrl = Model.ShortUrl })</li>
+@if (Model.State != EventState.Cancelled && Model.State != EventState.Completed)
+{
+    <li>@Html.ActionLink("Cancel the event", "cancel-event", new {shortUrl = Model.ShortUrl})</li>
+}
 </ul>

@@ -116,6 +116,15 @@ div#eventRight {
   float: left;
   padding-left: 30px;
 }
+div#manageEvent {
+  position: absolute;
+  right: 0;
+  font-size: 12px;
+  font-weight: bold;
+  padding-right: 25px;
+  top: 65px;
+    text-align: right;
+}
 input[type="submit"], a.bigButton {
   border: none;
   font-family: Arial, sans-serif;

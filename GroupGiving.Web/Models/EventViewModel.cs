@@ -6,6 +6,16 @@ namespace GroupGiving.Web.Models
 {
     public class EventViewModel
     {
+        public bool CanAcceptPledges
+        {
+            get
+            {
+                return !EventIsFull 
+                    && SalesEndDateTime > DateTime.Now
+                    && State == EventState.SalesReady;
+            }
+        }
+
         public string EventId { get; set; }
 
         public DateTime StartDate { get; set; }
@@ -69,5 +79,7 @@ namespace GroupGiving.Web.Models
         public bool EventIsFull { get; set; }
 
         public bool UserIsEventOwner { get; set; }
+
+        public EventState State { get; set; }
     }
 }

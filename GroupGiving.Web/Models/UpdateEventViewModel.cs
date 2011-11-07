@@ -57,5 +57,7 @@ namespace GroupGiving.Web.Models
         public string PaypalAccountEmailAddress { get; set; }
 
         public List<EventPledge> Pledges { get; set; }
+
+        public GroupGiving.Core.Domain.EventState State { get; set; }
     }
 }
