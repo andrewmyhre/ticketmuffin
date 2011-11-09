@@ -1,0 +1,46 @@
+﻿@using GroupGiving.Web.Areas.Admin.Controllers
+@model ManageAccountViewModel
+
+@{
+    ViewBag.Title = Model.Email;
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+
+@section scripts {
+<script src="/scripts/jquery-ui-1.8.11.min.js" type="text/javascript"></script>
+<script src="/scripts/jquery.watermark.min.js" type="text/javascript"></script>
+<script type="text/javascript">
+    $(document).ready(function () {
+        @{
+            var properties = Model.GetType().GetProperties();
+            foreach (var property in properties)
+            {
+                <text>$('#@("Account_"+property.Name)').watermark('@property.Name');</text>
+            }
+        }       
+    });
+    
+</script>
+}
+<h2>manage account</h2>
+
+@using (Html.BeginForm())
+{
+    
+<h3>Details</h3>
+<div>
+Email: @Html.EditorFor(m => m.Email)<br/>
+Name: @Html.EditorFor(m => m.FirstName) @Html.EditorFor(m => m.LastName)<br/>
+Address: @Html.EditorFor(m => m.AddressLine), @Html.EditorFor(m => m.City) @Html.EditorFor(m => m.PostCode), @Html.EditorFor(m => m.Country)<br/>
+Account Type: @Html.EditorFor(m => m.AccountType)
+</div>
+
+<h3>PayPal</h3>
+<div>
+    Account Email: @Html.EditorFor(m => m.PayPalEmail)<br/>
+    Account Name: @Html.EditorFor(m => m.PayPalFirstName) @Html.EditorFor(m => m.PayPalLastName)
+</div>
+    <input type="submit" value="Save Changes" />
+}
+
+@Html.ActionLink("back to accounts", "Index", "UserManagement")

@@ -108,6 +108,7 @@ namespace GroupGiving.Web.Controllers
             if (_membershipService.ValidateUser(request.EmailAddress, request.Password))
             {
                 _formsService.SignIn(request.EmailAddress, request.RememberMe);
+
                 if (Url.IsLocalUrl(returnUrl) && returnUrl.Length > 1 && returnUrl.StartsWith("/")
                     && !returnUrl.StartsWith("//") && !returnUrl.StartsWith("/\\"))
                 {

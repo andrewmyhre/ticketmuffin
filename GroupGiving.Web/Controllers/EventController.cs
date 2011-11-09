@@ -23,12 +23,14 @@ using System.Web.Mvc;
 using Ninject;
 using RavenDBMembership.Provider;
 using RavenDBMembership.Web.Models;
+using log4net;
 using RefundRequest = GroupGiving.Core.Dto.RefundRequest;
 
 namespace GroupGiving.Web.Controllers
 {
     public class EventController : Controller
     {
+        private readonly ILog logger = LogManager.GetLogger(typeof (EventController));
         private readonly IFormsAuthenticationService _formsService;
         private readonly IMembershipService _membershipService;
         private readonly IAccountService _accountService;
@@ -221,6 +223,7 @@ namespace GroupGiving.Web.Controllers
             {
                 ModelState.AddModelError("_form", ex.Message);
                 viewModel = BuildEventPageViewModel(eventDetails, request);
+                
                 return View(viewModel);
             }
 
