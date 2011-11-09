@@ -109,7 +109,10 @@ namespace GroupGiving.PayPal
 
             try
             {
-                response = _apiClient.Refund(new Model.RefundRequest(request.TransactionId));
+                response = _apiClient.Refund(new Model.RefundRequest(request.TransactionId)
+                                                 {
+                                                     Receivers = new ReceiverList(request.Receivers.Select(r=>new Receiver(r.AmountToReceive.ToString("#.00"), r.EmailAddress, r.Primary)))
+                                                 });
             } catch (Exception ex)
             {
                 return new RefundResponse()

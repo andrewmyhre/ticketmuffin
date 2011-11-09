@@ -8,6 +8,7 @@ using System.Text;
 using System.Web.Security;
 using System.Xml;
 using GroupGiving.Core.Configuration;
+using GroupGiving.Core.Dto;
 using Raven.Client;
 using anrControls;
 using GroupGiving.Core.Actions.CreatePledge;
@@ -339,7 +340,14 @@ namespace GroupGiving.Web.Controllers
                         p.PaymentStatus == PaymentStatus.PaidPendingReconciliation);
                 foreach (var pledge in pledges)
                 {
-                    var refundResult = _paymentGateway.Refund(new RefundRequest() {TransactionId = pledge.TransactionId});
+                    var refundResult = _paymentGateway.Refund(new RefundRequest()
+                        {
+                            TransactionId = pledge.TransactionId,
+                            Receivers = new List<PaymentRecipient>()
+                                            {
+                                                new PaymentRecipient(pledge.AccountEmailAddress, pledge.Total, true)
+                                            }
+                        });
                     results.Add(pledge.TransactionId, refundResult);
                     if (refundResult.Successful)
                     {

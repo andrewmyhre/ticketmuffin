@@ -22,6 +22,8 @@ namespace GroupGiving.PayPal
             ms.Seek(0, SeekOrigin.Begin);
             StreamReader reader = new StreamReader(ms);
             StringBuilder xml = new StringBuilder(reader.ReadToEnd());
+            System.Diagnostics.Debug.WriteLine("request to paypal:");
+            System.Diagnostics.Debug.WriteLine(xml);
 
             // create the http request and add headers
             HttpWebRequest oPayRequest = (HttpWebRequest)WebRequest.Create(clientSettings.ActionUrl(action));

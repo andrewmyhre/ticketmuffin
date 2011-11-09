@@ -15,7 +15,9 @@ namespace GroupGiving.PayPal.Model
 
         [XmlElement(ElementName = "clientDetails")]
         public ClientDetails ClientDetails { get; set; }
-        
+
+        public ReceiverList Receivers { get; set; }
+
         public RefundRequest()
         {
             

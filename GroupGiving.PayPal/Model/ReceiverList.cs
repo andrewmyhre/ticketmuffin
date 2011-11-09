@@ -9,5 +9,13 @@ namespace GroupGiving.PayPal.Model
     [XmlRoot(ElementName = "receiverList")]
     public class ReceiverList : List<Receiver>
     {
+        public ReceiverList()
+        {
+        }
+
+        public ReceiverList(IEnumerable<Receiver> receivers)
+        {
+            this.AddRange(receivers);
+        }
     }
 }
