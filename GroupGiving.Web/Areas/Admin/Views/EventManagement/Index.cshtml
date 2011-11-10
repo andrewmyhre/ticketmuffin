@@ -53,6 +53,7 @@
     <th>@Html.ActionLink("Status", "Index", new { Model.SearchQuery, OrderBy = "State", Descending = Model.OrderBy == "State" && !Model.Descending })</th>
     <th>@Html.ActionLink("City", "Index", new { Model.SearchQuery, OrderBy = "City", Descending = Model.OrderBy == "City" && !Model.Descending })</th>
     <th>@Html.ActionLink("Country", "Index", new { Model.SearchQuery, OrderBy = "Country", Descending = Model.OrderBy == "Country" && !Model.Descending })</th>
+    <th>@Html.ActionLink("Pledges", "Index", new { Model.SearchQuery, OrderBy = "PledgeCount_Range", Descending = Model.OrderBy == "PledgeCount_Range" && !Model.Descending })</th>
     <th>Attending/Minimum/Maximum</th>
 </tr>
 @foreach (var e in Model.Events)
@@ -63,7 +64,8 @@
         <td class="centered">@e.State</td>
         <td class="centered">@e.City</td>
         <td class="centered">@e.Country</td>
-        <td class="centered">@(e.MaximumParticipants-e.SpacesLeft)/@e.MinimumParticipants/@e.MaximumParticipants</td>
+        <td class="centered">@e.PledgeCount</td>
+        <td class="centered">@e.PaidAttendeeAcount/@e.MinimumParticipants/@e.MaximumParticipants</td>
     </tr>
 }
 </table>

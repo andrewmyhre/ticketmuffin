@@ -106,7 +106,7 @@ namespace GroupGiving.Web.Controllers
             viewModel.ContactName = givingEvent.OrganiserName;
             viewModel.State = givingEvent.State;
 
-            viewModel.PledgeCount = givingEvent.PledgeCount;
+            viewModel.PledgeCount = givingEvent.PaidAttendeeAcount;
             viewModel.RequiredPledgesPercentage = (int)Math.Round(((double) viewModel.PledgeCount/(double) Math.Max(givingEvent.MinimumParticipants, 1))*100, 0);
 
             if (givingEvent.SalesEndDateTime > DateTime.Now)

@@ -90,7 +90,7 @@ namespace GroupGiving.Web.Controllers
 
                     // this pledge has activated the event);
                     if (@event.IsOn
-                        && (@event.PledgeCount - pledge.Attendees.Count < @event.MinimumParticipants))
+                        && (@event.PaidAttendeeAcount - pledge.Attendees.Count < @event.MinimumParticipants))
                     {
                         foreach (var eventPledge in @event.Pledges)
                         {
@@ -107,7 +107,7 @@ namespace GroupGiving.Web.Controllers
             var viewModel = new OrderConfirmationViewModel();
             viewModel.Event = @event;
             viewModel.PledgesRequired = viewModel.Event.MinimumParticipants -
-                                        viewModel.Event.PledgeCount;
+                                        viewModel.Event.PaidAttendeeAcount;
             viewModel.Pledge = pledge;
 
             return View(viewModel);

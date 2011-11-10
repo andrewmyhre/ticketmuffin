@@ -46,7 +46,7 @@ namespace GroupGiving.Core.Actions.CreatePledge
 
                 if (@event.IsOn)
                 {
-                    int spacesLeft = (@event.MaximumParticipants ?? 0) - @event.PledgeCount;
+                    int spacesLeft = (@event.MaximumParticipants ?? 0) - @event.PaidAttendeeAcount;
                     if (request.AttendeeNames.Count() > spacesLeft)
                     {
                         throw new InvalidOperationException(

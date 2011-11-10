@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using Lucene.Net.Analysis;
+using Lucene.Net.Analysis.Standard;
 using Raven.Abstractions.Indexing;
 using Raven.Client;
 
@@ -40,14 +41,15 @@ select new {c.Id, c.Address, contentDefinition.Label, contentByCulture.Key, cont
                                                         {
                                                             Map =
                                                                 @"from e in docs.GroupGivingEvents 
-select new {e.Id, e.Title, e.State, e.City, e.Country, e.StartDate}",
+select new {e.Id, e.Title, e.State, e.City, e.Country, e.StartDate, PledgeCount=e.Pledges.Count}",
                                                             Analyzers =
                                                                 {
                                                                     {"Title", typeof (StopAnalyzer).FullName},
                                                                     {"State", typeof (StopAnalyzer).FullName},
                                                                     {"City", typeof (StopAnalyzer).FullName},
                                                                     {"Country", typeof (StopAnalyzer).FullName},
-                                                                    {"StartDate", typeof (WhitespaceAnalyzer).FullName}
+                                                                    {"StartDate", typeof (WhitespaceAnalyzer).FullName},
+                                                                    {"PledgeCount", typeof (StandardAnalyzer).FullName}
                                                                 }
                                                         });
         }
