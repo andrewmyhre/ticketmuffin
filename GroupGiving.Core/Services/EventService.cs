@@ -48,7 +48,12 @@ namespace GroupGiving.Core.Services
                                                    IsFeatured = request.IsFeatured,
                                                    PhoneNumber = request.PhoneNumber,
                                                    OrganiserId = request.OrganiserAccountId,
-                                                   State = EventState.Creating
+                                                   State = EventState.Creating,
+                                                   Latitude = request.Latitude,
+                                                   Longitude = request.Longitude,
+                                                   Postcode = request.Postcode,
+                                                   Country = request.Country,
+                                                   
                                                };
 
                 session.Store(ggEvent);
