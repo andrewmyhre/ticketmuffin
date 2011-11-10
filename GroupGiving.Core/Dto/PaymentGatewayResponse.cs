@@ -16,5 +16,7 @@ namespace GroupGiving.Core.Dto
 
         public object RawResponse { get; set; }
         public Exception ExceptionDetails { get; set; }
+
+        public DialogueHistoryEntry DialogueEntry { get; set; }
     }
 }

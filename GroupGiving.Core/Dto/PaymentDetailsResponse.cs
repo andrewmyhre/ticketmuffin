@@ -7,5 +7,7 @@ namespace GroupGiving.Core.Dto
         public string Status { get; set; }
 
         public object RawResponse { get; set; }
+
+        public DialogueHistoryEntry DialogueEntry { get; set; }
     }
 }

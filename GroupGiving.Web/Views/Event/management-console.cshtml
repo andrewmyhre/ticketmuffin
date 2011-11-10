@@ -45,7 +45,7 @@
 {
     <li>@Html.ActionLink("Edit the event details", "edit-event", new {shortUrl = Model.ShortUrl})</li>
 }
-    <li>@Html.ActionLink("View pledges for the event", "event-pledges", new { shortUrl = Model.ShortUrl })</li>
+    <li>@Html.ActionLink("View and refund pledges for the event", "event-pledges", new { shortUrl = Model.ShortUrl })</li>
 @if (Model.State != EventState.Cancelled && Model.State != EventState.Completed)
 {
     <li>@Html.ActionLink("Cancel the event", "cancel-event", new {shortUrl = Model.ShortUrl})</li>

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using GroupGiving.Core.Data;
 using GroupGiving.Core.Domain;
@@ -44,6 +45,9 @@ namespace GroupGiving.Core.Actions.SettlePledge
             var paymentDetails =
                 _paymentGateway.RetrievePaymentDetails(new PaymentDetailsRequest()
                                                            {TransactionId = pledge.TransactionId});
+            if (pledge.PaymentGatewayHistory == null)
+                pledge.PaymentGatewayHistory = new List<DialogueHistoryEntry>();
+            pledge.PaymentGatewayHistory.Add(paymentDetails.DialogueEntry);
 
             if (paymentDetails.Status == "INCOMPLETE") // delayed payment will be incomplete until execute payment is called
             {

@@ -1,0 +1,23 @@
+﻿@using GroupGiving.Web.Areas.Admin.Controllers
+@model UserListViewModel
+
+@{
+    ViewBag.Title = "user management";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+
+<h2>user management</h2>
+
+<table>
+@foreach (var account in Model.Users)
+{
+    <tr>
+        <td>@Html.ActionLink(account.Email??"(no email)", "account", new {Id=account.Id.Substring(account.Id.IndexOf('/')+1)})</td>
+        <td>@account.LastName</td>
+        <td>@account.FirstName</td>
+    </tr>
+    
+}
+</table>
+
+<p>@Html.ActionLink("dashboard", "Index", "Dashboard")</p>

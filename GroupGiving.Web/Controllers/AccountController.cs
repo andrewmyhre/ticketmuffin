@@ -108,6 +108,7 @@ namespace GroupGiving.Web.Controllers
             if (_membershipService.ValidateUser(request.EmailAddress, request.Password))
             {
                 _formsService.SignIn(request.EmailAddress, request.RememberMe);
+
                 if (Url.IsLocalUrl(returnUrl) && returnUrl.Length > 1 && returnUrl.StartsWith("/")
                     && !returnUrl.StartsWith("//") && !returnUrl.StartsWith("/\\"))
                 {
@@ -538,6 +539,20 @@ namespace GroupGiving.Web.Controllers
 
     public class EventListViewModel
     {
-        public IEnumerable<GroupGivingEvent> Events { get; set; } 
+        public IEnumerable<GroupGivingEvent> Events { get; set; }
+
+        public int Page { get; set; }
+
+        public int PageSize { get; set; }
+
+        public bool LastPage { get; set; }
+
+        public string SearchQuery { get; set; }
+
+        public string[] States { get; set; }
+
+        public string OrderBy { get; set; }
+
+        public bool Descending { get; set; }
     }
 }

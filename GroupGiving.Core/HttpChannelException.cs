@@ -1,12 +1,13 @@
 using System;
+using GroupGiving.Core.Dto;
 
 namespace GroupGiving.Core
 {
     public class HttpChannelException : Exception
     {
-        public object FaultMessage { get; set; }
+        public ResponseBase FaultMessage { get; set; }
 
-        public HttpChannelException(object faultMessage)
+        public HttpChannelException(ResponseBase faultMessage)
             : base(faultMessage.ToString())
         {
             FaultMessage = faultMessage;

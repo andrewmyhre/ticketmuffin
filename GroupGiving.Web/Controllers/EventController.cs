@@ -7,7 +7,9 @@ using System.Security.Principal;
 using System.Text;
 using System.Web.Security;
 using System.Xml;
+using GroupGiving.Core;
 using GroupGiving.Core.Configuration;
+using GroupGiving.Core.Dto;
 using Raven.Client;
 using anrControls;
 using GroupGiving.Core.Actions.CreatePledge;
@@ -23,12 +25,15 @@ using System.Web.Mvc;
 using Ninject;
 using RavenDBMembership.Provider;
 using RavenDBMembership.Web.Models;
+using log4net;
 using RefundRequest = GroupGiving.Core.Dto.RefundRequest;
+using RefundResponse = GroupGiving.Core.Dto.RefundResponse;
 
 namespace GroupGiving.Web.Controllers
 {
     public class EventController : Controller
     {
+        private readonly ILog logger = LogManager.GetLogger(typeof (EventController));
         private readonly IFormsAuthenticationService _formsService;
         private readonly IMembershipService _membershipService;
         private readonly IAccountService _accountService;
@@ -79,7 +84,7 @@ namespace GroupGiving.Web.Controllers
                 viewModel.UserIsEventOwner = givingEvent.OrganiserId == userAccount.Id;
             }
 
-            viewModel.EventId = givingEvent.Id;
+            viewModel.Id = givingEvent.Id;
             viewModel.StartDate = givingEvent.StartDate;
             viewModel.AdditionalBenefitsMarkedDown = _markdown.Transform(!string.IsNullOrWhiteSpace(givingEvent.AdditionalBenefits) ? givingEvent.AdditionalBenefits : "");
             viewModel.AddressLine = givingEvent.AddressLine;
@@ -103,7 +108,7 @@ namespace GroupGiving.Web.Controllers
             viewModel.ContactName = givingEvent.OrganiserName;
             viewModel.State = givingEvent.State;
 
-            viewModel.PledgeCount = givingEvent.PledgeCount;
+            viewModel.PledgeCount = givingEvent.PaidAttendeeCount;
             viewModel.RequiredPledgesPercentage = (int)Math.Round(((double) viewModel.PledgeCount/(double) Math.Max(givingEvent.MinimumParticipants, 1))*100, 0);
 
             if (givingEvent.SalesEndDateTime > DateTime.Now)
@@ -146,7 +151,7 @@ namespace GroupGiving.Web.Controllers
         }
         private EventPledgeViewModel BuildEventPageViewModel(GroupGivingEvent givingEvent, EventPledgeViewModel viewModel)
         {
-            viewModel.EventId = givingEvent.Id;
+            viewModel.Id = givingEvent.Id;
             viewModel.StartDate = givingEvent.StartDate;
             viewModel.AdditionalBenefitsMarkedDown = givingEvent.AdditionalBenefits;
             viewModel.AddressLine = givingEvent.AddressLine;
@@ -210,7 +215,8 @@ namespace GroupGiving.Web.Controllers
             {
                 AttendeeNames = request.AttendeeName,
                 PayPalEmailAddress = request.EmailAddress,
-                OptInForOffers = request.OptInForOffers
+                OptInForOffers = request.OptInForOffers,
+                WebsiteUrlBase = string.Format("{0}://{1}", Request.Url.Scheme, Request.Url.Authority)
             };
 
             CreatePledgeActionResult result = null;
@@ -221,6 +227,7 @@ namespace GroupGiving.Web.Controllers
             {
                 ModelState.AddModelError("_form", ex.Message);
                 viewModel = BuildEventPageViewModel(eventDetails, request);
+                
                 return View(viewModel);
             }
 
@@ -336,7 +343,14 @@ namespace GroupGiving.Web.Controllers
                         p.PaymentStatus == PaymentStatus.PaidPendingReconciliation);
                 foreach (var pledge in pledges)
                 {
-                    var refundResult = _paymentGateway.Refund(new RefundRequest() {TransactionId = pledge.TransactionId});
+                    var refundResult = _paymentGateway.Refund(new RefundRequest()
+                        {
+                            TransactionId = pledge.TransactionId,
+                            Receivers = new List<PaymentRecipient>()
+                                            {
+                                                new PaymentRecipient(pledge.AccountEmailAddress, pledge.Total, true)
+                                            }
+                        });
                     results.Add(pledge.TransactionId, refundResult);
                     if (refundResult.Successful)
                     {
@@ -418,8 +432,29 @@ namespace GroupGiving.Web.Controllers
 
                     return View(viewModel);
                 }
+                RefundResponse refundResult = null;
+                try
+                {
+                    refundResult = _paymentGateway.Refund(new RefundRequest()
+                    {
+                        TransactionId = pledge.TransactionId,
+                        Receivers = new List<PaymentRecipient>()
+                                            {
+                                                new PaymentRecipient(pledge.AccountEmailAddress, pledge.Total, true)
+                                            }
+                    });
+                } catch (HttpChannelException exception)
+                {
+                    if (pledge.PaymentGatewayHistory == null)
+                        pledge.PaymentGatewayHistory = new List<DialogueHistoryEntry>();
+                    pledge.PaymentGatewayHistory.Add(exception.FaultMessage.Raw);
+                    logger.Fatal("Could not refund pledge with transaction id " + pledge.TransactionId, exception);
+                    return RedirectToAction("event-pledges", new { shortUrl = shortUrl });
+                }
 
-                var refundResult = _paymentGateway.Refund(new RefundRequest() {TransactionId = pledge.TransactionId});
+                if (pledge.PaymentGatewayHistory == null)
+                    pledge.PaymentGatewayHistory = new List<DialogueHistoryEntry>();
+                pledge.PaymentGatewayHistory.Add(refundResult.DialogueEntry);
 
                 if (refundResult.Successful)
                 {

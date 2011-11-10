@@ -16,7 +16,7 @@ namespace GroupGiving.Web.Models
             }
         }
 
-        public string EventId { get; set; }
+        public string Id { get; set; }
 
         public DateTime StartDate { get; set; }
 

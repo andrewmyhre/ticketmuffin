@@ -9,5 +9,7 @@ namespace GroupGiving.Core.Actions.CreatePledge
         public string PayPalEmailAddress { get; set; }
 
         public bool OptInForOffers { get; set; }
+
+        public string WebsiteUrlBase { get; set; }
     }
 }

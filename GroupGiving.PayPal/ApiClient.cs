@@ -27,23 +27,17 @@ namespace GroupGiving.PayPal
             // set first receiver as primary
             request.Receivers.First().Primary = true;
 
-            HttpChannel channel = new HttpChannel();
-            var r = channel.ExecuteRequest<PayRequest, PayResponse>("Pay", request, _clientSettings);
-            return r;
+            return new HttpChannel().ExecuteRequest<PayRequest, PayResponse>("Pay", request, _clientSettings);
         }
 
         public PaymentDetailsResponse SendPaymentDetailsRequest(PaymentDetailsRequest request)
         {
-            HttpChannel channel = new HttpChannel();
-            var response = channel.ExecuteRequest<PaymentDetailsRequest, PaymentDetailsResponse>("PaymentDetails", request, _clientSettings);
-            return response;
+            return new HttpChannel().ExecuteRequest<PaymentDetailsRequest, PaymentDetailsResponse>("PaymentDetails", request, _clientSettings);
         }
 
         public ExecutePaymentResponse SendExecutePaymentRequest(ExecutePaymentRequest request)
         {
-            HttpChannel channel = new HttpChannel();
-            var response = channel.ExecuteRequest<ExecutePaymentRequest, ExecutePaymentResponse>("ExecutePayment", request, _clientSettings);
-            return response;
+            return new HttpChannel().ExecuteRequest<ExecutePaymentRequest, ExecutePaymentResponse>("ExecutePayment", request, _clientSettings);
         }
 
         public RefundResponse Refund(RefundRequest request)
