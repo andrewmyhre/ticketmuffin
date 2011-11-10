@@ -124,10 +124,13 @@ namespace GroupGiving.PayPal
             return new RefundResponse()
                        {
                            Successful = response.ResponseEnvelope.ack.StartsWith("Success")
-                            && response.RefundInfoList.All(ri => ri.RefundStatus == "REFUNDED" || ri.RefundStatus == "REFUNDED_PENDING"),
+                            && response.refundInfoList.All(ri => ri.refundStatus == "REFUNDED" 
+                                || ri.refundStatus == "REFUNDED_PENDING" 
+                                || ri.refundStatus == "NOT_PAID" 
+                                || ri.refundStatus == "ALREADY_REVERSED_OR_REFUNDED"),
                            RawResponse = response,
                            DialogueEntry = ((ResponseBase)response).Raw,
-                           Message = response.RefundInfoList.First().RefundStatus
+                           Message = response.refundInfoList.First().refundStatus
                        };
         }
     }

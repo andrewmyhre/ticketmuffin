@@ -1,0 +1,49 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<xs:schema id="NewDataSet" targetNamespace="http://svcs.paypal.com/types/ap" xmlns:mstns="http://svcs.paypal.com/types/ap" xmlns="http://svcs.paypal.com/types/ap" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" attributeFormDefault="qualified" elementFormDefault="qualified">
+  <xs:element name="RefundResponse" msdata:Prefix="ns2">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="currencyCode" form="unqualified" type="xs:string" minOccurs="0" />
+        <xs:element name="responseEnvelope" form="unqualified">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="timestamp" form="unqualified" type="xs:string" minOccurs="0" />
+              <xs:element name="ack" form="unqualified" type="xs:string" minOccurs="0" />
+              <xs:element name="correlationId" form="unqualified" type="xs:string" minOccurs="0" />
+              <xs:element name="build" form="unqualified" type="xs:string" minOccurs="0" />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="refundInfoList" form="unqualified">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="refundInfo" form="unqualified" minOccurs="0" maxOccurs="unbounded">
+                <xs:complexType>
+                  <xs:sequence>
+                    <xs:element name="refundStatus" form="unqualified" type="xs:string" minOccurs="0" />
+                    <xs:element name="refundHasBecomeFull" form="unqualified" type="xs:string" minOccurs="0" />
+                    <xs:element name="receiver" form="unqualified" minOccurs="0" maxOccurs="unbounded">
+                      <xs:complexType>
+                        <xs:sequence>
+                          <xs:element name="amount" form="unqualified" type="xs:string" minOccurs="0" />
+                          <xs:element name="email" form="unqualified" type="xs:string" minOccurs="0" />
+                        </xs:sequence>
+                      </xs:complexType>
+                    </xs:element>
+                  </xs:sequence>
+                </xs:complexType>
+              </xs:element>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="NewDataSet" msdata:IsDataSet="true" msdata:UseCurrentLocale="true" msdata:Prefix="ns2">
+    <xs:complexType>
+      <xs:choice minOccurs="0" maxOccurs="unbounded">
+        <xs:element ref="RefundResponse" />
+      </xs:choice>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>

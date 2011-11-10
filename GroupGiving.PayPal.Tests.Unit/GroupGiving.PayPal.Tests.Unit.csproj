@@ -82,6 +82,9 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="approved_payment_details_response.xml" />
+    <Content Include="refund_response.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include=".NETFramework,Version=v4.0">

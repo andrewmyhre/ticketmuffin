@@ -69,5 +69,16 @@ namespace GroupGiving.PayPal.Tests.Unit
             Assert.That(responseObject.Error, Is.Not.Null);
             Assert.That(responseObject.Error.Domain, Is.StringMatching("PLATFORM"));
         }
+
+        [Test]
+        public void Can_deserialize_a_refund_response()
+        {
+            string response = File.ReadAllText("refund_response.xml");
+
+            var responseObject = DeserializeObject<RefundResponse>(response);
+            Assert.That(responseObject, Is.Not.Null);
+            Assert.That(responseObject.refundInfoList, Has.Length.GreaterThan(0));
+            Assert.That(responseObject.refundInfoList[0].refundStatus, Is.StringMatching("ALREADY_REVERSED_OR_REFUNDED"));
+        }
     }
 }

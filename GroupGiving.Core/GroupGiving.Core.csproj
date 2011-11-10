@@ -86,6 +86,7 @@
     <Compile Include="Actions\CreatePledge\CreatePledgeActionResult.cs" />
     <Compile Include="Actions\CreatePledge\MakePledgeRequest.cs" />
     <Compile Include="Actions\CreatePledge\MakePledgeAction.cs" />
+    <Compile Include="Actions\RefundPledge\RefundPledgeAction.cs" />
     <Compile Include="Actions\SettlePledge\ConfirmPledgePaymentAction.cs" />
     <Compile Include="Actions\SettlePledge\SettlePledgeRequest.cs" />
     <Compile Include="Actions\SettlePledge\SettlePledgeResponse.cs" />

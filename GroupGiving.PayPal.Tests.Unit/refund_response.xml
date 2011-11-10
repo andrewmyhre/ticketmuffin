@@ -1,0 +1,27 @@
+﻿<?xml version='1.0' encoding='UTF-8'?>
+<ns2:RefundResponse xmlns:ns2="http://svcs.paypal.com/types/ap">
+    <responseEnvelope>
+        <timestamp>2011-11-10T14:15:03.548-08:00</timestamp>
+        <ack>Success</ack>
+        <correlationId>0d39eb2bea136</correlationId>
+        <build>2228340</build>
+    </responseEnvelope>
+    <currencyCode>GBP</currencyCode>
+    <refundInfoList>
+        <refundInfo>
+            <receiver>
+                <amount>4.80</amount>
+                <email>sellr2_1304843519_biz@gmail.com</email>
+            </receiver>
+            <refundStatus>ALREADY_REVERSED_OR_REFUNDED</refundStatus>
+            <refundHasBecomeFull>true</refundHasBecomeFull>
+        </refundInfo>
+        <refundInfo>
+            <receiver>
+                <amount>0.25</amount>
+                <email>seller_1304843436_biz@gmail.com</email>
+            </receiver>
+            <refundStatus>NOT_PAID</refundStatus>
+        </refundInfo>
+    </refundInfoList>
+</ns2:RefundResponse>

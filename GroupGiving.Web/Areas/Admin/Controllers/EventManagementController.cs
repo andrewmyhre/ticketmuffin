@@ -4,6 +4,7 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using GroupGiving.Core;
+using GroupGiving.Core.Actions.RefundPledge;
 using GroupGiving.Core.Domain;
 using GroupGiving.Core.Dto;
 using GroupGiving.Core.Services;
@@ -145,66 +146,26 @@ namespace GroupGiving.Web.Areas.Admin.Controllers
         {
             using (var session = _documentStore.OpenSession())
             {
-                var @event = session.Load<GroupGivingEvent>("groupgivingevents/" + id);
-                var pledge = @event.Pledges.Where(p => p.OrderNumber == orderNumber).FirstOrDefault();
                 RefundViewModel viewModel = new RefundViewModel();
-
-                if (pledge == null)
-                {
-                    ModelState.AddModelError("ordernumber", "We couldn't locate a pledge with that order number.");
-                }
-
-                if (!ModelState.IsValid)
-                {
-                    viewModel.Event = @event;
-                    viewModel.PledgeToBeRefunded = pledge;
-
-                    return RedirectToAction("ViewPledges", new {Id=id});
-                }
+                RefundPledgeAction action = new RefundPledgeAction(_paymentGateway);
 
                 RefundResponse refundResult = null;
                 try
                 {
-                    refundResult = _paymentGateway.Refund(new RefundRequest()
-                    {
-                        TransactionId = pledge.TransactionId,
-                        Receivers = new List<PaymentRecipient>()
-                                            {
-                                                new PaymentRecipient(pledge.AccountEmailAddress, pledge.Total, true)
-                                            }
-                    });
-                } catch (HttpChannelException exception)
+                    refundResult = action.Execute(session, "groupgivingevents/" + id, orderNumber);
+                } catch(Exception exception)
                 {
-                    if (pledge.PaymentGatewayHistory == null)
-                        pledge.PaymentGatewayHistory = new List<DialogueHistoryEntry>();
-                    pledge.PaymentGatewayHistory.Add(((ResponseBase)exception.FaultMessage).Raw);
-                    session.SaveChanges();
-                    throw;
-                }
-
-                if (pledge.PaymentGatewayHistory == null)
-                    pledge.PaymentGatewayHistory = new List<DialogueHistoryEntry>();
-                pledge.PaymentGatewayHistory.Add(refundResult.DialogueEntry);
+                    return RedirectToAction("ViewPledges", new { Id = id });
+                } 
 
                 if (refundResult.Successful)
                 {
-                    pledge.DateRefunded = DateTime.Now;
-                    pledge.PaymentStatus = PaymentStatus.Refunded;
-                    pledge.Paid = false;
-                    pledge.Notes = "REFUNDED";
                     TempData["refunded"] = true;
-                } else
-                {
-                    pledge.Notes = refundResult.Message;
                 }
+                else
+                    TempData["refunded"] = false;
 
-                session.SaveChanges();
-
-                viewModel.Event = @event;
-                viewModel.PledgeToBeRefunded = pledge;
-                viewModel.RefundFailed = true;
-
-                return RedirectToAction("ViewPledges", new { Id = id });
+                return RedirectToAction("ViewPledges", new {Id = id});
             }
         }
 
