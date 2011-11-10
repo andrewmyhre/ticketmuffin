@@ -550,5 +550,9 @@ namespace GroupGiving.Web.Controllers
         public string SearchQuery { get; set; }
 
         public string[] States { get; set; }
+
+        public string OrderBy { get; set; }
+
+        public bool Descending { get; set; }
     }
 }

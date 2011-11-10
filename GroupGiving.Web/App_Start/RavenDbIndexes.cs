@@ -40,11 +40,14 @@ select new {c.Id, c.Address, contentDefinition.Label, contentByCulture.Key, cont
                                                         {
                                                             Map =
                                                                 @"from e in docs.GroupGivingEvents 
-select new {e.Id, e.Title, e.State}",
+select new {e.Id, e.Title, e.State, e.City, e.Country, e.StartDate}",
                                                             Analyzers =
                                                                 {
                                                                     {"Title", typeof (StopAnalyzer).FullName},
-                                                                    {"State", typeof (StopAnalyzer).FullName}
+                                                                    {"State", typeof (StopAnalyzer).FullName},
+                                                                    {"City", typeof (StopAnalyzer).FullName},
+                                                                    {"Country", typeof (StopAnalyzer).FullName},
+                                                                    {"StartDate", typeof (WhitespaceAnalyzer).FullName}
                                                                 }
                                                         });
         }

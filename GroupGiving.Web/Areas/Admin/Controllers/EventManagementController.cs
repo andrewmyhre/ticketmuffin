@@ -28,8 +28,9 @@ namespace GroupGiving.Web.Areas.Admin.Controllers
         //
         // GET: /Admin/EventManagement/
 
-        public ActionResult Index(int? page, string searchQuery, string[] state)
+        public ActionResult Index(int? page, string searchQuery, string[] state, string orderBy, bool? descending)
         {
+            descending = descending.HasValue && descending.Value;
             var eventListViewModel = new EventListViewModel();
             if (!page.HasValue || page.Value < 1) page = 1;
             using (var session = _documentStore.OpenSession())
@@ -38,7 +39,11 @@ namespace GroupGiving.Web.Areas.Admin.Controllers
                 if (!string.IsNullOrWhiteSpace(searchQuery))
                 {
                     //query = query.Where(e=>e.Title.StartsWith(searchQuery, StringComparison.OrdinalIgnoreCase));
-                    query = query.WhereContains("Title", searchQuery);
+                    query = query.OpenSubclause()
+                        .WhereContains("Title", searchQuery)
+                        .OrElse().WhereContains("City", searchQuery)
+                        .OrElse().WhereContains("Country", searchQuery)
+                        .CloseSubclause();
                 }
                 if (state != null)
                 {
@@ -62,10 +67,24 @@ namespace GroupGiving.Web.Areas.Admin.Controllers
                     }
                 }
 
+                if (!string.IsNullOrWhiteSpace(orderBy))
+                {
+                    if (descending.Value)
+                    {
+                        query = query.OrderBy("-"+orderBy);
+                    } else
+                    {
+                        query = query.OrderBy(orderBy);
+                    }
+                }
+
                 eventListViewModel.Events = query.Skip((page.Value - 1) * pageSize).Take(pageSize);
                 eventListViewModel.Page = page.Value;
                 eventListViewModel.PageSize = pageSize;
                 eventListViewModel.States = state;
+                eventListViewModel.SearchQuery = searchQuery;
+                eventListViewModel.OrderBy = orderBy;
+                eventListViewModel.Descending = descending.Value;
 
                 // is there a next page?
                 eventListViewModel.LastPage = session.Query<GroupGivingEvent>().Skip((page.Value) * pageSize).Count() == 0;

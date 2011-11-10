@@ -48,9 +48,11 @@
 
 <table width="100%">
 <tr>
-    <th>Title</th>
-    <th>Event Date</th>
-    <th>Status</th>
+    <th>@Html.ActionLink("Title", "Index", new { Model.SearchQuery, OrderBy = "Title", Descending = Model.OrderBy == "Title" && !Model.Descending })</th>
+    <th>@Html.ActionLink("Event Date", "Index", new { Model.SearchQuery, OrderBy = "StartDate", Descending = Model.OrderBy == "StartDate" && !Model.Descending })</th>
+    <th>@Html.ActionLink("Status", "Index", new { Model.SearchQuery, OrderBy = "State", Descending = Model.OrderBy == "State" && !Model.Descending })</th>
+    <th>@Html.ActionLink("City", "Index", new { Model.SearchQuery, OrderBy = "City", Descending = Model.OrderBy == "City" && !Model.Descending })</th>
+    <th>@Html.ActionLink("Country", "Index", new { Model.SearchQuery, OrderBy = "Country", Descending = Model.OrderBy == "Country" && !Model.Descending })</th>
     <th>Attending/Minimum/Maximum</th>
 </tr>
 @foreach (var e in Model.Events)
@@ -59,6 +61,8 @@
         <td>@Html.ActionLink(e.Title, "ManageEvent", new {Id=e.Id.Substring(e.Id.IndexOf('/'))})</td>
         <td class="centered">@e.StartDate</td>
         <td class="centered">@e.State</td>
+        <td class="centered">@e.City</td>
+        <td class="centered">@e.Country</td>
         <td class="centered">@(e.MaximumParticipants-e.SpacesLeft)/@e.MinimumParticipants/@e.MaximumParticipants</td>
     </tr>
 }
