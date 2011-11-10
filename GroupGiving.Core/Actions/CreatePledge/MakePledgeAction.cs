@@ -46,7 +46,7 @@ namespace GroupGiving.Core.Actions.CreatePledge
 
                 if (@event.IsOn)
                 {
-                    int spacesLeft = (@event.MaximumParticipants ?? 0) - @event.PaidAttendeeAcount;
+                    int spacesLeft = (@event.MaximumParticipants ?? 0) - @event.PaidAttendeeCount;
                     if (request.AttendeeNames.Count() > spacesLeft)
                     {
                         throw new InvalidOperationException(
@@ -94,10 +94,14 @@ namespace GroupGiving.Core.Actions.CreatePledge
                 try
                 {
                     gatewayResponse = _paymentGateway.CreateDelayedPayment(paymentGatewayRequest);
+                    if (pledge.PaymentGatewayHistory==null)
+                        pledge.PaymentGatewayHistory = new List<DialogueHistoryEntry>();
                     pledge.PaymentGatewayHistory.Add(gatewayResponse.DialogueEntry);
                 }
                 catch (HttpChannelException exception)
                 {
+                    if (pledge.PaymentGatewayHistory == null)
+                        pledge.PaymentGatewayHistory = new List<DialogueHistoryEntry>();
                     pledge.PaymentGatewayHistory.Add(exception.FaultMessage.Raw);
                     session.SaveChanges();
                     return new CreatePledgeActionResult()

@@ -1,0 +1,31 @@
+﻿@using GroupGiving.Web.Areas.Admin.Controllers
+@model TransactionHistoryViewModel
+
+@{
+    ViewBag.Title = "Transaction History";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+
+@section scripts
+{
+<script src="http://yandex.st/highlightjs/6.1/highlight.min.js"></script>
+<link rel="stylesheet" href="http://yandex.st/highlightjs/6.1/styles/default.min.css">
+<script>
+    hljs.tabReplace = '    ';
+    hljs.initHighlightingOnLoad();
+  </script>
+}
+
+<h2>Transaction History</h2>
+@Html.ActionLink("back to pledge", "ViewPledges", new {Id = Model.EventId, OrderNumber = Model.OrderNumber})
+
+@foreach (var message in Model.Messages)
+{
+    <p>
+        <strong>@message.Timestamp</strong><br/>
+        Request: <pre><code>@message.Request</code></pre>
+        Response: <pre><code>@message.Response</code></pre>
+    </p>
+}
+
+@Html.ActionLink("back to pledge", "ViewPledges", new {Id = Model.EventId, OrderNumber = Model.OrderNumber})

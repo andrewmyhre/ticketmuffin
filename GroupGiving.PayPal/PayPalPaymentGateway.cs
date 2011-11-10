@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using GroupGiving.Core;
 using GroupGiving.Core.Configuration;
 using GroupGiving.Core.Domain;
 using GroupGiving.Core.Dto;
@@ -65,7 +66,7 @@ namespace GroupGiving.PayPal
                            PaymentExecStatus = response.paymentExecStatus,
                            PaymentPageUrl = string.Format(_payPalConfiguration.PayFlowProPaymentPage, response.payKey),
                            payKey = response.payKey,
-                           DialogueEntry = response.Raw
+                           DialogueEntry = ((ResponseBase)response).Raw
                        };
         }
 
@@ -84,7 +85,7 @@ namespace GroupGiving.PayPal
                            Status = result.status,
                            SenderEmailAddress = result.senderEmail,
                            RawResponse = result,
-                           DialogueEntry = result.Raw
+                           DialogueEntry = ((ResponseBase)result).Raw
                        };
         }
 
@@ -103,20 +104,30 @@ namespace GroupGiving.PayPal
                                                  {
                                                      Receivers = new ReceiverList(request.Receivers.Select(r=>new Receiver(r.AmountToReceive.ToString("#.00"), r.EmailAddress, r.Primary)))
                                                  });
-            } catch (Exception ex)
+            } catch (HttpChannelException ex)
             {
                 return new RefundResponse()
                            {
                                Successful = false,
-                               RawResponse = ex
+                               RawResponse = ex,
+                               DialogueEntry = ((ResponseBase)ex.FaultMessage).Raw
                            };
+            } catch (Exception ex)
+            {
+                return new RefundResponse()
+                {
+                    Successful = false,
+                    RawResponse = ex
+                };
             }
 
             return new RefundResponse()
                        {
-                           Successful = response.ResponseEnvelope.ack.StartsWith("Success"),
+                           Successful = response.ResponseEnvelope.ack.StartsWith("Success")
+                            && response.RefundInfoList.All(ri => ri.RefundStatus == "REFUNDED" || ri.RefundStatus == "REFUNDED_PENDING"),
                            RawResponse = response,
-                           DialogueEntry = response.Raw
+                           DialogueEntry = ((ResponseBase)response).Raw,
+                           Message = response.RefundInfoList.First().RefundStatus
                        };
         }
     }

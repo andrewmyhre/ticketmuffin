@@ -11,5 +11,4 @@
 <ul>
     <li>@Html.ActionLink("Edit event details", "EditEventDetails", new {id=Model.Id.Substring(Model.Id.IndexOf('/'))})</li>
     <li>@Html.ActionLink("View and refund pledges", "ViewPledges", new { id = Model.Id.Substring(Model.Id.IndexOf('/')) })</li>
-    <li>@Html.ActionLink("View transaction history", "TransactionHistory", new { id = Model.Id.Substring(Model.Id.IndexOf('/')) })</li>
 </ul>

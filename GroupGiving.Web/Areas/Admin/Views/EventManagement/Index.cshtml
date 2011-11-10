@@ -59,13 +59,13 @@
 @foreach (var e in Model.Events)
 {
     <tr>
-        <td>@Html.ActionLink(e.Title, "ManageEvent", new {Id=e.Id.Substring(e.Id.IndexOf('/'))})</td>
+        <td>@Html.ActionLink(e.Title, "ManageEvent", new {Id=e.Id.Substring(e.Id.IndexOf('/'))}) <a href="/events/@e.ShortUrl">view</a></td>
         <td class="centered">@e.StartDate</td>
         <td class="centered">@e.State</td>
         <td class="centered">@e.City</td>
         <td class="centered">@e.Country</td>
         <td class="centered">@e.PledgeCount</td>
-        <td class="centered">@e.PaidAttendeeAcount/@e.MinimumParticipants/@e.MaximumParticipants</td>
+        <td class="centered">@e.PaidAttendeeCount/@e.MinimumParticipants/@e.MaximumParticipants</td>
     </tr>
 }
 </table>

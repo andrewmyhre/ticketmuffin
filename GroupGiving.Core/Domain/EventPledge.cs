@@ -32,6 +32,8 @@ namespace GroupGiving.Core.Domain
 
         public List<DialogueHistoryEntry> PaymentGatewayHistory { get; set; }
 
+        public string Notes { get; set; }
+
         public EventPledge()
         {
             Attendees = new List<EventPledgeAttendee>();

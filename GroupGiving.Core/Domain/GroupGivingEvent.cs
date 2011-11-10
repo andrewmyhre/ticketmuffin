@@ -41,16 +41,16 @@ namespace GroupGiving.Core.Domain
         [JsonIgnore]
         public bool IsOn
         {
-            get { return PaidAttendeeAcount >= MinimumParticipants; }
+            get { return PaidAttendeeCount >= MinimumParticipants; }
         }
         [JsonIgnore]
         public bool IsFull
         {
-            get { return Pledges.Count >= MaximumParticipants; }
+            get { return PaidAttendeeCount >= MaximumParticipants; }
         }
 
         [JsonIgnore]
-        public int PaidAttendeeAcount { 
+        public int PaidAttendeeCount { 
             get { 
                 return Pledges.Where(p=>p.Paid
                     &&(p.PaymentStatus==PaymentStatus.PaidPendingReconciliation
@@ -88,7 +88,7 @@ namespace GroupGiving.Core.Domain
         [JsonIgnore]
         public int SpacesLeft
         {
-            get { return (MaximumParticipants??0) - PaidAttendeeAcount; }
+            get { return (MaximumParticipants??0) - PaidAttendeeCount; }
         }
 
         public string OrganiserName { get; set; }

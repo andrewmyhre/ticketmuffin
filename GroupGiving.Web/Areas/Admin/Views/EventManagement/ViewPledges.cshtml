@@ -28,6 +28,7 @@
         {
             <span>Unpaid</span>
         }</td>
+        <td>@Html.ActionLink("View messages", "TransactionHistory", new {id = Model.Id.Substring(Model.Id.IndexOf('/')), OrderNumber = pledge.OrderNumber})</td>
     </tr>
 }
 

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using GroupGiving.Core;
 using GroupGiving.Core.Domain;
 using GroupGiving.Core.Dto;
 using GroupGiving.Core.Services;
@@ -139,14 +140,14 @@ namespace GroupGiving.Web.Areas.Admin.Controllers
         }
 
         [ActionName("refund-pledge")]
-        [AcceptVerbs(HttpVerbs.Post)]
+        [AcceptVerbs(HttpVerbs.Get)]
         public ActionResult RefundPledge(int id, string orderNumber)
         {
             using (var session = _documentStore.OpenSession())
             {
                 var @event = session.Load<GroupGivingEvent>("groupgivingevents/" + id);
                 var pledge = @event.Pledges.Where(p => p.OrderNumber == orderNumber).FirstOrDefault();
-                RefundViewModel viewModel = null;
+                RefundViewModel viewModel = new RefundViewModel();
 
                 if (pledge == null)
                 {
@@ -161,16 +162,43 @@ namespace GroupGiving.Web.Areas.Admin.Controllers
                     return RedirectToAction("ViewPledges", new {Id=id});
                 }
 
-                var refundResult = _paymentGateway.Refund(new RefundRequest() { TransactionId = pledge.TransactionId });
+                RefundResponse refundResult = null;
+                try
+                {
+                    refundResult = _paymentGateway.Refund(new RefundRequest()
+                    {
+                        TransactionId = pledge.TransactionId,
+                        Receivers = new List<PaymentRecipient>()
+                                            {
+                                                new PaymentRecipient(pledge.AccountEmailAddress, pledge.Total, true)
+                                            }
+                    });
+                } catch (HttpChannelException exception)
+                {
+                    if (pledge.PaymentGatewayHistory == null)
+                        pledge.PaymentGatewayHistory = new List<DialogueHistoryEntry>();
+                    pledge.PaymentGatewayHistory.Add(((ResponseBase)exception.FaultMessage).Raw);
+                    session.SaveChanges();
+                    throw;
+                }
+
+                if (pledge.PaymentGatewayHistory == null)
+                    pledge.PaymentGatewayHistory = new List<DialogueHistoryEntry>();
+                pledge.PaymentGatewayHistory.Add(refundResult.DialogueEntry);
 
                 if (refundResult.Successful)
                 {
                     pledge.DateRefunded = DateTime.Now;
                     pledge.PaymentStatus = PaymentStatus.Refunded;
                     pledge.Paid = false;
-                    session.SaveChanges();
+                    pledge.Notes = "REFUNDED";
                     TempData["refunded"] = true;
+                } else
+                {
+                    pledge.Notes = refundResult.Message;
                 }
+
+                session.SaveChanges();
 
                 viewModel.Event = @event;
                 viewModel.PledgeToBeRefunded = pledge;
@@ -180,9 +208,36 @@ namespace GroupGiving.Web.Areas.Admin.Controllers
             }
         }
 
-        public ActionResult TransactionHistory(string id)
+        public ActionResult TransactionHistory(int id, string orderNumber)
         {
-            throw new NotImplementedException();
+            using (var session = _documentStore.OpenSession())
+            {
+                var @event = session.Load<GroupGivingEvent>("groupgivingevents/" + id);
+                var pledge = @event.Pledges.Where(p => p.OrderNumber == orderNumber).FirstOrDefault();
+
+                if (pledge == null)
+                {
+                    ModelState.AddModelError("ordernumber", "We couldn't locate a pledge with that order number.");
+                }
+
+                var viewModel = new TransactionHistoryViewModel();
+                if (pledge.PaymentGatewayHistory == null)
+                    pledge.PaymentGatewayHistory = new List<DialogueHistoryEntry>();
+                viewModel.Messages = pledge.PaymentGatewayHistory.Where(h=>h != null).OrderByDescending(h => h.Timestamp).Take(1024).ToList();
+                viewModel.EventId = id;
+                viewModel.OrderNumber = orderNumber;
+
+                return View(viewModel);
+            }
         }
+    }
+
+    public class TransactionHistoryViewModel
+    {
+        public List<DialogueHistoryEntry> Messages { get; set; }
+
+        public int EventId { get; set; }
+
+        public string OrderNumber { get; set; }
     }
 }

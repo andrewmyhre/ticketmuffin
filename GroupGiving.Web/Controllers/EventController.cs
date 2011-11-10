@@ -108,7 +108,7 @@ namespace GroupGiving.Web.Controllers
             viewModel.ContactName = givingEvent.OrganiserName;
             viewModel.State = givingEvent.State;
 
-            viewModel.PledgeCount = givingEvent.PaidAttendeeAcount;
+            viewModel.PledgeCount = givingEvent.PaidAttendeeCount;
             viewModel.RequiredPledgesPercentage = (int)Math.Round(((double) viewModel.PledgeCount/(double) Math.Max(givingEvent.MinimumParticipants, 1))*100, 0);
 
             if (givingEvent.SalesEndDateTime > DateTime.Now)
@@ -434,13 +434,25 @@ namespace GroupGiving.Web.Controllers
                 RefundResponse refundResult = null;
                 try
                 {
-                    refundResult = _paymentGateway.Refund(new RefundRequest() {TransactionId = pledge.TransactionId});
+                    refundResult = _paymentGateway.Refund(new RefundRequest()
+                    {
+                        TransactionId = pledge.TransactionId,
+                        Receivers = new List<PaymentRecipient>()
+                                            {
+                                                new PaymentRecipient(pledge.AccountEmailAddress, pledge.Total, true)
+                                            }
+                    });
                 } catch (HttpChannelException exception)
                 {
+                    if (pledge.PaymentGatewayHistory == null)
+                        pledge.PaymentGatewayHistory = new List<DialogueHistoryEntry>();
                     pledge.PaymentGatewayHistory.Add(exception.FaultMessage.Raw);
                     logger.Fatal("Could not refund pledge with transaction id " + pledge.TransactionId, exception);
                     return RedirectToAction("event-pledges", new { shortUrl = shortUrl });
                 }
+
+                if (pledge.PaymentGatewayHistory == null)
+                    pledge.PaymentGatewayHistory = new List<DialogueHistoryEntry>();
                 pledge.PaymentGatewayHistory.Add(refundResult.DialogueEntry);
 
                 if (refundResult.Successful)

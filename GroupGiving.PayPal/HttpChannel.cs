@@ -2,11 +2,13 @@ using System;
 using System.IO;
 using System.Net;
 using System.Text;
+using System.Xml;
 using System.Xml.Linq;
 using System.Xml.Serialization;
 using GroupGiving.Core;
 using GroupGiving.Core.Dto;
 using GroupGiving.PayPal.Model;
+using log4net.Util;
 
 namespace GroupGiving.PayPal
 {
@@ -77,7 +79,18 @@ namespace GroupGiving.PayPal
             MemoryStream responseStream = new MemoryStream(data);
             TResponse responseObject = (TResponse)deserializer.Deserialize(responseStream);
             
-            responseObject.Raw = new DialogueHistoryEntry(requestXml.ToString(), responseString);
+            // format the response for logging
+            StringBuilder responseFormatted = new StringBuilder();
+            XmlDocument document = new XmlDocument();
+            document.Load(new StringReader(responseString));
+
+            using (XmlTextWriter writer = new XmlTextWriter(new StringWriter(responseFormatted)))
+            {
+                writer.Formatting = Formatting.Indented;
+                document.Save(writer);
+            }
+
+            responseObject.Raw = new DialogueHistoryEntry(requestXml.ToString(), responseFormatted.ToString());
 
             return responseObject;
 
