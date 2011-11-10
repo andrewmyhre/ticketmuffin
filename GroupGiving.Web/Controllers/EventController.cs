@@ -215,7 +215,8 @@ namespace GroupGiving.Web.Controllers
             {
                 AttendeeNames = request.AttendeeName,
                 PayPalEmailAddress = request.EmailAddress,
-                OptInForOffers = request.OptInForOffers
+                OptInForOffers = request.OptInForOffers,
+                WebsiteUrlBase = string.Format("{0}://{1}", Request.Url.Scheme, Request.Url.Authority)
             };
 
             CreatePledgeActionResult result = null;

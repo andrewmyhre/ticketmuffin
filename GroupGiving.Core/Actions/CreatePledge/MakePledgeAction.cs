@@ -75,8 +75,8 @@ namespace GroupGiving.Core.Actions.CreatePledge
                                                 {
                                                     Amount = pledge.Total,
                                                     OrderMemo = "Tickets for " + @event.Title,
-                                                    SuccessCallbackUrl = _paypalConfiguration.SuccessCallbackUrl,
-                                                    FailureCallbackUrl = _paypalConfiguration.FailureCallbackUrl,
+                                                    SuccessCallbackUrl = request.WebsiteUrlBase.TrimEnd('/') + _paypalConfiguration.SuccessCallbackUrl,
+                                                    FailureCallbackUrl = request.WebsiteUrlBase.TrimEnd('/') + _paypalConfiguration.FailureCallbackUrl,
                                                     Recipients = new List<PaymentRecipient>()
                                                                      {
                                                                          new PaymentRecipient(

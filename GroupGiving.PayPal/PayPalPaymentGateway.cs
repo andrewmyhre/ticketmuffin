@@ -49,8 +49,8 @@ namespace GroupGiving.PayPal
             PayRequest payRequest = new PayRequest()
                                         {
                                             ActionType = paymentActionType,
-                                            CancelUrl = _payPalConfiguration.FailureCallbackUrl,
-                                            ReturnUrl = _payPalConfiguration.SuccessCallbackUrl,
+                                            CancelUrl = request.FailureCallbackUrl,
+                                            ReturnUrl = request.SuccessCallbackUrl,
                                             Memo = request.OrderMemo,
                                             CurrencyCode = "GBP",
                                             Receivers = (from r in request.Recipients
