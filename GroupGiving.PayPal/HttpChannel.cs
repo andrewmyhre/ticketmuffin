@@ -1,9 +1,11 @@
+using System;
 using System.IO;
 using System.Net;
 using System.Text;
 using System.Xml.Linq;
 using System.Xml.Serialization;
 using GroupGiving.Core;
+using GroupGiving.Core.Dto;
 using GroupGiving.PayPal.Model;
 
 namespace GroupGiving.PayPal
@@ -12,6 +14,7 @@ namespace GroupGiving.PayPal
     {
         public TResponse ExecuteRequest<TRequest, TResponse>(string action, TRequest request, ApiClientSettings clientSettings) 
             where TRequest : IPayPalRequest
+            where TResponse : ResponseBase
         {
             // serialise the request
             XmlSerializer serializer = new XmlSerializer(typeof(TRequest));
@@ -21,14 +24,14 @@ namespace GroupGiving.PayPal
             serializer.Serialize(ms, request, namespaces);
             ms.Seek(0, SeekOrigin.Begin);
             StreamReader reader = new StreamReader(ms);
-            StringBuilder xml = new StringBuilder(reader.ReadToEnd());
+            StringBuilder requestXml = new StringBuilder(reader.ReadToEnd());
             System.Diagnostics.Debug.WriteLine("request to paypal:");
-            System.Diagnostics.Debug.WriteLine(xml);
+            System.Diagnostics.Debug.WriteLine(requestXml);
 
             // create the http request and add headers
             HttpWebRequest oPayRequest = (HttpWebRequest)WebRequest.Create(clientSettings.ActionUrl(action));
             oPayRequest.Method = "POST";
-            byte[] array = Encoding.UTF8.GetBytes(xml.ToString());
+            byte[] array = Encoding.UTF8.GetBytes(requestXml.ToString());
             oPayRequest.ContentLength = array.Length;
             oPayRequest.ContentType = "text/xml;charset=utf-8";
             // set the HTTP Headers
@@ -62,6 +65,7 @@ namespace GroupGiving.PayPal
                 System.Diagnostics.Debug.WriteLine("category: " + faultMessage.Error.Category);
                 System.Diagnostics.Debug.WriteLine("parameter: " + faultMessage.Error.Parameter);
                 System.Diagnostics.Debug.WriteLine("message: " + faultMessage.Error.Message);
+                faultMessage.Raw = new DialogueHistoryEntry(requestXml.ToString(), responseString);
                 throw new HttpChannelException(faultMessage);
             }
 
@@ -72,6 +76,8 @@ namespace GroupGiving.PayPal
             byte[] data = ASCIIEncoding.ASCII.GetBytes(responseString);
             MemoryStream responseStream = new MemoryStream(data);
             TResponse responseObject = (TResponse)deserializer.Deserialize(responseStream);
+            
+            responseObject.Raw = new DialogueHistoryEntry(requestXml.ToString(), responseString);
 
             return responseObject;
 

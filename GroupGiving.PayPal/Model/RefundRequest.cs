@@ -1,4 +1,5 @@
 using System.Xml.Serialization;
+using GroupGiving.Core.Dto;
 
 namespace GroupGiving.PayPal.Model
 {
@@ -45,10 +46,11 @@ namespace GroupGiving.PayPal.Model
     [System.SerializableAttribute()]
     [System.Xml.Serialization.XmlTypeAttribute(AnonymousType = true, Namespace = "http://svcs.paypal.com/types/ap")]
     [System.Xml.Serialization.XmlRootAttribute(Namespace = "http://svcs.paypal.com/types/ap", IsNullable = false)]
-    public class RefundResponse
+    public class RefundResponse : ResponseBase
     {
         [XmlElement(ElementName = "responseEnvelope", Form = System.Xml.Schema.XmlSchemaForm.Unqualified)]
         public PayResponseResponseEnvelope ResponseEnvelope { get; set; }
 
+        public DialogueHistoryEntry Raw { get; set; }
     }
 }

@@ -5,5 +5,7 @@ namespace GroupGiving.Core.Dto
         public bool Successful { get; set; }
 
         public object RawResponse { get; set; }
+
+        public DialogueHistoryEntry DialogueEntry { get; set; }
     }
 }

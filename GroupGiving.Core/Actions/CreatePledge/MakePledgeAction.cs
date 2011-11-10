@@ -94,9 +94,12 @@ namespace GroupGiving.Core.Actions.CreatePledge
                 try
                 {
                     gatewayResponse = _paymentGateway.CreateDelayedPayment(paymentGatewayRequest);
+                    pledge.PaymentGatewayHistory.Add(gatewayResponse.DialogueEntry);
                 }
                 catch (HttpChannelException exception)
                 {
+                    pledge.PaymentGatewayHistory.Add(exception.FaultMessage.Raw);
+                    session.SaveChanges();
                     return new CreatePledgeActionResult()
                                {
                                    Succeeded = false,

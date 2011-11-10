@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using GroupGiving.Core.Dto;
 
 namespace GroupGiving.PayPal.Model
 {
@@ -11,7 +12,7 @@ namespace GroupGiving.PayPal.Model
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     [System.Xml.Serialization.XmlTypeAttribute(AnonymousType = true, Namespace = "http://svcs.paypal.com/types/ap")]
     [System.Xml.Serialization.XmlRootAttribute(Namespace = "http://svcs.paypal.com/types/ap", IsNullable = false)]
-    public partial class PaymentDetailsResponse
+    public partial class PaymentDetailsResponse : ResponseBase
     {
 
         private string cancelUrlField;
@@ -222,6 +223,8 @@ namespace GroupGiving.PayPal.Model
                 this.senderField = value;
             }
         }
+
+        public DialogueHistoryEntry Raw { get; set; }
     }
 
     /// <remarks/>

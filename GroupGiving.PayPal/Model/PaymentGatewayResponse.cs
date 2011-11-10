@@ -24,7 +24,7 @@ namespace GroupGiving.PayPal.Model
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     [System.Xml.Serialization.XmlTypeAttribute(AnonymousType = true, Namespace = "http://svcs.paypal.com/types/ap")]
     [System.Xml.Serialization.XmlRootAttribute(Namespace = "http://svcs.paypal.com/types/ap", IsNullable = false)]
-    public partial class PayResponse
+    public partial class PayResponse : ResponseBase
     {
 
         private string payKeyField;
@@ -58,6 +58,8 @@ namespace GroupGiving.PayPal.Model
         }
 
         public PayPalError Error { get; set; }
+
+        public DialogueHistoryEntry Raw { get; set; }
     }
 
     [System.CodeDom.Compiler.GeneratedCodeAttribute("xsd", "4.0.30319.1")]
@@ -66,7 +68,7 @@ namespace GroupGiving.PayPal.Model
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     [System.Xml.Serialization.XmlTypeAttribute(AnonymousType = true, Namespace = "http://svcs.paypal.com/types/common")]
     [System.Xml.Serialization.XmlRootAttribute(Namespace = "http://svcs.paypal.com/types/common", IsNullable = false)]
-    public partial class FaultMessage
+    public partial class FaultMessage : ResponseBase
     {
 
         private string payKeyField;

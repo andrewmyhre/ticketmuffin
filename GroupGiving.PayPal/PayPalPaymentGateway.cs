@@ -23,18 +23,6 @@ namespace GroupGiving.PayPal
             _payPalConfiguration = payPalConfiguration;
         }
 
-        private string PayRequestActionType(PaymentGatewayRequest.ActionTypeEnum type)
-        {
-            switch (type)
-            {
-                case PaymentGatewayRequest.ActionTypeEnum.Immediate:
-                    return "PAY";
-                case PaymentGatewayRequest.ActionTypeEnum.Delayed:
-                    return "PAY_PRIMARY";
-            }
-            return "";
-        }
-
         public PaymentGatewayResponse CreatePayment(PaymentGatewayRequest request)
         {
             return SendPaymentRequest(request, "PAY");
@@ -76,7 +64,8 @@ namespace GroupGiving.PayPal
                        {
                            PaymentExecStatus = response.paymentExecStatus,
                            PaymentPageUrl = string.Format(_payPalConfiguration.PayFlowProPaymentPage, response.payKey),
-                           payKey = response.payKey
+                           payKey = response.payKey,
+                           DialogueEntry = response.Raw
                        };
         }
 
@@ -94,7 +83,8 @@ namespace GroupGiving.PayPal
                        {
                            Status = result.status,
                            SenderEmailAddress = result.senderEmail,
-                           RawResponse = result
+                           RawResponse = result,
+                           DialogueEntry = result.Raw
                        };
         }
 
@@ -125,7 +115,8 @@ namespace GroupGiving.PayPal
             return new RefundResponse()
                        {
                            Successful = response.ResponseEnvelope.ack.StartsWith("Success"),
-                           RawResponse = response
+                           RawResponse = response,
+                           DialogueEntry = response.Raw
                        };
         }
     }

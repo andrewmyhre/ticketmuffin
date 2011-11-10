@@ -7,6 +7,7 @@ using System.Security.Principal;
 using System.Text;
 using System.Web.Security;
 using System.Xml;
+using GroupGiving.Core;
 using GroupGiving.Core.Configuration;
 using GroupGiving.Core.Dto;
 using Raven.Client;
@@ -26,6 +27,7 @@ using RavenDBMembership.Provider;
 using RavenDBMembership.Web.Models;
 using log4net;
 using RefundRequest = GroupGiving.Core.Dto.RefundRequest;
+using RefundResponse = GroupGiving.Core.Dto.RefundResponse;
 
 namespace GroupGiving.Web.Controllers
 {
@@ -429,8 +431,17 @@ namespace GroupGiving.Web.Controllers
 
                     return View(viewModel);
                 }
-
-                var refundResult = _paymentGateway.Refund(new RefundRequest() {TransactionId = pledge.TransactionId});
+                RefundResponse refundResult = null;
+                try
+                {
+                    refundResult = _paymentGateway.Refund(new RefundRequest() {TransactionId = pledge.TransactionId});
+                } catch (HttpChannelException exception)
+                {
+                    pledge.PaymentGatewayHistory.Add(exception.FaultMessage.Raw);
+                    logger.Fatal("Could not refund pledge with transaction id " + pledge.TransactionId, exception);
+                    return RedirectToAction("event-pledges", new { shortUrl = shortUrl });
+                }
+                pledge.PaymentGatewayHistory.Add(refundResult.DialogueEntry);
 
                 if (refundResult.Successful)
                 {

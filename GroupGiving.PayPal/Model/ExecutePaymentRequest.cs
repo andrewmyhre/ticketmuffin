@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Xml.Serialization;
+using GroupGiving.Core.Dto;
 
 namespace GroupGiving.PayPal.Model
 {
@@ -44,8 +45,8 @@ namespace GroupGiving.PayPal.Model
     [System.SerializableAttribute()]
     [System.Xml.Serialization.XmlTypeAttribute(AnonymousType = true, Namespace = "http://svcs.paypal.com/types/ap")]
     [System.Xml.Serialization.XmlRootAttribute(Namespace = "http://svcs.paypal.com/types/ap", IsNullable = false)]
-    public class ExecutePaymentResponse
+    public class ExecutePaymentResponse : ResponseBase
     {
-        
+        public DialogueHistoryEntry Raw { get; set; }
     }
 }

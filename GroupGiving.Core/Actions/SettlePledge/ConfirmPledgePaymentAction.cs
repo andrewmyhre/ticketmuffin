@@ -44,6 +44,7 @@ namespace GroupGiving.Core.Actions.SettlePledge
             var paymentDetails =
                 _paymentGateway.RetrievePaymentDetails(new PaymentDetailsRequest()
                                                            {TransactionId = pledge.TransactionId});
+            pledge.PaymentGatewayHistory.Add(paymentDetails.DialogueEntry);
 
             if (paymentDetails.Status == "INCOMPLETE") // delayed payment will be incomplete until execute payment is called
             {

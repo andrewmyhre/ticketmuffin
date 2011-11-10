@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using GroupGiving.Core.Dto;
 
 namespace GroupGiving.Core.Domain
 {
@@ -28,6 +29,8 @@ namespace GroupGiving.Core.Domain
         public decimal ServiceChargeRateApplied { get; set; }
 
         public decimal ServiceCharge { get; set; }
+
+        public List<DialogueHistoryEntry> PaymentGatewayHistory { get; set; }
 
         public EventPledge()
         {
