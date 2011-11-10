@@ -1,0 +1,34 @@
+﻿@using GroupGiving.Web.Models
+@model EventViewModel
+
+@{
+    ViewBag.Title = "Pledges for " + Model.Title;
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Pledges for @Model.Title</h2>
+
+<table>
+@foreach (var pledge in Model.Pledges)
+{
+    <tr>
+        <td>@pledge.AccountEmailAddress</td>
+        <td>@pledge.DatePledged</td>
+        <td>@pledge.Attendees.Count attendees</td>
+        <td>@pledge.PaymentStatus</td>
+        <td>@pledge.TransactionId</td>
+        <td>@if (pledge.Paid) {
+            <text><span>Paid</span><span>@Html.ActionLink("Refund", "refund-pledge", new { id=Model.Id.Substring(Model.Id.IndexOf('/')), orderNumber = pledge.OrderNumber }, null)</span></text>
+        } else if (pledge.PaymentStatus == GroupGiving.Core.Domain.PaymentStatus.Refunded)
+        {
+            <text><span>Refunded</span></text>
+            <span>@pledge.DateRefunded.Value.ToString("dd-MM-yyyy hh:mm")</span>
+        }
+        else if (pledge.PaymentStatus == GroupGiving.Core.Domain.PaymentStatus.Unpaid)
+        {
+            <span>Unpaid</span>
+        }</td>
+    </tr>
+}
+
+</table>

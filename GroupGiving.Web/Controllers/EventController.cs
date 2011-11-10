@@ -82,7 +82,7 @@ namespace GroupGiving.Web.Controllers
                 viewModel.UserIsEventOwner = givingEvent.OrganiserId == userAccount.Id;
             }
 
-            viewModel.EventId = givingEvent.Id;
+            viewModel.Id = givingEvent.Id;
             viewModel.StartDate = givingEvent.StartDate;
             viewModel.AdditionalBenefitsMarkedDown = _markdown.Transform(!string.IsNullOrWhiteSpace(givingEvent.AdditionalBenefits) ? givingEvent.AdditionalBenefits : "");
             viewModel.AddressLine = givingEvent.AddressLine;
@@ -149,7 +149,7 @@ namespace GroupGiving.Web.Controllers
         }
         private EventPledgeViewModel BuildEventPageViewModel(GroupGivingEvent givingEvent, EventPledgeViewModel viewModel)
         {
-            viewModel.EventId = givingEvent.Id;
+            viewModel.Id = givingEvent.Id;
             viewModel.StartDate = givingEvent.StartDate;
             viewModel.AdditionalBenefitsMarkedDown = givingEvent.AdditionalBenefits;
             viewModel.AddressLine = givingEvent.AddressLine;

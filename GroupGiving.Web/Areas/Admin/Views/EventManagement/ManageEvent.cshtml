@@ -1,0 +1,15 @@
+﻿@using GroupGiving.Web.Models
+@model EventViewModel
+
+@{
+    ViewBag.Title = "title";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+
+<h2>@Model.Title</h2>
+
+<ul>
+    <li>@Html.ActionLink("Edit event details", "EditEventDetails", new {id=Model.Id.Substring(Model.Id.IndexOf('/'))})</li>
+    <li>@Html.ActionLink("View and refund pledges", "ViewPledges", new { id = Model.Id.Substring(Model.Id.IndexOf('/')) })</li>
+    <li>@Html.ActionLink("View transaction history", "TransactionHistory", new { id = Model.Id.Substring(Model.Id.IndexOf('/')) })</li>
+</ul>

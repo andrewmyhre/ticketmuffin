@@ -1,0 +1,65 @@
+﻿@using GroupGiving.Core.Domain
+@using GroupGiving.Web.Controllers
+@model EventListViewModel
+
+@{
+    ViewBag.Title = "Events";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+
+@section css
+{
+<style>
+    .centered
+    {
+        text-align:center;
+    }
+</style>
+}
+
+<h2>Events</h2>
+
+<div>
+    @using (Html.BeginForm("Index", "EventManagement", FormMethod.Get))
+    {
+        @Html.EditorFor(m => m.SearchQuery)
+
+        foreach (var option in Enum.GetNames(typeof(EventState)))
+        {
+            <input type="checkbox" name="State" id="State-@option" value="@option" @if (Model.States != null && Model.States.Contains(@option))
+                                                                                   {<text>checked</text>} /><label for="State-@option">@option</label>
+        }
+        <input type="submit" value="Search" />
+    }
+</div>
+<div>
+    <em style="color:#555555">Wildcards like * and ? are valid in the search query</em>
+</div>
+<p>
+    @if (Model.Page > 1)
+    {
+        Html.ActionLink("Previous page", "Index", new {Page = Model.Page - 1});
+    }
+    @if (!Model.LastPage)
+    {
+        Html.ActionLink("Next page", "Index", new {Page = Model.Page + 1});
+    }
+</p>
+
+<table width="100%">
+<tr>
+    <th>Title</th>
+    <th>Event Date</th>
+    <th>Status</th>
+    <th>Attending/Minimum/Maximum</th>
+</tr>
+@foreach (var e in Model.Events)
+{
+    <tr>
+        <td>@Html.ActionLink(e.Title, "ManageEvent", new {Id=e.Id.Substring(e.Id.IndexOf('/'))})</td>
+        <td class="centered">@e.StartDate</td>
+        <td class="centered">@e.State</td>
+        <td class="centered">@(e.MaximumParticipants-e.SpacesLeft)/@e.MinimumParticipants/@e.MaximumParticipants</td>
+    </tr>
+}
+</table>
