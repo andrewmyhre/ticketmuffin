@@ -253,14 +253,28 @@ namespace GroupGiving.Web.Areas.Admin.Controllers
             CancelEventAction action = new CancelEventAction(_paymentGateway);
             using (var session = _documentStore.OpenSession())
             {
-                var cancelEventResponse = action.Execute(session, id);
-                if (cancelEventResponse.Success)
+                try
                 {
+                    var cancelEventResponse = action.Execute(session, id);
+                    if (cancelEventResponse.Success)
+                    {
+                        var @event = session.Load<GroupGivingEvent>(id);
+                        @event.State = EventState.Deleted;
+                        session.SaveChanges();
+
+                        TempData["success"] = true;
+                        return RedirectToAction("Index");
+                    }
+                } catch (InvalidOperationException exception)
+                {
+                    // when event is already completed or cancelled
                     var @event = session.Load<GroupGivingEvent>(id);
                     @event.State = EventState.Deleted;
+                    session.SaveChanges();
 
                     TempData["success"] = true;
                     return RedirectToAction("Index");
+                    
                 }
 
                 ModelState.AddModelError("confirmed", "There was some problems and the event could not be refunded/cancelled");
