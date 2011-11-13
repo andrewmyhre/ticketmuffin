@@ -1,0 +1,10 @@
+﻿@using GroupGiving.Web.Controllers
+@model CreateEventController.CharitySearchResults
+
+<ul id="charitySearchResultsList">
+@foreach(var charity in Model.Results)
+{
+    <li><a href="#" class="selectCharity" id="@charity.Id"><img src="@charity.LogoUrl"/>
+        @charity.Name</a></li>
+}
+</ul>

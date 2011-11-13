@@ -261,6 +261,65 @@ namespace GroupGiving.Web.Controllers
 
             return new SelectList(dateTimes, "12:00PM");
         }
+
+        public ActionResult FindCharities(string query)
+        {
+            return PartialView(new CharitySearchResults()
+                                   {
+                                       Results = new List<CharitySearchResult>()
+                                                     {
+                                                         new CharitySearchResult()
+                                                             {
+                                                                 Id = "charity1",
+                                                                 Name = "Charity 1",
+                                                                 LogoUrl =
+                                                                     "http://www.justgiving.com/Utils/imaging.ashx?imageType=charitybrandinglogo&img=9e56d7f4-b5ed-4954-bacf-08949ad58a6d.jpg&width=120&height=120"
+                                                             },
+                                                         new CharitySearchResult()
+                                                             {
+                                                                 Id = "charity2",
+                                                                 Name = "Charity 2",
+                                                                 LogoUrl =
+                                                                     "http://www.justgiving.com/Utils/imaging.ashx?imageType=charitybrandinglogo&img=9e56d7f4-b5ed-4954-bacf-08949ad58a6d.jpg&width=120&height=120"
+                                                             },
+                                                         new CharitySearchResult()
+                                                             {
+                                                                 Id = "charity3",
+                                                                 Name = "Charity 3",
+                                                                 LogoUrl =
+                                                                     "http://www.justgiving.com/Utils/imaging.ashx?imageType=charitybrandinglogo&img=9e56d7f4-b5ed-4954-bacf-08949ad58a6d.jpg&width=120&height=120"
+                                                             },
+                                                         new CharitySearchResult()
+                                                             {
+                                                                 Id = "charity4",
+                                                                 Name = "Charity 4",
+                                                                 LogoUrl =
+                                                                     "http://www.justgiving.com/Utils/imaging.ashx?imageType=charitybrandinglogo&img=9e56d7f4-b5ed-4954-bacf-08949ad58a6d.jpg&width=120&height=120"
+                                                             },
+                                                         new CharitySearchResult()
+                                                             {
+                                                                 Id = "charity5",
+                                                                 Name = "Charity 5",
+                                                                 LogoUrl =
+                                                                     "http://www.justgiving.com/Utils/imaging.ashx?imageType=charitybrandinglogo&img=9e56d7f4-b5ed-4954-bacf-08949ad58a6d.jpg&width=120&height=120"
+                                                             }
+                                                     }
+                                   });
+    }
+
+    public class CharitySearchResults
+    {
+        public List<CharitySearchResult> Results { get; set; }
+    }
+}
+
+    public class CharitySearchResult
+    {
+        public string Id { get; set; }
+
+        public string Name { get; set; }
+
+        public string LogoUrl { get; set; }
     }
 
     public class RouteInfo

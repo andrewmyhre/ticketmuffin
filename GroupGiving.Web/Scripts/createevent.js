@@ -22,9 +22,34 @@ $(document).ready(function () {
     $('#ShortUrl').change(checkUrlAvailability);
     $('#ShortUrl').focusout(checkUrlAvailability);
 
+    $('#charityName').watermark('Charity name');
+    $('#forCharity').change(function () {
+        if ($(this).attr('checked'))
+            $('#findCharity').slideDown();
+        else
+            $('#findCharity').slideUp();
+    });
+    $('#charityName')
+        .data('timeout', null)
+        .keyup(function () {
+            clearTimeout(jQuery(this).data('timeout'));
+            jQuery(this).data('timeout', setTimeout(charitySearch, 500));
+        });
+
+    $('.selectCharity')
+        .click(function () {
+            $('#charitySearchResults').slideUp();
+            $('#findCharity').slideUp();
+        });
+
     //$('#pp-verify-button').click(VerifyPayPalAccount);
     //$('#pp-email').change(VerifyPayPalAccount);
 });
+
+function charitySearch() {
+    $('#charitySearchResults')
+        .load('/createevent/FindCharities?query=' + $('#charityName').val());
+}
 
 function checkUrlAvailability() {
     $('#ShortUrl').val(sanitizeTitleForUrl($('#ShortUrl').val()));

@@ -529,3 +529,35 @@ label, .wholeline label {
     text-align: center;
     height: auto;
 }
+.watermark {
+    line-height: 43px !important;
+}
+#charitySearchResults ul
+{
+    position:absolute; 
+    margin:0 0 0 -1px; 
+    padding:0; 
+    list-style:none;
+    width: 50%;
+    background-color: white;
+    border-radius: 8px;
+    -moz-border-radius: 8px;
+}
+
+#charitySearchResults ul a {
+    display:block;  
+    height:15px;
+    padding: 8px 5px; 
+    color:#666;
+}
+         
+#charitySearchResults ul a:hover {
+    text-decoration:underline;
+    background-color: #bbbbbb;
+}
+/* fix ie6 small issue */
+/* we should always avoid using hack like this */
+/* should put it into separate file : ) */
+*html #charitySearchResults ul {
+    margin:0 0 0 -2px;
+}
