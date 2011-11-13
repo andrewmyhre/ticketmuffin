@@ -4,6 +4,7 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using GroupGiving.Core;
+using GroupGiving.Core.Actions.CancelEvent;
 using GroupGiving.Core.Actions.RefundPledge;
 using GroupGiving.Core.Domain;
 using GroupGiving.Core.Dto;
@@ -94,7 +95,7 @@ namespace GroupGiving.Web.Areas.Admin.Controllers
 
             if (eventListViewModel.States == null)
             {
-                eventListViewModel.States = Enum.GetNames(typeof (EventState)).ToArray();
+                eventListViewModel.States = Enum.GetNames(typeof (EventState)).Where(s=>s != Enum.GetName(typeof(EventState), EventState.Deleted)).ToArray();
             }
 
             return View(eventListViewModel);
@@ -234,6 +235,38 @@ namespace GroupGiving.Web.Areas.Admin.Controllers
 
                 return View(viewModel);
             }
+        }
+
+        public ActionResult DeleteEvent(int id)
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public ActionResult DeleteEvent(int id, bool? confirmed)
+        {
+            if (!confirmed.HasValue || !confirmed.Value)
+            {
+                ModelState.AddModelError("confirmed", "We won't do this unless you confirm it");
+            }
+
+            CancelEventAction action = new CancelEventAction(_paymentGateway);
+            using (var session = _documentStore.OpenSession())
+            {
+                var cancelEventResponse = action.Execute(session, id);
+                if (cancelEventResponse.Success)
+                {
+                    var @event = session.Load<GroupGivingEvent>(id);
+                    @event.State = EventState.Deleted;
+
+                    TempData["success"] = true;
+                    return RedirectToAction("Index");
+                }
+
+                ModelState.AddModelError("confirmed", "There was some problems and the event could not be refunded/cancelled");
+                return View();
+            }
+
         }
     }
 

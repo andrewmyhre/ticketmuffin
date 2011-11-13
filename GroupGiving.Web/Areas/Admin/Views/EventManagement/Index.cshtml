@@ -26,8 +26,9 @@
 
         foreach (var option in Enum.GetNames(typeof(EventState)))
         {
-            <input type="checkbox" name="State" id="State-@option" value="@option" @if (Model.States != null && Model.States.Contains(@option))
-                                                                                   {<text>checked</text>} /><label for="State-@option">@option</label>
+            <input type="checkbox" name="State" id="State-@option" value="@option" 
+            @if (Model.States != null && Model.States.Contains(@option))
+                {<text>checked</text>} /><label for="State-@option">@option</label>
         }
         <input type="submit" value="Search" />
     }

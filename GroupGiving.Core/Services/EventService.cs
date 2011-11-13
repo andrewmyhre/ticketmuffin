@@ -30,7 +30,7 @@ namespace GroupGiving.Core.Services
         {
             using (var session = _documentStore.OpenSession())
             {
-                if (session.Query<GroupGivingEvent>().Any(e=>e.ShortUrl == request.ShortUrl))
+                if (session.Query<GroupGivingEvent>().Any(e=>e.ShortUrl == request.ShortUrl && e.State != EventState.Deleted))
                 {
                     throw new InvalidOperationException("Short url is not available");
                 }
@@ -101,7 +101,7 @@ namespace GroupGiving.Core.Services
         {
             using (var session = _documentStore.OpenSession())
             {
-                return !session.Query<GroupGivingEvent>().Any(e => e.ShortUrl == shortUrl);
+                return !session.Query<GroupGivingEvent>().Any(e => e.ShortUrl == shortUrl && e.State != EventState.Deleted);
             }
         }
 
@@ -117,7 +117,7 @@ namespace GroupGiving.Core.Services
         {
             using (var session = _documentStore.OpenSession())
             {
-                var @event = session.Query<GroupGivingEvent>().Where(e => e.ShortUrl == shortUrl).FirstOrDefault();
+                var @event = session.Query<GroupGivingEvent>().Where(e => e.ShortUrl == shortUrl && e.State != EventState.Deleted).FirstOrDefault();
                 return @event;
             }
         }

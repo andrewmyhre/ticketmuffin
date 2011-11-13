@@ -113,6 +113,7 @@ namespace GroupGiving.Core.Domain
         SalesReady,
         SalesClosed,
         Completed,
-        Cancelled
+        Cancelled,
+        Deleted
     }
 }

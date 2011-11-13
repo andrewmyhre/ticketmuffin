@@ -1,0 +1,17 @@
+﻿@model object
+
+@{
+    ViewBag.Title = "title";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Are you sure?</h2>
+
+<p>This will refund all pledges, cancel the event and then delete all history of the event. This action is not reversable.</p>
+
+@using (Html.BeginForm())
+{
+    @Html.ValidationMessage("confirmed")
+    <input type="checkbox" name="confirmed" id="confirmed" value="true"/><label for="confirmed">Yes, I understand the consequences</label>
+    <input type="submit" value="Do it" />
+}

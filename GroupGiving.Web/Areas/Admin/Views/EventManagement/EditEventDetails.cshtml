@@ -50,4 +50,5 @@
         
     </fieldset>
     <input type="submit" value="Save Event Details" />
+    @Html.ActionLink("Delete this event...", "DeleteEvent", new {id=Model.Id.Substring(Model.Id.IndexOf('/')+1)})
 }

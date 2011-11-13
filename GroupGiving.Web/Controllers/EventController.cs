@@ -8,6 +8,7 @@ using System.Text;
 using System.Web.Security;
 using System.Xml;
 using GroupGiving.Core;
+using GroupGiving.Core.Actions.CancelEvent;
 using GroupGiving.Core.Actions.RefundPledge;
 using GroupGiving.Core.Configuration;
 using GroupGiving.Core.Dto;
@@ -334,7 +335,6 @@ namespace GroupGiving.Web.Controllers
             // cancel the event - refund each pledger
             using (var session = _documentStore.OpenSession())
             {
-                RefundPledgeAction action = new RefundPledgeAction(_paymentGateway);
 
 
                 var @event = session.Query<GroupGivingEvent>().Where(e=>e.ShortUrl==shortUrl).SingleOrDefault();
@@ -344,34 +344,10 @@ namespace GroupGiving.Web.Controllers
                     return RedirectToAction("Index", new {shortUrl = shortUrl});
                 }
 
+                CancelEventAction action = new CancelEventAction(_paymentGateway);
+                var cancelEventResponse = action.Execute(session, @event.Id);
 
-                var pledges =
-                    @event.Pledges.Where(
-                        p =>
-                        p.PaymentStatus == PaymentStatus.Reconciled ||
-                        p.PaymentStatus == PaymentStatus.PaidPendingReconciliation);
-
-                bool noProblems = true;
-                foreach (var pledge in pledges)
-                {
-                    RefundResponse refundResponse = null;
-                    try
-                    {
-                        refundResponse = action.Execute(session, @event.Id, pledge.OrderNumber);
-                        if (!refundResponse.Successful)
-                        {
-                            noProblems = false;
-                            break;
-                        }
-                    } catch (Exception exception)
-                    {
-                        logger.Fatal("Could not refund pledge with transaction id " + pledge.TransactionId, exception);
-                        noProblems = false;
-                        break;
-                    }
-                }
-
-                if (noProblems)
+                if (cancelEventResponse.Success)
                 {
                     @event.State = EventState.Cancelled;
                     session.SaveChanges();
@@ -468,10 +444,5 @@ namespace GroupGiving.Web.Controllers
                 return View();
             }
         }
-    }
-
-    public class EventCancelledViewModel
-    {
-        public bool Failures { get; set; }
     }
 }

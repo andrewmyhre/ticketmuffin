@@ -83,6 +83,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Actions\CancelEvent\CancelEventAction.cs" />
+    <Compile Include="Actions\CancelEvent\CancelEventResponse.cs" />
     <Compile Include="Actions\CreatePledge\CreatePledgeActionResult.cs" />
     <Compile Include="Actions\CreatePledge\MakePledgeRequest.cs" />
     <Compile Include="Actions\CreatePledge\MakePledgeAction.cs" />
