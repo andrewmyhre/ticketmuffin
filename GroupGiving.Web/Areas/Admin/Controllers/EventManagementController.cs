@@ -127,6 +127,34 @@ namespace GroupGiving.Web.Areas.Admin.Controllers
             return View(eventViewModel);
         }
 
+        [AcceptVerbs(HttpVerbs.Post)]
+        [ValidateInput(false)]
+        public ActionResult EditEventDetails(int id, UpdateEventViewModel viewModel)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(viewModel);
+            }
+
+            AutoMapper.Mapper.CreateMap<UpdateEventViewModel, GroupGivingEvent>();
+
+            using (var session = _documentStore.OpenSession())
+            {
+                var groupGivingEvent = session.Load<GroupGivingEvent>(id);
+                this.TryUpdateModel(groupGivingEvent, "", null, new[] {"Id"});
+
+                if (groupGivingEvent.SalesEndDateTime > DateTime.Now)
+                    groupGivingEvent.State = EventState.SalesReady;
+                else if (groupGivingEvent.StartDate > DateTime.Now)
+                    groupGivingEvent.State = EventState.SalesClosed;
+                else
+                    groupGivingEvent.State = EventState.Completed;
+
+
+                session.SaveChanges();
+            }
+            return RedirectToAction("EditEventDetails", new { id });
+        }
         public ActionResult ViewPledges(string id)
         {
             var viewModel = new EventViewModel();
