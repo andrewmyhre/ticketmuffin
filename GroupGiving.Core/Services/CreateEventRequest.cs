@@ -44,7 +44,7 @@ namespace GroupGiving.Core.Services
         public string Description { get; set; }
 
         [Required]
-        [Display(Name = "Event Url")]
+        [Display(Name = "http://www.ticketmuffin.com/")]
         public string ShortUrl { get; set; }
 
         [Required]
