@@ -28,22 +28,18 @@ namespace GroupGiving.Web.Models
 
         [DataType(DataType.Text)]
         [Display(Name = "Address Line")]
-        [Required]
         public string AddressLine { get; set; }
 
         [DataType(DataType.Text)]
         [Display(Name = "Town or City")]
-        [Required]
         public string Town { get; set; }
 
         [DataType(DataType.Text)]
         [Display(Name = "Post Code")]
-        [Required]
         public string PostCode { get; set; }
 
         [DataType(DataType.Text)]
         [Display(Name = "Country")]
-        [Required]
         public string Country { get; set; }
 
         public bool UpdatedSuccessfully { get; set; }
