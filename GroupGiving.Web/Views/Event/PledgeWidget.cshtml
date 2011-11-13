@@ -22,7 +22,7 @@ else if (Model.CanAcceptPledges)
     <div id="pledge">
     @using (Html.BeginForm("Pledge", "Event", FormMethod.Get))
     {
-        <input type="submit" class="bigButton" value="@Model.TicketPrice.ToString("c") Pledge" />
+        <input type="submit" class="bigButton" style="width:280px" value="@Model.TicketPrice.ToString("c") Pledge" />
     }
     </div>
     <div id="pledgeInfo">

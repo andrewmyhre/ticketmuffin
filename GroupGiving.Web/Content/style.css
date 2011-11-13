@@ -150,9 +150,11 @@ div#pledge {
   padding: 30px 0;
 }
 input.bigButton {
-  width: 280px;
+  width:auto;
+  padding-left:1em;
+  padding-right:1em;
   height: 65px;
-  line-height: 55px;
+  line-height: 55px !important;
   font-weight: bold;
   font-size: 30px;
   
