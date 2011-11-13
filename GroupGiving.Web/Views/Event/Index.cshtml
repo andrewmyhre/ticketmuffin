@@ -54,7 +54,7 @@
 
           @if (Model.State != EventState.Cancelled)
           {
-              <div id="eventDetails">@Model.StartDate.ToString("HH:mm tt dddd MMMM dd, yyyy")<br />
+              <div id="eventDetails">@Model.StartDate.ToString("dddd, MMMM dd yyyy @ HH:mm tt")<br />
                   <strong>@Model.Venue</strong>, @Model.AddressLine, @Model.City, @Model.Country
               </div>
           }
