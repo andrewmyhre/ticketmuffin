@@ -43,7 +43,7 @@ namespace GroupGiving.Core.Services
         [DataType(DataType.MultilineText)]
         public string Description { get; set; }
 
-        [Required]
+        [Required(ErrorMessage="Please provide a url for your event")]
         [Display(Name = "http://www.ticketmuffin.com/")]
         public string ShortUrl { get; set; }
 

@@ -36,7 +36,7 @@
             } else if (Model.EventIsOn) {
                 <text>The minimum number of pledges has been reached. This event is now on!</text>
             } else {
-                <text>The money will be refunded if the minimum amount of participants is not reached till @Model.SalesEndDateTime.ToString("dddd dd MMMM").</text>
+                <text>The money will be refunded if the minimum amount of participants is not reached before @Model.SalesEndDateTime.ToString("dddd dd MMMM").</text>
             }
         </strong>
         </div>

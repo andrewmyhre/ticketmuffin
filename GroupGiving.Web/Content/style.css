@@ -336,6 +336,12 @@ input[type="text"], input[type="password"], textarea, select {
   color: #5f5f5f;
   width:300px;
 }
+textarea
+{
+    position: relative;
+    left: 4px;
+    width: 297px;
+}
 input[type="checkbox"] {
   margin-right: 10px;
 }

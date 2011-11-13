@@ -103,7 +103,7 @@ namespace GroupGiving.Web.Controllers
             }
             if (request.StartDateTime < DateTime.Now)
             {
-                ModelState.AddModelError("startDateTime", "The date you provided isn't valid because it's in the past");
+                ModelState.AddModelError("startDateTime", "The date provided isn't valid because it's in the past");
             }
             if (!_eventService.ShortUrlAvailable(request.ShortUrl))
             {
