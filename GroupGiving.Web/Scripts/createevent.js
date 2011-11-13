@@ -22,16 +22,21 @@ $(document).ready(function () {
     $('#ShortUrl').change(checkUrlAvailability);
     $('#ShortUrl').focusout(checkUrlAvailability);
 
-    $('#pp-verify-button').click(VerifyPayPalAccount);
-    $('#pp-email').change(VerifyPayPalAccount);
+    //$('#pp-verify-button').click(VerifyPayPalAccount);
+    //$('#pp-email').change(VerifyPayPalAccount);
 });
 
 function checkUrlAvailability() {
     $('#ShortUrl').val(sanitizeTitleForUrl($('#ShortUrl').val()));
-    
-    $.get('/api/events/' + $('#ShortUrl').val())
+
+    $.get('/createevent/check-url-availability/?shortUrl=' + $('#ShortUrl').val())
             .success(function (response) {
-                $('#urlAvailability').html('<span class="url-not-available">This url is not available</span>');
+                if (response == "available")
+                    $('#urlAvailability').html('<span class="url-not-available">This url is not available</span>');
+                else if (response == "invalid")
+                    $('#urlAvailability').html('<span class="url-not-available">This url is not valid</span>');
+                else
+                    $('#urlAvailability').html('<span class="url-available">Available!</span>');
             })
             .error(function (response) {
                 $('#urlAvailability').html('<span class="url-available">Available!</span>');

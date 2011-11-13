@@ -33,6 +33,7 @@ namespace GroupGiving.Web.Controllers
         private readonly IDocumentStore _storage;
         private readonly IMembershipProviderLocator _membershipProviderLocator;
         private readonly IPaypalAccountService _paypalAccountService;
+        Regex mustContainAlphaCharacters = new Regex(@".*\w.*");
 
         public CreateEventController(IAccountService accountService, ICountryService countryService, IMembershipService membershipService, 
             IFormsAuthenticationService formsAuthenticationService, IEventService eventService, 
@@ -61,6 +62,12 @@ namespace GroupGiving.Web.Controllers
         [ActionName("check-url-availability")]
         public string CheckShortUrlAvailability(string shortUrl)
         {
+            
+            if (!mustContainAlphaCharacters.IsMatch(shortUrl))
+            {
+                return "invalid";
+            }
+
             var uriString = string.Format("{0}://{1}/{2}",
                                           Request.Url.Scheme, Request.Url.Authority,
                                           shortUrl);
@@ -105,7 +112,12 @@ namespace GroupGiving.Web.Controllers
             {
                 ModelState.AddModelError("startDateTime", "The date provided isn't valid because it's in the past");
             }
-            if (!_eventService.ShortUrlAvailable(request.ShortUrl))
+            if (!mustContainAlphaCharacters.IsMatch(request.ShortUrl))
+            {
+                ModelState.AddModelError("ShortUrl",
+                                         "Please select a url containing at least 1 alphabetical character (a-z)");
+            }
+            else if (!_eventService.ShortUrlAvailable(request.ShortUrl))
             {
                 ModelState.AddModelError("ShortUrl", "Unfortunately that url is already in use");
             }
