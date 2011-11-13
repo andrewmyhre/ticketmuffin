@@ -194,6 +194,8 @@ div#pledgeInfo div#countInfo {
     line-height: 14px;
     width:140px;
     margin-left:3px;
+    position: relative;
+    top: -3px;
 }
 div#countBar {
   height: 16px;
