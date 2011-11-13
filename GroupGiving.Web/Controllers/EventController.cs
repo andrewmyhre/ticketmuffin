@@ -273,6 +273,17 @@ namespace GroupGiving.Web.Controllers
                 var groupGivingEvent = session.Load<GroupGivingEvent>(viewModel.Id);
                 this.TryUpdateModel(groupGivingEvent);
 
+                // update organiser details if we have an organiser id but not organiser name set on the event
+                if (string.IsNullOrWhiteSpace(groupGivingEvent.OrganiserName) 
+                    && !string.IsNullOrWhiteSpace(groupGivingEvent.OrganiserId))
+                {
+                    var organiser = session.Load<Account>(groupGivingEvent.OrganiserId);
+                    if (organiser != null)
+                    {
+                        groupGivingEvent.OrganiserName = organiser.FirstName + " " + organiser.LastName;
+                    }
+                }
+
                 if (groupGivingEvent.SalesEndDateTime > DateTime.Now)
                     groupGivingEvent.State = EventState.SalesReady;
                 else if (groupGivingEvent.StartDate > DateTime.Now)
@@ -337,7 +348,7 @@ namespace GroupGiving.Web.Controllers
             {
 
 
-                var @event = session.Query<GroupGivingEvent>().Where(e=>e.ShortUrl==shortUrl).SingleOrDefault();
+                var @event = session.Query<GroupGivingEvent>().Where(e=>e.ShortUrl==shortUrl && e.State != EventState.Deleted).FirstOrDefault();
 
                 if (@event.State == EventState.Cancelled || @event.State == EventState.Completed)
                 {
