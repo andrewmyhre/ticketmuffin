@@ -23,7 +23,7 @@ namespace GroupGiving.Web.Models
         public string Venue { get; set; }
         [Display(Name="Street address")]
         public string AddressLine { get; set; }
-        [Display(Name="Short url", Description="The url for your event")]
+        [Display(Name="http://www.ticketmuffin.com/", Description="The url for your event")]
         public string ShortUrl { get; set; }
         [Display(Name="Invite only?")]
         public bool IsPrivate { get; set; }

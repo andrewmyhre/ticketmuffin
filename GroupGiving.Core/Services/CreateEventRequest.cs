@@ -70,5 +70,7 @@ namespace GroupGiving.Core.Services
         [DataType(DataType.ImageUrl)]
         public string ImageFilename { get; set; }
         public string OrganiserAccountId { get; set; }
+
+        public string OrganiserName { get; set; }
     }
 }

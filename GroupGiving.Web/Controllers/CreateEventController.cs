@@ -120,7 +120,7 @@ namespace GroupGiving.Web.Controllers
 
             var account = _accountService.RetrieveByEmailAddress(_userIdentity.Name);
             request.OrganiserAccountId = account.Id;
-
+            request.OrganiserName = account.FirstName + " " + account.LastName;
             var result = _eventService.CreateEvent(request);
             
             if (result.Success)

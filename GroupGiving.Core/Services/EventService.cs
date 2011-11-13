@@ -48,6 +48,7 @@ namespace GroupGiving.Core.Services
                                                    IsFeatured = request.IsFeatured,
                                                    PhoneNumber = request.PhoneNumber,
                                                    OrganiserId = request.OrganiserAccountId,
+                                                   OrganiserName = request.OrganiserName,
                                                    State = EventState.Creating,
                                                    Latitude = request.Latitude,
                                                    Longitude = request.Longitude,
