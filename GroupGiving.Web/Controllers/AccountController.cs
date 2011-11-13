@@ -407,7 +407,7 @@ namespace GroupGiving.Web.Controllers
             viewModel.PostCode = account.PostCode;
             viewModel.Email = account.Email;
 
-            viewModel.Countries = new SelectList(new SelectList(_countryService.RetrieveAllCountries()));
+            viewModel.Countries = new SelectList(_countryService.RetrieveAllCountries(), "Name", "Name", "United Kingdom");
 
             viewModel.AccountTypes = new SelectList(Enum.GetNames(typeof(AccountType)));
             

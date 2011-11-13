@@ -76,7 +76,7 @@
             @Html.LabelFor(m => m.Country)
         </div>
         <div class="editor-field">
-            @Html.DropDownListFor(m=>m.Country, new SelectList(CountriesStore.Countries, "Name", "Name", "United Kingdom"))
+            @Html.DropDownListFor(m=>m.Country, Model.Countries )
             @Html.ValidationMessageFor(m => m.Country)
         </div>
 
