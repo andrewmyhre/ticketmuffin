@@ -152,9 +152,10 @@ div#pledge {
 input.bigButton {
   width: 280px;
   height: 65px;
-  line-height: 65px;
+  line-height: 55px;
   font-weight: bold;
   font-size: 30px;
+  
 }
 input.blueButton {
   width: 280px;

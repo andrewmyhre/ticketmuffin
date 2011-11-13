@@ -59,5 +59,8 @@ namespace GroupGiving.Web.Models
         public List<EventPledge> Pledges { get; set; }
 
         public GroupGiving.Core.Domain.EventState State { get; set; }
+
+        [Display(Name="Event organiser (email address)")]
+        public string EventOrganiser { get; set; }
     }
 }

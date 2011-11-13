@@ -122,6 +122,11 @@ namespace GroupGiving.Web.Areas.Admin.Controllers
             {
                 var @event = session.Load<GroupGivingEvent>("groupgivingevents/" + id);
                 eventViewModel = AutoMapper.Mapper.Map<UpdateEventViewModel>(@event);
+                if (@event.OrganiserId != null)
+                {
+                    var eventOrganiser = session.Load<Account>(@event.OrganiserId);
+                    eventViewModel.EventOrganiser = eventOrganiser.Email;
+                }
             }
 
             return View(eventViewModel);
@@ -131,17 +136,28 @@ namespace GroupGiving.Web.Areas.Admin.Controllers
         [ValidateInput(false)]
         public ActionResult EditEventDetails(int id, UpdateEventViewModel viewModel)
         {
-            if (!ModelState.IsValid)
-            {
-                return View(viewModel);
-            }
-
-            AutoMapper.Mapper.CreateMap<UpdateEventViewModel, GroupGivingEvent>();
-
+            Account organiser = null;
             using (var session = _documentStore.OpenSession())
             {
+
+                organiser = session.Query<Account>().Where(a => a.Email == viewModel.EventOrganiser).FirstOrDefault();
+
+                if (organiser == null)
+                {
+                    ModelState.AddModelError("EventOrganiser", "No account was found matching that email address");
+                }
+
+                if (!ModelState.IsValid)
+                {
+                    return View(viewModel);
+                }
+
+                AutoMapper.Mapper.CreateMap<UpdateEventViewModel, GroupGivingEvent>();
+
                 var groupGivingEvent = session.Load<GroupGivingEvent>(id);
                 this.TryUpdateModel(groupGivingEvent, "", null, new[] {"Id"});
+                groupGivingEvent.OrganiserId = organiser.Id;
+                groupGivingEvent.OrganiserName = organiser.FirstName + " " + organiser.LastName;
 
                 if (groupGivingEvent.SalesEndDateTime > DateTime.Now)
                     groupGivingEvent.State = EventState.SalesReady;

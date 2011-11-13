@@ -15,6 +15,7 @@
 {
     <fieldset>
         <legend>Basic Information</legend>
+        <p>@Html.LabelFor(vm=>vm.EventOrganiser) @Html.EditorFor(vm=>vm.EventOrganiser) @Html.ValidationMessageFor(vm=>vm.EventOrganiser)</p>
         <p>@Html.LabelFor(vm => vm.Title) @Html.EditorFor(vm => vm.Title) @Html.ValidationMessageFor(vm => vm.Title)</p>
         <p>@Html.LabelFor(vm => vm.ShortUrl) @Html.EditorFor(vm => vm.ShortUrl, "shortUrl") @Html.ValidationMessageFor(vm=>vm.ShortUrl)</p>
         <p>@Html.LabelFor(vm => vm.Description) @Html.EditorFor(vm => vm.Description) @Html.ValidationMessageFor(vm => vm.Description)</p>
