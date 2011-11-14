@@ -84,7 +84,7 @@ namespace GroupGiving.Core.Services
                                                    Country = request.Country,
                                                    
                                                    ImageFilename=request.ImageFilename,
-                                                   ImageUrl=request.ImageUrl
+                                                   ImageUrl=request.ImageUrl,
                                                    CharityDetails = charity
                                                };
 
