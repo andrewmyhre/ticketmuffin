@@ -83,5 +83,7 @@ namespace GroupGiving.Web.Models
         public EventState State { get; set; }
 
         public string ImageUrl { get; set; }
+
+        public decimal TotalPledgesPercentage { get; set; }
     }
 }

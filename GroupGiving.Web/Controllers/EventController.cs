@@ -114,6 +114,14 @@ namespace GroupGiving.Web.Controllers
 
             viewModel.PledgeCount = givingEvent.PaidAttendeeCount;
             viewModel.RequiredPledgesPercentage = (int)Math.Round(((double) viewModel.PledgeCount/(double) Math.Max(givingEvent.MinimumParticipants, 1))*100, 0);
+            if (givingEvent.MaximumParticipants.HasValue)
+            {
+                viewModel.TotalPledgesPercentage = (int)Math.Round(((double)viewModel.PledgeCount / (double)Math.Max(givingEvent.MaximumParticipants.Value, 1)) * 100, 0);
+            }
+            else
+            {
+                viewModel.TotalPledgesPercentage = viewModel.RequiredPledgesPercentage;
+            }
 
             if (givingEvent.SalesEndDateTime > DateTime.Now)
             {
