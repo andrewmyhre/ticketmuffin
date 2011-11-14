@@ -33,14 +33,6 @@
             @Html.ValidationMessageFor(m => m.MaximumParticipants)
         </div>
 
-        <div class="formline grayBox" style="background-color:#ffcccc;margin-bottom:8px;margin-top:0;">
-            <strong>We're currently in Sandbox mode.</strong><br/>
-            Please use the following credentials as your PayPal account:<br/>
-            First Name: Andrew<br/>
-            Last Name: Myhre<br/>
-            Email: sellr2_1304843519_biz@gmail.com <br/>
-        </div>
-
         <div class="formline" id="paypal-name-container" style="display:none">
             <div><label for="PayPalFirstName">PayPal account first name:</label>@Html.TextBoxFor(m=>m.PayPalFirstName)</div>
             <div><label for="PayPalLastName">PayPal account last name:</label>@Html.TextBoxFor(m=>m.PayPalLastName)</div>
