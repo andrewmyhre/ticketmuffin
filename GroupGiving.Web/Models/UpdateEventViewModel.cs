@@ -62,5 +62,7 @@ namespace GroupGiving.Web.Models
 
         [Display(Name="Event organiser (email address)")]
         public string EventOrganiser { get; set; }
+
+        public string ImageUrl { get; set; }
     }
 }

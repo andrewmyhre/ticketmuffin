@@ -95,7 +95,9 @@
         </div>                                    
         <div id="eventRight">
           <div id="eventDesc">
-                <img src="@Model.ImageUrl" style="max-width:500px"/>
+                <div class="imageContainer">
+                    <img src="@Model.ImageUrl"/>
+                </div>
                 @Html.Raw(Model.DescriptionMarkedDown)
                 @Html.Raw(Model.AdditionalBenefitsMarkedDown)
             <div id="fb-root"></div><script src="http://connect.facebook.net/en_US/all.js#xfbml=1"></script><fb:comments href="@Request.Url" num_posts="1" width="680"></fb:comments>            

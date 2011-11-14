@@ -32,6 +32,22 @@
 <div>
 @{Html.ValidationSummary();}
 </div>
+
+@using (Html.BeginForm("UploadEventImage", "Event", FormMethod.Post, new { enctype = "multipart/form-data" }))
+{
+    <fieldset>
+        <legend>Event image</legend>
+            @if (!string.IsNullOrWhiteSpace(Model.ImageUrl))
+            {
+                <p>Currently: <img src="@Model.ImageUrl" style="max-width: 150px"/></p>
+            }
+
+            <label style="display:inline-block;width:200px">Choose an image to upload:</label>
+            <input type="file" name="imageFile"/> <input type="submit" value="Upload"/>
+            @Html.ValidationMessage("imageFile")
+    </fieldset>
+}
+
 @using (Html.BeginForm())
 {
     <fieldset>

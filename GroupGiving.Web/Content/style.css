@@ -592,3 +592,13 @@ label, .wholeline label {
     position: absolute;
     left: 170px;
 }
+
+#eventDesc .imageContainer
+{
+    height: 312px;
+    overflow: hidden;
+}
+
+#eventDesc .imageContainer img {
+    max-width: 680px;
+}

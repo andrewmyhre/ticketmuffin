@@ -1,10 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Configuration;
+using System.Drawing;
+using System.Drawing.Imaging;
+using System.IO;
 using System.Linq;
 using System.Runtime.Serialization;
 using System.Security.Principal;
 using System.Text;
+using System.Web;
 using System.Web.Hosting;
 using System.Web.Security;
 using System.Xml;
@@ -44,15 +48,17 @@ namespace GroupGiving.Web.Controllers
         private readonly ITaxAmountResolver _taxResolver;
         private IPayPalConfiguration _paypalConfiguration;
         private readonly IDocumentStore _documentStore;
-        private static Markdown _markdown =  new Markdown();
+        private static Markdown _markdown = new Markdown();
         private IEmailRelayService _emailRelayService;
         private readonly IIdentity _userIdentity;
         private readonly IEventService _eventService;
 
-        public EventController(IAccountService accountService, 
-            IFormsAuthenticationService formsService, IMembershipService membershipService, IPaymentGateway paymentGateway, 
-            ITaxAmountResolver taxResolver, IPayPalConfiguration paypalConfiguration, IDocumentStore documentStore, 
-            IEmailRelayService emailRelayService, IIdentity userIdentity, IEventService eventService)
+        public EventController(IAccountService accountService,
+                               IFormsAuthenticationService formsService, IMembershipService membershipService,
+                               IPaymentGateway paymentGateway,
+                               ITaxAmountResolver taxResolver, IPayPalConfiguration paypalConfiguration,
+                               IDocumentStore documentStore,
+                               IEmailRelayService emailRelayService, IIdentity userIdentity, IEventService eventService)
         {
             _accountService = accountService;
             _formsService = formsService;
@@ -61,7 +67,7 @@ namespace GroupGiving.Web.Controllers
             _taxResolver = taxResolver;
             _paypalConfiguration = paypalConfiguration;
             _documentStore = documentStore;
-            ((RavenDBMembershipProvider)Membership.Provider).DocumentStore
+            ((RavenDBMembershipProvider) Membership.Provider).DocumentStore
                 = documentStore;
             _emailRelayService = emailRelayService;
             _userIdentity = userIdentity;
@@ -89,11 +95,15 @@ namespace GroupGiving.Web.Controllers
 
             viewModel.Id = givingEvent.Id;
             viewModel.StartDate = givingEvent.StartDate;
-            viewModel.AdditionalBenefitsMarkedDown = _markdown.Transform(!string.IsNullOrWhiteSpace(givingEvent.AdditionalBenefits) ? givingEvent.AdditionalBenefits : "");
+            viewModel.AdditionalBenefitsMarkedDown =
+                _markdown.Transform(!string.IsNullOrWhiteSpace(givingEvent.AdditionalBenefits)
+                                        ? givingEvent.AdditionalBenefits
+                                        : "");
             viewModel.AddressLine = givingEvent.AddressLine;
             viewModel.City = givingEvent.City;
             viewModel.PostCode = givingEvent.Postcode;
-            viewModel.DescriptionMarkedDown = _markdown.Transform(!string.IsNullOrWhiteSpace(givingEvent.Description) ? givingEvent.Description : "");
+            viewModel.DescriptionMarkedDown =
+                _markdown.Transform(!string.IsNullOrWhiteSpace(givingEvent.Description) ? givingEvent.Description : "");
             viewModel.IsFeatured = givingEvent.IsFeatured;
             viewModel.IsPrivate = givingEvent.IsPrivate;
             viewModel.MaximumParticipants = givingEvent.MaximumParticipants;
@@ -114,10 +124,16 @@ namespace GroupGiving.Web.Controllers
             viewModel.Charity = givingEvent.CharityDetails;
 
             viewModel.PledgeCount = givingEvent.PaidAttendeeCount;
-            viewModel.RequiredPledgesPercentage = (int)Math.Round(((double) viewModel.PledgeCount/(double) Math.Max(givingEvent.MinimumParticipants, 1))*100, 0);
+            viewModel.RequiredPledgesPercentage =
+                (int)
+                Math.Round(((double) viewModel.PledgeCount/(double) Math.Max(givingEvent.MinimumParticipants, 1))*100, 0);
             if (givingEvent.MaximumParticipants.HasValue)
             {
-                viewModel.TotalPledgesPercentage = (int)Math.Round(((double)viewModel.PledgeCount / (double)Math.Max(givingEvent.MaximumParticipants.Value, 1)) * 100, 0);
+                viewModel.TotalPledgesPercentage =
+                    (int)
+                    Math.Round(
+                        ((double) viewModel.PledgeCount/(double) Math.Max(givingEvent.MaximumParticipants.Value, 1))*100,
+                        0);
             }
             else
             {
@@ -162,7 +178,9 @@ namespace GroupGiving.Web.Controllers
         {
             return BuildEventPageViewModel(givingEvent, new EventPledgeViewModel());
         }
-        private EventPledgeViewModel BuildEventPageViewModel(GroupGivingEvent givingEvent, EventPledgeViewModel viewModel)
+
+        private EventPledgeViewModel BuildEventPageViewModel(GroupGivingEvent givingEvent,
+                                                             EventPledgeViewModel viewModel)
         {
             viewModel.Id = givingEvent.Id;
             viewModel.StartDate = givingEvent.StartDate;
@@ -208,9 +226,9 @@ namespace GroupGiving.Web.Controllers
                 ModelState.AddModelError("acceptTerms", "You must accept the Terms and Conditions to pledge");
             }
 
-            foreach(string attendeeName in request.AttendeeName)
+            foreach (string attendeeName in request.AttendeeName)
             {
-                if (string.IsNullOrWhiteSpace(attendeeName) || attendeeName.Length==0)
+                if (string.IsNullOrWhiteSpace(attendeeName) || attendeeName.Length == 0)
                 {
                     ModelState.AddModelError("attendeeName", "Make sure you provide the name of each attendee");
                     break;
@@ -225,22 +243,24 @@ namespace GroupGiving.Web.Controllers
 
             var action = new MakePledgeAction(_taxResolver, _paymentGateway, _paypalConfiguration, _documentStore);
             var makePledgeRequest = new MakePledgeRequest()
-            {
-                AttendeeNames = request.AttendeeName,
-                PayPalEmailAddress = request.EmailAddress,
-                OptInForOffers = request.OptInForOffers,
-                WebsiteUrlBase = string.Format("{0}://{1}", Request.Url.Scheme, Request.Url.Authority)
-            };
+                                        {
+                                            AttendeeNames = request.AttendeeName,
+                                            PayPalEmailAddress = request.EmailAddress,
+                                            OptInForOffers = request.OptInForOffers,
+                                            WebsiteUrlBase =
+                                                string.Format("{0}://{1}", Request.Url.Scheme, Request.Url.Authority)
+                                        };
 
             CreatePledgeActionResult result = null;
             try
             {
                 result = action.Attempt(eventDetails.Id, organiserAccount, makePledgeRequest);
-            } catch (InvalidOperationException ex)
+            }
+            catch (InvalidOperationException ex)
             {
                 ModelState.AddModelError("_form", ex.Message);
                 viewModel = BuildEventPageViewModel(eventDetails, request);
-                
+
                 return View(viewModel);
             }
 
@@ -264,7 +284,8 @@ namespace GroupGiving.Web.Controllers
 
             AutoMapper.Mapper.CreateMap<GroupGivingEvent, UpdateEventViewModel>();
             viewModel = AutoMapper.Mapper.Map<GroupGivingEvent, UpdateEventViewModel>(groupGivingEvent);
-            viewModel.LatLong = string.Format("{0:#.#####},{1:#.#####}", groupGivingEvent.Latitude, groupGivingEvent.Longitude);
+            viewModel.LatLong = string.Format("{0:#.#####},{1:#.#####}", groupGivingEvent.Latitude,
+                                              groupGivingEvent.Longitude);
 
             return View(viewModel);
         }
@@ -285,7 +306,7 @@ namespace GroupGiving.Web.Controllers
                 this.TryUpdateModel(groupGivingEvent);
 
                 // update organiser details if we have an organiser id but not organiser name set on the event
-                if (string.IsNullOrWhiteSpace(groupGivingEvent.OrganiserName) 
+                if (string.IsNullOrWhiteSpace(groupGivingEvent.OrganiserName)
                     && !string.IsNullOrWhiteSpace(groupGivingEvent.OrganiserId))
                 {
                     var organiser = session.Load<Account>(groupGivingEvent.OrganiserId);
@@ -305,7 +326,7 @@ namespace GroupGiving.Web.Controllers
 
                 session.SaveChanges();
             }
-            return RedirectToAction("edit-event", new {shortUrl=shortUrl});
+            return RedirectToAction("edit-event", new {shortUrl = shortUrl});
         }
 
         [ActionName("event-pledges")]
@@ -330,7 +351,7 @@ namespace GroupGiving.Web.Controllers
             var viewModel = AutoMapper.Mapper.Map<GroupGivingEvent, UpdateEventViewModel>(groupGivingEvent);
 
             return View(viewModel);
-            
+
         }
 
         [ActionName("cancel-event")]
@@ -359,7 +380,9 @@ namespace GroupGiving.Web.Controllers
             {
 
 
-                var @event = session.Query<GroupGivingEvent>().Where(e=>e.ShortUrl==shortUrl && e.State != EventState.Deleted).FirstOrDefault();
+                var @event =
+                    session.Query<GroupGivingEvent>().Where(e => e.ShortUrl == shortUrl && e.State != EventState.Deleted)
+                        .FirstOrDefault();
 
                 if (@event.State == EventState.Cancelled || @event.State == EventState.Completed)
                 {
@@ -374,16 +397,17 @@ namespace GroupGiving.Web.Controllers
                     @event.State = EventState.Cancelled;
                     session.SaveChanges();
                     TempData["failures"] = false;
-                    return RedirectToAction("event-cancelled", new { shortUrl = shortUrl });
-                } else
+                    return RedirectToAction("event-cancelled", new {shortUrl = shortUrl});
+                }
+                else
                 {
                     TempData["failures"] = true;
-                    return RedirectToAction("cancel-event", new { shortUrl = shortUrl });
+                    return RedirectToAction("cancel-event", new {shortUrl = shortUrl});
                 }
 
             }
 
-            
+
         }
 
         [ActionName("event-cancelled")]
@@ -448,16 +472,17 @@ namespace GroupGiving.Web.Controllers
                 {
                     refundResult = action.Execute(session, @event.Id, pledge.OrderNumber);
 
-                } catch (Exception exception)
+                }
+                catch (Exception exception)
                 {
                     logger.Fatal("Could not refund pledge with transaction id " + pledge.TransactionId, exception);
-                    return RedirectToAction("event-pledges", new { shortUrl = shortUrl });
+                    return RedirectToAction("event-pledges", new {shortUrl = shortUrl});
                 }
 
                 if (refundResult.Successful)
                 {
                     TempData["refunded"] = true;
-                    return RedirectToAction("event-pledges", new { shortUrl = shortUrl });
+                    return RedirectToAction("event-pledges", new {shortUrl = shortUrl});
                 }
 
                 viewModel.PledgeToBeRefunded = pledge;
@@ -465,6 +490,61 @@ namespace GroupGiving.Web.Controllers
 
                 return View();
             }
+        }
+
+        [HttpPost]
+        public ActionResult UploadEventImage(string shortUrl)
+        {
+            if (Request.Files.Count > 0)
+            {
+                var imageFile = Request.Files[0];
+                if (imageFile == null || imageFile.ContentLength > 0)
+                {
+                    ModelState.AddModelError("imageFile", "Please select an image to upload");
+                }
+
+                Image image = null;
+                byte[] fileData = new byte[imageFile.ContentLength];
+                imageFile.InputStream.Read(fileData, 0, fileData.Length);
+                MemoryStream imageStream = new MemoryStream(fileData);
+                try
+                {
+                    image = Bitmap.FromStream(imageStream);
+
+                    // save the uploaded image
+                    // todo: should resize the image here
+                    string imagePath = string.Format(ConfigurationManager.AppSettings["EventImagePathFormat"],
+                                                     shortUrl);
+                    if (imagePath.StartsWith("~") || imagePath.StartsWith("/"))
+                        imagePath = HostingEnvironment.MapPath(imagePath);
+                    if (!Directory.Exists(Path.GetDirectoryName(imagePath)))
+                        Directory.CreateDirectory(Path.GetDirectoryName(imagePath));
+
+                    image.Save(imagePath, ImageFormat.Jpeg);
+
+                    using (var session = _documentStore.OpenSession())
+                    {
+                        var @event = session.Query<GroupGivingEvent>().Where(e => e.ShortUrl == shortUrl
+                                                                                  && e.State != EventState.Deleted)
+                            .FirstOrDefault();
+                        if (@event == null)
+                        {
+                            return RedirectToAction("Index", new {shortUrl = shortUrl});
+                        }
+
+                        @event.ImageFilename = imagePath;
+                        @event.ImageUrl =
+                            Url.Content(string.Format(ConfigurationManager.AppSettings["EventImagePathFormat"], shortUrl));
+                        session.SaveChanges();
+                    }
+                }
+                catch (Exception exception)
+                {
+                    ModelState.AddModelError("imageFile", "Please select an image to upload");
+                }
+
+            }
+            return RedirectToAction("edit-event", new {shortUrl = shortUrl});
         }
     }
 }
