@@ -22,9 +22,43 @@ $(document).ready(function () {
     $('#ShortUrl').change(checkUrlAvailability);
     $('#ShortUrl').focusout(checkUrlAvailability);
 
+    $('#charityName').watermark('Charity name');
+    $('#forCharity').change(function () {
+        if ($(this).attr('checked'))
+            $('#findCharity').slideDown();
+        else
+            $('#findCharity').slideUp();
+    });
+    $('#charityName')
+        .data('timeout', null)
+        .keyup(function () {
+            clearTimeout(jQuery(this).data('timeout'));
+            jQuery(this).data('timeout', setTimeout(charitySearch, 500));
+        });
+
     //$('#pp-verify-button').click(VerifyPayPalAccount);
     //$('#pp-email').change(VerifyPayPalAccount);
-});
+    });
+
+
+
+function selectCharity(element) {
+    console.log('selected ' + $(this).attr('id'));
+    $('#charitySearchResults').slideUp();
+    $('#charityName').val($(this).attr('title'));
+    $('#charityId').val($(this).attr('id'));
+    return false;
+}
+
+function charitySearch() {
+    console.log('search for ' + $('#charityName').val());
+    $('#charitySearchResults')
+        .load('/createevent/FindCharities?query=' + escape($('#charityName').val()),
+        function () {
+            $('.selectCharity').click(selectCharity);
+            $('#charitySearchResults').slideDown();
+        });
+}
 
 function checkUrlAvailability() {
     $('#ShortUrl').val(sanitizeTitleForUrl($('#ShortUrl').val()));

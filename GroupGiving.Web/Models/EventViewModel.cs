@@ -85,5 +85,6 @@ namespace GroupGiving.Web.Models
         public string ImageUrl { get; set; }
 
         public decimal TotalPledgesPercentage { get; set; }
+        public Charity Charity { get; set; }
     }
 }

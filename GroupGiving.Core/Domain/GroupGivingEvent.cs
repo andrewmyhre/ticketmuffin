@@ -104,6 +104,7 @@ namespace GroupGiving.Core.Domain
         public string ImageFilename { get; set; }
 
         public string ImageUrl { get; set; }
+        public Charity CharityDetails { get; set; }
 
         public GroupGivingEvent()
         {

@@ -1,0 +1,24 @@
+﻿@model GroupGiving.Core.Services.CreateEventRequest
+
+<div><input type="checkbox" id="forCharity" name="forCharity" value="true" 
+@if (Model.ForCharity)
+{
+    <text>checked</text>
+} />
+<label for="forCharity">I am fundraising for a charity</label>
+@Html.ValidationMessageFor(m=>m.CharityId)
+</div>
+
+<div style="display:none" id="findCharity">
+    <input type="text" id="charityName" name="charityName" value="@Model.CharityName"/>
+    <input type="hidden" id="charityId" name="charityId"/>
+</div>
+@if (Model.ForCharity)
+{
+    <script type="text/javascript">
+        $(document).ready(function() {
+            charitySearch();
+        });
+    </script>
+}
+<div id="charitySearchResults"></div>

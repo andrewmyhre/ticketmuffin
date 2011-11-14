@@ -76,6 +76,13 @@
                 </div>
                 <h2>Event details</h2>
 
+                @if (Model.Charity != null)
+                 {
+                    <div class="eventBox">
+                     @{Html.RenderPartial("CharityDetails", Model.Charity);}
+                     </div>
+                 }
+                
                 <div class="eventBox">
                     @{ Html.RenderPartial("EventDateDetails"); }
                 </div>
