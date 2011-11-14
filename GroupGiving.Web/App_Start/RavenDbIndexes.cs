@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
 using System.Web;
 using Lucene.Net.Analysis;
@@ -13,6 +14,13 @@ namespace GroupGiving.Web.App_Start
     {
         public static void Initialise(IDocumentStore documentStore)
         {
+            // only recreate indexes if appSettings say we can
+            if (ConfigurationManager.AppSettings["buildRavenIndexesOnStartup"] == null
+                || !bool.Parse(ConfigurationManager.AppSettings["buildRavenIndexesOnStartup"]))
+            {
+                return;
+            }
+
             if (documentStore.DatabaseCommands.GetIndex("contentSearch") != null)
             {
                 documentStore.DatabaseCommands.DeleteIndex("contentSearch");
@@ -41,14 +49,16 @@ select new {c.Id, c.Address, contentDefinition.Label, contentByCulture.Key, cont
                                                         {
                                                             Map =
                                                                 @"from e in docs.GroupGivingEvents 
-select new {e.Id, e.Title, e.State, e.City, e.Country, e.StartDate, PledgeCount=e.Pledges.Count}",
+select new {e.Id, e.Title, e.State, Location=e.City +"", "" + e.Country, e.City, e.Country, e.SalesEndDateTime, e.StartDate, PledgeCount=e.Pledges.Count}",
                                                             Analyzers =
                                                                 {
                                                                     {"Title", typeof (StopAnalyzer).FullName},
                                                                     {"State", typeof (StopAnalyzer).FullName},
+                                                                    {"Location", typeof (StopAnalyzer).FullName},
                                                                     {"City", typeof (StopAnalyzer).FullName},
                                                                     {"Country", typeof (StopAnalyzer).FullName},
                                                                     {"StartDate", typeof (WhitespaceAnalyzer).FullName},
+                                                                    {"SalesEndDateTime", typeof (WhitespaceAnalyzer).FullName},
                                                                     {"PledgeCount", typeof (StandardAnalyzer).FullName}
                                                                 }
                                                         });
