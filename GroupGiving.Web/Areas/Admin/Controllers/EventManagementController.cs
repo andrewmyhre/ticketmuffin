@@ -31,8 +31,13 @@ namespace GroupGiving.Web.Areas.Admin.Controllers
         //
         // GET: /Admin/EventManagement/
 
-        public ActionResult Index(int? page, string searchQuery, string[] state, string orderBy, bool? descending)
+        public ActionResult Index(int? page, string searchQuery, string[] state, string states, string orderBy, bool? descending)
         {
+            if (!string.IsNullOrWhiteSpace(states))
+            {
+                state = states.Split(',');
+            }
+
             descending = descending.HasValue && descending.Value;
             var eventListViewModel = new EventListViewModel();
             if (!page.HasValue || page.Value < 1) page = 1;
@@ -79,6 +84,10 @@ namespace GroupGiving.Web.Areas.Admin.Controllers
                     {
                         query = query.OrderBy(orderBy);
                     }
+                }
+                else
+                {
+                    query = query.OrderBy("-StartDate");
                 }
 
                 eventListViewModel.Events = query.Skip((page.Value - 1) * pageSize).Take(pageSize);

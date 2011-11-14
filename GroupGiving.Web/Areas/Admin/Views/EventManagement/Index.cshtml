@@ -30,6 +30,8 @@
             @if (Model.States != null && Model.States.Contains(@option))
                 {<text>checked</text>} /><label for="State-@option">@option</label>
         }
+        @Html.HiddenFor(m=>m.OrderBy)
+        @Html.HiddenFor(m => m.Descending)
         <input type="submit" value="Search" />
     }
 </div>
@@ -39,27 +41,27 @@
 <p>
     @if (Model.Page > 1)
     {
-        Html.ActionLink("Previous page", "Index", new {Page = Model.Page - 1});
+        Html.ActionLink("Previous page", "Index", new { Page = Model.Page - 1 });
     }
     @if (!Model.LastPage)
     {
-        Html.ActionLink("Next page", "Index", new {Page = Model.Page + 1});
+        Html.ActionLink("Next page", "Index", new { Page = Model.Page + 1 });
     }
 </p>
 
 <table width="100%">
 <tr>
-    <th>@Html.ActionLink("Title", "Index", new { Model.SearchQuery, OrderBy = "Title", Descending = Model.OrderBy == "Title" && !Model.Descending })</th>
-    <th>@Html.ActionLink("Sales End", "Index", new { Model.SearchQuery, OrderBy = "SalesEndDateTime", Descending = Model.OrderBy == "SalesEndDateTime" && !Model.Descending })</th>
-    <th>@Html.ActionLink("Event Date", "Index", new { Model.SearchQuery, OrderBy = "StartDate", Descending = Model.OrderBy == "StartDate" && !Model.Descending })</th>
-    <th>@Html.ActionLink("Status", "Index", new { Model.SearchQuery, OrderBy = "State", Descending = Model.OrderBy == "State" && !Model.Descending })</th>
-    <th>@Html.ActionLink("Location", "Index", new { Model.SearchQuery, OrderBy = "Country", Descending = Model.OrderBy == "Country" && !Model.Descending })</th>
+    <th>@Html.ActionLink("Title", "Index", new { Model.SearchQuery, states = string.Join(",", Model.States), OrderBy = "Title", Descending = Model.OrderBy == "Title" && !Model.Descending })</th>
+    <th>@Html.ActionLink("Sales End", "Index", new { Model.SearchQuery, states = string.Join(",", Model.States), OrderBy = "SalesEndDateTime", Descending = (Model.OrderBy != "SalesEndDateTime" || !Model.Descending) })</th>
+    <th>@Html.ActionLink("Event Date", "Index", new { Model.SearchQuery, states = string.Join(",", Model.States), OrderBy = "StartDate", Descending = (Model.OrderBy != "StartDate" || !Model.Descending) })</th>
+    <th>@Html.ActionLink("Status", "Index", new { Model.SearchQuery, states = string.Join(",", Model.States), OrderBy = "State", Descending = Model.OrderBy == "State" && !Model.Descending })</th>
+    <th>@Html.ActionLink("Location", "Index", new { Model.SearchQuery, states = string.Join(",", Model.States), OrderBy = "Country", Descending = Model.OrderBy == "Country" && !Model.Descending })</th>
     <th>Attending/Minimum/Maximum</th>
 </tr>
 @foreach (var e in Model.Events)
 {
     <tr>
-        <td>@Html.ActionLink(e.Title, "ManageEvent", new {Id=e.Id.Substring(e.Id.IndexOf('/'))}) <a href="/events/@e.ShortUrl">view</a></td>
+        <td>@Html.ActionLink(e.Title, "ManageEvent", new { Id = e.Id.Substring(e.Id.IndexOf('/')) }) <a href="/events/@e.ShortUrl">view</a></td>
         <td class="centered">@e.SalesEndDateTime.ToString("dd/MM/yyyy hh:mm")</td>
         <td class="centered">@e.StartDate.ToString("dd/MM/yyyy hh:mm")</td>
         <td class="centered">@e.State</td>
