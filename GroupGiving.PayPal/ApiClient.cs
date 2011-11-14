@@ -24,9 +24,6 @@ namespace GroupGiving.PayPal
 
         public PayResponse SendPayRequest(PayRequest request)
         {
-            // set first receiver as primary
-            request.Receivers.First().Primary = true;
-
             return new HttpChannel().ExecuteRequest<PayRequest, PayResponse>("Pay", request, _clientSettings);
         }
 

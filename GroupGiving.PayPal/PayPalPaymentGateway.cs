@@ -55,7 +55,9 @@ namespace GroupGiving.PayPal
                                             CurrencyCode = "GBP",
                                             Receivers = (from r in request.Recipients
                                                          orderby r.AmountToReceive descending
-                                                         select new Receiver(r.AmountToReceive.ToString("#.00"), r.EmailAddress, r.AmountToReceive==request.Recipients.Max(rc=>rc.AmountToReceive)))
+                                                         select new Receiver(r.AmountToReceive.ToString("#.00"), 
+                                                             r.EmailAddress,
+                                                             r.Primary))
                                                 .ToArray()
                                         };
 

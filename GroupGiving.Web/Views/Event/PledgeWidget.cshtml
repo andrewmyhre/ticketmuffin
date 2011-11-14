@@ -29,7 +29,19 @@
                     <div id="barProgress" style="width: @Model.TotalPledgesPercentage%;"></div>
                 }
             </div>
-            <div id="peopleInfo">@Model.PledgeCount people have pledged to attend the event</div>
+            <div id="peopleInfo">
+                @if (Model.PledgeCount == 0)
+                {
+                    <text>Noone has pledged to attend the event yet</text>
+                } else if (Model.PledgeCount == 1)
+                {
+                        <text>1 person has already pledged to attend this event</text>   
+                }
+                else
+                {
+                    <text>@Model.PledgeCount people have already pledged to attend the event</text>
+                }
+            </div>
             <div class="clearFix"></div>
             <div id="timeLeft">Time left to pledge</div>
         </div>
@@ -71,7 +83,19 @@
                         <div id="barProgress" style="width: @Model.TotalPledgesPercentage%;"></div>
                     }
                  </div>
-                 <div id="peopleInfo">@Model.PledgeCount people have already pledged to attend the event</div>
+                 <div id="peopleInfo">
+                 @if (Model.PledgeCount == 0)
+                {
+                    <text>Noone has pledged to attend the event yet</text>
+                } else if (Model.PledgeCount == 1)
+                {
+                        <text>1 person has already pledged to attend this event</text>   
+                }
+                else
+                {
+                    <text>@Model.PledgeCount people have already pledged to attend the event</text>
+                }
+                 </div>
                  <div id="countdown"></div>
                  <div class="clearFix"></div>
                  <div id="timeLeft">Time left to pledge</div>
@@ -105,7 +129,19 @@
                          </div>
                      }
                  }
-                 <div id="peopleInfo">@Model.PledgeCount people have already pledged to attend the event</div>
+                 <div id="peopleInfo">
+                 @if (Model.PledgeCount == 0)
+                {
+                    <text>Noone has pledged to attend the event yet</text>
+                } else if (Model.PledgeCount == 1)
+                {
+                        <text>1 person has already pledged to attend this event</text>   
+                }
+                else
+                {
+                    <text>@Model.PledgeCount people have already pledged to attend the event</text>
+                }
+                 </div>
                  <div id="countdown"></div>
                  <div class="clearFix"></div>
                  <div id="timeLeft">Time left to pledge</div>

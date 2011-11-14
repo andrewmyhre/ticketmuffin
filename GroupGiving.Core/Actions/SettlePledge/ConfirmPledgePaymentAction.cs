@@ -12,25 +12,24 @@ namespace GroupGiving.Core.Actions.SettlePledge
 {
     public class ConfirmPledgePaymentAction
     {
-        private readonly IRepository<GroupGivingEvent> _eventRepository;
+        private readonly IDocumentSession _session;
         private readonly IPaymentGateway _paymentGateway;
         private readonly IAccountService _accountService;
         private readonly IEmailRelayService _emailRelayService;
 
-        public ConfirmPledgePaymentAction(IRepository<GroupGivingEvent> eventRepository, 
+        public ConfirmPledgePaymentAction(IDocumentSession session, 
             IPaymentGateway paymentGateway, IAccountService accountService, IEmailRelayService emailRelayService)
         {
-            _eventRepository = eventRepository;
+            _session = session;
             _paymentGateway = paymentGateway;
             _accountService = accountService;
             this._emailRelayService = emailRelayService;
         }
 
-        public SettlePledgeResponse ConfirmPayment(SettlePledgeRequest request)
+        public SettlePledgeResponse ConfirmPayment(GroupGivingEvent @event, SettlePledgeRequest request)
         {
             var response = new SettlePledgeResponse();
 
-            var @event = _eventRepository.Retrieve(e => e.Pledges.Exists(p => p.TransactionId == request.PayPalPayKey));
             if (@event==null)
                 throw new ArgumentException("No such event found");
 
@@ -75,10 +74,6 @@ namespace GroupGiving.Core.Actions.SettlePledge
                     }
             }
             
-
-            _eventRepository.SaveOrUpdate(@event);
-            _eventRepository.CommitUpdates();
-
             return response;
         }
     }

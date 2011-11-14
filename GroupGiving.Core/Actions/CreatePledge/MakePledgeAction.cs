@@ -58,7 +58,9 @@ namespace GroupGiving.Core.Actions.CreatePledge
                 pledge.SubTotal = @event.TicketPrice*request.AttendeeNames.Count();
 
                 // apply tax
-                pledge.TaxRateApplied = _tax.LookupTax(@event.Country);
+                // todo: tax being ignored
+                //pledge.TaxRateApplied = _tax.LookupTax(@event.Country);
+                pledge.TaxRateApplied = 0;
                 pledge.ServiceChargeRateApplied = TicketMuffinFees.ServiceCharge;
                 pledge.ServiceCharge = TicketMuffinFees.ServiceCharge*pledge.SubTotal;
                 pledge.Tax = pledge.TaxRateApplied*(pledge.SubTotal + pledge.ServiceCharge);
@@ -79,14 +81,15 @@ namespace GroupGiving.Core.Actions.CreatePledge
                                                     FailureCallbackUrl = request.WebsiteUrlBase.TrimEnd('/') + _paypalConfiguration.FailureCallbackUrl,
                                                     Recipients = new List<PaymentRecipient>()
                                                                      {
+                                                                         // TicketMuffin.com
                                                                          new PaymentRecipient(
                                                                              _paypalConfiguration.
                                                                                  TicketMuffinPayPalAccountEmail,
-                                                                             pledge.ServiceCharge, true),
-                                                                         // TicketMuffin.com
+                                                                             pledge.Total, true),
+                                                                        // event organiser
                                                                          new PaymentRecipient(
                                                                              organiserAccount.PayPalEmail,
-                                                                             pledge.Total - pledge.ServiceCharge, false)
+                                                                             pledge.SubTotal, false)
                                                                      }
                                                 };
 
@@ -103,6 +106,7 @@ namespace GroupGiving.Core.Actions.CreatePledge
                     if (pledge.PaymentGatewayHistory == null)
                         pledge.PaymentGatewayHistory = new List<DialogueHistoryEntry>();
                     pledge.PaymentGatewayHistory.Add(exception.FaultMessage.Raw);
+                    @event.Pledges.Add(pledge);
                     session.SaveChanges();
                     return new CreatePledgeActionResult()
                                {

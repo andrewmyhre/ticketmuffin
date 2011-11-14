@@ -15,12 +15,11 @@
                 <input type="text" style="width: 300px;" name="attendeeName" title="Full name" />
             </div>
 <div id="orderPage">
-    <h1>Tickets quantity</h1>
+    <h1>Purchase tickets for @Model.Title</h1>
     @using (Html.BeginForm())
     {
         <div class="grayBox">
             @Html.ValidationSummary()
-            <div><strong>Event:</strong> @Model.Title</div><br />
             <select name="quantity" class="short">
                 @for (int i = 1; i <= Model.MaximumParticipants - Model.PledgeCount; i++)
                 {
@@ -28,9 +27,9 @@
                         { <text>selected="selected"</text> }>@i</option>
                 }
             </select>
-            <strong style="font-size: 18px;">x @Model.TicketPrice.ToString("c") = <span style="color: #b3b70d;" class="total"></span></strong>
+            <strong style="font-size: 18px;">x @Model.TicketPrice.ToString("c") = <span style="color: #b3b70d;" class="total"></span>&nbsp;*</strong>
         </div>
-        <div style="color: #b3b70d;"><strong>
+        <div style="color: #b3b70d;"><strong>*
             @if (Model.EventIsFull) {
                 <text>This event is now full and is not accepting more pledges</text>
             } else if (Model.EventIsOn) {
@@ -59,7 +58,7 @@
         @Html.Hidden("ticketPrice", Model.TicketPrice)
         @Html.Hidden("shortUrl", Model.ShortUrl)
         @Html.Hidden("eventId", Model.Id)
-        <input type="submit" class="bigButton" value="Pay Now" style="float: left;" /><img src="/content/img/paypal.jpg" />
+        <input type="submit" class="bigButton" value="Pay Now" style="float: left;" /><img class="payPalCardsLogo" src="/content/img/paypal.jpg" />
         </div>
     }
 </div

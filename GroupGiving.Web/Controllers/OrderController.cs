@@ -28,24 +28,24 @@ namespace GroupGiving.Web.Controllers
     {
         //
         // GET: /Order/
-        private readonly IRepository<GroupGivingEvent> _eventRepository;
         private readonly IFormsAuthenticationService _formsService;
         private readonly IMembershipService _membershipService;
         private readonly IAccountService _accountService;
         private readonly IPaymentGateway _paymentGateway;
         private readonly ITaxAmountResolver _taxResolver;
         private readonly IPayPalConfiguration _paypalConfiguration;
+        private readonly IDocumentStore _documentStore;
         private IEmailRelayService _emailRelayService;
 
-        public OrderController(IRepository<GroupGivingEvent> eventRepository, IFormsAuthenticationService formsService, IMembershipService membershipService, IAccountService accountService, IPaymentGateway paymentGateway, ITaxAmountResolver taxResolver, IPayPalConfiguration paypalConfiguration, IDocumentStore documentStore, IEmailRelayService emailRelayService)
+        public OrderController(IFormsAuthenticationService formsService, IMembershipService membershipService, IAccountService accountService, IPaymentGateway paymentGateway, ITaxAmountResolver taxResolver, IPayPalConfiguration paypalConfiguration, IDocumentStore documentStore, IEmailRelayService emailRelayService)
         {
-            _eventRepository = eventRepository;
             _formsService = formsService;
             _membershipService = membershipService;
             _accountService = accountService;
             _paymentGateway = paymentGateway;
             _taxResolver = taxResolver;
             _paypalConfiguration = paypalConfiguration;
+            _documentStore = documentStore;
             ((RavenDBMembershipProvider)Membership.Provider).DocumentStore
                 = documentStore;
             _emailRelayService = emailRelayService;
@@ -79,9 +79,9 @@ namespace GroupGiving.Web.Controllers
                 if (!pledge.Paid && pledge.PaymentStatus == PaymentStatus.Unpaid)
                 {
                     ConfirmPledgePaymentAction action
-                        = new ConfirmPledgePaymentAction(_eventRepository, _paymentGateway, _accountService, _emailRelayService);
+                        = new ConfirmPledgePaymentAction(session, _paymentGateway, _accountService, _emailRelayService);
 
-                    var paymentConfirmationResult = action.ConfirmPayment(new SettlePledgeRequest() {PayPalPayKey = payKey});
+                    var paymentConfirmationResult = action.ConfirmPayment(@event, new SettlePledgeRequest() {PayPalPayKey = payKey});
 
                     // send a purchase confirmation email
                     MvcApplication.EmailFacade.Send(pledge.AccountEmailAddress,
@@ -103,6 +103,12 @@ namespace GroupGiving.Web.Controllers
 
                     session.SaveChanges();
                 }
+            }
+
+            using (var session = _documentStore.OpenSession())
+            {
+                @event = session.Load<GroupGivingEvent>(@event.Id);
+                pledge = @event.Pledges.Where(p => p.TransactionId == payKey).FirstOrDefault();
             }
             var viewModel = new OrderConfirmationViewModel();
             viewModel.Event = @event;
