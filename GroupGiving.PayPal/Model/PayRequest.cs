@@ -10,14 +10,8 @@ namespace GroupGiving.PayPal.Model
     {
         public PayRequest()
         {
-            ClientDetails = new ClientDetails()
-            {
-                ApplicationId = "APP-80W284485P519543T",
-                DeviceId = "255.255.255.255",
-                IpAddress = "255.255.255.255",
-                PartnerName = "MyCompanyName"
+            ClientDetails = ClientDetails.Default;
 
-            };
             Receivers = new Receiver[0];
             RequestEnvelope = new RequestEnvelope();
         }

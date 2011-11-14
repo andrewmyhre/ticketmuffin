@@ -7,6 +7,10 @@ namespace GroupGiving.PayPal.Model
     [XmlRoot(ElementName = "clientDetails")]
     public class ClientDetails
     {
+        private ClientDetails()
+        {
+            
+        }
         [DataMember(Order = 0)]
         [XmlElement(Order = 0, ElementName = "applicationId")]
         public string ApplicationId { get; set; }
@@ -19,5 +23,20 @@ namespace GroupGiving.PayPal.Model
         [DataMember(Order = 3)]
         [XmlElement(Order = 3, ElementName = "partnerName")]
         public string PartnerName { get; set; }
+
+        public static ClientDetails Default
+        {
+            get
+            {
+                return new ClientDetails()
+                           {
+                               ApplicationId = "APP-80W284485P519543T",
+                               DeviceId = "255.255.255.255",
+                               IpAddress = "255.255.255.255",
+                               PartnerName = "TicketMuffin"
+
+                           };
+            }
+        }
     }
 }

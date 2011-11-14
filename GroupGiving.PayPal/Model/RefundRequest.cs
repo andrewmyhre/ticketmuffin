@@ -28,14 +28,7 @@ namespace GroupGiving.PayPal.Model
         public RefundRequest(string payKey)
         {
             PayKey = payKey;
-            ClientDetails = new ClientDetails()
-                                {
-                                    ApplicationId = "APP-80W284485P519543T",
-                                    DeviceId = "255.255.255.255",
-                                    IpAddress = "255.255.255.255",
-                                    PartnerName = "MyCompanyName"
-
-                                };
+            ClientDetails = ClientDetails.Default;
             RequestEnvelope = new RequestEnvelope()
                                   {
                                       ErrorLanguage = "en_US"

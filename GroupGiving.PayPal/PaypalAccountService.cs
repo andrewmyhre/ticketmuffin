@@ -85,12 +85,12 @@ namespace GroupGiving.PayPal
             paypalRequest.partnerField5 = "";
             paypalRequest.currencyCode = request.CurrencyCode;
             paypalRequest.contactPhoneNumber = request.ContactPhoneNumber;
-            paypalRequest.preferredLanguageCode = "en_US";
+            paypalRequest.preferredLanguageCode = "en_GB";
             paypalRequest.clientDetails = new ClientDetailsType();
             paypalRequest.clientDetails.applicationId = _configuration.ApplicationId;
             paypalRequest.clientDetails.deviceId = _configuration.DeviceIpAddress.Replace(".","");
             paypalRequest.clientDetails.ipAddress = _configuration.DeviceIpAddress;
-            paypalRequest.emailAddress = "andrew.myhre." + Guid.NewGuid().ToString() + "@gmail.com";
+            paypalRequest.emailAddress = "ticketmuffin." + Guid.NewGuid().ToString() + "@gmail.com";
             //AccountRequest.sandboxEmailAddress = "platform.sdk.seller@gmail.com";
             paypalRequest.createAccountWebOptions = new CreateAccountWebOptionsType();
             paypalRequest.createAccountWebOptions.returnUrl = request.ReturnUrl;
