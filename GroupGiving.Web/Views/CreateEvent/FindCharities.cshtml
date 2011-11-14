@@ -4,7 +4,11 @@
 <ul id="charitySearchResultsList">
 @foreach(var charity in Model.Results)
 {
-    <li><a href="#" class="selectCharity" id="@charity.Id"><img src="@charity.LogoUrl"/>
-        @charity.Name</a></li>
+    <li>
+        <a href="#" class="selectCharity" id="@charity.Id" title="@charity.Name">
+            <span class="charityLogo"><img src="@charity.LogoUrl"/></span>
+            <span class="charityName">@charity.Name</span>
+        </a>
+    </li>
 }
 </ul>

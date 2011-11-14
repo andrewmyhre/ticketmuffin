@@ -36,19 +36,26 @@ $(document).ready(function () {
             jQuery(this).data('timeout', setTimeout(charitySearch, 500));
         });
 
-    $('.selectCharity')
-        .click(function () {
-            $('#charitySearchResults').slideUp();
-            $('#findCharity').slideUp();
-        });
-
     //$('#pp-verify-button').click(VerifyPayPalAccount);
     //$('#pp-email').change(VerifyPayPalAccount);
-});
+    });
+
+
+
+function selectCharity(element) {
+    console.log('selected ' + $(this).attr('id'));
+    $('#charitySearchResults').slideUp();
+    $('#charityName').val($(this).attr('title'));
+    return false;
+}
 
 function charitySearch() {
     $('#charitySearchResults')
-        .load('/createevent/FindCharities?query=' + $('#charityName').val());
+        .load('/createevent/FindCharities?query=' + $('#charityName').val(),
+        function () {
+            $('.selectCharity').click(selectCharity);
+            $('#charitySearchResults').slideDown();
+        });
 }
 
 function checkUrlAvailability() {
