@@ -3,6 +3,7 @@
 
 
 @if (Model.State == EventState.Cancelled)
+<<<<<<< HEAD
   {
       <div id="pledgeInfo">
             <div id="countInfo" class="cancelled">The event has been cancelled and money refunded to the pledgers</div>
@@ -14,6 +15,22 @@
       <div id="pledgeInfo">
             <div id="countInfo" class="cancelled">The event has been completed</div>
             <div class="clearFix"></div>
+=======
+{
+}
+else if (Model.SalesEndDateTime < DateTime.Now)
+{
+    <div id="pledgeInfo">
+        <div id="count">Sales ended</div>    
+        <div id="countBar">
+            @if (!Model.EventIsOn)
+            {
+                <div id="barProgress" class="inProg" style="width: @Model.TotalPledgesPercentage%;"></div>
+            } else
+            {
+                <div id="barProgress" style="width: @Model.TotalPledgesPercentage%;"></div>
+            }
+>>>>>>> pledge-progress-bar
         </div>
   }
   else if (Model.SalesEndDateTime < DateTime.Now)
@@ -21,13 +38,7 @@
         <div id="pledgeInfo">
             <div id="count">Sales closed</div>    
             <div id="countBar">
-                 @if (!Model.EventIsOn)
-                {
-                    <div id="barProgress" class="inProg" style="width: @Model.RequiredPledgesPercentage%;"></div>
-                } else
-                {
-                    <div id="barProgress" style="width: @Model.TotalPledgesPercentage%;"></div>
-                }
+                <div id="barProgress" style="width: @Model.RequiredPledgesPercentage%;"></div>
             </div>
             <div id="peopleInfo">@Model.PledgeCount people have pledged to attend the event</div>
             <div class="clearFix"></div>
@@ -63,13 +74,7 @@
                      }
                  }
                  <div id="countBar">
-                      @if (!Model.EventIsOn)
-                    {
-                        <div id="barProgress" class="inProg" style="width: @Model.RequiredPledgesPercentage%;"></div>
-                    } else
-                    {
-                        <div id="barProgress" style="width: @Model.TotalPledgesPercentage%;"></div>
-                    }
+                     <div id="barProgress" style="width: @Model.RequiredPledgesPercentage%;"></div>
                  </div>
                  <div id="peopleInfo">@Model.PledgeCount people have already pledged to attend the event</div>
                  <div id="countdown"></div>
@@ -90,25 +95,52 @@
                      {
                            <div id="count">@(Model.MaximumParticipants - Model.PledgeCount)</div>
 
+<<<<<<< HEAD
                            <div id="countInfo">Spaces left!</div>
-                 <div id="countBar">
-                     <div id="barProgress" style="width: @Model.TotalPledgesPercentage%;"></div>
-                 </div>
                      }
                      else
                      {
                            <div id="count">@(Model.MinimumParticipants - Model.PledgeCount)</div>
+=======
+            <div id="countInfo">Pledges needed to fund the event</div>
+    }
+    <div id="countBar">
+    @if (!Model.EventIsOn)
+    {
+        <div id="barProgress" class="inProg" style="width: @Model.TotalPledgesPercentage%;"></div>
+    } else
+    {
+        <div id="barProgress" style="width: @Model.TotalPledgesPercentage%;"></div>
+    }
+    </div>
+    <div id="peopleInfo">@Model.PledgeCount people have already pledged to attend the event</div>
+    <div id="countdown"></div>
+        <div class="clearFix"></div>
+        <div id="timeLeft">Time left to pledge</div>
+    </div>
+}
+else
+{
+    <div id="pledgeInfo">
+    @if (Model.EventIsFull)
+    {
+            <div id="count">Sold out!</div>    
+    }
+    else if (Model.EventIsOn)
+    {
+            <div id="count">@(Model.MaximumParticipants - Model.PledgeCount)</div>
+>>>>>>> pledge-progress-bar
 
                            <div id="countInfo">Pledges needed to fund the event</div>
-                         <div id="countBar">
-                             <div id="barProgress" style="width: @Model.RequiredPledgesPercentage%;"></div>
-                         </div>
                      }
                  }
+                 <div id="countBar">
+                     <div id="barProgress" style="width: @Model.RequiredPledgesPercentage%;"></div>
+                 </div>
                  <div id="peopleInfo">@Model.PledgeCount people have already pledged to attend the event</div>
                  <div id="countdown"></div>
                  <div class="clearFix"></div>
                  <div id="timeLeft">Time left to pledge</div>
              </div>
-         }
+         }}
 

@@ -217,6 +217,10 @@ div#barProgress {
   -moz-border-radius: 3px;
   -webkit-border-radius: 3px;
 }
+div#barProgress.inProg
+{
+    background: url(/content/img/barProgress_inProg.png) center left no-repeat;
+}
 div#peopleInfo {
   color: #292929;
   font-size: 12px;
