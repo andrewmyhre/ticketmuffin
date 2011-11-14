@@ -171,9 +171,10 @@ namespace GroupGiving.Web.Controllers
         {
             var membershipUser = _membershipService.GetUser(_userIdentity.Name);
             var account = _accountService.RetrieveByEmailAddress(membershipUser.Email);
+            var @event = _eventService.Retrieve(shortUrl);
 
             var viewModel = new SetTicketDetailsRequest();
-            viewModel.SalesEndDateTime = DateTime.Now;
+            viewModel.SalesEndDateTime = @event.StartDate.AddDays(-1);
             viewModel.SalesEndTimeOptions = TimeOptions();
             viewModel.PayPalEmail = account.PayPalEmail;
             viewModel.PayPalFirstName = account.PayPalFirstName;
