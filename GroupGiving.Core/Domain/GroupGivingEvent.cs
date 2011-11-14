@@ -101,6 +101,10 @@ namespace GroupGiving.Core.Domain
 
         public string OrganiserId { get; set; }
 
+        public string ImageFilename { get; set; }
+
+        public string ImageUrl { get; set; }
+
         public GroupGivingEvent()
         {
             Pledges = new List<EventPledge>();

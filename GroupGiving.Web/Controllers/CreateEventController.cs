@@ -1,10 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Configuration;
+using System.Drawing;
+using System.Drawing.Imaging;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Security.Principal;
 using System.Text.RegularExpressions;
+using System.Web.Hosting;
 using System.Web.Mvc;
 using System.Web.Security;
 using GroupGiving.Core.Services;
@@ -100,6 +104,7 @@ namespace GroupGiving.Web.Controllers
         public ActionResult EventDetails(CreateEventRequest request)
         {
             DateTime startDate = new DateTime();
+            Image uploadedImage = null;
             if (!DateTime.TryParse(string.Format("{0} {1}", request.StartDate, request.StartTime), out startDate))
             {
                 ModelState.AddModelError("startDateTime", "Please select a valid date for the event");
@@ -121,6 +126,29 @@ namespace GroupGiving.Web.Controllers
             {
                 ModelState.AddModelError("ShortUrl", "Unfortunately that url is already in use");
             }
+
+            // pull any files out of the request
+            if (Request.Files.Count > 0)
+            {
+                var file = Request.Files[0];
+                if (file != null && file.ContentLength > 0)
+                {
+                    byte[] fileData = new byte[file.ContentLength];
+
+                    file.InputStream.Read(fileData, 0, file.ContentLength);
+                    MemoryStream imageByteStream = new MemoryStream(fileData);
+                    // try to load as an image
+                    try
+                    {
+                        uploadedImage = Bitmap.FromStream(imageByteStream);
+                    }
+                    catch (Exception ex)
+                    {
+                        ModelState.AddModelError("ImageFilename", "Please choose an image file to upload");
+                    }
+                }
+            }
+
             if (!ModelState.IsValid)
             {
                 request.StartDateTime = DateTime.Now;
@@ -128,6 +156,23 @@ namespace GroupGiving.Web.Controllers
                 
                 request.Countries = new SelectList(_countryService.RetrieveAllCountries(), "Name", "Name", "United Kingdom");
                 return View(request);
+            }
+
+            if (uploadedImage != null)
+            {
+                // save the uploaded image
+                // todo: should resize the image here
+                string imagePath = string.Format(ConfigurationManager.AppSettings["EventImagePathFormat"],
+                                                 request.ShortUrl);
+                if (imagePath.StartsWith("~") || imagePath.StartsWith("/"))
+                    imagePath = HostingEnvironment.MapPath(imagePath);
+                if (!Directory.Exists(Path.GetDirectoryName(imagePath)))
+                    Directory.CreateDirectory(Path.GetDirectoryName(imagePath));
+
+                uploadedImage.Save(imagePath, ImageFormat.Jpeg);
+                request.ImageFilename = imagePath;
+                request.ImageUrl =
+                    Url.Content(string.Format(ConfigurationManager.AppSettings["EventImagePathFormat"], request.ShortUrl));
             }
 
             var account = _accountService.RetrieveByEmailAddress(_userIdentity.Name);

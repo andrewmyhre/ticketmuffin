@@ -1,12 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Web;
 using System.Web.Mvc;
 
 namespace GroupGiving.Core.Services
 {
     public class CreateEventRequest
     {
+        public HttpPostedFileBase ImageFile;
+
         [Required]
         [Display(Name="Title")]
         public string Title { get; set; }
@@ -72,5 +75,7 @@ namespace GroupGiving.Core.Services
         public string OrganiserAccountId { get; set; }
 
         public string OrganiserName { get; set; }
+
+        public string ImageUrl { get; set; }
     }
 }

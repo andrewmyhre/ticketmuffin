@@ -23,7 +23,7 @@
 <h2>Create Event</h2>
 
 <div>
-@using (Html.BeginForm())
+@using (Html.BeginForm("create", "CreateEvent", FormMethod.Post, new {enctype = "multipart/form-data"}))
 {
     <div class="grayBox">
         <div id="dialectics"></div>
@@ -91,7 +91,8 @@
 
         <div style="padding-bottom: 10px;">
             <label style="display:inline-block;width:200px">Upload image</label>
-            <input type="file"/>
+            <input type="file" name="imageFile"/>
+            @Html.ValidationMessageFor(m=>m.ImageFilename)
         </div>
 
         <div style="padding-bottom: 10px;">

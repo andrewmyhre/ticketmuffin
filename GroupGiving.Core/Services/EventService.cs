@@ -54,7 +54,8 @@ namespace GroupGiving.Core.Services
                                                    Longitude = request.Longitude,
                                                    Postcode = request.Postcode,
                                                    Country = request.Country,
-                                                   
+                                                   ImageFilename=request.ImageFilename,
+                                                   ImageUrl=request.ImageUrl
                                                };
 
                 session.Store(ggEvent);

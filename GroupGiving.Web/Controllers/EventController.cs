@@ -5,6 +5,7 @@ using System.Linq;
 using System.Runtime.Serialization;
 using System.Security.Principal;
 using System.Text;
+using System.Web.Hosting;
 using System.Web.Security;
 using System.Xml;
 using GroupGiving.Core;
@@ -109,6 +110,7 @@ namespace GroupGiving.Web.Controllers
             viewModel.EventIsFull = givingEvent.IsFull;
             viewModel.ContactName = givingEvent.OrganiserName;
             viewModel.State = givingEvent.State;
+            viewModel.ImageUrl = givingEvent.ImageUrl;
 
             viewModel.PledgeCount = givingEvent.PaidAttendeeCount;
             viewModel.RequiredPledgesPercentage = (int)Math.Round(((double) viewModel.PledgeCount/(double) Math.Max(givingEvent.MinimumParticipants, 1))*100, 0);
