@@ -101,6 +101,8 @@ namespace GroupGiving.Core.Domain
 
         public string OrganiserId { get; set; }
 
+        public Charity CharityDetails { get; set; }
+
         public GroupGivingEvent()
         {
             Pledges = new List<EventPledge>();

@@ -46,12 +46,14 @@ function selectCharity(element) {
     console.log('selected ' + $(this).attr('id'));
     $('#charitySearchResults').slideUp();
     $('#charityName').val($(this).attr('title'));
+    $('#charityId').val($(this).attr('id'));
     return false;
 }
 
 function charitySearch() {
+    console.log('search for ' + $('#charityName').val());
     $('#charitySearchResults')
-        .load('/createevent/FindCharities?query=' + $('#charityName').val(),
+        .load('/createevent/FindCharities?query=' + escape($('#charityName').val()),
         function () {
             $('.selectCharity').click(selectCharity);
             $('#charitySearchResults').slideDown();

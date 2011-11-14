@@ -14,11 +14,13 @@ using GroupGiving.PayPal.Model;
 using GroupGiving.Web.App_Start;
 using GroupGiving.Web.Areas.Api.Controllers;
 using GroupGiving.Web.Code;
+using JustGiving.Api.Sdk;
 using Ninject;
 using Raven.Client;
 using RavenDBMembership.Web.Models;
 using System.Web.Routing;
 using System.Web;
+using log4net;
 
 namespace GroupGiving.Web.Controllers
 {
@@ -34,6 +36,7 @@ namespace GroupGiving.Web.Controllers
         private readonly IMembershipProviderLocator _membershipProviderLocator;
         private readonly IPaypalAccountService _paypalAccountService;
         Regex mustContainAlphaCharacters = new Regex(@".*\w.*");
+        private readonly ILog _logger = LogManager.GetLogger(typeof (CreateEventController));
 
         public CreateEventController(IAccountService accountService, ICountryService countryService, IMembershipService membershipService, 
             IFormsAuthenticationService formsAuthenticationService, IEventService eventService, 
@@ -121,6 +124,35 @@ namespace GroupGiving.Web.Controllers
             {
                 ModelState.AddModelError("ShortUrl", "Unfortunately that url is already in use");
             }
+
+            if (request.ForCharity)
+            {
+                if(!request.CharityId.HasValue)
+                {
+                    ModelState.AddModelError("CharityId", "Please select a charity from the suggestions provided");
+                }
+                else
+                {
+                    JustGivingClient apiClient = new JustGivingClient(JustGivingApiConfigurationFactory.Build());
+                    try
+                    {
+                        var charityDetails = apiClient.Charity.Retrieve(request.CharityId.Value);
+                        request.CharityLogoUrl = "http://www.justgiving.com/"+charityDetails.LogoUrl;
+                        request.CharityName = charityDetails.Name;
+                        request.CharityRegistrationNumber = charityDetails.RegistrationNumber;
+                        request.CharityDonationPageUrl = string.Format("http://www.justgiving.com/{0}/donate", charityDetails.PageShortName);
+                        request.CharityDescription = charityDetails.Description;
+                        request.CharityDonationGatewayName = "JustGiving";
+                    } catch (Exception exception)
+                    {
+                        // probably justgiving api is down
+                        _logger.Warn("Justgiving api seems to be down", exception);
+                        // let the user think it's their fault
+                        ModelState.AddModelError("CharityId", "Please select a charity from the suggestions provided");
+                    }
+                }
+            }
+
             if (!ModelState.IsValid)
             {
                 request.StartDateTime = DateTime.Now;
@@ -264,54 +296,50 @@ namespace GroupGiving.Web.Controllers
 
         public ActionResult FindCharities(string query)
         {
-            return PartialView(new CharitySearchResults()
-                                   {
-                                       Results = new List<CharitySearchResult>()
-                                                     {
-                                                         new CharitySearchResult()
-                                                             {
-                                                                 Id = "charity1",
-                                                                 Name = "Charity 1",
-                                                                 LogoUrl =
-                                                                     "http://www.justgiving.com/Utils/imaging.ashx?imageType=charitybrandinglogo&img=9e56d7f4-b5ed-4954-bacf-08949ad58a6d.jpg&width=120&height=120"
-                                                             },
-                                                         new CharitySearchResult()
-                                                             {
-                                                                 Id = "charity2",
-                                                                 Name = "Charity 2",
-                                                                 LogoUrl =
-                                                                     "http://www.justgiving.com/Utils/imaging.ashx?imageType=charitybrandinglogo&img=9e56d7f4-b5ed-4954-bacf-08949ad58a6d.jpg&width=120&height=120"
-                                                             },
-                                                         new CharitySearchResult()
-                                                             {
-                                                                 Id = "charity3",
-                                                                 Name = "Charity 3",
-                                                                 LogoUrl =
-                                                                     "http://www.justgiving.com/Utils/imaging.ashx?imageType=charitybrandinglogo&img=9e56d7f4-b5ed-4954-bacf-08949ad58a6d.jpg&width=120&height=120"
-                                                             },
-                                                         new CharitySearchResult()
-                                                             {
-                                                                 Id = "charity4",
-                                                                 Name = "Charity 4",
-                                                                 LogoUrl =
-                                                                     "http://www.justgiving.com/Utils/imaging.ashx?imageType=charitybrandinglogo&img=9e56d7f4-b5ed-4954-bacf-08949ad58a6d.jpg&width=120&height=120"
-                                                             },
-                                                         new CharitySearchResult()
-                                                             {
-                                                                 Id = "charity5",
-                                                                 Name = "Charity 5",
-                                                                 LogoUrl =
-                                                                     "http://www.justgiving.com/Utils/imaging.ashx?imageType=charitybrandinglogo&img=9e56d7f4-b5ed-4954-bacf-08949ad58a6d.jpg&width=120&height=120"
-                                                             }
-                                                     }
-                                   });
+            JustGiving.Api.Sdk.Model.Search.CharitySearchResults charityResults = null;
+
+            try
+            {
+                charityResults = new JustGiving.Api.Sdk.JustGivingClient(JustGivingApiConfigurationFactory.Build())
+                    .Search.CharitySearch(query);
+            } catch (Exception ex)
+            {
+                _logger.Warn("justgiving api seems to be down", ex);
+                return PartialView(new CharitySearchResults() {Results = new List<CharitySearchResult>()});
+            }
+
+            var viewModel = new CharitySearchResults()
+                                {
+                                    Results = charityResults
+                                        .Results.Select(c => new CharitySearchResult()
+                                                                 {
+                                                                     Id = c.CharityId,
+                                                                     Name = c.Name,
+                                                                     LogoUrl = "http://www.justgiving.com" + c.LogoFileName.Replace("height=120", "height=30").Replace("&width=120", "")
+                                                                 })
+                                                                 .Take(5)
+                                                                 .ToList()
+                                };
+
+            return PartialView(viewModel);
+    }
     }
 
     public class CharitySearchResults
     {
         public List<CharitySearchResult> Results { get; set; }
     }
-}
+
+    public static class JustGivingApiConfigurationFactory
+    {
+        public static ClientConfiguration Build()
+        {
+            return new ClientConfiguration(
+                ConfigurationManager.AppSettings["JustGivingApiDomainBase"],
+                ConfigurationManager.AppSettings["JustGivingApiKey"],
+                int.Parse(ConfigurationManager.AppSettings["JustGivingApiVersion"]));
+        }
+    }
 
     public class CharitySearchResult
     {

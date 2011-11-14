@@ -109,6 +109,7 @@ namespace GroupGiving.Web.Controllers
             viewModel.EventIsFull = givingEvent.IsFull;
             viewModel.ContactName = givingEvent.OrganiserName;
             viewModel.State = givingEvent.State;
+            viewModel.Charity = givingEvent.CharityDetails;
 
             viewModel.PledgeCount = givingEvent.PaidAttendeeCount;
             viewModel.RequiredPledgesPercentage = (int)Math.Round(((double) viewModel.PledgeCount/(double) Math.Max(givingEvent.MinimumParticipants, 1))*100, 0);

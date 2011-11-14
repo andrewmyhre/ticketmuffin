@@ -1,0 +1,17 @@
+﻿@model System.Collections.Generic.List<GroupGiving.Core.Domain.Charity>
+
+@{
+    ViewBag.Title = "charities";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+
+<h2>charities</h2>
+
+<table>
+@foreach (var charity in Model)
+{
+    <tr>
+        <td>@charity.Name</td>
+    </tr>
+}
+</table>

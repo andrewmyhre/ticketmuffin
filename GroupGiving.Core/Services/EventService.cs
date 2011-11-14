@@ -35,6 +35,34 @@ namespace GroupGiving.Core.Services
                     throw new InvalidOperationException("Short url is not available");
                 }
 
+                Charity charity = null;
+                if (request.ForCharity)
+                {
+                    if (!request.CharityId.HasValue)
+                    {
+                        throw new ArgumentException("Charity Id must be provided if event is for a charity");
+                    }
+
+                    charity = session.Query<Charity>()
+                        .Where(c => c.DonationGatewayName == request.CharityDonationGatewayName
+                                    && c.DonationGatewayCharityId == request.CharityId)
+                        .FirstOrDefault();
+
+                    if (charity == null)
+                    {
+                        charity = new Charity()
+                                      {
+                                          Name = request.CharityName,
+                                          Description = request.CharityDescription,
+                                          RegistrationNumber = request.CharityRegistrationNumber,
+                                          DonationGatewayName = request.CharityDonationGatewayName,
+                                          DonationGatewayCharityId = request.CharityId.Value,
+                                          LogoUrl = request.CharityLogoUrl,
+                                          DonationPageUrl=request.CharityDonationPageUrl
+                                      };
+                    }
+                }
+
                 GroupGivingEvent ggEvent = new GroupGivingEvent()
                                                {
                                                    Title = request.Title,
@@ -54,13 +82,13 @@ namespace GroupGiving.Core.Services
                                                    Longitude = request.Longitude,
                                                    Postcode = request.Postcode,
                                                    Country = request.Country,
-                                                   
+                                                   CharityDetails = charity
                                                };
 
+                session.Store(charity);
                 session.Store(ggEvent);
                 session.SaveChanges();
 
-                int eventId = int.Parse(ggEvent.Id.Substring(ggEvent.Id.IndexOf('/') + 1));
                 return new CreateEventResult() { Success = true, Event = ggEvent };
             }
 

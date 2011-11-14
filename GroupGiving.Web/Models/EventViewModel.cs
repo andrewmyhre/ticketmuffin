@@ -81,5 +81,7 @@ namespace GroupGiving.Web.Models
         public bool UserIsEventOwner { get; set; }
 
         public EventState State { get; set; }
+
+        public Charity Charity { get; set; }
     }
 }

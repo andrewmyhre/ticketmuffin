@@ -72,5 +72,21 @@ namespace GroupGiving.Core.Services
         public string OrganiserAccountId { get; set; }
 
         public string OrganiserName { get; set; }
+
+        public bool ForCharity { get; set; }
+
+        public int? CharityId { get; set; }
+
+        public string CharityLogoUrl { get; set; }
+
+        public string CharityName { get; set; }
+
+        public string CharityRegistrationNumber { get; set; }
+
+        public string CharityDonationPageUrl { get; set; }
+
+        public string CharityDonationGatewayName { get; set; }
+
+        public string CharityDescription { get; set; }
     }
 }
