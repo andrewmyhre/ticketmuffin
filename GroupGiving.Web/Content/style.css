@@ -197,6 +197,10 @@ div#pledgeInfo div#countInfo {
     position: relative;
     top: -3px;
 }
+div#pledgeInfo div#countInfo.cancelled
+{
+    width: 230px !important;
+}
 div#countBar {
   height: 16px;
   background: url(/content/img/countBar.png) center left no-repeat #4c79a3;
