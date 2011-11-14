@@ -69,7 +69,7 @@ namespace GroupGiving.Web.Controllers
             }
 
             var model = new SignUpModel();
-            model.Countries = new SelectList(_countryService.RetrieveAllCountries(), "Name", "Name");
+            model.Countries = new SelectList(_countryService.RetrieveAllCountries(), "Name", "Name", "United Kingdom");
             model.AccountTypes = new SelectList(Enum.GetNames(typeof(AccountType)));
             return View(model);
         }
