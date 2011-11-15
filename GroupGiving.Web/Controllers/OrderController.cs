@@ -70,9 +70,11 @@ namespace GroupGiving.Web.Controllers
                     session.Query<GroupGivingEvent>()
                         .Where(e => e.Pledges.Any(p => p.TransactionId == payKey))
                         .FirstOrDefault();
+                if (@event == null)
+                    return new HttpNotFoundResult();
                 pledge = @event.Pledges.Where(p => p.TransactionId == payKey).FirstOrDefault();
 
-                if (@event == null || pledge == null)
+                if (pledge == null)
                     return new HttpNotFoundResult();
 
                 // user may just be reloading the page - fine, don't do any updates and present the view

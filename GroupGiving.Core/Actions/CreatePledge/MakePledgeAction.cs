@@ -64,7 +64,7 @@ namespace GroupGiving.Core.Actions.CreatePledge
                 pledge.ServiceChargeRateApplied = TicketMuffinFees.ServiceCharge;
                 pledge.ServiceCharge = TicketMuffinFees.ServiceCharge*pledge.SubTotal;
                 pledge.Tax = pledge.TaxRateApplied*(pledge.SubTotal + pledge.ServiceCharge);
-                pledge.Total = pledge.SubTotal + pledge.ServiceChargeRateApplied + pledge.Tax;
+                pledge.Total = pledge.SubTotal;
                 pledge.Attendees =
                     (from a in request.AttendeeNames select new EventPledgeAttendee() {FullName = a}).ToList();
                 pledge.AccountEmailAddress = request.PayPalEmailAddress;
@@ -89,7 +89,7 @@ namespace GroupGiving.Core.Actions.CreatePledge
                                                                         // event organiser
                                                                          new PaymentRecipient(
                                                                              organiserAccount.PayPalEmail,
-                                                                             pledge.SubTotal, false)
+                                                                             pledge.Total - pledge.ServiceCharge, false)
                                                                      }
                                                 };
 
