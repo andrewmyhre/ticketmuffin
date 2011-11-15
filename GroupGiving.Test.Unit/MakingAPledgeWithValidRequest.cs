@@ -228,8 +228,8 @@ namespace GroupGiving.Test.Unit.Pledging
         public void PaymentStatusSetToPaidPendingReconciliation()
         {
             var request = new SettlePledgeRequest(){PayPalPayKey = PaypalPayKey};
-            var action = new ConfirmPledgePaymentAction(EventRepositoryMock.Object, PaymentGateway.Object, AccountService.Object, EmailRelayService.Object);
-            action.ConfirmPayment(request);
+            var action = new ConfirmPledgePaymentAction(DocumentSession.Object, PaymentGateway.Object, AccountService.Object, EmailRelayService.Object);
+            action.ConfirmPayment(Event, request);
 
             var pledge = Event.Pledges.LastOrDefault();
             Assert.That(pledge.PaymentStatus, Is.EqualTo(PaymentStatus.PaidPendingReconciliation));
@@ -243,17 +243,17 @@ namespace GroupGiving.Test.Unit.Pledging
             pledge.PaymentStatus = PaymentStatus.PaidPendingReconciliation;
 
             var request = new SettlePledgeRequest() { PayPalPayKey = PaypalPayKey };
-            var action = new ConfirmPledgePaymentAction(EventRepositoryMock.Object, PaymentGateway.Object, AccountService.Object, EmailRelayService.Object);
+            var action = new ConfirmPledgePaymentAction(DocumentSession.Object, PaymentGateway.Object, AccountService.Object, EmailRelayService.Object);
 
-            Assert.Throws<InvalidOperationException>(() => action.ConfirmPayment(request));
+            Assert.Throws<InvalidOperationException>(() => action.ConfirmPayment(Event, request));
         }
 
         [Test]
         public void PledgeDateSetToNow()
         {
             var request = new SettlePledgeRequest() { PayPalPayKey = PaypalPayKey };
-            var action = new ConfirmPledgePaymentAction(EventRepositoryMock.Object, PaymentGateway.Object, AccountService.Object, EmailRelayService.Object);
-            action.ConfirmPayment(request);
+            var action = new ConfirmPledgePaymentAction(DocumentSession.Object, PaymentGateway.Object, AccountService.Object, EmailRelayService.Object);
+            action.ConfirmPayment(Event, request);
 
             var pledge = Event.Pledges.LastOrDefault();
             Assert.That(pledge.DatePledged, Is.GreaterThan(DateTime.Now.AddSeconds(-1)));
@@ -394,8 +394,8 @@ namespace GroupGiving.Test.Unit.Pledging
             var organiserAccount = ValidAccount();
 
             var completeAction =
-                new ConfirmPledgePaymentAction(EventRepositoryMock.Object, PaymentGateway.Object, AccountService.Object, EmailRelayService.Object);
-            completeAction.ConfirmPayment(new SettlePledgeRequest() { PayPalPayKey = PaypalPayKey });
+                new ConfirmPledgePaymentAction(DocumentSession.Object, PaymentGateway.Object, AccountService.Object, EmailRelayService.Object);
+            completeAction.ConfirmPayment(Event, new SettlePledgeRequest() { PayPalPayKey = PaypalPayKey });
 
 
             Assert.That(Event.IsOn, Is.True);
