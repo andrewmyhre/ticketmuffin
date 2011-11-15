@@ -60,6 +60,7 @@ namespace GroupGiving.Core.Services
                                           LogoUrl = request.CharityLogoUrl,
                                           DonationPageUrl=request.CharityDonationPageUrl
                                       };
+                        session.Store(charity);
                     }
                 }
 
@@ -88,7 +89,7 @@ namespace GroupGiving.Core.Services
                                                    CharityDetails = charity
                                                };
 
-                session.Store(charity);
+                
                 session.Store(ggEvent);
                 session.SaveChanges();
 
