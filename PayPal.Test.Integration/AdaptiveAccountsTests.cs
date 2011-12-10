@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
 using System.Text;
+using GroupGiving.Core.Domain;
 using GroupGiving.PayPal.AdaptiveAccounts;
 using GroupGiving.PayPal.Configuration;
 using GroupGiving.PayPal.Model;
@@ -25,31 +26,34 @@ namespace PayPal.Test.Integration
         }
 
         [Test]
-        public void Can_read_adaptive_payments_configuration()
-        {
-            var configuration =
-                ConfigurationManager.GetSection("adaptiveAccounts") as PaypalAdaptiveAccountsConfigurationSection;
-
-            Assert.That(configuration, Is.Not.Null);
-            Assert.That(configuration.ApiPassword, Is.Not.Null);
-            Assert.That(configuration.ApiUsername, Is.Not.Null);
-            Assert.That(configuration.ApiSignature, Is.Not.Null);
-            Assert.That(configuration.ApplicationId, Is.Not.Null);
-            Assert.That(configuration.Environment, Is.Not.Null);
-        }
-
-        [Test]
         public void Can_create_a_Paypal_Api_profile_from_configuration()
         {
-            var configuration =
-                ConfigurationManager.GetSection("adaptiveAccounts") as PaypalAdaptiveAccountsConfigurationSection;
-
-            BaseAPIProfile profile = BaseApiProfileFactory.CreateFromConfiguration(configuration);
+            BaseAPIProfile profile = BaseApiProfileFactory.CreateFromConfiguration(ValidAccountApiConfiguration());
             Assert.That(profile, Is.Not.Null);
             Assert.That(profile.ApplicationID, Is.Not.Null);
             Assert.That(profile.APIUsername, Is.Not.Null);
             Assert.That(profile.APIPassword, Is.Not.Null);
             Assert.That(profile.Environment, Is.Not.Null);
+        }
+
+        private ISiteConfiguration ValidAccountApiConfiguration()
+        {
+            return new SiteConfiguration()
+                       {
+                           AdaptiveAccountsConfiguration = new AdaptiveAccountsConfiguration()
+                            {
+                                   SandboxMode = true,
+                                   SandboxApiBaseUrl = "https://svcs.sandbox.paypal.com/",
+                                   SandboxApplicationId = "APP-80W284485P519543T",
+                                   DeviceIpAddress = "127.0.0.1",
+                                   ApiUsername = "platfo_1255077030_biz_api1.gmail.com",
+                                   ApiPassword = "1255077037",
+                                   ApiSignature = "Abg0gYcQyxQvnf2HDJkKtA-p6pqhA1k-KTYE0Gcy1diujFio4io5Vqjf",
+                                   RequestDataFormat = "XML",
+                                   ResponseDataFormat = "XML",
+                                   SandboxMailAddress = "something@something.com"
+                            }
+                       };
         }
 
         [TestCase("platfo11_per@gmail.com", "Bonzop", "Zaius")]
@@ -58,10 +62,7 @@ namespace PayPal.Test.Integration
         {
             GetVerifiedStatusResponse getVerifiedStatusRes = null;
 
-            var configuration =
-    ConfigurationManager.GetSection("adaptiveAccounts") as PaypalAdaptiveAccountsConfigurationSection;
-
-            BaseAPIProfile profile = BaseApiProfileFactory.CreateFromConfiguration(configuration);
+            BaseAPIProfile profile = BaseApiProfileFactory.CreateFromConfiguration(ValidAccountApiConfiguration());
 
             GetVerifiedStatusRequest getVerifiedStatusRequest = new GetVerifiedStatusRequest();
             getVerifiedStatusRequest.emailAddress = email;
@@ -115,13 +116,9 @@ namespace PayPal.Test.Integration
             request.MerchantWebsiteAddress = "http://www.ticketmuffin.com";
             request.OrganisationDateOfEstablisment = new DateTime(2001,01,01);
 
-            
+            BaseAPIProfile profile = BaseApiProfileFactory.CreateFromConfiguration(ValidAccountApiConfiguration());
 
-            var configuration =
-                ConfigurationManager.GetSection("adaptiveAccounts") as PaypalAdaptiveAccountsConfigurationSection;
-            BaseAPIProfile profile = BaseApiProfileFactory.CreateFromConfiguration(configuration);
-
-            var service = new GroupGiving.PayPal.PaypalAccountService(configuration);
+            var service = new GroupGiving.PayPal.PaypalAccountService(ValidAccountApiConfiguration());
 
             var response = service.CreateAccount(request);
 

@@ -1,6 +1,7 @@
 ﻿using System.Linq;
 using System.Xml;
 using GroupGiving.Core.Configuration;
+using GroupGiving.Core.Domain;
 using GroupGiving.Core.Dto;
 using GroupGiving.PayPal.Model;
 using log4net;
@@ -14,12 +15,12 @@ namespace GroupGiving.PayPal
     {
         private ILog _log = LogManager.GetLogger(typeof (ApiClient));
         private readonly ApiClientSettings _clientSettings;
-        private readonly IPayPalConfiguration _payPalConfiguration;
+        private readonly ISiteConfiguration _siteConfiguration;
 
-        public ApiClient(ApiClientSettings clientSettings, IPayPalConfiguration payPalConfiguration)
+        public ApiClient(ApiClientSettings clientSettings, ISiteConfiguration siteConfiguration)
         {
             _clientSettings = clientSettings;
-            _payPalConfiguration = payPalConfiguration;
+            _siteConfiguration = siteConfiguration;
         }
 
         public PayResponse SendPayRequest(PayRequest request)

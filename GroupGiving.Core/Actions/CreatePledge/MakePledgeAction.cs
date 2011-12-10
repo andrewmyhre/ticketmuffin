@@ -14,17 +14,17 @@ namespace GroupGiving.Core.Actions.CreatePledge
     {
         private readonly ITaxAmountResolver _tax;
         private readonly IPaymentGateway _paymentGateway;
-        private readonly IPayPalConfiguration _paypalConfiguration;
+        private readonly ISiteConfiguration _siteConfiguration;
         private readonly IDocumentStore _documentStore;
 
         public MakePledgeAction(ITaxAmountResolver tax, 
             IPaymentGateway paymentGateway, 
-            IPayPalConfiguration paypalConfiguration,
+            ISiteConfiguration siteConfiguration,
             IDocumentStore documentStore)
         {
             _tax = tax;
             _paymentGateway = paymentGateway;
-            _paypalConfiguration = paypalConfiguration;
+            _siteConfiguration = siteConfiguration;
             _documentStore = documentStore;
         }
 
@@ -77,14 +77,14 @@ namespace GroupGiving.Core.Actions.CreatePledge
                                                 {
                                                     Amount = pledge.Total,
                                                     OrderMemo = "Tickets for " + @event.Title,
-                                                    SuccessCallbackUrl = request.WebsiteUrlBase.TrimEnd('/') + _paypalConfiguration.SuccessCallbackUrl,
-                                                    FailureCallbackUrl = request.WebsiteUrlBase.TrimEnd('/') + _paypalConfiguration.FailureCallbackUrl,
+                                                    SuccessCallbackUrl = request.WebsiteUrlBase.TrimEnd('/') + _siteConfiguration.PayFlowProConfiguration.SuccessCallbackUrl,
+                                                    FailureCallbackUrl = request.WebsiteUrlBase.TrimEnd('/') + _siteConfiguration.PayFlowProConfiguration.FailureCallbackUrl,
                                                     Recipients = new List<PaymentRecipient>()
                                                                      {
                                                                          // TicketMuffin.com
                                                                          new PaymentRecipient(
-                                                                             _paypalConfiguration.
-                                                                                 TicketMuffinPayPalAccountEmail,
+                                                                             _siteConfiguration.PayFlowProConfiguration.
+                                                                                 PayPalAccountEmail,
                                                                              pledge.Total, true),
                                                                         // event organiser
                                                                          new PaymentRecipient(

@@ -4,6 +4,7 @@ using System.Configuration;
 using System.Linq;
 using System.Text;
 using GroupGiving.Core.Configuration;
+using GroupGiving.Core.Domain;
 using GroupGiving.Core.Dto;
 using GroupGiving.PayPal.Model;
 using NUnit.Framework;
@@ -15,7 +16,7 @@ namespace GroupGiving.PayPal.Tests.Integration
     public class Adaptive_payments_tests
     {
         private ApiClientSettings _apiSettings;
-        private PayPalConfiguration _paypalConfiguration;
+        private ISiteConfiguration _paypalConfiguration;
         private ApiClient _apiClient;
         private PayPalPaymentGateway _gateway;
 
@@ -27,9 +28,30 @@ namespace GroupGiving.PayPal.Tests.Integration
             _apiSettings = new ApiClientSettings("seller_1304843436_biz_api1.gmail.com", "1304843443",
                                                  "AFcWxV21C7fd0v3bYYYRCpSSRl31APG52hf-AmPfK7eyvf7LBc0.0sm7");
 
-            _paypalConfiguration = ConfigurationManager.GetSection("paypal") as PayPalConfiguration;
+            _paypalConfiguration = ValidSiteConfiguration();
             _apiClient = new ApiClient(_apiSettings, _paypalConfiguration);
             _gateway = new PayPalPaymentGateway(_apiClient, _paypalConfiguration);
+        }
+
+        private ISiteConfiguration ValidSiteConfiguration()
+        {
+            return new SiteConfiguration()
+                       {
+                           PayFlowProConfiguration = new PayFlowProConfiguration()
+                                                         {
+                                                             FailureCallbackUrl = "http://somedomain.com/failure",
+                                                             SuccessCallbackUrl = "http://somedomain.com/success",
+                                                             ApiMerchantUsername = "seller_1304843436_biz_api1.gmail.com",
+                                                             ApiMerchantPassword = "",
+                                                             ApiMerchantSignature = "",
+                                                             ApiVersion="1.1.0",
+                                                             SandboxMode = true,
+                                                             SandboxPayFlowProPaymentPage = "https://www.sandbox.paypal.com/webscr?cmd=_ap-payment&amp;paykey={0}",
+                                                             RequestDataBinding = "SOAP11",
+                                                             ResponseDataBinding = "SOAP11",
+                                                             PayPalAccountEmail = "something@something.com"
+                                                         }
+                       };
         }
 
         [Test]
@@ -39,8 +61,8 @@ namespace GroupGiving.PayPal.Tests.Integration
                 new PayRequest()
                     {
                         ActionType="PAY",
-                        CancelUrl = _paypalConfiguration.FailureCallbackUrl,
-                        ReturnUrl = _paypalConfiguration.SuccessCallbackUrl,
+                        CancelUrl = _paypalConfiguration.PayFlowProConfiguration.FailureCallbackUrl,
+                        ReturnUrl = _paypalConfiguration.PayFlowProConfiguration.SuccessCallbackUrl,
                         Memo = "test payment " + Guid.NewGuid().ToString(),
                         CurrencyCode = "GBP",
                         Receivers = new []
@@ -62,8 +84,8 @@ namespace GroupGiving.PayPal.Tests.Integration
                 new PayRequest()
                     {
                         ActionType = "PAY",
-                        CancelUrl = _paypalConfiguration.FailureCallbackUrl,
-                        ReturnUrl = _paypalConfiguration.SuccessCallbackUrl,
+                        CancelUrl = _paypalConfiguration.PayFlowProConfiguration.FailureCallbackUrl,
+                        ReturnUrl = _paypalConfiguration.PayFlowProConfiguration.SuccessCallbackUrl,
                         Memo = memoField,
                         CurrencyCode = "GBP",
                         Receivers = new []
@@ -99,8 +121,8 @@ namespace GroupGiving.PayPal.Tests.Integration
                 new PayRequest()
                 {
                     ActionType = "PAY",
-                    CancelUrl = _paypalConfiguration.FailureCallbackUrl,
-                    ReturnUrl = _paypalConfiguration.SuccessCallbackUrl,
+                    CancelUrl = _paypalConfiguration.PayFlowProConfiguration.FailureCallbackUrl,
+                    ReturnUrl = _paypalConfiguration.PayFlowProConfiguration.SuccessCallbackUrl,
                     Memo = memoField,
                     CurrencyCode = "GBP",
                     Receivers = new []
@@ -131,11 +153,11 @@ namespace GroupGiving.PayPal.Tests.Integration
                 new PayRequest()
                     {
                         ActionType = "PAY_PRIMARY",
-                        CancelUrl = _paypalConfiguration.FailureCallbackUrl,
+                        CancelUrl = _paypalConfiguration.PayFlowProConfiguration.FailureCallbackUrl,
                         CurrencyCode = "GBP",
                         FeesPayer = "EACHRECEIVER",
                         Memo = "test payment " + Guid.NewGuid().ToString(),
-                        ReturnUrl = _paypalConfiguration.SuccessCallbackUrl,
+                        ReturnUrl = _paypalConfiguration.PayFlowProConfiguration.SuccessCallbackUrl,
                         Receivers = new []
                                         {
                                             new Receiver("100", "seller_1304843436_biz@gmail.com", true),
@@ -160,11 +182,11 @@ namespace GroupGiving.PayPal.Tests.Integration
                 new PayRequest()
                 {
                     ActionType = "PAY_PRIMARY",
-                    CancelUrl = _paypalConfiguration.FailureCallbackUrl,
+                    CancelUrl = _paypalConfiguration.PayFlowProConfiguration.FailureCallbackUrl,
                     CurrencyCode = "GBP",
                     FeesPayer = "EACHRECEIVER",
                     Memo = "test payment " + Guid.NewGuid().ToString(),
-                    ReturnUrl = _paypalConfiguration.SuccessCallbackUrl,
+                    ReturnUrl = _paypalConfiguration.PayFlowProConfiguration.SuccessCallbackUrl,
                     Receivers = new []
                                         {
                                             new Receiver("100", "seller_1304843436_biz@gmail.com", true),

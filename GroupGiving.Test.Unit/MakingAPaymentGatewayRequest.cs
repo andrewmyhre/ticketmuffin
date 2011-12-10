@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using GroupGiving.Core.Configuration;
+using GroupGiving.Core.Domain;
 using GroupGiving.Core.Dto;
 using GroupGiving.PayPal;
 using GroupGiving.PayPal.Model;
@@ -62,14 +63,18 @@ namespace GroupGiving.Test.Unit
                        };
         }
 
-        protected static IPayPalConfiguration ValidPayPalConfiguration()
+        protected static ISiteConfiguration ValidPayPalConfiguration()
         {
-            return new PayPalConfiguration()
+            return new SiteConfiguration()
                        {
-                           PayFlowProPaymentPage = "http://somedomain.com/pay",
-                           PayPalMerchantPassword = "12345",
-                           PayPalMerchantSignature = "12345",
-                           PayPalMerchantUsername = "12345"
+                           PayFlowProConfiguration = new PayFlowProConfiguration()
+                            {
+                                LivePayFlowProPaymentPage = "http://somedomain.com/pay",
+                                SandboxMode = false,
+                                ApiMerchantUsername = "12345",
+                                ApiMerchantPassword = "12345",
+                                ApiMerchantSignature = "12345"
+                            }
                        };
         }
     }

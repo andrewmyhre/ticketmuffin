@@ -1,4 +1,5 @@
 using System;
+using GroupGiving.Core.Domain;
 using GroupGiving.PayPal.AdaptiveAccounts;
 using GroupGiving.PayPal.Configuration;
 using GroupGiving.PayPal.Model;
@@ -10,9 +11,9 @@ namespace GroupGiving.PayPal
 {
     public class PaypalAccountService : IPaypalAccountService
     {
-        private readonly PaypalAdaptiveAccountsConfigurationSection _configuration;
+        private readonly ISiteConfiguration _configuration;
 
-        public PaypalAccountService(PaypalAdaptiveAccountsConfigurationSection configuration)
+        public PaypalAccountService(GroupGiving.Core.Domain.ISiteConfiguration configuration)
         {
             _configuration = configuration;
         }
@@ -87,9 +88,9 @@ namespace GroupGiving.PayPal
             paypalRequest.contactPhoneNumber = request.ContactPhoneNumber;
             paypalRequest.preferredLanguageCode = "en_GB";
             paypalRequest.clientDetails = new ClientDetailsType();
-            paypalRequest.clientDetails.applicationId = _configuration.ApplicationId;
-            paypalRequest.clientDetails.deviceId = _configuration.DeviceIpAddress.Replace(".","");
-            paypalRequest.clientDetails.ipAddress = _configuration.DeviceIpAddress;
+            paypalRequest.clientDetails.applicationId = _configuration.AdaptiveAccountsConfiguration.ApplicationId;
+            paypalRequest.clientDetails.deviceId = _configuration.AdaptiveAccountsConfiguration.DeviceIpAddress.Replace(".", "");
+            paypalRequest.clientDetails.ipAddress = _configuration.AdaptiveAccountsConfiguration.DeviceIpAddress;
             paypalRequest.emailAddress = "ticketmuffin." + Guid.NewGuid().ToString() + "@gmail.com";
             //AccountRequest.sandboxEmailAddress = "platform.sdk.seller@gmail.com";
             paypalRequest.createAccountWebOptions = new CreateAccountWebOptionsType();

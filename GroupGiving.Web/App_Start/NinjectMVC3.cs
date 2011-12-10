@@ -84,18 +84,21 @@ namespace GroupGiving.Web.App_Start
             kernel.Bind<IEmailPackageRelayer>()
                 .ToMethod(x => EmailSenderFactory.CreateRelayerFromConfiguration(ConfigurationManager.GetSection("emailBuilder") as EmailBuilderConfigurationSection));
             kernel.Bind<ICountryService>().To<CountryService>();
-            kernel.Bind<IPayPalConfiguration>().ToMethod(
-                (request) => System.Configuration.ConfigurationManager.GetSection("paypal") as PayPalConfiguration);
+            kernel.Bind<ISiteConfigurationService>().To<SiteConfigurationService>();
+            kernel.Bind<ISiteConfiguration>().ToMethod(r => kernel.Get<ISiteConfigurationService>().GetConfiguration());
             kernel.Bind<IApiClient>().ToMethod((request) =>
             {
-                IPayPalConfiguration config = kernel.Get<IPayPalConfiguration>();
+                var config = kernel.Get<ISiteConfiguration>();
                 return new ApiClient(new ApiClientSettings()
                 {
-                    Username = config.PayPalMerchantUsername,
-                    Password = config.PayPalMerchantPassword,
-                    Signature = config.PayPalMerchantSignature
+                    Username = config.PayFlowProConfiguration.ApiMerchantUsername,
+                    Password = config.PayFlowProConfiguration.ApiMerchantPassword,
+                    Signature = config.PayFlowProConfiguration.ApiMerchantSignature,
+                    ApiVersion = config.PayFlowProConfiguration.ApiVersion,
+                    RequestDataBinding = config.PayFlowProConfiguration.RequestDataBinding,
+                    ResponseDataBinding = config.PayFlowProConfiguration.ResponseDataBinding
                 },
-                                    config);
+                config);
             });
             kernel.Bind<IPaymentGateway>().To<PayPalPaymentGateway>();
             kernel.Bind<ITaxAmountResolver>().To<NilTax>();

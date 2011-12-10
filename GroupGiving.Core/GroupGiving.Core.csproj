@@ -95,7 +95,6 @@
     <Compile Include="Actions\SettlePledge\SettlePledgeResponse.cs" />
     <Compile Include="Api.cs" />
     <Compile Include="BCrypt.cs" />
-    <Compile Include="Configuration\IPayPalConfiguration.cs" />
     <Compile Include="Configuration\TicketMuffinFees.cs" />
     <Compile Include="Data\Fakes\FakeRepository.cs" />
     <Compile Include="Data\IRepository.cs" />
@@ -108,7 +107,9 @@
     <Compile Include="Domain\GroupGivingEvent.cs" />
     <Compile Include="Domain\Account.cs" />
     <Compile Include="Domain\IDomainObject.cs" />
+    <Compile Include="Domain\ISiteConfiguration.cs" />
     <Compile Include="Domain\PaymentStatus.cs" />
+    <Compile Include="Domain\SiteConfiguration.cs" />
     <Compile Include="Dto\DialogueHistoryEntry.cs" />
     <Compile Include="Dto\Error.cs" />
     <Compile Include="Dto\ErrorResponse.cs" />
@@ -140,12 +141,14 @@
     <Compile Include="Services\IEventService.cs" />
     <Compile Include="Services\IAccountService.cs" />
     <Compile Include="Services\IPaymentGateway.cs" />
+    <Compile Include="Services\ISiteConfigurationService.cs" />
     <Compile Include="Services\ITaxAmountResolver.cs" />
     <Compile Include="Services\ResetPasswordResult.cs" />
     <Compile Include="Services\SendPasswordResetResult.cs" />
     <Compile Include="Services\SendThanksForRegisteringEmailResult.cs" />
     <Compile Include="Services\SetTicketDetailsRequest.cs" />
     <Compile Include="Services\NilTax.cs" />
+    <Compile Include="Services\SiteConfigurationService.cs" />
     <Compile Include="Services\UpdateUserRequest.cs" />
     <Compile Include="Services\AccountService.cs" />
   </ItemGroup>

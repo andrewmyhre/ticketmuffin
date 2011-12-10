@@ -1,0 +1,27 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using GroupGiving.Core.Domain;
+using Raven.Client;
+
+namespace GroupGiving.Core.Services
+{
+    public class SiteConfigurationService : ISiteConfigurationService
+    {
+        private readonly IDocumentStore _documentStore;
+
+        public SiteConfigurationService(IDocumentStore documentStore)
+        {
+            _documentStore = documentStore;
+        }
+
+        public ISiteConfiguration GetConfiguration()
+        {
+            using (var session = _documentStore.OpenSession())
+            {
+                return session.Query<SiteConfiguration>().FirstOrDefault();
+            }
+        }
+    }
+}

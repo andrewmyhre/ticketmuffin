@@ -11,6 +11,7 @@ using GroupGiving.PayPal;
 using GroupGiving.PayPal.Model;
 using Moq;
 using Raven.Client;
+using PaymentDetailsResponse = GroupGiving.Core.Dto.PaymentDetailsResponse;
 
 namespace GroupGiving.Test.Unit
 {
@@ -20,17 +21,11 @@ namespace GroupGiving.Test.Unit
         protected Mock<IPaymentGateway> PaymentGateway = new Mock<IPaymentGateway>();
         protected Mock<IRepository<GroupGivingEvent>> EventRepositoryMock = new Mock<IRepository<GroupGivingEvent>>();
         protected Mock<ITaxAmountResolver> TaxResolverMock = new Mock<ITaxAmountResolver>();
-        protected Mock<IPayPalConfiguration> PaypalConfiguration = new Mock<IPayPalConfiguration>();
         protected Mock<IDocumentStore> DocumentStore = new Mock<IDocumentStore>();
         protected Mock<IDocumentSession> DocumentSession = new Mock<IDocumentSession>();
         protected Mock<IAccountService> AccountService = new Mock<IAccountService>();
         protected GroupGivingEvent Event;
         protected string PaypalPayKey;
-
-        protected void SetDummyPaypalConfiguration()
-        {
-            PaypalConfiguration.SetupAllProperties();
-        }
 
         protected void SetUpDocumentStore()
         {
@@ -63,6 +58,10 @@ namespace GroupGiving.Test.Unit
 
         protected void EventRepositoryReturns(GroupGivingEvent @event)
         {
+            DocumentSession
+                .Setup(m => m.Load<GroupGivingEvent>(It.IsAny<string>()))
+                .Returns(@event);
+
             EventRepositoryMock
                 .Setup(m => m.Retrieve(It.IsAny<Func<GroupGivingEvent, bool>>()))
                 .Returns(@event);
@@ -82,7 +81,15 @@ namespace GroupGiving.Test.Unit
         {
             PaymentGateway
                 .Setup(m => m.CreatePayment(It.IsAny<PaymentGatewayRequest>()))
-                .Throws(new HttpChannelException(new FaultMessage() {Error = new PayPalError(){Message="failed"}}));
+                .Throws(new HttpChannelException(new FaultMessage() {Error = new PayPalError(){Message="failed"},
+                Raw = new DialogueHistoryEntry("request", "response")}));
+        }
+        protected void PaypalGatewayReturnsAnErrorWhenMakingDelayedPaymentRequest()
+        {
+            PaymentGateway
+                .Setup(m => m.CreateDelayedPayment(It.IsAny<PaymentGatewayRequest>()))
+                .Throws(new HttpChannelException(new FaultMessage() { Error = new PayPalError() { Message = "failed" },
+                Raw = new DialogueHistoryEntry("request", "response")}));
         }
 
         protected void EventRepositoryStoresEventWithVerification()
@@ -96,8 +103,66 @@ namespace GroupGiving.Test.Unit
         {
             PaymentGateway
                 .Setup(m => m.CreatePayment(It.IsAny<PaymentGatewayRequest>()))
-                .Returns(new PaymentGatewayResponse() { payKey = PaypalPayKey, PaymentExecStatus = "CREATED"})
+                .Returns(new PaymentGatewayResponse() { payKey = PaypalPayKey, PaymentExecStatus = "CREATED", 
+                    DialogueEntry = new DialogueHistoryEntry("request","response")})
                 .Verifiable();
+        }
+
+        protected void PayPalGatewayReturnsPaymentDetailsForTransactionId(string paymentStatus)
+        {
+            PaymentGateway
+                .Setup(m => m.RetrievePaymentDetails(It.IsAny<GroupGiving.Core.Dto.PaymentDetailsRequest>()))
+                .Returns(new PaymentDetailsResponse()
+                             {
+                                 DialogueEntry = new DialogueHistoryEntry("request","response"),
+                                 Status = paymentStatus
+                             });
+        }
+
+        protected void PayPalGatewayCanCreateDelayedPayment(string paypalPayKey="12345")
+        {
+            PaymentGateway
+                .Setup(m => m.CreateDelayedPayment(It.IsAny<PaymentGatewayRequest>()))
+                .Returns(new PaymentGatewayResponse()
+                             {
+                                 DialogueEntry = new DialogueHistoryEntry("request","response"),
+                                 PaymentExecStatus = "CREATED",
+                                 payKey = paypalPayKey
+                             });
+        }
+
+        protected ISiteConfiguration ValidSiteConfiguration()
+        {
+            return new SiteConfiguration()
+                       {
+                           AdaptiveAccountsConfiguration = new AdaptiveAccountsConfiguration()
+                                                               {
+                                                                   SandboxMode = true,
+                                                                   SandboxApiBaseUrl = "https://svcs.sandbox.paypal.com/",
+                                                                   SandboxApplicationId = "APP-80W284485P519543T",
+                                                                   DeviceIpAddress = "127.0.0.1",
+                                                                   ApiUsername = "platfo_1255077030_biz_api1.gmail.com",
+                                                                   ApiPassword = "1255077037",
+                                                                   ApiSignature = "Abg0gYcQyxQvnf2HDJkKtA-p6pqhA1k-KTYE0Gcy1diujFio4io5Vqjf",
+                                                                   RequestDataFormat = "XML",
+                                                                   ResponseDataFormat = "XML",
+                                                                   SandboxMailAddress = "something@something.com"
+                                                               },
+                           PayFlowProConfiguration = new PayFlowProConfiguration()
+                                                         {
+                                                             FailureCallbackUrl = "http://somedomain.com/failure",
+                                                             SuccessCallbackUrl = "http://somedomain.com/success",
+                                                             ApiMerchantUsername = "seller_1304843436_biz_api1.gmail.com",
+                                                             ApiMerchantPassword = "",
+                                                             ApiMerchantSignature = "",
+                                                             ApiVersion = "1.1.0",
+                                                             SandboxMode = true,
+                                                             SandboxPayFlowProPaymentPage = "https://www.sandbox.paypal.com/webscr?cmd=_ap-payment&amp;paykey={0}",
+                                                             RequestDataBinding = "SOAP11",
+                                                             ResponseDataBinding = "SOAP11",
+                                                             PayPalAccountEmail = "something@something.com"
+                                                         }
+                       };
         }
     }
 }

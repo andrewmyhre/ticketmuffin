@@ -16,12 +16,12 @@ namespace GroupGiving.PayPal
     public class PayPalPaymentGateway : IPaymentGateway
     {
         private readonly IApiClient _apiClient;
-        private readonly IPayPalConfiguration _payPalConfiguration;
+        private readonly ISiteConfiguration _siteConfiguration;
 
-        public PayPalPaymentGateway(IApiClient apiClient, IPayPalConfiguration payPalConfiguration)
+        public PayPalPaymentGateway(IApiClient apiClient, ISiteConfiguration siteConfiguration)
         {
             _apiClient = apiClient;
-            _payPalConfiguration = payPalConfiguration;
+            _siteConfiguration = siteConfiguration;
         }
 
         public PaymentGatewayResponse CreatePayment(PaymentGatewayRequest request)
@@ -66,7 +66,7 @@ namespace GroupGiving.PayPal
             return new PaymentGatewayResponse()
                        {
                            PaymentExecStatus = response.paymentExecStatus,
-                           PaymentPageUrl = string.Format(_payPalConfiguration.PayFlowProPaymentPage, response.payKey),
+                           PaymentPageUrl = string.Format(_siteConfiguration.PayFlowProConfiguration.PayFlowProPaymentPage, response.payKey),
                            payKey = response.payKey,
                            DialogueEntry = ((ResponseBase)response).Raw
                        };

@@ -9,22 +9,20 @@ namespace GroupGiving.PayPal.AdaptiveAccounts
 {
     public class BaseApiProfileFactory
     {
-        public static BaseAPIProfile CreateFromConfiguration(PaypalAdaptiveAccountsConfigurationSection configuration)
+        public static BaseAPIProfile CreateFromConfiguration(GroupGiving.Core.Domain.ISiteConfiguration configuration)
         {
             return new BaseAPIProfile()
                        {
-                           APIPassword = configuration.ApiPassword,
+                           APIPassword = configuration.AdaptiveAccountsConfiguration.ApiPassword,
                            APIProfileType = ProfileType.ThreeToken,
-                           APISignature = configuration.ApiSignature,
-                           APIUsername = configuration.ApiUsername,
-                           ApplicationID = configuration.ApplicationId,
-                           DeviceIpAddress = configuration.DeviceIpAddress,
-                           Environment = configuration.Environment,
-                           RequestDataformat = configuration.RequestDataFormat,
-                           ResponseDataformat = configuration.ResponseDataFormat,
-                           SandboxMailAddress = configuration.SandboxMailAddress,
-                           Subject = configuration.Subject,
-                           Timeout = configuration.Timeout
+                           APISignature = configuration.AdaptiveAccountsConfiguration.ApiSignature,
+                           APIUsername = configuration.AdaptiveAccountsConfiguration.ApiUsername,
+                           ApplicationID = configuration.AdaptiveAccountsConfiguration.ApplicationId,
+                           DeviceIpAddress = configuration.AdaptiveAccountsConfiguration.DeviceIpAddress,
+                           Environment = configuration.AdaptiveAccountsConfiguration.ApiBaseUrl,
+                           RequestDataformat = configuration.AdaptiveAccountsConfiguration.RequestDataFormat,
+                           ResponseDataformat = configuration.AdaptiveAccountsConfiguration.ResponseDataFormat,
+                           SandboxMailAddress = configuration.AdaptiveAccountsConfiguration.SandboxMailAddress
                        };
         }
     }

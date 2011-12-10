@@ -86,7 +86,6 @@
     <Compile Include="Model\VerifyPaypalAccountResponse.cs" />
     <Compile Include="PaymentDetailsRequest.cs" />
     <Compile Include="PaypalAccountService.cs" />
-    <Compile Include="PayPalConfiguration.cs" />
     <Compile Include="PayPalPaymentGateway.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

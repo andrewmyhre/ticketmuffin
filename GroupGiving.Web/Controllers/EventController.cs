@@ -46,7 +46,7 @@ namespace GroupGiving.Web.Controllers
         private readonly IAccountService _accountService;
         private readonly IPaymentGateway _paymentGateway;
         private readonly ITaxAmountResolver _taxResolver;
-        private IPayPalConfiguration _paypalConfiguration;
+        private ISiteConfiguration _siteConfiguration;
         private readonly IDocumentStore _documentStore;
         private static Markdown _markdown = new Markdown();
         private IEmailRelayService _emailRelayService;
@@ -56,7 +56,7 @@ namespace GroupGiving.Web.Controllers
         public EventController(IAccountService accountService,
                                IFormsAuthenticationService formsService, IMembershipService membershipService,
                                IPaymentGateway paymentGateway,
-                               ITaxAmountResolver taxResolver, IPayPalConfiguration paypalConfiguration,
+                               ITaxAmountResolver taxResolver, ISiteConfiguration siteConfiguration,
                                IDocumentStore documentStore,
                                IEmailRelayService emailRelayService, IIdentity userIdentity, IEventService eventService)
         {
@@ -65,7 +65,7 @@ namespace GroupGiving.Web.Controllers
             _membershipService = membershipService;
             _paymentGateway = paymentGateway;
             _taxResolver = taxResolver;
-            _paypalConfiguration = paypalConfiguration;
+            _siteConfiguration = siteConfiguration;
             _documentStore = documentStore;
             ((RavenDBMembershipProvider) Membership.Provider).DocumentStore
                 = documentStore;
@@ -241,7 +241,7 @@ namespace GroupGiving.Web.Controllers
                 return View(viewModel);
             }
 
-            var action = new MakePledgeAction(_taxResolver, _paymentGateway, _paypalConfiguration, _documentStore);
+            var action = new MakePledgeAction(_taxResolver, _paymentGateway, _siteConfiguration, _documentStore);
             var makePledgeRequest = new MakePledgeRequest()
                                         {
                                             AttendeeNames = request.AttendeeName,

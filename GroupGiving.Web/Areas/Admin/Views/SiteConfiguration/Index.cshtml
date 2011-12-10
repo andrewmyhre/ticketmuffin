@@ -1,0 +1,37 @@
+﻿@using GroupGiving.Core.Domain
+@model SiteConfiguration
+
+@{
+    ViewBag.Title = "title";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Site Configuration</h2>
+
+@Html.ValidationSummary()
+
+@using (Html.BeginForm())
+{
+    <fieldset>
+        <legend>General</legend>
+        @Html.EditorForModel()
+    </fieldset>
+    <fieldset>
+        <legend>Adaptive Accounts</legend>
+        @Html.EditorFor(m => m.AdaptiveAccountsConfiguration)
+    </fieldset>
+    <fieldset>
+        <legend>Database</legend>
+        @Html.EditorFor(m => m.DatabaseConfiguration)
+    </fieldset>
+    <fieldset>
+        <legend>JustGiving Api</legend>
+        @Html.EditorFor(m => m.JustGivingApiConfiguration)
+    </fieldset>
+    <fieldset>
+        <legend>PayFlowPro Configuration</legend>
+        @Html.EditorFor(m => m.PayFlowProConfiguration)
+    </fieldset>
+
+    <input type="submit" value="Save Changes"/>
+}

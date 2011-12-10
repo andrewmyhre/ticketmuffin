@@ -33,18 +33,20 @@ namespace GroupGiving.Web.Controllers
         private readonly IAccountService _accountService;
         private readonly IPaymentGateway _paymentGateway;
         private readonly ITaxAmountResolver _taxResolver;
-        private readonly IPayPalConfiguration _paypalConfiguration;
+        private readonly ISiteConfiguration _siteConfiguration;
         private readonly IDocumentStore _documentStore;
         private IEmailRelayService _emailRelayService;
 
-        public OrderController(IFormsAuthenticationService formsService, IMembershipService membershipService, IAccountService accountService, IPaymentGateway paymentGateway, ITaxAmountResolver taxResolver, IPayPalConfiguration paypalConfiguration, IDocumentStore documentStore, IEmailRelayService emailRelayService)
+        public OrderController(IFormsAuthenticationService formsService, IMembershipService membershipService, 
+            IAccountService accountService, IPaymentGateway paymentGateway, ITaxAmountResolver taxResolver, 
+            ISiteConfiguration siteConfiguration, IDocumentStore documentStore, IEmailRelayService emailRelayService)
         {
             _formsService = formsService;
             _membershipService = membershipService;
             _accountService = accountService;
             _paymentGateway = paymentGateway;
             _taxResolver = taxResolver;
-            _paypalConfiguration = paypalConfiguration;
+            _siteConfiguration = siteConfiguration;
             _documentStore = documentStore;
             ((RavenDBMembershipProvider)Membership.Provider).DocumentStore
                 = documentStore;

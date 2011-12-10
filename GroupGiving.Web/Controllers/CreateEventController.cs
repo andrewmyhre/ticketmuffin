@@ -120,7 +120,7 @@ namespace GroupGiving.Web.Controllers
             {
                 ModelState.AddModelError("startDateTime", "The date provided isn't valid because it's in the past");
             }
-            if (!mustContainAlphaCharacters.IsMatch(request.ShortUrl))
+            if (string.IsNullOrWhiteSpace(request.ShortUrl) || !mustContainAlphaCharacters.IsMatch(request.ShortUrl))
             {
                 ModelState.AddModelError("ShortUrl",
                                          "Please select a url containing at least 1 alphabetical character (a-z)");
@@ -131,23 +131,26 @@ namespace GroupGiving.Web.Controllers
             }
 
             // pull any files out of the request
-            if (Request.Files.Count > 0)
+            if (Request != null && Request.Files != null)
             {
-                var file = Request.Files[0];
-                if (file != null && file.ContentLength > 0)
+                if (Request.Files.Count > 0)
                 {
-                    byte[] fileData = new byte[file.ContentLength];
+                    var file = Request.Files[0];
+                    if (file != null && file.ContentLength > 0)
+                    {
+                        byte[] fileData = new byte[file.ContentLength];
 
-                    file.InputStream.Read(fileData, 0, file.ContentLength);
-                    MemoryStream imageByteStream = new MemoryStream(fileData);
-                    // try to load as an image
-                    try
-                    {
-                        uploadedImage = Bitmap.FromStream(imageByteStream);
-                    }
-                    catch (Exception ex)
-                    {
-                        ModelState.AddModelError("ImageFilename", "Please choose an image file to upload");
+                        file.InputStream.Read(fileData, 0, file.ContentLength);
+                        MemoryStream imageByteStream = new MemoryStream(fileData);
+                        // try to load as an image
+                        try
+                        {
+                            uploadedImage = Bitmap.FromStream(imageByteStream);
+                        }
+                        catch (Exception ex)
+                        {
+                            ModelState.AddModelError("ImageFilename", "Please choose an image file to upload");
+                        }
                     }
                 }
             }
