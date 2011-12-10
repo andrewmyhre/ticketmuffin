@@ -2,11 +2,13 @@
 @model SiteConfiguration
 
 @{
-    ViewBag.Title = "title";
+    ViewBag.Title = "Site Configuration - TicketMuffin";
     Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
 }
 
 <h2>Site Configuration</h2>
+
+@Html.ActionLink("Back to dashboard", "Index", "dashboard")
 
 @Html.ValidationSummary()
 
