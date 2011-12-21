@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using GroupGiving.Core.Domain;
+using GroupGiving.Web.Areas.Admin.Controllers;
+using Raven.Client.Linq;
 
 namespace GroupGiving.Web.Models
 {
@@ -86,5 +88,7 @@ namespace GroupGiving.Web.Models
 
         public decimal TotalPledgesPercentage { get; set; }
         public Charity Charity { get; set; }
+
+        public IEnumerable<TransactionHistoryEntry> TransactionHistory { get; set; }
     }
 }

@@ -1,0 +1,27 @@
+﻿@using GroupGiving.Web.Controllers
+@using GroupGiving.Web.Models
+@model ActivateEventViewModel
+
+@{
+    ViewBag.Title = "Activate Event";
+    Layout = "_Layout";
+}
+
+<h2>Activate Your Event</h2>
+
+<p>Your event has reached the minimum number of pledges and can now be made official.</p>
+
+<p>At this point you have a few options</p>
+
+<ol>
+@using (Html.BeginForm())
+{
+    <li>
+        <h3>Activate the event</h3>
+        <p>This means you will be funded @Model.TotalAmountOwedToFundraiser.ToString("c")</p>
+    </li>
+    <input type="hidden" name="confirm" value="yes" />
+    <input type="submit" value="Activate the Event" />
+}
+
+</ol>

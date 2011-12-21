@@ -546,5 +546,28 @@ namespace GroupGiving.Web.Controllers
             }
             return RedirectToAction("edit-event", new {shortUrl = shortUrl});
         }
+
+        public ActionResult Activate(string shortUrl)
+        {
+            var viewModel = new ActivateEventViewModel();
+
+            using (var session = _documentStore.OpenSession())
+            {
+                viewModel.Event = session.Query<GroupGivingEvent>().Where(e => e.ShortUrl == shortUrl).FirstOrDefault();
+
+                if (!viewModel.Event.ReadyToActivate)
+                {
+                    return RedirectToAction("Index", new {shortUrl = shortUrl});
+                }
+            }
+
+            return View(viewModel);
+        }
+
+        [HttpPost]
+        public ActionResult Activate(string shortUrl, string confirm)
+        {
+            return RedirectToAction("Activate", new {shortUrl = shortUrl});
+        }
     }
 }

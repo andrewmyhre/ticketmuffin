@@ -5,6 +5,7 @@ using System.Web;
 using System.Web.Mvc;
 using GroupGiving.Core;
 using GroupGiving.Core.Actions.CancelEvent;
+using GroupGiving.Core.Actions.ExecutePayment;
 using GroupGiving.Core.Actions.RefundPledge;
 using GroupGiving.Core.Domain;
 using GroupGiving.Core.Dto;
@@ -119,6 +120,11 @@ namespace GroupGiving.Web.Areas.Admin.Controllers
             {
                 var @event = session.Load<GroupGivingEvent>("groupgivingevents/" + id);
                 eventViewModel = AutoMapper.Mapper.Map<EventViewModel>(@event);
+
+                var transactionHistory = session.Query<TransactionHistoryEntry>("transactionHistory")
+                    .Where(e => e.EventId == @event.Id)
+                    .OrderByDescending(e => e.TimeStamp);
+                eventViewModel.TransactionHistory = transactionHistory;
             }
 
             return View(eventViewModel);
@@ -209,6 +215,7 @@ namespace GroupGiving.Web.Areas.Admin.Controllers
                     refundResult = action.Execute(session, "groupgivingevents/" + id, orderNumber);
                 } catch(Exception exception)
                 {
+                    TempData["exception"] = exception;
                     return RedirectToAction("ViewPledges", new { Id = id });
                 } 
 
@@ -220,6 +227,36 @@ namespace GroupGiving.Web.Areas.Admin.Controllers
                     TempData["refunded"] = false;
 
                 return RedirectToAction("ViewPledges", new {Id = id});
+            }
+        }
+
+        [ActionName("execute-payment")]
+        [AcceptVerbs(HttpVerbs.Get)]
+        public ActionResult ExecutePayment(int id, string orderNumber)
+        {
+            using (var session = _documentStore.OpenSession())
+            {
+                ExecutePaymentViewModel viewModel = new ExecutePaymentViewModel();
+                ExecutePaymentAction action = new ExecutePaymentAction(_paymentGateway);
+
+                try
+                {
+                    var response = action.Execute(session, "groupgivingevents/" + id, orderNumber);
+
+                    if (response.Successful)
+                    {
+                        TempData["captured"] = true;
+                    } else
+                    {
+                        TempData["captured"] = false;
+                    }
+                    
+                } catch (Exception exception)
+                {
+                    
+                    TempData["exception"] = exception;
+                }
+                return RedirectToAction("ViewPledges", new {id = id});
             }
         }
 
@@ -291,6 +328,22 @@ namespace GroupGiving.Web.Areas.Admin.Controllers
             }
 
         }
+    }
+
+    public class TransactionHistoryEntry
+    {
+        public string EventId { get; set; }
+        public string OrderNumber { get; set; }
+        public PaymentStatus PaymentStatus { get; set; }
+        public string AccountEmailAddress { get; set; }
+        public DateTime TimeStamp { get; set; }
+        public string Request { get; set; }
+        public string Response { get; set; }
+    }
+
+
+    public class ExecutePaymentViewModel
+    {
     }
 
     public class TransactionHistoryViewModel

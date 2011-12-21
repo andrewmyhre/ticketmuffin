@@ -62,6 +62,21 @@ select new {e.Id, e.Title, e.State, Location=e.City +"", "" + e.Country, e.City,
                                                                     {"PledgeCount", typeof (StandardAnalyzer).FullName}
                                                                 }
                                                         });
+
+            if (documentStore.DatabaseCommands.GetIndex("transactionHistory") != null)
+            {
+                documentStore.DatabaseCommands.DeleteIndex("transactionHistory");
+            }
+            documentStore.DatabaseCommands.PutIndex("transactionHistory",
+                                                    new IndexDefinition()
+                                                        {
+                                                            Map =
+                                                                @"from e in docs.GroupGivingEvents
+from pledge in Hierarchy(e, ""Pledges"")
+from history in Hierarchy(pledge, ""PaymentGatewayHistory"")
+select new {e.Id, pledge.OrderNumber, pledge.PaymentStatus, pledge.AccountEmailAddress, history.TimeStamp, history.Request, history.Response}"
+
+                                                        });
         }
     }
 }

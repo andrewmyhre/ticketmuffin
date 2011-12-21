@@ -41,5 +41,7 @@ namespace GroupGiving.PayPal.Model
     public class ExecutePaymentResponse : ResponseBase
     {
         public DialogueHistoryEntry Raw { get; set; }
+
+
     }
 }

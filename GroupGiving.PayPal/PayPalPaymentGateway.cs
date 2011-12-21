@@ -7,6 +7,8 @@ using GroupGiving.Core.Domain;
 using GroupGiving.Core.Dto;
 using GroupGiving.Core.Services;
 using GroupGiving.PayPal.Model;
+using ExecutePaymentRequest = GroupGiving.Core.Actions.ExecutePayment.ExecutePaymentRequest;
+using ExecutePaymentResponse = GroupGiving.Core.Actions.ExecutePayment.ExecutePaymentResponse;
 using PaymentDetailsResponse = GroupGiving.Core.Dto.PaymentDetailsResponse;
 using RefundRequest = GroupGiving.Core.Dto.RefundRequest;
 using RefundResponse = GroupGiving.Core.Dto.RefundResponse;
@@ -133,6 +135,43 @@ namespace GroupGiving.PayPal
                            RawResponse = response,
                            DialogueEntry = ((ResponseBase)response).Raw,
                            Message = response.refundInfoList.First().refundStatus
+                       };
+        }
+
+        public ExecutePaymentResponse ExecutePayment(ExecutePaymentRequest request)
+        {
+            if (string.IsNullOrWhiteSpace(request.TransactionId))
+            {
+                throw new ArgumentException("transactionid must be provided", "request.transactionid");
+            }
+
+            Model.ExecutePaymentResponse response = null;
+            
+
+            try
+            {
+                response = _apiClient.SendExecutePaymentRequest(new Model.ExecutePaymentRequest(request.TransactionId));
+            } catch (HttpChannelException exception)
+            {
+                return new ExecutePaymentResponse()
+                           {
+                               Successful = false,
+                               RawResponse = exception,
+                               DialogueEntry = ((ResponseBase) exception.FaultMessage).Raw
+                           };
+            } catch (Exception exception)
+            {
+                return new ExecutePaymentResponse()
+                           {
+                               Successful = false,
+                               RawResponse = exception
+                           };
+            }
+
+            return new ExecutePaymentResponse()
+                       {
+                           Successful = true,
+                           DialogueEntry = ((ResponseBase) response).Raw
                        };
         }
     }

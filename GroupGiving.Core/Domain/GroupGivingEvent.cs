@@ -106,6 +106,13 @@ namespace GroupGiving.Core.Domain
         public string ImageUrl { get; set; }
         public Charity CharityDetails { get; set; }
 
+        [JsonIgnore]
+        public bool ReadyToActivate
+        {
+            get { return this.PaidAttendeeCount > this.MinimumParticipants
+                && this.SalesEndDateTime > DateTime.Now; }
+        }
+
         public GroupGivingEvent()
         {
             Pledges = new List<EventPledge>();
