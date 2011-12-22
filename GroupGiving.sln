@@ -51,6 +51,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GroupGiving.PayPal.Tests.In
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GroupGiving.PayPal.Tests.Unit", "GroupGiving.PayPal.Tests.Unit\GroupGiving.PayPal.Tests.Unit.csproj", "{2D583BAA-F5B8-42A2-9A82-465DB39BC8BB}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GroupGiving.Service", "GroupGiving.Service\GroupGiving.Service.csproj", "{9B5F484F-38A2-4CD0-BCA7-DDBF35D66A57}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -206,6 +208,16 @@ Global
 		{2D583BAA-F5B8-42A2-9A82-465DB39BC8BB}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{2D583BAA-F5B8-42A2-9A82-465DB39BC8BB}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{2D583BAA-F5B8-42A2-9A82-465DB39BC8BB}.Release|x86.ActiveCfg = Release|Any CPU
+		{9B5F484F-38A2-4CD0-BCA7-DDBF35D66A57}.Debug|Any CPU.ActiveCfg = Debug|x86
+		{9B5F484F-38A2-4CD0-BCA7-DDBF35D66A57}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
+		{9B5F484F-38A2-4CD0-BCA7-DDBF35D66A57}.Debug|Mixed Platforms.Build.0 = Debug|x86
+		{9B5F484F-38A2-4CD0-BCA7-DDBF35D66A57}.Debug|x86.ActiveCfg = Debug|x86
+		{9B5F484F-38A2-4CD0-BCA7-DDBF35D66A57}.Debug|x86.Build.0 = Debug|x86
+		{9B5F484F-38A2-4CD0-BCA7-DDBF35D66A57}.Release|Any CPU.ActiveCfg = Release|x86
+		{9B5F484F-38A2-4CD0-BCA7-DDBF35D66A57}.Release|Mixed Platforms.ActiveCfg = Release|x86
+		{9B5F484F-38A2-4CD0-BCA7-DDBF35D66A57}.Release|Mixed Platforms.Build.0 = Release|x86
+		{9B5F484F-38A2-4CD0-BCA7-DDBF35D66A57}.Release|x86.ActiveCfg = Release|x86
+		{9B5F484F-38A2-4CD0-BCA7-DDBF35D66A57}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

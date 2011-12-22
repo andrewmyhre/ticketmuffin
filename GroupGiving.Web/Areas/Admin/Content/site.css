@@ -1,0 +1,43 @@
+﻿body, a, p, td 
+{
+    font-family: verdana;
+    font-size: 12px;
+}
+
+#navigation {
+    width: 100%;
+    float: left;
+    margin: 0;
+    padding: 0;
+    background-color: skyblue;
+}
+
+#navigation li {
+    margin-right: 3px;
+    display: inline-block;
+    list-style: none;
+    padding: 6px;
+    
+    color: white;
+}
+
+#navigation li:hover
+{
+    background-color: navy;
+}
+
+#navigation li a {
+    color: white;
+    font-size: 1.4em;
+}
+
+input
+{
+    width: 400px;
+    display: inline-block;
+}
+
+label {
+    display: inline-block;
+    margin-right: 20px;
+}
