@@ -20,7 +20,15 @@ namespace GroupGiving.Core.Services
         {
             using (var session = _documentStore.OpenSession())
             {
-                return session.Query<SiteConfiguration>().FirstOrDefault();
+                var configuration = session.Query<SiteConfiguration>().FirstOrDefault();
+                if (configuration == null)
+                {
+                    configuration = new SiteConfiguration();
+                    session.Store(configuration);
+                    session.SaveChanges();
+
+                }
+                return configuration;
             }
         }
     }
