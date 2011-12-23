@@ -24,6 +24,10 @@ namespace GroupGiving.Core.Services
                 if (configuration == null)
                 {
                     configuration = new SiteConfiguration();
+                    configuration.PayFlowProConfiguration = new PayFlowProConfiguration();
+                    configuration.AdaptiveAccountsConfiguration = new AdaptiveAccountsConfiguration();
+                    configuration.JustGivingApiConfiguration = new JustGivingApiConfiguration();
+                    configuration.DatabaseConfiguration = new DatabaseConfiguration();
                     session.Store(configuration);
                     session.SaveChanges();
 
