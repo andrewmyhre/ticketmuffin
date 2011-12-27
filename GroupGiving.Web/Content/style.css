@@ -170,12 +170,12 @@ input.blueButton {
   background: url(/content/img/blueButton.png) center center repeat-x;
 }
 input.smallButton {
-  width: 240px;
+  padding: 0 20px
   height: 25px;
   line-height: 25px;
   font-weight: bold;
   font-size: 18px;
-    padding: 0;
+  
 }
 div#pledgeInfo {
  background: url("/content/img/pledgeInfo_bg.jpg") repeat-x scroll center top #86B8E9;
@@ -615,3 +615,24 @@ label, .wholeline label {
     margin-left: 15px;
     margin-top: 6px;
 }
+
+fieldset 
+{
+    background: #f3f3f3;
+    border: solid 1px #e6e6e6;
+    padding: 20px;
+    border-radius: 5px;
+    -moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
+    margin-bottom: 10px;
+    }
+    legend 
+    {
+        background: #ffffff;
+        font-weight: bold;
+        color: #5f5f5f;
+        border-radius: 3px;
+    -moz-border-radius: 3px;
+    -webkit-border-radius: 3px;
+    padding: 0 10px;
+    }
