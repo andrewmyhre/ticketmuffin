@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Web.Mvc;
 using System.Web.Routing;
 using EmailProcessing;
+using GroupGiving.Core.Services;
+using GroupGiving.Web.App_Start;
 using GroupGiving.Web.Code;
 using Microsoft.Web.Mvc.Resources;
 using log4net;

@@ -2,6 +2,7 @@
 
 @{
     ViewBag.Title = "Index";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
 }
 
 @section scripts
@@ -28,6 +29,6 @@
     <h2>Data</h2>
     <ul>
         <li>
-            @Html.ActionLink("Refresh country list ("+ Model.CountryCount +")", "LoadCountries", "Diagnostics")
+            @Html.ActionLink("Refresh country list ("+ Model.CountryCount +" loaded)", "LoadCountries", "Diagnostics")
         </li>
     </ul>

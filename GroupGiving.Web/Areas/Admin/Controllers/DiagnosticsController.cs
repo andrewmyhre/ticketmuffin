@@ -1,23 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data;
-using System.IO;
+using System;
 using System.Linq;
-using System.Text;
-using System.Web;
 using System.Web.Hosting;
 using System.Web.Mvc;
-using Com.StellmanGreene.CSVReader;
 using EmailProcessing;
 using GroupGiving.Core.Data;
 using GroupGiving.Core.Domain;
 using GroupGiving.Core.Services;
-using GroupGiving.Web.App_Start;
 using GroupGiving.Web.Models;
-using Ninject;
 using Raven.Client;
 
-namespace GroupGiving.Web.Controllers
+namespace GroupGiving.Web.Areas.Admin.Controllers
 {
     public class DiagnosticsController : Controller
     {
@@ -25,13 +17,15 @@ namespace GroupGiving.Web.Controllers
         // GET: /Diagnostics/
         IEmailFacade _emailFacade = null;
         private readonly IDocumentStore _storage;
+        private readonly ICountryService _countryService;
         private IRepository<GroupGivingEvent> _eventRepository=null;
 
-        public DiagnosticsController(IRepository<GroupGivingEvent> eventRepository, IEmailFacade emailFacade, IDocumentStore storage)
+        public DiagnosticsController(IRepository<GroupGivingEvent> eventRepository, IEmailFacade emailFacade, IDocumentStore storage, ICountryService countryService)
         {
             _eventRepository = eventRepository;
             _emailFacade = emailFacade;
             _storage = storage;
+            _countryService = countryService;
             _emailFacade.LoadTemplates();
         }
 
@@ -81,28 +75,15 @@ namespace GroupGiving.Web.Controllers
             Response.Write("loading countries...<br/>");
             try
             {
-                using (var filestream = System.IO.File.OpenRead(HostingEnvironment.MapPath("~/App_Data/countrylist.csv")))
+                string sourceFilePath = HostingEnvironment.MapPath("~/App_Data/countrylist.csv");
                 using (var session = _storage.OpenSession())
-                using (var reader = new StreamReader(filestream))
                 {
+                    var loaded = _countryService.LoadCountriesFromCsv(session, sourceFilePath);
 
-                    var countries = session.Query<Country>().ToList();
-                    foreach(var country in countries)
+                    foreach(var country in loaded)
                     {
-                        session.Delete(country);
+                        Response.Write(string.Format("<p>{0}</p>", country.Name));
                     }
-                    session.SaveChanges();
-
-                    CSVReader csv = new CSVReader(reader);
-                    var table = csv.CreateDataTable(true);
-                    foreach (DataRow row in table.Rows)
-                    {
-                        var country = new Country((string) row["Common Name"]);
-                        session.Store(country);
-                        Response.Write((string)row["Common Name"] + "<br/>");
-                        Response.Flush();
-                    }
-                    session.SaveChanges();
                 }
             }
             catch (Exception ex)

@@ -97,9 +97,11 @@
     <Compile Include="Api.cs" />
     <Compile Include="BCrypt.cs" />
     <Compile Include="Configuration\TicketMuffinFees.cs" />
+    <Compile Include="Data\CSVReader.cs" />
     <Compile Include="Data\Fakes\FakeRepository.cs" />
     <Compile Include="Data\IRepository.cs" />
     <Compile Include="Data\RavenDBRepositoryBase.cs" />
+    <Compile Include="Data\StringConverter.cs" />
     <Compile Include="Domain\AccountType.cs" />
     <Compile Include="Domain\Charity.cs" />
     <Compile Include="Domain\ContentDefinition.cs" />

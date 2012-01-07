@@ -135,10 +135,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App_Start\NinjectMVC3.cs" />
+    <Compile Include="App_Start\RavenDbAppData.cs" />
     <Compile Include="App_Start\RavenDbIndexes.cs" />
     <Compile Include="Areas\Admin\AdminAreaRegistration.cs" />
     <Compile Include="Areas\Admin\Controllers\CharityManagementController.cs" />
     <Compile Include="Areas\Admin\Controllers\DashboardController.cs" />
+    <Compile Include="Areas\Admin\Controllers\DiagnosticsController.cs" />
     <Compile Include="Areas\Admin\Controllers\EventManagementController.cs" />
     <Compile Include="Areas\Admin\Controllers\SiteConfigurationController.cs" />
     <Compile Include="Areas\Admin\Controllers\UserManagementController.cs" />
@@ -155,7 +157,6 @@
     <Compile Include="Code\CommaSeparatedEmailListValidatorAttribute.cs" />
     <Compile Include="Code\ContentDictionaries.cs" />
     <Compile Include="Code\ContentTypeAwareViewEngine.cs" />
-    <Compile Include="Code\CSVReader.cs" />
     <Compile Include="Code\CultureConstraint.cs" />
     <Compile Include="Code\CultureViewEngine.cs" />
     <Compile Include="Code\HtmlHelperExtensions.cs" />
@@ -170,12 +171,10 @@
     <Compile Include="Code\PageContentService.cs" />
     <Compile Include="Code\RavenDbContentProvider.cs" />
     <Compile Include="Code\RavenDbDocumentStore.cs" />
-    <Compile Include="Code\StringConverter.cs" />
     <Compile Include="Code\XmlContentProvider.cs" />
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\ContentManagerController.cs" />
     <Compile Include="Controllers\CreateEventController.cs" />
-    <Compile Include="Controllers\DiagnosticsController.cs" />
     <Compile Include="Controllers\EventController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\MarkdownController.cs" />
@@ -385,7 +384,7 @@
     <Content Include="Scripts\modernizr-1.7.min.js" />
     <Content Include="Scripts\order.js" />
     <Content Include="Scripts\verify-pp.js" />
-    <Content Include="Views\Diagnostics\Index.aspx" />
+    <Content Include="Areas\Admin\Views\Diagnostics\Index.aspx" />
     <Content Include="Web.config">
       <SubType>Designer</SubType>
     </Content>
@@ -445,7 +444,7 @@
     <Content Include="Views\Account\PayPalSettings.cshtml" />
     <Content Include="Views\Account\Index.cshtml" />
     <Content Include="Views\Account\YourEvents.cshtml" />
-    <Content Include="Views\Diagnostics\Index.cshtml" />
+    <Content Include="Areas\Admin\Views\Diagnostics\Index.cshtml" />
     <Content Include="Views\Shared\SwitchCulture.cshtml" />
     <Content Include="Views\Home\pl\HowItWorks.cshtml" />
     <Content Include="Views\Home\pl\Index.cshtml" />
