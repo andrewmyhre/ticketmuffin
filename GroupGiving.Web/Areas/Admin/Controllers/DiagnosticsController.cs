@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Web.Hosting;
 using System.Web.Mvc;
@@ -51,9 +52,8 @@ namespace GroupGiving.Web.Areas.Admin.Controllers
             switch (emailTemplate)
             {
                 case "EventActivated":
-                    var @event = _eventRepository.Query(e=>e != null).FirstOrDefault();
-                    var pledge = @event.Pledges.First();
-                    _emailFacade.Send(toAddress, emailTemplate, new {Event=@event, Pledge = pledge});
+                    var @event = CreateSampleEvent();
+                    _emailFacade.Send(toAddress, emailTemplate, new {Event=@event, Pledge = @event.Pledges.First()});
                     break;
                 case "AccountCreated":
                     _emailFacade.Send(toAddress, emailTemplate, new {Account=account, AccountPageUrl="http://somedomain.com/YourAccount"});
@@ -67,6 +67,53 @@ namespace GroupGiving.Web.Areas.Admin.Controllers
             }
 
             return Json("Ok");
+        }
+
+        private GroupGivingEvent CreateSampleEvent()
+        {
+            return new GroupGivingEvent()
+                       {
+                           Title = "sample event",
+                           Description = "just a sample",
+                           AddressLine = "1 sample lane",
+                           City = "samplecity",
+                           Postcode = "N1Test",
+                           Country="United Kingdom",
+                           MinimumParticipants = 10,
+                           MaximumParticipants = 100,
+                           TicketPrice = 10,
+                           AdditionalBenefits = "additional benefits are increased labido and a profound sense of your place in the world",
+                           OrganiserName = "Mr Sample Man",
+                           PayPalAccountFirstName = "Not",
+                           PayPalAccountLastName = "Real",
+                           PaypalAccountEmailAddress = "fake.paypal.account@paypal.com",
+                           SalesEndDateTime = DateTime.Now.AddDays(1),
+                           ShortUrl = "sample-event",
+                           State = EventState.SalesReady,
+                           Venue = "Some Fake Place",
+                           Pledges = CreateSamplePledges()
+                       };
+        }
+
+        private List<EventPledge> CreateSamplePledges()
+        {
+            return new List<EventPledge>()
+                       {
+                           new EventPledge()
+                                     {
+                                         AccountEmailAddress = "fake-email-address@ticketmuffin.com",
+                                         AccountId="0",
+                                         AccountName="Not a real account",
+                                         Attendees = new List<EventPledgeAttendee>(){ new EventPledgeAttendee("Joe"), new EventPledgeAttendee("Billy")},
+                                         DatePledged = DateTime.Now.AddDays(-1),
+                                         OrderNumber="NOT-A-REAL-PLEDGE",
+                                         Paid=true,
+                                         PaymentStatus = PaymentStatus.PaidPendingReconciliation,
+                                         SubTotal = 10,
+                                         Total = 10,
+                                         TransactionId = "FAKETRANSACTION"
+                                     }
+                       };
         }
 
         [AcceptVerbs(HttpVerbs.Get)]
