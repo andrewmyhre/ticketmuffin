@@ -63,7 +63,8 @@ namespace GroupGiving.Core.Services
                     LiveApiBaseUrl = "https://svcs.paypal.com/",
                     RequestDataFormat = "SOAP11",
                     ResponseDataFormat = "SOAP11",
-                    SandboxMailAddress = "nothing"
+                    SandboxMailAddress = "nothing",
+                    SandboxMode = true
                 },
                 DatabaseConfiguration = new DatabaseConfiguration()
                 {
