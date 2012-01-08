@@ -6,21 +6,30 @@
     ViewBag.Title = "title";
 }
 
-<h2>Event Management Console</h2>
+<h2>Management Console for @Model.Title</h2>
 
 @switch (Model.State)
 {
     case EventState.SalesReady:
         {
             <p>Your event is ready to take pledges</p>
+            if (Model.ReadyToActivate)
+            {
+                <p>Your event has reached the minimum required participants! This means your event is <strong>ready to activate</strong></p>
+            }
         }
     break;
+    case EventState.Activated:
+        {
+            <p>Your event has been activated. You should have received all outstanding funds and any new pledges will be forward to you immediately.</p>
+        }
+        break;
     case EventState.SalesClosed:
         {
             <p>Sales for this event have finished</p>
             if (Model.Pledges.Count >= Model.MinimumParticipants)
             {
-                <p>You have received enough pledges to fund this event - the event is now on!</p>
+                <p>You have received enough pledges to fund this event - the event is ready to @Html.ActionLink("activate", "Activate", new {shortUrl = Model.ShortUrl})!</p>
             } else
             {
                 <p>Your event did not receive enough pledges to reach minimum funding. If you want to cancel the event you can do so.</p>
@@ -49,5 +58,9 @@
 @if (Model.State != EventState.Cancelled && Model.State != EventState.Completed)
 {
     <li>@Html.ActionLink("Cancel the event", "cancel-event", new {shortUrl = Model.ShortUrl})</li>
+}
+@if (Model.State == EventState.SalesReady && Model.ReadyToActivate)
+{
+    <li>@Html.ActionLink("Activate the event", "Activate", new {shortUrl = Model.ShortUrl})</li>
 }
 </ul>

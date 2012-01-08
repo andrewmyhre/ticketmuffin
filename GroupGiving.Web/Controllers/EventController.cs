@@ -13,6 +13,7 @@ using System.Web.Hosting;
 using System.Web.Security;
 using System.Xml;
 using GroupGiving.Core;
+using GroupGiving.Core.Actions.ActivateEvent;
 using GroupGiving.Core.Actions.CancelEvent;
 using GroupGiving.Core.Actions.RefundPledge;
 using GroupGiving.Core.Configuration;
@@ -446,7 +447,7 @@ namespace GroupGiving.Web.Controllers
             {
                 var @event = session.Query<GroupGivingEvent>().Where(e => e.ShortUrl == shortUrl).FirstOrDefault();
                 var pledge = @event.Pledges.Where(p => p.OrderNumber == orderNumber).FirstOrDefault();
-                RefundViewModel viewModel = null;
+                RefundViewModel viewModel = new RefundViewModel();
 
                 if (pledge == null)
                 {
@@ -485,10 +486,11 @@ namespace GroupGiving.Web.Controllers
                     return RedirectToAction("event-pledges", new {shortUrl = shortUrl});
                 }
 
+                viewModel.Event = @event;
                 viewModel.PledgeToBeRefunded = pledge;
                 viewModel.RefundFailed = true;
 
-                return View();
+                return View(viewModel);
             }
         }
 
@@ -554,6 +556,7 @@ namespace GroupGiving.Web.Controllers
             using (var session = _documentStore.OpenSession())
             {
                 viewModel.Event = session.Query<GroupGivingEvent>().Where(e => e.ShortUrl == shortUrl).FirstOrDefault();
+                viewModel.TotalAmountOwedToFundraiser = viewModel.Event.Pledges.Sum(p => p.Total);
 
                 if (!viewModel.Event.ReadyToActivate)
                 {
@@ -567,7 +570,15 @@ namespace GroupGiving.Web.Controllers
         [HttpPost]
         public ActionResult Activate(string shortUrl, string confirm)
         {
-            return RedirectToAction("Activate", new {shortUrl = shortUrl});
+            using (var session = _documentStore.OpenSession())
+            {
+                var @event = session.Query<GroupGivingEvent>().Where(e => e.ShortUrl == shortUrl).FirstOrDefault();
+                var action = new ActivateEventAction(_documentStore, _paymentGateway);
+                var response = action.Execute(@event.Id, session);
+                TempData["activate_response"] = response;
+            }
+
+            return RedirectToAction("management-console", new {shortUrl = shortUrl});
         }
     }
 }

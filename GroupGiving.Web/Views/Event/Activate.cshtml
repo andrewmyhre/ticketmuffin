@@ -4,7 +4,6 @@
 
 @{
     ViewBag.Title = "Activate Event";
-    Layout = "_Layout";
 }
 
 <h2>Activate Your Event</h2>
@@ -24,4 +23,13 @@
     <input type="submit" value="Activate the Event" />
 }
 
+@using (Html.BeginForm())
+{
+    <li>
+        <h3>Cancel the event</h3>
+        <p>All funding that TicketMuffin has received on your behalf will be refunded to pledgers</p>
+        <input type="hidden" name="confirm" value="yes"/>
+        <input type="submit" value="Cancel the Event"/>
+    </li>
+}
 </ol>
