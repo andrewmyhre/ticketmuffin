@@ -11,7 +11,7 @@
 <p>Status: @Model.State</p>
 <p>@(Model.State == EventState.Activated ? "The event is officially on" : "The event isn't 'On' yet")</p>
 <p>
-    Event has @Model.AttendeeCount attendees, 
+    Event has @Model.PaidAttendeeCount attendees, 
     @if (Model.AttendeeCount >= Model.MinimumParticipants)
 {
     <text>and has reached the minimum @Model.MinimumParticipants</text>

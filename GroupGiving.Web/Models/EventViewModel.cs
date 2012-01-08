@@ -94,5 +94,7 @@ namespace GroupGiving.Web.Models
         public bool ReadyToActivate { get; set; }
 
         public int AttendeeCount { get; set; }
+
+        public int PaidAttendeeCount { get; set; }
     }
 }
