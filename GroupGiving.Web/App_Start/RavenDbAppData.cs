@@ -11,9 +11,12 @@ namespace GroupGiving.Web.App_Start
 {
     public class RavenDbAppData
     {
-        public static void Start(IDocumentStore documentStore, ICountryService countryService)
+        public static void Start(IDocumentStore documentStore, 
+            ICountryService countryService,
+            ISiteConfigurationService siteConfigurationService)
         {
             countryService.EnsureCountryData(HostingEnvironment.MapPath("~/App_Data/countrylist.csv"));
+            siteConfigurationService.EnsureConfigurationData();
         }
     }
 }

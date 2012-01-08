@@ -23,18 +23,82 @@ namespace GroupGiving.Core.Services
             using (var session = _documentStore.OpenSession())
             {
                 _log.Debug("loading site configuration");
-                var configuration = session.Query<SiteConfiguration>().FirstOrDefault();
-                EnsureValidConfigurationObject(configuration, session);
+                ISiteConfiguration configuration = session.Query<SiteConfiguration>().FirstOrDefault();
+                configuration = EnsureValidConfigurationObject(configuration, session);
                 return configuration;
             }
         }
 
-        private void EnsureValidConfigurationObject(ISiteConfiguration configuration, IDocumentSession session)
+        public void EnsureConfigurationData()
+        {
+            using (var session = _documentStore.OpenSession())
+            {
+                var configuration = session.Query<SiteConfiguration>().FirstOrDefault();
+                if (configuration == null)
+                {
+                    _log.Info("No site configuration found, creating");
+                    configuration = CreateDefaultConfiguration();
+                    session.Store(configuration);
+                    session.SaveChanges();
+                    _log.Info("Created default configuration");
+                }
+            }
+        }
+
+        private SiteConfiguration CreateDefaultConfiguration()
+        {
+            return new SiteConfiguration()
+            {
+                EventImagePathFormat = "~/eventImages/{0}/eventImage.jpg",
+                LoginUrl = "~/signin",
+                AdaptiveAccountsConfiguration = new AdaptiveAccountsConfiguration()
+                {
+                    ApiPassword = "1321277160",
+                    ApiUsername = "Muffin_1321277131_biz_api1.gmail.com",
+                    ApiSignature = "AFcWxV21C7fd0v3bYYYRCpSSRl31ANDzgYINyuYs1FQZcsN1DSKkJexD",
+                    SandboxApplicationId = "APP-80W284485P519543T",
+                    LiveApplicationId = "APP-8YG236387E473230W",
+                    DeviceIpAddress = "127.0.0.1",
+                    SandboxApiBaseUrl = "https://svcs.sandbox.paypal.com/",
+                    LiveApiBaseUrl = "https://svcs.paypal.com/",
+                    RequestDataFormat = "SOAP11",
+                    ResponseDataFormat = "SOAP11",
+                    SandboxMailAddress = "nothing"
+                },
+                DatabaseConfiguration = new DatabaseConfiguration()
+                {
+                    StorageLocation = "http://localhost:8080"
+                },
+                JustGivingApiConfiguration = new JustGivingApiConfiguration()
+                {
+                    JustGivingApiKey = "d0032bfe",
+                    JustGivingApiDomainBase = "https://api.staging.justgiving.com/",
+                    JustGivingApiVersion = "1"
+                },
+                PayFlowProConfiguration = new PayFlowProConfiguration()
+                {
+                    SandboxMode = true,
+                    PayPalAccountEmail = "Muffin_1321277131_biz@gmail.com",
+                    ApiMerchantUsername = "Muffin_1321277131_biz_api1.gmail.com",
+                    ApiMerchantPassword = "1321277160",
+                    ApiMerchantSignature = "AFcWxV21C7fd0v3bYYYRCpSSRl31ANDzgYINyuYs1FQZcsN1DSKkJexD",
+                    SuccessCallbackUrl = "/Order/Success?payKey=${payKey}",
+                    FailureCallbackUrl = "/Order/Cancel?payKey=${payKey}",
+                    SandboxPayFlowProPaymentPage = "https://www.sandbox.paypal.com/webscr?cmd=_ap-payment&paykey={0}",
+                    LivePayFlowProPaymentPage = "https://www.paypal.com/webscr?cmd=_ap-payment&paykey={0}",
+                    ApiVersion = "1.1.0",
+                    RequestDataBinding = "XML",
+                    ResponseDataBinding = "XML"
+                }
+            };
+        }
+
+        private ISiteConfiguration EnsureValidConfigurationObject(ISiteConfiguration configuration, IDocumentSession session)
         {
             bool storeNew = false, update=false;
             if (configuration == null)
             {
-                configuration = new SiteConfiguration();
+                configuration = CreateDefaultConfiguration();
                 storeNew = true;
             }
             if (configuration.PayFlowProConfiguration == null)
@@ -68,6 +132,8 @@ namespace GroupGiving.Core.Services
             {
                 session.SaveChanges();
             }
+
+            return configuration;
         }
     }
 }

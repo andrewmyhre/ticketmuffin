@@ -21,7 +21,9 @@ namespace GroupGiving.Web.Code
                         _instance = new DocumentStore() {Url = ConfigurationManager.AppSettings["RavenDbStoragePath"]};
                         _instance.Initialize();
                         RavenDbIndexes.Initialise(_instance);
-                        RavenDbAppData.Start(_instance, new CountryService(_instance));
+                        RavenDbAppData.Start(_instance, 
+                            new CountryService(_instance),
+                            new SiteConfigurationService(_instance));
                     } catch
                     {
                         throw new Exception("Couldn't connect to database. Is it running?");
