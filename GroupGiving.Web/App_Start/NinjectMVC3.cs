@@ -80,7 +80,14 @@ namespace GroupGiving.Web.App_Start
             kernel.Bind<AccountController>().ToSelf();
 
             kernel.Bind<IEmailRelayService>().To<SimpleSmtpEmailRelayService>();
-            kernel.Bind<IEmailFacade>().ToMethod((request) => MvcApplication.EmailFacade);
+            kernel.Bind<IEmailFacade>().ToMethod((request) =>
+                                                     {
+                                                         var service = EmailFacadeFactory.CreateFromConfiguration();
+                                                         service.LoadTemplates();
+
+                                                         return service;
+                                                     }
+                ).InSingletonScope();
             kernel.Bind<IEmailPackageRelayer>()
                 .ToMethod(x => EmailSenderFactory.CreateRelayerFromConfiguration(ConfigurationManager.GetSection("emailBuilder") as EmailBuilderConfigurationSection));
             kernel.Bind<ICountryService>().To<CountryService>();
