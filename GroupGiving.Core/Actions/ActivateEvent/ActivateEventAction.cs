@@ -36,6 +36,11 @@ namespace GroupGiving.Core.Actions.ActivateEvent
             ActivateEventResponse response = new ActivateEventResponse();
             foreach (var pledge in @event.Pledges)
             {
+                if (pledge.PaymentStatus != PaymentStatus.PaidPendingReconciliation)
+                {
+                    continue;
+                }
+
                 var action = new ExecutePaymentAction(_paymentGateway);
                 ExecutePaymentResponse executeResult = null;
                 try
