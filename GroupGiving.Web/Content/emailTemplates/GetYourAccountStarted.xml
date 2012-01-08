@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <emailTemplate xmlns="http://www.tanash.net/email/template">
     <name>GetYourAccountStarted</name>
-    <from>noreply@ticketmuffin.com</from>
+    <from>andrew.myhre@gmail.com</from>
     <subject>TicketMuffin - Let's get your account set up</subject>
     <html><![CDATA[
         <p>Hi there,</p>

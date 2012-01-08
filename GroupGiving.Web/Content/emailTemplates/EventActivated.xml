@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <emailTemplate xmlns="http://www.tanash.net/email/template">
     <name>EventActivated</name>
-    <from>noreply@ticketmuffin.com</from>
+    <from>andrew.myhre@gmail.com</from>
     <subject>@Model.Event.Title - event activated!</subject>
     <html><![CDATA[
         <p>Hi @(Model.Pledge.AccountName ?? "there"),</p>
