@@ -58,11 +58,15 @@ namespace GroupGiving.Web.Models
 
         public List<EventPledge> Pledges { get; set; }
 
-        public GroupGiving.Core.Domain.EventState State { get; set; }
+        public EventState State { get; set; }
 
         [Display(Name="Event organiser (email address)")]
         public string EventOrganiser { get; set; }
 
         public string ImageUrl { get; set; }
+
+        public bool IsOn { get; set; }
+        public int AttendeeCount { get; set; }
+        public bool ReadyToActivate { get; set; }
     }
 }

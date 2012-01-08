@@ -109,8 +109,9 @@ namespace GroupGiving.Core.Domain
         [JsonIgnore]
         public bool ReadyToActivate
         {
-            get { return this.PaidAttendeeCount > this.MinimumParticipants
-                && this.SalesEndDateTime > DateTime.Now; }
+            get { return this.PaidAttendeeCount >= this.MinimumParticipants
+                && this.SalesEndDateTime > DateTime.Now
+                && this.State == EventState.SalesReady; }
         }
 
         public GroupGivingEvent()
@@ -123,6 +124,7 @@ namespace GroupGiving.Core.Domain
     {
         Creating,
         SalesReady,
+        Activated,
         SalesClosed,
         Completed,
         Cancelled,

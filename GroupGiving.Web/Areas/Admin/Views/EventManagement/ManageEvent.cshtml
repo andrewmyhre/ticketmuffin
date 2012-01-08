@@ -1,4 +1,5 @@
-﻿@using GroupGiving.Web.Models
+﻿@using GroupGiving.Core.Domain
+@using GroupGiving.Web.Models
 @model EventViewModel
 
 @{
@@ -7,36 +8,26 @@
 }
 
 <h2>@Model.Title</h2>
+<p>Status: @Model.State</p>
+<p>@(Model.State == EventState.Activated ? "The event is officially on" : "The event isn't 'On' yet")</p>
+<p>
+    Event has @Model.AttendeeCount attendees, 
+    @if (Model.AttendeeCount >= Model.MinimumParticipants)
+{
+    <text>and has reached the minimum @Model.MinimumParticipants</text>
+} else
+{
+    <text>and has not reached the minimum @Model.MinimumParticipants</text>
+}
 
+</p>
 <ul>
     <li>@Html.ActionLink("Edit event details", "EditEventDetails", new {id=Model.Id.Substring(Model.Id.IndexOf('/'))})</li>
     <li>@Html.ActionLink("View and refund pledges", "ViewPledges", new { id = Model.Id.Substring(Model.Id.IndexOf('/')) })</li>
+    @if (Model.ReadyToActivate)
+    {
+        <li>@Html.ActionLink("Activate event (send funds to secondary receivers)", "Activate", new { id = Model.Id.Substring(Model.Id.IndexOf('/')) })</li>
+    }
 </ul>
 
-<h2>Pledges for @Model.Title</h2>
-
-<table>
-@foreach (var pledge in Model.Pledges)
-{
-    <tr>
-        <td>@pledge.AccountEmailAddress</td>
-        <td>@pledge.DatePledged</td>
-        <td>@pledge.Attendees.Count attendees</td>
-        <td>@pledge.PaymentStatus</td>
-        <td>@pledge.TransactionId</td>
-        <td>@if (pledge.Paid) {
-            <text><span>Paid</span><span>@Html.ActionLink("Refund", "refund-pledge", new { id=Model.Id.Substring(Model.Id.IndexOf('/')), orderNumber = pledge.OrderNumber }, null)</span></text>
-        } else if (pledge.PaymentStatus == GroupGiving.Core.Domain.PaymentStatus.Refunded)
-        {
-            <text><span>Refunded</span></text>
-            <span>@pledge.DateRefunded.Value.ToString("dd-MM-yyyy hh:mm")</span>
-        }
-        else if (pledge.PaymentStatus == GroupGiving.Core.Domain.PaymentStatus.Unpaid)
-        {
-            <span>Unpaid</span>
-        }</td>
-        <td>@Html.ActionLink("View messages", "TransactionHistory", new {id = Model.Id.Substring(Model.Id.IndexOf('/')), OrderNumber = pledge.OrderNumber})</td>
-    </tr>
-}
-
-</table>
+@{ Html.RenderPartial("EventList", Model); }

@@ -7,39 +7,4 @@
     Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
 }
 
-<h2>Pledges for @Model.Title</h2>
-
-<table>
-@foreach (var pledge in Model.Pledges)
-{
-    <tr>
-        <td>@pledge.AccountEmailAddress</td>
-        <td>@pledge.DatePledged</td>
-        <td>@pledge.Attendees.Count attendees</td>
-        <td>@pledge.PaymentStatus</td>
-        <td>@pledge.TransactionId</td>
-        <td>@if (pledge.PaymentStatus == PaymentStatus.Reconciled)
-            {
-            <text><span>Paid (sent)</span>
-            <span>@Html.ActionLink("Refund", "refund-pledge", new { id=Model.Id.Substring(Model.Id.IndexOf('/')), orderNumber = pledge.OrderNumber }, null)</span></text>
-            } else if (pledge.PaymentStatus == GroupGiving.Core.Domain.PaymentStatus.Refunded)
-            {
-                <text><span>Refunded</span></text>
-                <span>@pledge.DateRefunded.Value.ToString("dd-MM-yyyy hh:mm")</span>
-            }
-            else if (pledge.PaymentStatus == GroupGiving.Core.Domain.PaymentStatus.Unpaid)
-            {
-                <span>Unpaid</span>
-            }
-            else if (pledge.PaymentStatus == PaymentStatus.PaidPendingReconciliation)
-            {
-                    <text><span>Paid (unsent)</span>
-                    <span>@Html.ActionLink("Send payment", "execute-payment", new {id=Model.Id.Substring(Model.Id.IndexOf('/')), orderNumber = pledge.OrderNumber}, null)</span></text>
-            } </td>
-        <td>@Html.ActionLink("View messages", "TransactionHistory", 
-                new {id = Model.Id.Substring(Model.Id.IndexOf('/')), 
-                OrderNumber = pledge.OrderNumber})</td>
-    </tr>
-}
-
-</table>
+@{ Html.RenderPartial("EventList", Model); }

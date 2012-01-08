@@ -84,6 +84,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Actions\ActivateEvent\ActivateEventAction.cs" />
     <Compile Include="Actions\CancelEvent\CancelEventAction.cs" />
     <Compile Include="Actions\CancelEvent\CancelEventResponse.cs" />
     <Compile Include="Actions\CreatePledge\CreatePledgeActionResult.cs" />

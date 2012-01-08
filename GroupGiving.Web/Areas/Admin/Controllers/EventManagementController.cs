@@ -4,6 +4,7 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using GroupGiving.Core;
+using GroupGiving.Core.Actions.ActivateEvent;
 using GroupGiving.Core.Actions.CancelEvent;
 using GroupGiving.Core.Actions.ExecutePayment;
 using GroupGiving.Core.Actions.RefundPledge;
@@ -327,6 +328,14 @@ namespace GroupGiving.Web.Areas.Admin.Controllers
                 return View();
             }
 
+        }
+
+        public ActionResult Activate(int id)
+        {
+            var action = new ActivateEventAction(_documentStore, _paymentGateway);
+            action.Execute("groupgivingevents/" + id);
+
+            return RedirectToAction("ManageEvent", new {id = id});
         }
     }
 

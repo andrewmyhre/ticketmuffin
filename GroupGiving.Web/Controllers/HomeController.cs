@@ -29,7 +29,7 @@ namespace GroupGiving.Web.Controllers
                 .Query(e=>e.StartDate > DateTime.Now 
                 && e.City.Contains("London")
                 && e.IsFeatured
-                && e.State == EventState.SalesReady);
+                && (e.State == EventState.SalesReady || e.State == EventState.Activated));
 
             string pageAddress = ControllerContext.HttpContext.Request.Url.AbsolutePath;
             var pageContent = _contentProvider.GetPage(pageAddress);

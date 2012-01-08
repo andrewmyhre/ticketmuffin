@@ -90,5 +90,9 @@ namespace GroupGiving.Web.Models
         public Charity Charity { get; set; }
 
         public IEnumerable<TransactionHistoryEntry> TransactionHistory { get; set; }
+
+        public bool ReadyToActivate { get; set; }
+
+        public int AttendeeCount { get; set; }
     }
 }
