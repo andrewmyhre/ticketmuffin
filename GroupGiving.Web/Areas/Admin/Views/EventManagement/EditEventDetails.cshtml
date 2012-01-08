@@ -1,4 +1,5 @@
-﻿@using GroupGiving.Web.Models
+﻿@using GroupGiving.Core.Domain
+@using GroupGiving.Web.Models
 @model UpdateEventViewModel
 
 @{
@@ -7,7 +8,7 @@
 }
 
 <h2>Edit</h2>
-<p>Editing @Html.ActionLink(Model.Title, "Index", new {shortUrl=Model.ShortUrl})</p>
+<p>Editing @Html.ActionLink(Model.Title, "ManageEvent", new {Id=Model.Id.Substring(Model.Id.IndexOf('/')+1)})</p>
 <div>
 @{Html.ValidationSummary();}
 </div>
@@ -26,6 +27,7 @@
         <p>@Html.LabelFor(vm => vm.TicketPrice) @Html.EditorFor(vm => vm.TicketPrice) @Html.ValidationMessageFor(vm => vm.TicketPrice)</p>
         <p>@Html.LabelFor(vm => vm.AdditionalBenefits) @Html.EditorFor(vm => vm.AdditionalBenefits) @Html.ValidationMessageFor(vm => vm.AdditionalBenefits)</p>
         <p>@Html.LabelFor(vm => vm.SalesEndDateTime) @Html.EditorFor(vm => vm.SalesEndDateTime) @Html.ValidationMessageFor(vm => vm.SalesEndDateTime)</p>
+        <p>@Html.LabelFor(vm=>vm.State) @Html.DropDownListFor(vm=>vm.State, new SelectList(Enum.GetNames(typeof(EventState)), Model.State))</p>
     </fieldset>
     <fieldset>
         <legend>Place and Time</legend>

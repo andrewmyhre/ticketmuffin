@@ -176,14 +176,6 @@ namespace GroupGiving.Web.Areas.Admin.Controllers
                 groupGivingEvent.OrganiserId = organiser.Id;
                 groupGivingEvent.OrganiserName = organiser.FirstName + " " + organiser.LastName;
 
-                if (groupGivingEvent.SalesEndDateTime > DateTime.Now)
-                    groupGivingEvent.State = EventState.SalesReady;
-                else if (groupGivingEvent.StartDate > DateTime.Now)
-                    groupGivingEvent.State = EventState.SalesClosed;
-                else
-                    groupGivingEvent.State = EventState.Completed;
-
-
                 session.SaveChanges();
             }
             return RedirectToAction("EditEventDetails", new { id });
