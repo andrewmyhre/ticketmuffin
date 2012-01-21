@@ -105,6 +105,7 @@ namespace GroupGiving.Core.Domain
 
         public string ImageUrl { get; set; }
         public Charity CharityDetails { get; set; }
+        public string TicketCurrency { get; set; }
 
         [JsonIgnore]
         public bool ReadyToActivate

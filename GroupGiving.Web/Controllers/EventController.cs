@@ -94,6 +94,7 @@ namespace GroupGiving.Web.Controllers
                 viewModel.UserIsEventOwner = givingEvent.OrganiserId == userAccount.Id;
             }
 
+
             viewModel.Id = givingEvent.Id;
             viewModel.StartDate = givingEvent.StartDate;
             viewModel.AdditionalBenefitsMarkedDown =
@@ -114,6 +115,7 @@ namespace GroupGiving.Web.Controllers
             viewModel.ShortUrl = givingEvent.ShortUrl;
             viewModel.Title = givingEvent.Title;
             viewModel.TicketPrice = givingEvent.TicketPrice;
+            viewModel.TicketCurrency = givingEvent.TicketCurrency;
             viewModel.Venue = givingEvent.Venue;
             viewModel.VenueLatitude = givingEvent.Latitude;
             viewModel.VenueLongitude = givingEvent.Longitude;

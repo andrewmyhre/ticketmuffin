@@ -68,5 +68,9 @@ namespace GroupGiving.Web.Models
         public bool IsOn { get; set; }
         public int AttendeeCount { get; set; }
         public bool ReadyToActivate { get; set; }
+
+        [Display(Name="Ticket Currency")]
+        [DefaultValue("GBP")]
+        public string TicketCurrency { get; set; }
     }
 }

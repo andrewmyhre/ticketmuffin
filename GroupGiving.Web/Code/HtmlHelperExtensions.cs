@@ -197,6 +197,19 @@ namespace GroupGiving.Web.Code
             }
         }
 
+        public static CultureInfo CurrencyFormat(this HtmlHelper html, string currency)
+        {
+            switch (currency)
+            {
+                case "PLN":
+                    return CultureInfo.GetCultureInfo("pl-PL");
+                case "USD":
+                    return CultureInfo.GetCultureInfo("en-US");
+                default:
+                    return CultureInfo.GetCultureInfo("en-GB");
+            }
+        }
+
         public static string ChangeCultureForUri(this HtmlHelper html, Uri uri, string newCulture)
         {
             var currentRoute = RouteUtils.GetRouteDataByUrl("/" + uri.PathAndQuery);
