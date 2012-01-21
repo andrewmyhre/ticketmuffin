@@ -458,7 +458,6 @@
     <Content Include="Views\Event\pl\share.cshtml" />
     <Content Include="Views\Event\pl\Edit-Event.cshtml" />
     <Content Include="Views\Event\pl\event-pledges.cshtml" />
-    <Content Include="Views\Event\pl\Index.cshtml" />
     <Content Include="Views\Event\pl\PersonalDetailsNotSignedIn.cshtml" />
     <Content Include="Views\Event\pl\PersonalDetailsSignedIn.cshtml" />
     <Content Include="Views\Event\pl\Pledge.cshtml" />

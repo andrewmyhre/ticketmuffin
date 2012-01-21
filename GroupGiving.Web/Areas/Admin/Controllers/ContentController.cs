@@ -85,6 +85,19 @@ namespace GroupGiving.Web.Areas.Admin.Controllers
 
             return RedirectToAction("ViewTranslations", new {id = pageId, contentLabel = contentLabel});
         }
+
+        public ActionResult ClearAll()
+        {
+            var pages = _session.Query<PageContent>();
+            foreach(var page in pages)
+            {
+                _session.Delete(page);
+            }
+
+            _session.SaveChanges();
+
+            return RedirectToAction("Index");
+        }
     }
 
     public class ContentTranslationViewModel    

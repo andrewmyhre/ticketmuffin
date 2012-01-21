@@ -1,8 +1,9 @@
 ﻿@using GroupGiving.Core.Domain
+@using GroupGiving.Web.Code
 @model Charity
 
-<div class="eventBoxTop">Fundraising for @Model.Name</div>
+<div class="eventBoxTop">@Html.Content("Fundraising for") @Model.Name</div>
 <div class="eventBoxBottom">
-If you wish to support this charity directly you can <a target="_blank" href="http://www.justgiving.com/donation/direct/charity/@Model.DonationGatewayCharityId?exitUrl=@Url.Encode(Request.Url.AbsoluteUri)">donate directly</a><br/>
-(via @Model.DonationGatewayName)
+@Html.Content("If you wish to support this charity directly you can") <a target="_blank" href="http://www.justgiving.com/donation/direct/charity/@Model.DonationGatewayCharityId?exitUrl=@Url.Encode(Request.Url.AbsoluteUri)">@Html.Content("donate directly")</a><br/>
+(@Html.Content("via") @Model.DonationGatewayName)
 </div>

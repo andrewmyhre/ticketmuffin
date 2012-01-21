@@ -1,4 +1,6 @@
-﻿@using GroupGiving.Core.Domain
+﻿@using System.Globalization
+@using GroupGiving.Core.Domain
+@using GroupGiving.Web.Code
 @model GroupGiving.Web.Models.EventViewModel
 @{
     ViewBag.Title = Model.Title + " - TicketMuffin";
@@ -45,7 +47,7 @@
             @if (Model.State != EventState.Cancelled)
              {
                  <div id="eventDate">
-                     <div id="month">@Model.StartDate.ToString("MMMM")</div>
+                     <div id="month">@Model.StartDate.ToString("MMMM", new CultureInfo(Html.CurrentCulture()))</div>
                      <div id="day">@Model.StartDate.Day</div>
                  </div>
              }
@@ -54,27 +56,27 @@
 
           @if (Model.State != EventState.Cancelled)
           {
-              <div id="eventDetails">@Model.StartDate.ToString("dddd, MMMM dd yyyy @ HH:mm tt")<br />
+              <div id="eventDetails">@Model.StartDate.ToString("dddd, MMMM dd yyyy @ HH:mm tt", Html.CultureDateTimeFormat())<br />
                   @Model.Venue, @Model.AddressLine, @Model.City, @Model.Country
               </div>
           }
-          <div id="howItWorks">@Html.ActionLink("How it works", "HowItWorks", "Home")</div>
+          <div id="howItWorks"><a href="@Url.Action("HowItWorks", "Home")">@Html.Content("How it works")</a></div>
 
             @if (Model.UserIsEventOwner)
             {
                 <div id="manageEvent">
-                @Html.ActionLink("Edit this event", "edit-event", new { shortUrl = Model.ShortUrl })<br />
-                @Html.ActionLink("Go to the event management console", "management-console", new {shortUrl = Model.ShortUrl})
-            </div>
+                    <a href="@Url.Action("edit-event", new { shortUrl = Model.ShortUrl })">@Html.Content("Edit this event")</a>
+                    <a href="@Url.Action("management-console", new {shortUrl = Model.ShortUrl})">@Html.Content("Go to the event management console")</a>
+                </div>
             }
 
         </div>
         <div id="eventLeft">
                 @{ Html.RenderPartial("PledgeWidget"); }
                 <div id="shareBox">
-                    <div>Share with your friends</div>
+                    <div>@Html.Content("Share with your friends")</div>
                 </div>
-                <h2>Event details</h2>
+                <h2>@Html.Content("Event details")</h2>
 
                 @if (Model.Charity != null)
                  {

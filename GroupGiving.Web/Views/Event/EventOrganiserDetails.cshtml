@@ -1,8 +1,9 @@
-﻿@model GroupGiving.Web.Models.EventViewModel
+﻿@using GroupGiving.Web.Code
+@model GroupGiving.Web.Models.EventViewModel
 
-<div class="eventBoxTop">Organiser</div>
+<div class="eventBoxTop">@Html.Content("Organiser")</div>
 
             <div class="eventBoxBottom">
               <strong>@Model.ContactName</strong><br /><br />   
-              <input type="submit" class="smallButton" value="Contact" />
+              <input type="submit" class="smallButton" value="@Html.Content("Contact")" />
             </div>

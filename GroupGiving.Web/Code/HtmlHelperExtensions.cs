@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Web;
@@ -77,15 +78,32 @@ namespace GroupGiving.Web.Code
 
         #endregion
 
-        public static MvcHtmlString Content(this HtmlHelper html, string label, string defaultContent = "", string pageAddress = "")
+        public static MvcHtmlString Content(this HtmlHelper html, string defaultContent = "", string label = "", string pageAddress = "")
         {
             string culture = html.ViewContext.RequestContext.HttpContext.Request.Cookies["culture"] != null
                                  ? html.ViewContext.RequestContext.HttpContext.Request.Cookies["culture"].Value
                                  : "en";
 
+            if (string.IsNullOrWhiteSpace(label))
+            {
+                if (string.IsNullOrWhiteSpace(defaultContent))
+                {
+                    throw new ArgumentException("If no label is provided then a default content must be provided");
+                }
+                label = HttpUtility.UrlEncode(defaultContent);
+            }
+
             if (string.IsNullOrWhiteSpace(pageAddress))
             {
-                pageAddress = html.ViewContext.RequestContext.HttpContext.Request.Url.AbsolutePath;
+                var view = html.ViewContext.View as RazorView;
+                if (view != null)
+                {
+                    pageAddress = view.ViewPath;
+                }
+                else
+                {
+                    pageAddress = html.ViewContext.RequestContext.HttpContext.Request.Url.AbsolutePath;
+                }
             }
 
             var pageContent = PageContentService.Provider.GetPage(pageAddress);
@@ -128,6 +146,55 @@ namespace GroupGiving.Web.Code
         {
             var display = ModelMetadata.FromLambdaExpression(expression, html.ViewData);
             return MvcHtmlString.Create(display.Description);
+        }
+
+        public static string CurrentCulture(this HtmlHelper html)
+        {
+            return html.ViewContext.RequestContext.HttpContext.Request.Cookies["culture"] != null
+                                 ? html.ViewContext.RequestContext.HttpContext.Request.Cookies["culture"].Value
+                                 : "en";
+        }
+
+        public static DateTimeFormatInfo CultureDateTimeFormat(this HtmlHelper html)
+        {
+            return html.CultureDateTimeFormat(html.CurrentCulture());
+        }
+        public static DateTimeFormatInfo CultureDateTimeFormat(this HtmlHelper html, string culture)
+        {
+            var dtfi = DateTimeFormatInfo.GetInstance(new CultureInfo(culture));
+            switch(culture)
+            {
+                case "pl":
+                    dtfi.DayNames = new string[]
+                                        {
+                                            "niedziela",
+                                            "poniedziałek",
+                                            "wtorek",
+                                            "środa",
+                                            "czwartek",
+                                            "piątek",
+                                            "sobota"
+                                        };
+                    dtfi.MonthNames = dtfi.MonthGenitiveNames = new string[]
+                                                                    {
+                                                                        "styczeń",
+                                                                        "luty",
+                                                                        "marzec",
+                                                                        "kwiecień",
+                                                                        "maj",
+                                                                        "czewriec",
+                                                                        "lipiec",
+                                                                        "sierpień",
+                                                                        "wrzesień",
+                                                                        "październik",
+                                                                        "listopad",
+                                                                        "grudzień",
+                                                                        ""
+                                                                    };
+                    return dtfi;
+                default:
+                    return new DateTimeFormatInfo();
+            }
         }
 
         public static string ChangeCultureForUri(this HtmlHelper html, Uri uri, string newCulture)
