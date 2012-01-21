@@ -11,15 +11,15 @@
 
 <div class="clear"></div>
 <div id="mid-left" class="twocol centered">
-<h2>@Html.Content("homepage-getstarted", "Get Started")</h2>
+<h2>@Html.Content("Get Started")</h2>
     <p>
-        <a href="@Url.Action("create", "CreateEvent")" class="bigButton">@Html.Content("homepage-createaneventlink", "Create An Event")</a>
+        <a href="@Url.Action("create", "CreateEvent")" class="bigButton">@Html.Content("Create An Event")</a>
     </p>
 </div>
 
 
 <div id="mid-right" class="twocol">
-<h2>@Html.Content("homepage-upcomingevents", "Upcoming Events")</h2>
+<h2>@Html.Content("Upcoming Events")</h2>
 @foreach(var e in Model.Events)
 {
     <p><text>20 June, 2011</text> @Html.ActionLink(e.Title, "Index", "Event", new { shortUrl= e.ShortUrl }, null)<br />@e.City</p>
@@ -28,7 +28,7 @@
 
 </div>
 <div class="clear"></div>
-<div id="bottom-one" class="threecol centered grayBox">@Html.Content("homepage-calltoaction1", "<h3>Step 1. Create event page</h3><p>Describe the idea of your event and determine how much funding you need to make it happen</p>")</div>
-<div id="bottom-two" class="threecol centered grayBox">@Html.Content("homepage-calltoaction2", "<h3>Step 2. Collect money</h3><p>Share and invite your friends to pledge money to the event</p>")</div>
-<div id="bottom-three" class="threecol centered grayBox">@Html.Content("homepage-calltoaction3", "<h3>Step 3. Make your event</h3><p>Organise your event once you reach your funding target</p>")</div>
+<div id="bottom-one" class="threecol centered grayBox">@Html.Content("<h3>Step 1. Create event page</h3><p>Describe the idea of your event and determine how much funding you need to make it happen</p>")</div>
+<div id="bottom-two" class="threecol centered grayBox">@Html.Content("<h3>Step 2. Collect money</h3><p>Share and invite your friends to pledge money to the event</p>")</div>
+<div id="bottom-three" class="threecol centered grayBox">@Html.Content("<h3>Step 3. Make your event</h3><p>Organise your event once you reach your funding target</p>")</div>
 <div class="clear"></div>

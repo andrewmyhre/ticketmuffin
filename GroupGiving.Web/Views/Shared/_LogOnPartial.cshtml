@@ -1,21 +1,21 @@
 ﻿@using GroupGiving.Web.Code
 @if(Request.IsAuthenticated) {
-    <text>@Html.Content("header-welcome-back", "Welcome back!", "global/header") [ <a href="@Url.Action("Index", "Account")">@Html.Content("header-account-link", "Account", "global/header")</a> ]
-    [ <a href="@Url.Action("SignOut", "Account")">@Html.Content("header-sign-out-link", "SIGN OUT", "global/header")</a> ] </text>
+    <text>@Html.Content("Welcome back!", pageAddress: "global/header") [ <a href="@Url.Action("Index", "Account")">@Html.Content("Account", pageAddress:"global/header")</a> ]
+    [ <a href="@Url.Action("SignOut", "Account")">@Html.Content("SIGN OUT", pageAddress:"global/header")</a> ] </text>
 }
 else
 {
-    @:[ <a href="#" id="showSignIn">@Html.Content("header-sign-in-link", "SIGN IN", "global/header")</a> ]
-    @:[ <a href="@Url.Action("signup", "Account")">@Html.Content("header-sign-up-link", "SIGN UP", "global/header")</a> ]
+    @:[ <a href="#" id="showSignIn">@Html.Content("SIGN IN", pageAddress:"global/header")</a> ]
+    @:[ <a href="@Url.Action("signup", "Account")">@Html.Content("SIGN UP", pageAddress: "global/header")</a> ]
 
     <div id="popup-signIn" style="display:none;">
         <form id="signin" action="@Url.Action("signin", "account")">
-            <label for="emailaddress">@Html.Content("header-username", "Username", "global/header"): </label><input type="text" name="emailaddress" /><br />
-            <label for="password">@Html.Content("header-password", "Password", "global/header"): </label><input type="password" name="password" /><br />
+            <label for="emailaddress">@Html.Content("Username", pageAddress: "global/header"): </label><input type="text" name="emailaddress" /><br />
+            <label for="password">@Html.Content("Password", pageAddress: "global/header"): </label><input type="password" name="password" /><br />
             <input type="hidden" name="returnurl" value="@(Request.QueryString["returnUrl"] ?? Request.Url.PathAndQuery)" />
-            <span id="invalidCredentials" class="field-validation-error" style="display:none;">@Html.Content("header-signin-account-not-found", "We couldn't find an account matching those credentials", "global/header")</span>
-            <a href="#" class="hide">@Html.Content("header-signin-cancel", "Cancel", "global/header")</a>
-            <input type="submit" value="@Html.Content("header-signin-button", "Sign In", "global/header")" />
+            <span id="invalidCredentials" class="field-validation-error" style="display:none;">@Html.Content("We couldn't find an account matching those credentials", pageAddress: "global/header")</span>
+            <a href="#" class="hide">@Html.Content("Cancel", pageAddress: "global/header")</a>
+            <input type="submit" value="@Html.Content("Sign In", pageAddress: "global/header")" />
         </form>
         
     </div>

@@ -78,7 +78,7 @@ namespace GroupGiving.Web.Code
 
         #endregion
 
-        public static MvcHtmlString Content(this HtmlHelper html, string defaultContent = "", string label = "", string pageAddress = "")
+        public static MvcHtmlString Content(this HtmlHelper html, string defaultContent = "", string pageAddress = "", string label = "")
         {
             string culture = html.ViewContext.RequestContext.HttpContext.Request.Cookies["culture"] != null
                                  ? html.ViewContext.RequestContext.HttpContext.Request.Cookies["culture"].Value
