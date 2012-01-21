@@ -139,6 +139,7 @@
     <Compile Include="App_Start\RavenDbIndexes.cs" />
     <Compile Include="Areas\Admin\AdminAreaRegistration.cs" />
     <Compile Include="Areas\Admin\Controllers\CharityManagementController.cs" />
+    <Compile Include="Areas\Admin\Controllers\ContentController.cs" />
     <Compile Include="Areas\Admin\Controllers\DashboardController.cs" />
     <Compile Include="Areas\Admin\Controllers\DiagnosticsController.cs" />
     <Compile Include="Areas\Admin\Controllers\EventManagementController.cs" />
@@ -149,6 +150,7 @@
     <Compile Include="Areas\Api\Code\XmlModelBinderProvider.cs" />
     <Compile Include="Areas\Api\Controllers\AccountsController.cs" />
     <Compile Include="Areas\Api\Controllers\ApiControllerBase.cs" />
+    <Compile Include="Areas\Api\Controllers\ContentController.cs" />
     <Compile Include="Areas\Api\Controllers\EventsController.cs" />
     <Compile Include="Areas\Api\Models\ApiResponse.cs" />
     <Compile Include="Areas\Api\Models\EventModel.cs" />
@@ -325,6 +327,7 @@
     <Content Include="markitup\sets\markDown\set.js" />
     <Content Include="markitup\sets\markDown\style.css" />
     <Content Include="Mobile\Default.aspx" />
+    <Content Include="Scripts\content-editing.js" />
     <Content Include="Scripts\content-management.js" />
     <Content Include="Scripts\diagnostics.js" />
     <Content Include="Scripts\editevent.js" />
@@ -393,6 +396,7 @@
     </Content>
     <Content Include="Web.Release.config">
       <DependentUpon>Web.config</DependentUpon>
+      <SubType>Designer</SubType>
     </Content>
     <Content Include="Content\Site.css" />
     <Content Include="Scripts\jquery.unobtrusive-ajax.js" />
@@ -447,10 +451,8 @@
     <Content Include="Areas\Admin\Views\Diagnostics\Index.cshtml" />
     <Content Include="Views\Shared\SwitchCulture.cshtml" />
     <Content Include="Views\Home\pl\HowItWorks.cshtml" />
-    <Content Include="Views\Home\pl\Index.cshtml" />
     <Content Include="Views\Home\pl\iPhone\Index.cshtml" />
     <Content Include="Views\Home\pl\Mobile\Index.cshtml" />
-    <Content Include="Views\Shared\pl\_LogOnPartial.cshtml" />
     <Content Include="Views\Shared\pl\Error.cshtml" />
     <Content Include="Views\Event\pl\EditorTemplates\ShortUrl.cshtml" />
     <Content Include="Views\Event\pl\share.cshtml" />
@@ -489,6 +491,9 @@
       <SubType>Code</SubType>
     </Content>
     <Content Include="Areas\Admin\Views\EventManagement\EventList.cshtml" />
+    <Content Include="Areas\Admin\Views\Content\Index.cshtml" />
+    <Content Include="Areas\Admin\Views\Content\ViewPageContent.cshtml" />
+    <Content Include="Areas\Admin\Views\Content\ViewTranslations.cshtml" />
     <None Include="_bin_deployableAssemblies\System.Web.Mvc.dll" />
     <None Include="_bin_deployableAssemblies\WebMatrix.WebData.xml" />
     <None Include="_bin_deployableAssemblies\WebMatrix.WebData.dll" />

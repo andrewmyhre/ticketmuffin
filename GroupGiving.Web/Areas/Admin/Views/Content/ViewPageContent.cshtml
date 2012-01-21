@@ -1,0 +1,20 @@
+﻿@model GroupGiving.Web.Areas.Admin.Controllers.PageViewModel
+
+@{
+    ViewBag.Title = Model.Page + " - Content";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+
+<h2>@Model.Page - Content</h2>
+@Html.ActionLink("< Back to pages", "Index")
+
+
+<ul>
+    @foreach(var content in Model.Page.Content)
+    {
+        <li>
+            @Html.ActionLink(content.Label, "ViewTranslations", new { id = Model.Page.Id.Substring(Model.Page.Id.IndexOf('/') + 1), contentLabel = content.Label })<br/>
+            <em>@string.Join(", ", content.ContentByCulture.Select(c=>c.Key))</em>
+        </li>
+    }
+</ul>

@@ -77,44 +77,17 @@ namespace GroupGiving.Web.Code
 
         #endregion
 
-        public static MvcHtmlString Content(this HtmlHelper html, string label)
+        public static MvcHtmlString Content(this HtmlHelper html, string label, string defaultContent = "", string pageAddress = "")
         {
             string culture = html.ViewContext.RequestContext.HttpContext.Request.Cookies["culture"] != null
                                  ? html.ViewContext.RequestContext.HttpContext.Request.Cookies["culture"].Value
                                  : "en";
 
-            string pageAddress = html.ViewContext.RequestContext.HttpContext.Request.Url.AbsolutePath;
-            var pageContent = PageContentService.Provider.GetPage(pageAddress);
-            if (pageContent == null)
+            if (string.IsNullOrWhiteSpace(pageAddress))
             {
-                pageContent = PageContentService.Provider.AddContentPage(pageAddress);
-            }
-            var contentDefinition = pageContent.Content.Where(cd => cd.Label == label).FirstOrDefault();
-            if (contentDefinition==null)
-            {
-                contentDefinition = PageContentService.Provider.AddContentDefinition(pageContent, label, "", culture);
+                pageAddress = html.ViewContext.RequestContext.HttpContext.Request.Url.AbsolutePath;
             }
 
-            string content = "";
-            if (contentDefinition.ContentByCulture.ContainsKey(culture))
-                content = contentDefinition.ContentByCulture[culture] ?? "";
-            else
-            {
-                if (contentDefinition.ContentByCulture.Count > 0)
-                    content = contentDefinition.ContentByCulture.ElementAt(0).Value;
-            }
-
-
-            return new MvcHtmlString(content);
-        }
-
-        public static MvcHtmlString Content(this HtmlHelper html, string label, string defaultContent)
-        {
-            string culture = html.ViewContext.RequestContext.HttpContext.Request.Cookies["culture"] != null
-                                 ? html.ViewContext.RequestContext.HttpContext.Request.Cookies["culture"].Value
-                                 : "en";
-
-            string pageAddress = html.ViewContext.RequestContext.HttpContext.Request.Url.AbsolutePath;
             var pageContent = PageContentService.Provider.GetPage(pageAddress);
             if (pageContent == null)
             {
@@ -133,6 +106,18 @@ namespace GroupGiving.Web.Code
             {
                 if (contentDefinition.ContentByCulture.Count > 0)
                     content = contentDefinition.ContentByCulture.ElementAt(0).Value;
+            }
+
+            // editing options
+            var editmode = html.ViewContext.RequestContext.HttpContext.Request.QueryString["editmode"];
+            if (!string.IsNullOrWhiteSpace(editmode))
+            {
+                string beginTag = string.Format("<span page-id='{0}' label='{1}' culture='{2}'>", 
+                                                pageContent.Id.Substring(pageContent.Id.IndexOf('/')+1),
+                                                contentDefinition.Label, 
+                                                culture);
+                string endTag = "</span>";
+                content = string.Concat(beginTag, content, endTag);
             }
 
 

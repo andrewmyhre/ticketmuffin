@@ -1,0 +1,15 @@
+﻿@model GroupGiving.Web.Areas.Admin.Controllers.PageListViewModel
+
+@{
+    ViewBag.Title = "Pages";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Pages</h2>
+
+<ul>
+@foreach(var page in Model.Pages)
+{
+    <li>@Html.ActionLink(page.Address, "ViewPageContent", new { id = page.Id.Substring(page.Id.IndexOf('/')+1) })</li>
+}
+</ul>

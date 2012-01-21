@@ -68,7 +68,8 @@ namespace GroupGiving.Web.App_Start
             kernel.Bind<IEventService>().To<EventService>();
             kernel.Bind<IDocumentSession>()
                 .ToMethod(delegate { return RavenDbDocumentStore.Instance.OpenSession(); })
-                .InRequestScope();
+                .InRequestScope()
+                .OnDeactivation(session=>session.Dispose());
             kernel.Bind<IDocumentStore>().ToMethod(x=>RavenDbDocumentStore.Instance);
 
             kernel.Bind<IRepository<GroupGivingEvent>>().To<RavenDBRepositoryBase<GroupGivingEvent>>();

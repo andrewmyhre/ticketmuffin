@@ -12,7 +12,9 @@
 <div class="clear"></div>
 <div id="mid-left" class="twocol centered">
 <h2>@Html.Content("homepage-getstarted", "Get Started")</h2>
-<p>@Html.ActionLink(Html.Content("homepage-createaneventlink", "Create An Event").ToHtmlString(), "create", "CreateEvent", null, new { @class = "bigButton" })</p>
+    <p>
+        <a href="@Url.Action("create", "CreateEvent")" class="bigButton">@Html.Content("homepage-createaneventlink", "Create An Event")</a>
+    </p>
 </div>
 
 

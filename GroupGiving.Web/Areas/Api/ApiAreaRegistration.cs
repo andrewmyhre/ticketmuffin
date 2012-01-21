@@ -1,4 +1,5 @@
 ﻿using System.Web.Mvc;
+using System.Web.Routing;
 using GroupGiving.Web.Areas.Api.Code;
 
 namespace GroupGiving.Web.Areas.Api
@@ -18,6 +19,18 @@ namespace GroupGiving.Web.Areas.Api
             context.MapRoute("Event api methods",
                              "Api/events/{shortUrl}/{action}",
                              new {controller = "Events", action = "index"});
+
+            context.MapRoute("Content management",
+                             "Api/content/{pageid}/{contentLabel}/{culture}",
+                             new
+                                 {
+                                     controller = "Content",
+                                     Action = "CreateOrUpdate"
+                                 },
+                             new
+                                 {
+                                     httpMethod = new HttpMethodConstraint("PUT")
+                                 });
 
             context.MapRoute(
                 "Api_default",

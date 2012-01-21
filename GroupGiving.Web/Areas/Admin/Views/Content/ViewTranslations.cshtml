@@ -1,0 +1,31 @@
+﻿@model GroupGiving.Web.Areas.Admin.Controllers.ContentTranslationViewModel
+
+@{
+    ViewBag.Title = "Translate Content";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Translate Content @Model.Content.Label</h2>
+
+@Html.ActionLink("< Back to page", "ViewPageContent", new { id = Model.Page.Id.Substring(Model.Page.Id.IndexOf('/') + 1) })
+
+@using (Html.BeginForm("AddTranslation", "Content"))
+{
+    @Html.TextBox("cultureKey", null, new {maxlength=2,style="width:30px"}) <text><em>e.g: 'pl'</em></text><br/>
+    @Html.TextArea("content", "", 5, 40, null)<br/>
+    @Html.Hidden("pageId", Model.Page.Id.Substring(Model.Page.Id.IndexOf('/') + 1))
+    @Html.Hidden("contentLabel", Model.Content.Label)
+    <input type="submit" value="Add Translation"/>
+}
+
+@using (Html.BeginForm("UpdateTranslations", "Content"))
+{
+    foreach (var cultureKey in Model.Content.ContentByCulture.Keys)
+    {
+        <h3>@cultureKey</h3>
+        @Html.TextArea(cultureKey, Model.Content.ContentByCulture[cultureKey])
+    }
+    @Html.Hidden("pageId", Model.Page.Id.Substring(Model.Page.Id.IndexOf('/') + 1))
+    @Html.Hidden("contentLabel", Model.Content.Label)
+    <p><input type="submit" value="Update Translations"/></p>
+}
