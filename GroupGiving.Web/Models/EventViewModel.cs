@@ -14,7 +14,8 @@ namespace GroupGiving.Web.Models
             {
                 return !EventIsFull 
                     && SalesEndDateTime > DateTime.Now
-                    && State == EventState.SalesReady;
+                    && (State == EventState.SalesReady
+                    || State == EventState.Activated);
             }
         }
 
