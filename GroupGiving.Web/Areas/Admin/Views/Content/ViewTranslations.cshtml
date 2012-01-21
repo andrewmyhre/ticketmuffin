@@ -11,11 +11,13 @@
 
 @using (Html.BeginForm("AddTranslation", "Content"))
 {
-    @Html.TextBox("cultureKey", null, new {maxlength=2,style="width:30px"}) <text><em>e.g: 'pl'</em></text><br/>
-    @Html.TextArea("content", "", 5, 40, null)<br/>
-    @Html.Hidden("pageId", Model.Page.Id.Substring(Model.Page.Id.IndexOf('/') + 1))
-    @Html.Hidden("contentLabel", Model.Content.Label)
-    <input type="submit" value="Add Translation"/>
+    <text>
+        Culture: @Html.DropDownList("cultureKey", new SelectList(new[]{"en","pl"}))<br/>
+        Content: @Html.TextArea("content", "", 5, 40, null)<br/>
+        @Html.Hidden("pageId", Model.Page.Id.Substring(Model.Page.Id.IndexOf('/') + 1))
+        @Html.Hidden("contentLabel", Model.Content.Label)
+        <input type="submit" value="Add Translation"/>
+    </text>
 }
 
 @using (Html.BeginForm("UpdateTranslations", "Content"))

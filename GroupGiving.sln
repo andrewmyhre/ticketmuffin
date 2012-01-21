@@ -36,7 +36,7 @@ Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "eventmuffin html", "eventmu
 		Release.AspNetCompiler.ForceOverwrite = "true"
 		Release.AspNetCompiler.FixedNames = "false"
 		Release.AspNetCompiler.Debug = "False"
-		VWDPort = "53911"
+		VWDPort = "56834"
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EmailProcessing", "EmailProcessing\EmailProcessing\EmailProcessing.csproj", "{F511818D-59DF-4358-8946-10FB3933E5B2}"

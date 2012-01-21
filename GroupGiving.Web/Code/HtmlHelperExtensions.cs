@@ -111,7 +111,7 @@ namespace GroupGiving.Web.Code
             {
                 pageContent = PageContentService.Provider.AddContentPage(pageAddress);
             }
-            var contentDefinition = pageContent.Content.Where(cd => cd.Label == label).FirstOrDefault();
+            var contentDefinition = pageContent.Content.SingleOrDefault(cd => cd.Label == label);
             if (contentDefinition == null)
             {
                 contentDefinition = PageContentService.Provider.AddContentDefinition(pageContent, label, defaultContent, culture);
