@@ -55,6 +55,7 @@ namespace GroupGiving.Web.App_Start
         {
             var kernel = new StandardKernel();
             RegisterServices(kernel);
+            ServiceLocator.Instance = kernel;
             return kernel;
         }
 
@@ -64,6 +65,11 @@ namespace GroupGiving.Web.App_Start
         /// <param name="kernel">The kernel.</param>
         private static void RegisterServices(IKernel kernel)
         {
+            kernel.Bind<IContentProvider>()
+                .To<RavenDbContentProvider>()
+                .InRequestScope()
+                .OnDeactivation((context, contentProvider) => contentProvider.Flush());
+
             kernel.Bind<IAccountService>().To<AccountService>();
             kernel.Bind<IEventService>().To<EventService>();
             kernel.Bind<IDocumentSession>()
@@ -111,7 +117,6 @@ namespace GroupGiving.Web.App_Start
             kernel.Bind<IPaymentGateway>().To<PayPalPaymentGateway>();
             kernel.Bind<ITaxAmountResolver>().To<NilTax>();
             kernel.Bind<IIdentity>().ToMethod(x=>HttpContext.Current.User.Identity);
-            kernel.Bind<IContentProvider>().To<RavenDbContentProvider>();
             kernel.Bind<IMembershipProviderLocator>().To<RavenDbMembershipProviderLocator>();
             kernel.Bind<IPaypalAccountService>().To<PaypalAccountService>();
             kernel.Bind<PaypalAdaptiveAccountsConfigurationSection>().ToMethod(r => 

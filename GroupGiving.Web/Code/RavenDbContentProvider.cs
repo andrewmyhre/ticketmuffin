@@ -8,11 +8,13 @@ namespace GroupGiving.Web.Code
 {
     public class RavenDbContentProvider : IContentProvider
     {
-        private readonly IDocumentStore _store;
+        private readonly IDocumentSession _session;
+        private bool _newContent = false;
+        private List<PageContent> _pages = new List<PageContent>();
 
-        public RavenDbContentProvider(IDocumentStore store)
+        public RavenDbContentProvider(IDocumentSession session)
         {
-            _store = store;
+            _session = session;
         }
 
         public void Initialise()
@@ -22,42 +24,56 @@ namespace GroupGiving.Web.Code
 
         public PageContent GetPage(string address)
         {
-            using (var session = _store.OpenSession())
-            {
-                var page = session.Query<PageContent>().Where(pc => pc.Address == address).FirstOrDefault();
+            var page = _pages.FirstOrDefault(p => p.Address == address);
 
-                return page;
+            if (page == null)
+            {
+                page = _session.Query<PageContent>().FirstOrDefault(pc => pc.Address == address);
             }
+
+            return page;
         }
 
         public PageContent AddContentPage(string pageAddress)
         {
-            using (var session = _store.OpenSession())
-            {
-                var page = new PageContent() {Address = pageAddress, Content = new List<ContentDefinition>()};
-                session.Store(page);
-                session.SaveChanges();
-                return page;
-            }
+            var page = new PageContent() {Address = pageAddress, Content = new List<ContentDefinition>()};
+
+            _newContent = true;
+            _pages.Add(page);
+            _session.Store(page);
+            return page;
         }
 
         public ContentDefinition AddContentDefinition(PageContent pageContent, string label, string defaultContent="", string culture="en")
         {
-            using (var session = _store.OpenSession())
+            var pc = _session.Load<PageContent>(pageContent.Id);
+            if (pc != null)
             {
-                var pc = session.Load<PageContent>(pageContent.Id);
-                if (pc != null)
+                var contentDefinition = new ContentDefinition(){Label=label, ContentByCulture = new Dictionary<string, string>()};  
+                if (!string.IsNullOrWhiteSpace(defaultContent))
                 {
-                    var contentDefinition = new ContentDefinition(){Label=label, ContentByCulture = new Dictionary<string, string>()};  
-                    if (!string.IsNullOrWhiteSpace(defaultContent))
-                    {
-                        contentDefinition.ContentByCulture.Add(culture, defaultContent);
-                    }
-                    pc.Content.Add(contentDefinition);
-                    session.SaveChanges();
-                    return contentDefinition;
+                    contentDefinition.ContentByCulture.Add(culture, defaultContent);
                 }
-                return null;
+                pc.Content.Add(contentDefinition);
+                _session.Store(pc);
+
+                var transientPage = _pages.FirstOrDefault(p=>p.Id == pageContent.Id);
+                if (transientPage != null && !transientPage.Content.Any(c=>c.Label == label))
+                {
+                    transientPage.Content.Add(contentDefinition);
+                }
+
+                _newContent = true;
+                return contentDefinition;
+            }
+            return null;
+        }
+
+        public void Flush()
+        {
+            if (_newContent)
+            {
+                _session.SaveChanges();
             }
         }
     }

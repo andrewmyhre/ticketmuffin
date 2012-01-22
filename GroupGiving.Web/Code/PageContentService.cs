@@ -1,7 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace GroupGiving.Web.Code
 {
+    [Obsolete("Static classes are gay", true)]
     public class PageContentService
     {
         private static IContentProvider _provider=null;
@@ -9,11 +11,6 @@ namespace GroupGiving.Web.Code
         {
             get
             {
-                if (_provider == null)
-                {
-                    _provider = new RavenDbContentProvider(RavenDbDocumentStore.Instance);
-                }
-
                 return _provider;
             }
         }

@@ -11,6 +11,7 @@ using GroupGiving.Core.Domain;
 using GroupGiving.Core.Services;
 using System.Web.Mvc.Html;
 using Ninject;
+using Raven.Client;
 
 namespace GroupGiving.Web.Code
 {
@@ -80,6 +81,7 @@ namespace GroupGiving.Web.Code
 
         public static MvcHtmlString Content(this HtmlHelper html, string defaultContent = "", string pageAddress = "", string label = "")
         {
+
             string culture = html.ViewContext.RequestContext.HttpContext.Request.Cookies["culture"] != null
                                  ? html.ViewContext.RequestContext.HttpContext.Request.Cookies["culture"].Value
                                  : "en";
@@ -106,15 +108,16 @@ namespace GroupGiving.Web.Code
                 }
             }
 
-            var pageContent = PageContentService.Provider.GetPage(pageAddress);
+            var contentProvider = ServiceLocator.Instance.Get<IContentProvider>();
+            var pageContent = contentProvider.GetPage(pageAddress);
             if (pageContent == null)
             {
-                pageContent = PageContentService.Provider.AddContentPage(pageAddress);
+                pageContent = contentProvider.AddContentPage(pageAddress);
             }
             var contentDefinition = pageContent.Content.SingleOrDefault(cd => cd.Label == label);
             if (contentDefinition == null)
             {
-                contentDefinition = PageContentService.Provider.AddContentDefinition(pageContent, label, defaultContent, culture);
+                contentDefinition = contentProvider.AddContentDefinition(pageContent, label, defaultContent, culture);
             }
 
             string content = "";
