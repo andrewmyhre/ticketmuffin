@@ -17,7 +17,7 @@
 	<Target Name="Deploy" DependsOnTargets="Build;Transform" />
 	
 	<Target Name="Build">
-		<MSBuild Projects="..\GroupGiving.sln" Properties="Configuration=$(Configuration);OutDir=Assemblies\;WebProjectOutputDir=$(DeployPath)"/>
+		<MSBuild Projects="..\GroupGiving.sln" Targets="Clean;Build" Properties="Configuration=$(Configuration);OutDir=Assemblies\;WebProjectOutputDir=$(DeployPath)"/>
 	</Target>
 
     <Target Name="Transform">
