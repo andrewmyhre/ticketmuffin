@@ -93,7 +93,6 @@ namespace GroupGiving.Web.Areas.Admin.Controllers
             {
                 _session.Delete(page);
             }
-
             _session.SaveChanges();
 
             return RedirectToAction("Index");

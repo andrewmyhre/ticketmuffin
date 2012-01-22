@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using System.Web;
 using GroupGiving.Core.Domain;
 using Raven.Client;
 using Raven.Client.Linq;
@@ -24,11 +25,11 @@ namespace GroupGiving.Web.Code
 
         public PageContent GetPage(string address)
         {
-            var page = _pages.FirstOrDefault(p => p.Address == address);
+            var page = _pages.FirstOrDefault(p => p.Address == HttpUtility.UrlEncode(address));
 
             if (page == null)
             {
-                page = _session.Query<PageContent>().FirstOrDefault(pc => pc.Address == address);
+                page = _session.Query<PageContent>().FirstOrDefault(pc => pc.Address == HttpUtility.UrlEncode(address));
             }
 
             return page;
@@ -36,7 +37,7 @@ namespace GroupGiving.Web.Code
 
         public PageContent AddContentPage(string pageAddress)
         {
-            var page = new PageContent() {Address = pageAddress, Content = new List<ContentDefinition>()};
+            var page = new PageContent() { Address = HttpUtility.UrlEncode(pageAddress), Content = new List<ContentDefinition>() };
 
             _newContent = true;
             _pages.Add(page);
