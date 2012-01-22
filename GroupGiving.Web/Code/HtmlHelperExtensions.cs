@@ -92,7 +92,7 @@ namespace GroupGiving.Web.Code
                 {
                     throw new ArgumentException("If no label is provided then a default content must be provided");
                 }
-                label = HttpUtility.UrlEncode(defaultContent);
+                label = defaultContent;
             }
 
             if (string.IsNullOrWhiteSpace(pageAddress))
@@ -109,25 +109,9 @@ namespace GroupGiving.Web.Code
             }
 
             var contentProvider = ServiceLocator.Instance.Get<IContentProvider>();
-            var pageContent = contentProvider.GetPage(pageAddress);
-            if (pageContent == null)
-            {
-                pageContent = contentProvider.AddContentPage(pageAddress);
-            }
-            var contentDefinition = pageContent.Content.SingleOrDefault(cd => cd.Label == label);
-            if (contentDefinition == null)
-            {
-                contentDefinition = contentProvider.AddContentDefinition(pageContent, label, defaultContent, culture);
-            }
-
-            string content = "";
-            if (contentDefinition.ContentByCulture.ContainsKey(culture))
-                content = contentDefinition.ContentByCulture[culture] ?? "";
-            else
-            {
-                if (contentDefinition.ContentByCulture.Count > 0)
-                    content = contentDefinition.ContentByCulture.ElementAt(0).Value;
-            }
+            PageContent pageContent = null;
+            string contentLabel = "";
+            string content = contentProvider.GetContent(pageAddress, label, defaultContent, culture, out pageContent, out contentLabel);
 
             // editing options
             var editmode = html.ViewContext.RequestContext.HttpContext.Request.QueryString["editmode"];
@@ -135,7 +119,7 @@ namespace GroupGiving.Web.Code
             {
                 string beginTag = string.Format("<span page-id='{0}' label='{1}' culture='{2}'>", 
                                                 pageContent.Id.Substring(pageContent.Id.IndexOf('/')+1),
-                                                contentDefinition.Label, 
+                                                contentLabel, 
                                                 culture);
                 string endTag = "</span>";
                 content = string.Concat(beginTag, content, endTag);

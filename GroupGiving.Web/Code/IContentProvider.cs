@@ -10,5 +10,6 @@ namespace GroupGiving.Web.Code
         PageContent AddContentPage(string pageAddress);
         ContentDefinition AddContentDefinition(PageContent pageContent, string label, string defaultContent, string culture);
         void Flush();
+        string GetContent(string pageAddress, string label, string defaultContent, string culture, out PageContent pageContent, out string contentLabel);
     }
 }
