@@ -11,13 +11,10 @@ namespace GroupGiving.Web.Code
     public class RavenDbContentProvider : IContentProvider
     {
         private readonly IDocumentSession _session;
-        private bool _newContent = false;
-        private List<PageContent> _pages = new List<PageContent>();
 
         public RavenDbContentProvider(IDocumentSession session)
         {
             _session = session;
-            _pages = _session.Query<PageContent>().Take(1024).ToList();
         }
 
         public void Initialise()
@@ -36,22 +33,13 @@ namespace GroupGiving.Web.Code
 
         public PageContent GetPage(string address)
         {
-            var page = _pages.FirstOrDefault(p => p.Address == Sanitize(address));
-
-            if (page == null)
-            {
-                page = _session.Query<PageContent>().FirstOrDefault(pc => pc.Address == Sanitize(address));
-            }
-
-            return page;
+            return _session.Query<PageContent>().FirstOrDefault(pc => pc.Address == Sanitize(address));
         }
 
         public PageContent AddContentPage(string pageAddress)
         {
             var page = new PageContent() { Address = Sanitize(pageAddress), Content = new List<ContentDefinition>() };
 
-            _newContent = true;
-            _pages.Add(page);
             _session.Store(page);
             return page;
         }
@@ -62,21 +50,15 @@ namespace GroupGiving.Web.Code
             label = Sanitize(label);
             if (pc != null)
             {
-                var contentDefinition = new ContentDefinition(){Label=label, ContentByCulture = new Dictionary<string, string>()};  
+                var contentDefinition = new ContentDefinition(){Label=label, 
+                    ContentByCulture = new List<LocalisedContent>()};  
                 if (!string.IsNullOrWhiteSpace(defaultContent))
                 {
-                    contentDefinition.ContentByCulture.Add(culture, defaultContent);
+                    contentDefinition.ContentByCulture.Add(new LocalisedContent(){Culture=culture, Value = defaultContent});
                 }
                 pc.Content.Add(contentDefinition);
                 _session.Store(pc);
 
-                var transientPage = _pages.FirstOrDefault(p=>p.Id == pageContent.Id);
-                if (transientPage != null && !transientPage.Content.Any(c=>c.Label == label))
-                {
-                    transientPage.Content.Add(contentDefinition);
-                }
-
-                _newContent = true;
                 return contentDefinition;
             }
             return null;
@@ -84,10 +66,6 @@ namespace GroupGiving.Web.Code
 
         public void Flush()
         {
-            if (_newContent)
-            {
-                _session.SaveChanges();
-            }
         }
 
         public string GetContent(string pageAddress, string label, string defaultContent, string culture, out PageContent pageObject, out string contentLabel)
@@ -108,9 +86,9 @@ namespace GroupGiving.Web.Code
                 {
                     contentDefinition = new ContentDefinition()
                                             {
-                                                ContentByCulture = new Dictionary<string, string>()
+                                                ContentByCulture = new List<LocalisedContent>()
                                                                        {
-                                                                           {culture, defaultContent}
+                                                                           new LocalisedContent() { Culture = culture, Value = defaultContent}
                                                                        },
                                                 Label = label
                                             };
@@ -123,13 +101,12 @@ namespace GroupGiving.Web.Code
                     page.Content.Add(contentDefinition);
                     contentLabel = label;
                     pageObject = page;
-                    _newContent = true;
                     return defaultContent;
                 }
                 contentLabel = contentDefinition.Label;
                 pageObject = page;
 
-                if (!contentDefinition.ContentByCulture.ContainsKey(culture))
+                if (!contentDefinition.ContentByCulture.Any(lc=>lc.Culture == culture))
                 {
                     // if we're updating, make sure the page is attached to the db session
                     if (!_session.Advanced.IsLoaded(page.Id))
@@ -138,10 +115,15 @@ namespace GroupGiving.Web.Code
                         contentDefinition = page.Content.FirstOrDefault(cd => cd.Label == label);
                     }
 
-                    contentDefinition.ContentByCulture.Add(culture, defaultContent);
-                    _newContent = true;
+                    contentDefinition.ContentByCulture.Add(new LocalisedContent(){Culture = culture, Value = defaultContent});
+
+                    _session.SaveChanges();
+                    if (_session.Advanced.NumberOfRequests >= _session.Advanced.MaxNumberOfRequestsPerSession - 1)
+                    {
+                        _session.Advanced.MaxNumberOfRequestsPerSession *= 2;
+                    }
                 }
-                return contentDefinition.ContentByCulture[culture];
+                return contentDefinition.ContentByCulture.SingleOrDefault(lc=>lc.Culture == culture).Value;
             }
             else // no page, make a whole new one
             {
@@ -153,19 +135,22 @@ namespace GroupGiving.Web.Code
                                              {
                                                  new ContentDefinition()
                                                 {
-                                                    ContentByCulture = new Dictionary<string, string>()
+                                                    ContentByCulture = new List<LocalisedContent>()
                                                                            {
-                                                                               {culture, defaultContent}
+                                                                               new LocalisedContent(){Culture = culture, Value = defaultContent}
                                                                            },
                                                     Label = label
                                                 },
                                              }
                            };
                 _session.Store(page);
-                _pages.Add(page);
+                _session.SaveChanges();
+                if (_session.Advanced.NumberOfRequests >= _session.Advanced.MaxNumberOfRequestsPerSession-1)
+                {
+                    _session.Advanced.MaxNumberOfRequestsPerSession *= 2;
+                }
                 pageObject = page;
                 contentLabel = label;
-                _newContent = true;
                 return defaultContent;
             }
         }

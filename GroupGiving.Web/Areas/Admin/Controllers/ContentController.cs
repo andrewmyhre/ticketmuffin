@@ -54,13 +54,10 @@ namespace GroupGiving.Web.Areas.Admin.Controllers
             var page = _session.Load<PageContent>(pageId);
             var content = page.Content.SingleOrDefault(c => c.Label == contentLabel);
 
-            Dictionary<string,string> translations = new Dictionary<string, string>();
-            foreach(var culture in content.ContentByCulture.Keys)
+            foreach(var localContent in content.ContentByCulture)
             {
-                translations.Add(culture, Request.Form[culture] ?? "");
+                localContent.Value = Request.Form[localContent.Culture] ?? "";
             }
-
-            content.ContentByCulture = translations;
 
             _session.SaveChanges();
 
@@ -73,13 +70,14 @@ namespace GroupGiving.Web.Areas.Admin.Controllers
         {
             var page = _session.Load<PageContent>(pageId);
             var pageContent = page.Content.SingleOrDefault(c => c.Label == contentLabel);
-            if (pageContent.ContentByCulture.ContainsKey(cultureKey))
+            var localContent = pageContent.ContentByCulture.SingleOrDefault(lc => lc.Culture == cultureKey);
+            if (localContent != null)
             {
-                pageContent.ContentByCulture[cultureKey] = content;
+                localContent.Value = content;
             }
             else
             {
-                pageContent.ContentByCulture.Add(cultureKey, content);
+                pageContent.ContentByCulture.Add(new LocalisedContent(){Culture = cultureKey, Value = content});
             }
             _session.SaveChanges();
 

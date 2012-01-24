@@ -14,7 +14,7 @@
     {
         <li>
             @Html.ActionLink(content.Label, "ViewTranslations", new { id = Model.Page.Id.Substring(Model.Page.Id.IndexOf('/') + 1), contentLabel = content.Label })<br/>
-            <em>@string.Join(", ", content.ContentByCulture.Select(c=>c.Key))</em>
+            <em>@string.Join(", ", content.ContentByCulture.Select(c=>c.Culture))</em>
         </li>
     }
 </ul>

@@ -112,6 +112,7 @@
     <Compile Include="Domain\Account.cs" />
     <Compile Include="Domain\IDomainObject.cs" />
     <Compile Include="Domain\ISiteConfiguration.cs" />
+    <Compile Include="Domain\PageContent.cs" />
     <Compile Include="Domain\PaymentStatus.cs" />
     <Compile Include="Domain\SiteConfiguration.cs" />
     <Compile Include="Dto\DialogueHistoryEntry.cs" />

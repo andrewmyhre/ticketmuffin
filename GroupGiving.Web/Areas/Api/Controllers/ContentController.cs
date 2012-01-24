@@ -37,13 +37,14 @@ namespace GroupGiving.Web.Areas.Api.Controllers
                 return HttpNotFound();
             }
 
-            if (contentDefinition.ContentByCulture.ContainsKey(culture))
+            var localContent = contentDefinition.ContentByCulture.SingleOrDefault(lc => lc.Culture == culture);
+            if (localContent != null)
             {
-                contentDefinition.ContentByCulture[culture] = contentValue;
+                localContent.Value = contentValue;
                 result = new HttpStatusCodeResult((int)HttpStatusCode.Accepted);
             } else
             {
-                contentDefinition.ContentByCulture.Add(culture, contentValue);
+                contentDefinition.ContentByCulture.Add(new LocalisedContent(){Culture = culture, Value = contentValue});
                 result = new HttpStatusCodeResult((int)HttpStatusCode.Created);
             }
             _session.SaveChanges();

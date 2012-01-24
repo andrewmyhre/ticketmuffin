@@ -22,10 +22,10 @@
 
 @using (Html.BeginForm("UpdateTranslations", "Content"))
 {
-    foreach (var cultureKey in Model.Content.ContentByCulture.Keys)
+    foreach (var translation in Model.Content.ContentByCulture)
     {
-        <h3>@cultureKey</h3>
-        @Html.TextArea(cultureKey, Model.Content.ContentByCulture[cultureKey])
+        <h3>@translation</h3>
+        @Html.TextArea(translation.Culture, translation.Value)
     }
     @Html.Hidden("pageId", Model.Page.Id.Substring(Model.Page.Id.IndexOf('/') + 1))
     @Html.Hidden("contentLabel", Model.Content.Label)

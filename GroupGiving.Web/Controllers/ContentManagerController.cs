@@ -84,13 +84,13 @@ namespace GroupGiving.Web.Controllers
                     return HttpNotFound();
                 }
 
-                string cultureContent = "";
-                if (contentDefinition.ContentByCulture.ContainsKey(culture))
+                var localContent = contentDefinition.ContentByCulture.SingleOrDefault(lc => lc.Culture == culture);
+                if (localContent != null)
                 {
-                    contentDefinition.ContentByCulture[culture]=content;
+                    localContent.Value = content;
                 } else
                 {
-                    contentDefinition.ContentByCulture.Add(culture, content);
+                    contentDefinition.ContentByCulture.Add(new LocalisedContent(){Culture = culture, Value = content});
                 }
                 session.SaveChanges();
             }

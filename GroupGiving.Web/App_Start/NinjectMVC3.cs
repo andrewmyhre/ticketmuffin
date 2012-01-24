@@ -12,8 +12,10 @@ using GroupGiving.PayPal;
 using GroupGiving.PayPal.Configuration;
 using GroupGiving.Web.Code;
 using GroupGiving.Web.Controllers;
+using Ninject.Activation;
 using Raven.Client;
 using RavenDBMembership.Web.Models;
+using log4net;
 
 [assembly: WebActivator.PreApplicationStartMethod(typeof(GroupGiving.Web.App_Start.NinjectMVC3), "Start")]
 [assembly: WebActivator.ApplicationShutdownMethodAttribute(typeof(GroupGiving.Web.App_Start.NinjectMVC3), "Stop")]
@@ -67,8 +69,15 @@ namespace GroupGiving.Web.App_Start
         {
             kernel.Bind<IContentProvider>()
                 .To<RavenDbContentProvider>()
-                .InRequestScope()
-                .OnDeactivation((context, contentProvider) => contentProvider.Flush());
+                .InRequestScope();
+            kernel.Bind<ILog>().ToMethod(
+                delegate(IContext request)
+                    {
+                        if (request.Request.Target != null)
+                            return LogManager.GetLogger(request.Request.Target.Member.DeclaringType.Name);
+
+                        return LogManager.GetLogger(typeof (NinjectMVC3));
+                    });
 
             kernel.Bind<IAccountService>().To<AccountService>();
             kernel.Bind<IEventService>().To<EventService>();
@@ -76,13 +85,10 @@ namespace GroupGiving.Web.App_Start
                 .ToMethod(delegate
                               {
                                   {
-                                      var session = RavenDbDocumentStore.Instance.OpenSession();
-                                      session.Advanced.UseOptimisticConcurrency = true;
-                                      return session;
+                                      return RavenDbDocumentStore.Instance.OpenSession();
                                   }
                               })
-                .InRequestScope()
-                .OnDeactivation(session=>session.Dispose());
+                .InRequestScope();
             kernel.Bind<IDocumentStore>().ToMethod(x=>RavenDbDocumentStore.Instance);
 
             kernel.Bind<IRepository<GroupGivingEvent>>().To<RavenDBRepositoryBase<GroupGivingEvent>>();
