@@ -37,6 +37,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Data;
 using System.Text;
+using log4net;
 
 namespace Com.StellmanGreene.CSVReader
 {
@@ -45,7 +46,8 @@ namespace Com.StellmanGreene.CSVReader
     /// </summary>
     public class CSVReader : IDisposable
     {
-        public const string NEWLINE = "\r\n";
+        private ILog _log = LogManager.GetLogger(typeof (CSVReader));
+        public const string NEWLINE = "\n";
 
         /// <summary>
         /// This reader will read all of the CSV data

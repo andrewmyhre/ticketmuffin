@@ -1,11 +1,11 @@
 ﻿@model GroupGiving.Web.Areas.Admin.Controllers.PageViewModel
 
 @{
-    ViewBag.Title = Model.Page + " - Content";
+    ViewBag.Title = Model.Page.Address + " - Content";
     Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
 }
 
-<h2>@Model.Page - Content</h2>
+<h2>@Model.Page.Address - Content</h2>
 @Html.ActionLink("< Back to pages", "Index")
 
 

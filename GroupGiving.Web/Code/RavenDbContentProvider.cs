@@ -101,6 +101,11 @@ namespace GroupGiving.Web.Code
                     page.Content.Add(contentDefinition);
                     contentLabel = label;
                     pageObject = page;
+                    _session.SaveChanges();
+                    if (_session.Advanced.NumberOfRequests >= _session.Advanced.MaxNumberOfRequestsPerSession - 1)
+                    {
+                        _session.Advanced.MaxNumberOfRequestsPerSession *= 2;
+                    }
                     return defaultContent;
                 }
                 contentLabel = contentDefinition.Label;

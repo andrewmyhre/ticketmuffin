@@ -24,7 +24,7 @@
 {
     foreach (var translation in Model.Content.ContentByCulture)
     {
-        <h3>@translation</h3>
+        <h3>@translation.Culture</h3>
         @Html.TextArea(translation.Culture, translation.Value)
     }
     @Html.Hidden("pageId", Model.Page.Id.Substring(Model.Page.Id.IndexOf('/') + 1))
