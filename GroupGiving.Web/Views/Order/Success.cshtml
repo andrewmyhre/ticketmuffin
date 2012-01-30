@@ -1,4 +1,5 @@
-﻿@model GroupGiving.Web.Models.OrderConfirmationViewModel
+﻿@using GroupGiving.Web.Code
+@model GroupGiving.Web.Models.OrderConfirmationViewModel
 @{
     ViewBag.Title = "Thank your for pledging! - TicketMuffin";
     Layout = "~/Views/Shared/_Layout.cshtml";
@@ -9,42 +10,42 @@
 
       <div id="confirmPage">
         <div id="confirmPageEvenInfo">
-          <div style="padding-bottom: 10px;"><strong>You have pledged to this event</strong></div>
+          <div style="padding-bottom: 10px;"><strong>@Html.Content("You have pledged to this event")</strong></div>
           <div id="eventDate">
             <div id="month">July</div>
             <div id="day">20</div>
           </div>
 
           <div style="font-size: 18px;"><strong>@Html.ActionLink(Model.Event.Title, "Index", "Event", new {shortUrl=Model.Event.ShortUrl},null)</strong></div>
-          <div style="font-size: 12px; line-height: 14px;"><strong>@Model.Event.Venue</strong>, @Model.Event.City, @Model.Event.Country, @Model.Event.StartDate.ToString("dddd, MMMM dd, yyyy, HH:mm tt"), @Model.Event.AddressLine</div>
+          <div style="font-size: 12px; line-height: 14px;"><strong>@Model.Event.Venue</strong>, @Model.Event.City, @Model.Event.Country, @Model.Event.StartDate.ToString("dddd, MMMM dd, yyyy, HH:mm tt", Html.CultureDateTimeFormat()), @Model.Event.AddressLine</div>
           <div style="padding-top: 20px; text-align: justify; font-size: 12px; line-height: 18px;">@Html.Raw(Model.Event.Description) </div>
         </div>
 
-        <p>Thank you for your pledge!</p>
-        <p>Your order number is @Model.Pledge.OrderNumber</p>
-        <p>We've just sent you an email to: @Model.Pledge.AccountEmailAddress</p> 
+        <p>@Html.Content("Thank you for your pledge!")</p>
+        <p>@Html.Content("Your order number is") @Model.Pledge.OrderNumber</p>
+        <p>@Html.Content("We've just sent you an email to:") @Model.Pledge.AccountEmailAddress</p> 
         @if (Model.Event.IsFull)
         {
             <div style="font-size: 20px; padding-top: 30px;">
-                <strong>The event is now full! Thanks for helping out!</strong>
+                <strong>@Html.Content("The event is now full! Thanks for helping out!")</strong>
             </div>  
         }
         else if (Model.Event.IsOn)
         {
             <div style="font-size: 20px; padding-top: 30px;">
-                <strong>The event has <span style="color: #b3b70d;">@Model.Event.SpacesLeft</span> spaces left</strong>
+                <strong>@Html.Content("The event has") <span style="color: #b3b70d;">@Model.Event.SpacesLeft</span> @Html.Content("spaces left")</strong>
             </div>  
         }
         else
         {
             <div style="font-size: 20px; padding-top: 30px;">
-                <strong>The event still needs <span style="color: #b3b70d;">@Model.PledgesRequired</span> pledges to be funded</strong>
+                <strong>@Html.Content("The event still needs") <span style="color: #b3b70d;">@Model.PledgesRequired</span> @Html.Content("pledges to be funded")</strong>
             </div>
         }
 
         @if (!Model.Event.IsFull)
         {
-            <div style="padding-top: 30px;">@Html.ActionLink("Invite people to your event", "Share", "Event", new {shortUrl=Model.Event.ShortUrl}, new {@class="bigButton"})</div>
+            <div style="padding-top: 30px;">@Html.ActionLink(@Html.Content("Invite people to your event").ToString(), "Share", "Event", new {shortUrl=Model.Event.ShortUrl}, new {@class="bigButton"})</div>
         }
 
         <div class="clearFix"></div>

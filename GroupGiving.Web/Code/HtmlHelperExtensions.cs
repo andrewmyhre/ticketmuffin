@@ -142,6 +142,12 @@ namespace GroupGiving.Web.Code
                                  : "en";
         }
 
+        public static CultureInfo CurrentCultureInfo(this HtmlHelper html)
+        {
+            string cultureString = CurrentCulture(html);
+            return new CultureInfo(cultureString);
+        }
+
         public static DateTimeFormatInfo CultureDateTimeFormat(this HtmlHelper html)
         {
             return html.CultureDateTimeFormat(html.CurrentCulture());
