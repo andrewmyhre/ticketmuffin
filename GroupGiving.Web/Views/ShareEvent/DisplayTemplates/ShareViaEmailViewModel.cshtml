@@ -1,10 +1,11 @@
-﻿@model GroupGiving.Web.Models.ShareViaEmailViewModel
+﻿@using GroupGiving.Web.Code
+@model GroupGiving.Web.Models.ShareViaEmailViewModel
 
-<h3>Send an email to your contacts</h3>
-<p>Enter the email addresses of the contacts you want to share this event with in the input box below.</p>
+<h3>@Html.Content("Send an email to your contacts")</h3>
+<p>@Html.Content("Enter the email addresses of the contacts you want to share this event with in the input box below.")</p>
 @Html.ValidationSummary()
 <!-- Any link with a class="cs_import" attribute will launch the widget -->
-<a class="cs_import">Add contacts from my email account using CloudSponge</a><br />  
+<a class="cs_import">@Html.Content("Add contacts from my email account using CloudSponge")</a><br />  
 
 <script type="text/javascript" src="https://api.cloudsponge.com/address_books.js"></script>
 <script type="text/javascript">
@@ -19,10 +20,10 @@
         @Html.ValidationMessage("Recipients")
     </div>
     <div style="padding-bottom: 10px;"><textarea id="Recipients" name="Recipients" id="Recipients" style="width:400px" rows="3" cols="50">@Model.Recipients</textarea></div>
-    <div style="padding-bottom: 10px;"><label for="Subject" style="display:block">Subject:</label><input type="text" name="Subject" id="Subject" style="width:400px" value="@Model.Subject" /></div>
-    <div style="padding-bottom: 10px;"><label for="Body">You can edit the message below:</label>
+    <div style="padding-bottom: 10px;"><label for="Subject" style="display:block">@Html.Content("Subject:")</label><input type="text" name="Subject" id="Subject" style="width:400px" value="@Model.Subject" /></div>
+    <div style="padding-bottom: 10px;"><label for="Body">@Html.Content("You can edit the message below:")</label>
     <textarea name="Body" id="Body" style="display:block;width:400px" rows="6" cols="50">@Model.Body</textarea></div>
     <input type="hidden" name="ShortUrl" id="ShortUrl" value="@Model.ShortUrl"/>
-    <div style="padding-bottom: 10px;"><input type="submit" value="Send Email"/></div>
+    <div style="padding-bottom: 10px;"><input type="submit" value="@Html.Content("Send Email")"/></div>
     
 }
