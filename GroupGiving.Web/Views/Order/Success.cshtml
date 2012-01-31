@@ -1,7 +1,7 @@
 ﻿@using GroupGiving.Web.Code
 @model GroupGiving.Web.Models.OrderConfirmationViewModel
 @{
-    ViewBag.Title = "Thank your for pledging! - TicketMuffin";
+    ViewBag.Title = Html.Content("Thank your for pledging! - TicketMuffin").ToString();
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
@@ -33,13 +33,13 @@
         else if (Model.Event.IsOn)
         {
             <div style="font-size: 20px; padding-top: 30px;">
-                <strong>@Html.Content("The event has") <span style="color: #b3b70d;">@Model.Event.SpacesLeft</span> @Html.Content("spaces left")</strong>
+                <strong>@Html.Content(string.Format("The event has <span style=\"color: #b3b70d;\">{0}</span> spaces left", Model.Event.SpacesLeft))</strong>
             </div>  
         }
         else
         {
             <div style="font-size: 20px; padding-top: 30px;">
-                <strong>@Html.Content("The event still needs") <span style="color: #b3b70d;">@Model.PledgesRequired</span> @Html.Content("pledges to be funded")</strong>
+                <strong>@Html.Content(string.Format("The event still needs <span style=\"color: #b3b70d;\">{0}</span> pledges to be funded",Model.PledgesRequired))</strong>
             </div>
         }
 
