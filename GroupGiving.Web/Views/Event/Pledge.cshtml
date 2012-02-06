@@ -37,7 +37,7 @@
                 @Html.Content("The minimum number of pledges has been reached. This event is now on!")
             } else {
                 @Html.Content(string.Format("The money will be refunded if the minimum amount of participants is not reached before {0}.", Model.SalesEndDateTime.ToString("dddd dd MMMM", Html.CultureDateTimeFormat())))
-", Html."            }
+		}
         </strong>
         </div>
         <h1 style="margin-top: 30px;">@Html.Content("Participants' names")</h1>
