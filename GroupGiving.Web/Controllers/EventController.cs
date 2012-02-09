@@ -272,6 +272,7 @@ namespace GroupGiving.Web.Controllers
             if (!result.Succeeded)
             {
                 viewModel = BuildEventPageViewModel(eventDetails, request);
+                ModelState.AddModelError("_request", result.Exception.Message);
                 return View(viewModel);
             }
 

@@ -12,6 +12,8 @@ namespace GroupGiving.Core.Dto
 
         public ActionTypeEnum ActionType { get; set; }
 
+        public string CurrencyCode { get; set; }
+
         public enum ActionTypeEnum
         {
             Immediate,

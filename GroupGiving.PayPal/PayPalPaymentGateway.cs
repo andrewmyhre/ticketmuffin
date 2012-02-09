@@ -54,7 +54,7 @@ namespace GroupGiving.PayPal
                                             CancelUrl = request.FailureCallbackUrl,
                                             ReturnUrl = request.SuccessCallbackUrl,
                                             Memo = request.OrderMemo,
-                                            CurrencyCode = "GBP",
+                                            CurrencyCode = request.CurrencyCode,
                                             Receivers = (from r in request.Recipients
                                                          orderby r.AmountToReceive descending
                                                          select new Receiver(r.AmountToReceive.ToString("#.00"), 

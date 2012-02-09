@@ -90,7 +90,8 @@ namespace GroupGiving.Core.Actions.CreatePledge
                                                                          new PaymentRecipient(
                                                                              organiserAccount.PayPalEmail,
                                                                              pledge.Total - pledge.ServiceCharge, false)
-                                                                     }
+                                                                     },
+                                                                     CurrencyCode = Enum.GetName(typeof(Currency), @event.Currency)
                                                 };
 
                 PaymentGatewayResponse gatewayResponse = null;
