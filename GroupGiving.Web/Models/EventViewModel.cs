@@ -98,7 +98,7 @@ namespace GroupGiving.Web.Models
 
         public int PaidAttendeeCount { get; set; }
 
-        public string TicketCurrency { get; set; }
+        public Currency TicketCurrency { get; set; }
 
         public GroupGivingEvent Event { get; set; }
     }

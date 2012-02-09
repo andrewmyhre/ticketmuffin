@@ -115,7 +115,7 @@ namespace GroupGiving.Web.Controllers
             viewModel.ShortUrl = givingEvent.ShortUrl;
             viewModel.Title = givingEvent.Title;
             viewModel.TicketPrice = givingEvent.TicketPrice;
-            viewModel.TicketCurrency = givingEvent.TicketCurrency;
+            viewModel.TicketCurrency = (Currency) givingEvent.Currency;
             viewModel.Venue = givingEvent.Venue;
             viewModel.VenueLatitude = givingEvent.Latitude;
             viewModel.VenueLongitude = givingEvent.Longitude;
@@ -307,6 +307,7 @@ namespace GroupGiving.Web.Controllers
             {
                 var groupGivingEvent = session.Load<GroupGivingEvent>(viewModel.Id);
                 this.TryUpdateModel(groupGivingEvent);
+                groupGivingEvent.Currency = (int)viewModel.Currency;
 
                 // update organiser details if we have an organiser id but not organiser name set on the event
                 if (string.IsNullOrWhiteSpace(groupGivingEvent.OrganiserName)

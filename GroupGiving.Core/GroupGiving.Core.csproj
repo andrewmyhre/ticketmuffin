@@ -106,6 +106,7 @@
     <Compile Include="Domain\AccountType.cs" />
     <Compile Include="Domain\Charity.cs" />
     <Compile Include="Domain\ContentDefinition.cs" />
+    <Compile Include="Domain\Currency.cs" />
     <Compile Include="Domain\EventPledge.cs" />
     <Compile Include="Domain\EventPledgeAttendee.cs" />
     <Compile Include="Domain\GroupGivingEvent.cs" />

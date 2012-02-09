@@ -16,6 +16,10 @@ namespace GroupGiving.Core.Services
         public decimal? TicketPrice { get; set; }
 
         [Required]
+        [DisplayName("Currency")]
+        public GroupGiving.Core.Domain.Currency Currency { get; set; }
+
+        [Required]
         [DisplayName("Minimum Participants")]
         [Range(1, int.MaxValue, ErrorMessage = "You must provide a minimum number of participants")]
         public int? MinimumParticipants { get; set; }

@@ -107,6 +107,8 @@ namespace GroupGiving.Core.Domain
         public Charity CharityDetails { get; set; }
         public string TicketCurrency { get; set; }
 
+        public int Currency { get; set; }
+
         [JsonIgnore]
         public bool ReadyToActivate
         {

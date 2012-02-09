@@ -19,6 +19,9 @@
             @Html.LabelFor(m => m.TicketPrice)
             @Html.TextBoxFor(m => m.TicketPrice, new { @class = "short" })
             @Html.ValidationMessageFor(m => m.TicketPrice)
+            
+            @Html.DropDownListFor(vm=>vm.Currency, new SelectList(Enum.GetValues(typeof(GroupGiving.Core.Domain.Currency)), Model.Currency), new {style="width:100px"})
+            @Html.ValidationMessageFor(m => m.Currency)
         </div>
 
         <div class="formline">

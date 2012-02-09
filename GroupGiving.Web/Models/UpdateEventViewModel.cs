@@ -72,5 +72,9 @@ namespace GroupGiving.Web.Models
         [Display(Name="Ticket Currency")]
         [DefaultValue("GBP")]
         public string TicketCurrency { get; set; }
+
+        [Display(Name = "Currency")]
+        [DefaultValue(Currency.EUR)]
+        public Currency Currency { get; set; }
     }
 }

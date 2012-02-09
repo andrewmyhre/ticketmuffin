@@ -115,6 +115,7 @@ namespace GroupGiving.Core.Services
                 @event.PaypalAccountEmailAddress = setTicketDetailsRequest.PayPalEmail;
                 @event.PayPalAccountFirstName = setTicketDetailsRequest.PayPalFirstName;
                 @event.PayPalAccountLastName = setTicketDetailsRequest.PayPalLastName;
+                @event.Currency = (int) setTicketDetailsRequest.Currency;
                 @event.State = EventState.SalesReady;
 
                 session.SaveChanges();
