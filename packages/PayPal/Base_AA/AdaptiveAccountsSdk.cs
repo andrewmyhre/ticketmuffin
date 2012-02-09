@@ -10,6 +10,7 @@ using System.Web.UI.WebControls.WebParts;
 using System.Web.UI.HtmlControls;
 using PayPal.Services.Private.AA;
 using PayPal.Platform.SDK;
+using log4net;
 
 namespace PayPal.Platform.SDK
 {
@@ -18,6 +19,8 @@ namespace PayPal.Platform.SDK
     /// </summary>
     public class AdaptiveAccountsSdk : CallerServices
     {
+        private static ILog Log = LogManager.GetLogger(typeof (AdaptiveAccountsSdk));
+
         private const string aaEndpoint = "AdaptiveAccounts/";
         private string result = string.Empty;
         private TransactionException lastError = null;
@@ -96,6 +99,7 @@ namespace PayPal.Platform.SDK
 
                     if (name == "Failure")
                     {
+                        Log.Warn(res.ToString());
                         this.result = "FAILURE";
                         TransactionException tranactionEx = new TransactionException(PayLoadFromat.JSON, res.ToString());
                         this.lastError = tranactionEx;
@@ -105,7 +109,7 @@ namespace PayPal.Platform.SDK
                 else if (res.ToString().ToUpper().Replace("<ACK>FAILURE</ACK>", "").Length != res.ToString().Length)
                 {
                     this.result = "FAILURE";
-
+                    Log.Warn(res.ToString());
                     if (APIProfile.RequestDataformat == "SOAP11")
                     {
                         TransactionException tranactionEx = new TransactionException(PayLoadFromat.SOAP11, res.ToString());
@@ -197,6 +201,7 @@ namespace PayPal.Platform.SDK
                     {
                         this.result = "FAILURE";
                         TransactionException tranactionEx = new TransactionException(PayLoadFromat.JSON, res.ToString());
+                        
                         this.lastError = tranactionEx;
                     }
                 }
