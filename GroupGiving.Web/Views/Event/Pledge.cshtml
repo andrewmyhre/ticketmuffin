@@ -2,7 +2,7 @@
 @using GroupGiving.Web.Code
 @model GroupGiving.Web.Models.EventPledgeViewModel
 @{
-    ViewBag.Title = "Pledge to attend " + Model.Title;
+    ViewBag.Title = Html.Content(string.Format("Pledge to attend {0}", Model.Title));
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
@@ -37,8 +37,8 @@
             } else if (Model.EventIsOn) {
                 @Html.Content("The minimum number of pledges has been reached. This event is now on!")
             } else {
-                @Html.Content("The money will be refunded if the minimum amount of participants is not reached before") @Model.SalesEndDateTime.ToString("dddd dd MMMM", Html.CultureDateTimeFormat())<text>.</text>
-            }
+                @Html.Content(string.Format("The money will be refunded if the minimum amount of participants is not reached before {0}.", Model.SalesEndDateTime.ToString("dddd dd MMMM", Html.CultureDateTimeFormat())))
+		}
         </strong>
         </div>
         <h1 style="margin-top: 30px;">@Html.Content("Participants' names")</h1>
