@@ -14,7 +14,7 @@
 <span id="c" style="display:none;">@Model.TicketCurrency.AsCulture().NumberFormat.CurrencySymbol</span>
 <div style="margin-top: 10px;display:none;" id="attendeeTemplate">
                 <label style="display: inline-block; width: 110px;">@Html.Content("Ticket #")<span class="attendeeNumber">1</span></label>
-                <input type="text" style="width: 300px;" name="attendeeName" title="Full name" />
+                <input type="text" style="width: 300px;" name="attendeeName" title="@Html.Content("Full name")" />
             </div>
 <div id="orderPage">
     <h1>@Html.Content("Purchase tickets for") @Model.Title</h1>
@@ -37,8 +37,10 @@
             } else if (Model.EventIsOn) {
                 @Html.Content("The minimum number of pledges has been reached. This event is now on!")
             } else {
-                @Html.Content(string.Format("The money will be refunded if the minimum amount of participants is not reached before {0}.", Model.SalesEndDateTime.ToString("dddd dd MMMM", Html.CultureDateTimeFormat())))
-		}
+                @Html.Content("The money will be refunded if the minimum amount of participants is not reached before")
+                <text>&nbsp;</text>
+                @Model.SalesEndDateTime.ToString(Html.Content("dddd dd MMMM","","SalesEndDateTimeFormat").ToString(), Html.CultureDateTimeFormat())
+            }
         </strong>
         </div>
         <h1 style="margin-top: 30px;">@Html.Content("Participants' names")</h1>
@@ -48,7 +50,7 @@
             {
                 <div>
                     <label style="display: inline-block; width: 110px;">@Html.Content("Ticket #")<span class="attendeeNumber">@(attendeeNumber++)</span></label>
-                    <input type="text" style="width: 300px;" name="attendeeName" class="jq_watermark" title="Full name" value="@attendee" />
+                    <input type="text" style="width: 300px;" name="attendeeName" class="jq_watermark" title="@Html.Content("Full Name")" value="@attendee" />
                 </div>
             }
         </div>

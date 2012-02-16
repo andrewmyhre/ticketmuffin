@@ -17,7 +17,8 @@
           </div>
 
           <div style="font-size: 18px;"><strong>@Html.ActionLink(Model.Event.Title, "Index", "Event", new {shortUrl=Model.Event.ShortUrl},null)</strong></div>
-          <div style="font-size: 12px; line-height: 14px;"><strong>@Model.Event.Venue</strong>, @Model.Event.City, @Model.Event.Country, @Model.Event.StartDate.ToString("dddd, MMMM dd, yyyy, HH:mm tt", Html.CultureDateTimeFormat()), @Model.Event.AddressLine</div>
+            <div style="font-size: 12px; line-height: 14px;"><strong>@Model.Event.Venue</strong>, @Model.Event.City, @Model.Event.Country, 
+            @Model.Event.StartDate.ToString(Html.Content("dddd, MMMM dd, yyyy, HH:mm tt", "","EventStartDateFormat").ToString()), @Model.Event.AddressLine</div>
           <div style="padding-top: 20px; text-align: justify; font-size: 12px; line-height: 18px;">@Html.Raw(Model.Event.Description) </div>
         </div>
 
@@ -33,13 +34,13 @@
         else if (Model.Event.IsOn)
         {
             <div style="font-size: 20px; padding-top: 30px;">
-                <strong>@Html.Content(string.Format("The event has <span style=\"color: #b3b70d;\">{0}</span> spaces left", Model.Event.SpacesLeft))</strong>
+                <strong>@string.Format(Html.Content("The event has <span style=\"color: #b3b70d;\">{0}</span> spaces left").ToString(), Model.Event.SpacesLeft)</strong>
             </div>  
         }
         else
         {
             <div style="font-size: 20px; padding-top: 30px;">
-                <strong>@Html.Content(string.Format("The event still needs <span style=\"color: #b3b70d;\">{0}</span> pledges to be funded",Model.PledgesRequired))</strong>
+                <strong>@string.Format(Html.Content("The event still needs <span style=\"color: #b3b70d;\">{0}</span> pledges to be funded").ToString(), Model.PledgesRequired)</strong>
             </div>
         }
 

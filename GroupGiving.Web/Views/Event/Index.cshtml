@@ -56,7 +56,7 @@
 
           @if (Model.State != EventState.Cancelled)
           {
-              <div id="eventDetails">@Model.StartDate.ToString("dddd, MMMM dd yyyy @ HH:mm tt", Html.CultureDateTimeFormat())<br />
+              <div id="eventDetails">@Model.StartDate.ToString(Html.Content("dddd, MMMM dd yyyy @ HH:mm tt").ToString(), Html.CultureDateTimeFormat())<br />
                   @Model.Venue, @Model.AddressLine, @Model.City, @Model.Country
               </div>
           }
