@@ -34,13 +34,13 @@
         else if (Model.Event.IsOn)
         {
             <div style="font-size: 20px; padding-top: 30px;">
-                <strong>@string.Format(Html.Content("The event has <span style=\"color: #b3b70d;\">{0}</span> spaces left").ToString(), Model.Event.SpacesLeft)</strong>
+                <strong>@Html.Raw(string.Format(Html.Content("The event has <span style=\"color: #b3b70d;\">{0}</span> spaces left").ToString(), Model.Event.SpacesLeft))</strong>
             </div>  
         }
         else
         {
             <div style="font-size: 20px; padding-top: 30px;">
-                <strong>@string.Format(Html.Content("The event still needs <span style=\"color: #b3b70d;\">{0}</span> pledges to be funded").ToString(), Model.PledgesRequired)</strong>
+                <strong>@Html.Raw(string.Format(Html.Content("The event still needs <span style=\"color: #b3b70d;\">{0}</span> pledges to be funded").ToString(), Model.PledgesRequired))</strong>
             </div>
         }
 
