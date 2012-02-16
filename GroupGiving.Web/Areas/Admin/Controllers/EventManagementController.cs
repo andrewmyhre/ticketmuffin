@@ -175,6 +175,7 @@ namespace GroupGiving.Web.Areas.Admin.Controllers
                 this.TryUpdateModel(groupGivingEvent, "", null, new[] {"Id"});
                 groupGivingEvent.OrganiserId = organiser.Id;
                 groupGivingEvent.OrganiserName = organiser.FirstName + " " + organiser.LastName;
+                groupGivingEvent.Currency = (int)viewModel.Currency;
 
                 session.SaveChanges();
             }
