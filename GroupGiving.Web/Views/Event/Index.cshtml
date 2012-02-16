@@ -74,7 +74,7 @@
         <div id="eventLeft">
                 @{ Html.RenderPartial("PledgeWidget"); }
                 <div id="shareBox">
-                    <div>@Html.Content("Share with your friends")</div>
+                    <div>@Html.ActionLink(Html.Content("Share with your friends").ToString(), "Index", "ShareEvent", new {shortUrl=Model.ShortUrl}, null)</div>
                 </div>
                 <h2>@Html.Content("Event details")</h2>
 
