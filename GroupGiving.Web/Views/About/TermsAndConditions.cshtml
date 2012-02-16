@@ -1,0 +1,9 @@
+﻿@using GroupGiving.Web.Code
+@model dynamic
+
+@{
+    ViewBag.Title = Html.Content("Terms and Conditions").ToString();
+    Layout = "~/Views/Shared/_layout.cshtml";
+}
+
+@Html.Content("Terms and conditions", "", "TermsAndConditions")

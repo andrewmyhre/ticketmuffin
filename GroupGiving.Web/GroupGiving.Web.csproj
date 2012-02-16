@@ -175,6 +175,7 @@
     <Compile Include="Code\RavenDbContentProvider.cs" />
     <Compile Include="Code\RavenDbDocumentStore.cs" />
     <Compile Include="Code\ServiceLocator.cs" />
+    <Compile Include="Controllers\AboutController.cs" />
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\ContentManagerController.cs" />
     <Compile Include="Controllers\CreateEventController.cs" />
@@ -483,6 +484,9 @@
     <Content Include="Areas\Admin\Views\Content\Index.cshtml" />
     <Content Include="Areas\Admin\Views\Content\ViewPageContent.cshtml" />
     <Content Include="Areas\Admin\Views\Content\ViewTranslations.cshtml" />
+    <Content Include="Views\About\TermsAndConditions.cshtml" />
+    <Content Include="Views\About\Privacy.cshtml" />
+    <Content Include="Views\About\Contact.cshtml" />
     <None Include="_bin_deployableAssemblies\System.Web.Mvc.dll" />
     <None Include="_bin_deployableAssemblies\WebMatrix.WebData.xml" />
     <None Include="_bin_deployableAssemblies\WebMatrix.WebData.dll" />
