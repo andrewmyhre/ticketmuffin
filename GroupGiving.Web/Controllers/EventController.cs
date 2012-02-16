@@ -115,7 +115,7 @@ namespace GroupGiving.Web.Controllers
             viewModel.ShortUrl = givingEvent.ShortUrl;
             viewModel.Title = givingEvent.Title;
             viewModel.TicketPrice = givingEvent.TicketPrice;
-            viewModel.TicketCurrency = (Currency) givingEvent.Currency;
+            viewModel.Currency = (Currency) givingEvent.Currency;
             viewModel.Venue = givingEvent.Venue;
             viewModel.VenueLatitude = givingEvent.Latitude;
             viewModel.VenueLongitude = givingEvent.Longitude;
@@ -200,7 +200,7 @@ namespace GroupGiving.Web.Controllers
             viewModel.ShortUrl = givingEvent.ShortUrl;
             viewModel.Title = givingEvent.Title;
             viewModel.TicketPrice = givingEvent.TicketPrice;
-            viewModel.TicketCurrency = (Currency)givingEvent.Currency;
+            viewModel.Currency = (Currency)givingEvent.Currency;
             viewModel.Venue = givingEvent.Venue;
             viewModel.EventIsOn = givingEvent.IsOn;
             viewModel.EventIsFull = givingEvent.IsFull;
