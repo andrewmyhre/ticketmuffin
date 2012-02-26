@@ -219,6 +219,28 @@ namespace GroupGiving.Web.Code
 
             return link;
         }
+
+        public static MvcHtmlString TicketPricesInCurrencyFormatAsJsonObject(this HtmlHelper html, int count, decimal ticketPrice, CultureInfo cultureInfo)
+        {
+            string cacheKey = string.Format("{0}-{1}-{2}", count, ticketPrice, cultureInfo);
+
+            if (html.ViewContext.RequestContext.HttpContext.Cache[cacheKey] == null)
+            {
+                StringBuilder sb = new StringBuilder("{values:[");
+
+                for (int i = 1; i <= count; i++)
+                {
+                    sb.AppendFormat(cultureInfo, "\"{0:c}\",", ticketPrice*i);
+                }
+                sb.Append("]}");
+
+                // cache this string
+                html.ViewContext.RequestContext.HttpContext.Cache[cacheKey] = sb.ToString();
+                return new MvcHtmlString(sb.ToString());
+            }
+
+            return new MvcHtmlString((string)html.ViewContext.RequestContext.HttpContext.Cache[cacheKey]);
+        }
     }
 
     public static class RouteUtils

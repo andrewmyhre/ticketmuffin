@@ -206,8 +206,6 @@ namespace GroupGiving.Web
             {
                 _logger.Fatal("Failed to load email sender", e);
             }
-
-            
         }
     }
 

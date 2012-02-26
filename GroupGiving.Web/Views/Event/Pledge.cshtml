@@ -13,13 +13,7 @@
 }
 
 <script type="text/javascript">
-    var ticketPrices = {
-        values: [
-            @for (int i = 1; i <= Model.MaximumParticipants - Model.PledgeCount; i++)
-        {
-            <text>"</text>@((Model.TicketPrice*i).ToString("c", Model.Currency.AsCulture()))<text>",</text>
-        }]
-    };
+    var ticketPrices = @Html.TicketPricesInCurrencyFormatAsJsonObject(Model.MaximumParticipants ?? 1000 - Model.PledgeCount, Model.TicketPrice, Model.Currency.AsCulture());
 </script>
 
 <span id="c" style="display:none;">@Model.Currency.AsCulture().NumberFormat.CurrencySymbol</span>
