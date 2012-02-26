@@ -22,7 +22,8 @@ function updateAttendeeList(quantity) {
 function updateTotals() {
     var total = $('input[name=ticketPrice]').val();
     var quantity = $('select[name=quantity]').val();
-    $('.total').html(currencySymbol + (total * quantity).formatMoney(2, '.', ','));
+    //$('.total').html(currencySymbol + (total * quantity).formatMoney(2, '.', ','));
+    $('.total').html(ticketPrices.values[$('select[name=quantity]').prop('selectedIndex')]);
 }
 
 Number.prototype.formatMoney = function (c, d, t) {
