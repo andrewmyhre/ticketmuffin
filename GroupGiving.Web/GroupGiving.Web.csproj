@@ -390,6 +390,7 @@
     <Content Include="Scripts\order.js" />
     <Content Include="Scripts\verify-pp.js" />
     <Content Include="Areas\Admin\Views\Diagnostics\Index.aspx" />
+    <Content Include="terms.htm" />
     <Content Include="Web.config">
       <SubType>Designer</SubType>
     </Content>
