@@ -6,4 +6,23 @@
     Layout = "~/Views/Shared/_layout.cshtml";
 }
 
+<style>
+        body>ul {
+            font-weight: bold;
+            text-align: center;
+            list-style: none;
+            counter-reset:li;
+        }
+        body>ul > li:before{
+            text-align: center;
+        }
+        ol {
+            font-weight: normal;
+            text-align: left;
+        }
+        ol.alpha {
+            list-style: lower-alpha;
+        }
+    </style>
+
 @Html.Content("Terms and conditions", "", "TermsAndConditions")
