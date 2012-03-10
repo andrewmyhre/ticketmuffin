@@ -230,7 +230,8 @@ namespace GroupGiving.Web.Code
 
                 for (int i = 1; i <= count; i++)
                 {
-                    sb.AppendFormat(cultureInfo, "\"{0:c}\",", ticketPrice*i);
+                    sb.Append(string.Format(cultureInfo, "\"{0:c}\",", ticketPrice * i)
+                        .NiceCurrencyFormat(html).ToString());
                 }
                 sb.Append("]}");
 
@@ -240,6 +241,24 @@ namespace GroupGiving.Web.Code
             }
 
             return new MvcHtmlString((string)html.ViewContext.RequestContext.HttpContext.Cache[cacheKey]);
+        }
+
+        public static MvcHtmlString NiceCurrencyFormat(this MvcHtmlString value, HtmlHelper html)
+        {
+            return value.ToString().NiceCurrencyFormat(html);
+        }
+
+        public static MvcHtmlString NiceCurrencyFormat(this string value, HtmlHelper html)
+        {
+            var culture = html.CurrentCulture();
+            if (culture == "pl-PL")
+            {
+                return new MvcHtmlString(value.Replace(",00", ""));
+            }
+            else
+            {
+                return new MvcHtmlString(value.Replace(".00", ""));
+            }
         }
     }
 

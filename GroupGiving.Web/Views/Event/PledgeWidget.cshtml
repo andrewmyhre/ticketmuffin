@@ -53,7 +53,7 @@
              <div id="pledge">
                  @using (Html.BeginForm("Pledge", "Event", FormMethod.Get))
                  {
-                     <input type="submit" class="bigButton" style="width:280px" value="@Model.TicketPrice.ToString("c", Model.Currency.AsCulture()) @Html.Content("Pledge")" />
+                     <input type="submit" class="bigButton" style="width:280px" value="@Model.TicketPrice.ToString("c", Model.Currency.AsCulture()).NiceCurrencyFormat(Html) @Html.Content("Pledge")" />
                  }
              </div>
              <div id="pledgeInfo">

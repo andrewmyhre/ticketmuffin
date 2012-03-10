@@ -34,7 +34,7 @@
                         { <text>selected="selected"</text> }>@i</option>
                 }
             </select>
-            <strong style="font-size: 18px;">x @Model.TicketPrice.ToString("c", Model.Currency.AsCulture()) = <span style="color: #b3b70d;" class="total"></span>&nbsp;*</strong>
+            <strong style="font-size: 18px;">x @Model.TicketPrice.ToString("c", Model.Currency.AsCulture()).NiceCurrencyFormat(Html) = <span style="color: #b3b70d;" class="total"></span>&nbsp;*</strong>
         </div>
         <div style="color: #b3b70d;"><strong>*
             @if (Model.EventIsFull)

@@ -18,18 +18,24 @@ namespace GroupGiving.Core.Domain
     {
         public static CultureInfo AsCulture(this Currency currency)
         {
+            CultureInfo culture = new CultureInfo("fr-FR");
             switch(currency)
             {
                 case Currency.PLN:
-                    return new CultureInfo("pl-PL");
+                    culture = new CultureInfo("pl-PL");
+                    break;
                 case Currency.GBP:
-                    return new CultureInfo("en-GB");
+                    culture = new CultureInfo("en-GB");
+                    break;
                 case Currency.USD:
-                    return new CultureInfo("en-US");
+                    culture = new CultureInfo("en-US");
+                    break;
                 case Currency.EUR:
                 default:
-                   return new CultureInfo("fr-FR", false);
+                   culture = new CultureInfo("fr-FR", false);
+                   break;
             }
+            return culture;
         }
     }
 }
