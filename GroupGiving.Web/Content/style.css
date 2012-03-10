@@ -196,8 +196,9 @@ div#pledgeInfo div#countInfo {
     line-height: 16px;
     width:180px;
     margin-left:10px;
-    position: relative;
-    top: -5px;
+    position: absolute;
+    bottom:165px;
+    left:60px;
 }
 div#pledgeInfo div#countInfo.cancelled
 {
