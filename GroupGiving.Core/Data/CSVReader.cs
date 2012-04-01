@@ -47,7 +47,7 @@ namespace Com.StellmanGreene.CSVReader
     public class CSVReader : IDisposable
     {
         private ILog _log = LogManager.GetLogger(typeof (CSVReader));
-        public const string NEWLINE = "\n";
+        public const string NEWLINE = "\r\n";
 
         /// <summary>
         /// This reader will read all of the CSV data
