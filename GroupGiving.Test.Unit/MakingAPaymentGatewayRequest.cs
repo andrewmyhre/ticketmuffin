@@ -6,6 +6,7 @@ using GroupGiving.Core.Configuration;
 using GroupGiving.Core.Domain;
 using GroupGiving.Core.Dto;
 using GroupGiving.PayPal;
+using GroupGiving.PayPal.Configuration;
 using GroupGiving.PayPal.Model;
 using NUnit.Framework;
 
@@ -19,7 +20,7 @@ namespace GroupGiving.Test.Unit
         [SetUp]
         public void Setup()
         {
-            _gateway = new PayPalPaymentGateway(null,ValidPayPalConfiguration());
+            _gateway = new PayPalPaymentGateway(null,ValidPayPalConfiguration().AdaptiveAccountsConfiguration);
         }
 
         [Test]
@@ -67,13 +68,13 @@ namespace GroupGiving.Test.Unit
         {
             return new SiteConfiguration()
                        {
-                           PayFlowProConfiguration = new PayFlowProConfiguration()
+                           AdaptiveAccountsConfiguration= new AdaptiveAccountsConfiguration()
                             {
                                 LivePayFlowProPaymentPage = "http://somedomain.com/pay",
                                 SandboxMode = false,
-                                ApiMerchantUsername = "12345",
-                                ApiMerchantPassword = "12345",
-                                ApiMerchantSignature = "12345"
+                                ApiUsername = "12345",
+                                ApiPassword = "12345",
+                                ApiSignature = "12345"
                             }
                        };
         }

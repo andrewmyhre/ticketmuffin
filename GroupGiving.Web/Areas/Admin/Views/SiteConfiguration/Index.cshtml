@@ -1,5 +1,5 @@
 ﻿@using GroupGiving.Core.Domain
-@model SiteConfiguration
+@model GroupGiving.Core.Configuration.SiteConfiguration
 
 @{
     ViewBag.Title = "Site Configuration - TicketMuffin";
@@ -29,10 +29,6 @@
     <fieldset>
         <legend>JustGiving Api</legend>
         @Html.EditorFor(m => m.JustGivingApiConfiguration)
-    </fieldset>
-    <fieldset>
-        <legend>PayFlowPro Configuration</legend>
-        @Html.EditorFor(m => m.PayFlowProConfiguration)
     </fieldset>
 
     <input type="submit" value="Save Changes"/>

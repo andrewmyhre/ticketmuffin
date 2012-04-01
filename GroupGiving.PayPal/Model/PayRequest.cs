@@ -1,6 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Runtime.Serialization;
 using System.Xml.Serialization;
+using GroupGiving.Core.Configuration;
+using GroupGiving.Core.Domain;
+using GroupGiving.PayPal.Configuration;
 
 namespace GroupGiving.PayPal.Model
 {
@@ -8,12 +11,20 @@ namespace GroupGiving.PayPal.Model
     [XmlRoot(ElementName = "PayRequest")]
     public class PayRequest : IPayPalRequest
     {
+        public PayRequest(AdaptiveAccountsConfiguration adaptiveAccounts) : this()
+        {
+            CancelUrl = adaptiveAccounts.FailureCallbackUrl;
+            ReturnUrl = adaptiveAccounts.SuccessCallbackUrl;
+            ClientDetails = ClientDetails.FromConfiguration(adaptiveAccounts);
+        }
         public PayRequest()
         {
             ClientDetails = ClientDetails.Default;
 
             Receivers = new Receiver[0];
             RequestEnvelope = new RequestEnvelope();
+            ActionType = "PAY";
+
         }
 
         [DataMember(Order = 0)]

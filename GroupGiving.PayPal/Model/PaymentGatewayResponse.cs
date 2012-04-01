@@ -59,7 +59,7 @@ namespace GroupGiving.PayPal.Model
 
         public PayPalError Error { get; set; }
 
-        public DialogueHistoryEntry Raw { get; set; }
+        public new DialogueHistoryEntry Raw { get { return base.Raw; } set { base.Raw = value; } }
     }
 
     [System.CodeDom.Compiler.GeneratedCodeAttribute("xsd", "4.0.30319.1")]

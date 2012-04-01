@@ -97,6 +97,11 @@
     <Compile Include="Actions\SettlePledge\SettlePledgeResponse.cs" />
     <Compile Include="Api.cs" />
     <Compile Include="BCrypt.cs" />
+    <Compile Include="Configuration\AdaptiveAccountsConfiguration.cs" />
+    <Compile Include="Configuration\DatabaseConfiguration.cs" />
+    <Compile Include="Configuration\ISiteConfiguration.cs" />
+    <Compile Include="Configuration\JustGivingApiConfiguration.cs" />
+    <Compile Include="Configuration\SiteConfiguration.cs" />
     <Compile Include="Configuration\TicketMuffinFees.cs" />
     <Compile Include="Data\CSVReader.cs" />
     <Compile Include="Data\Fakes\FakeRepository.cs" />
@@ -112,10 +117,8 @@
     <Compile Include="Domain\GroupGivingEvent.cs" />
     <Compile Include="Domain\Account.cs" />
     <Compile Include="Domain\IDomainObject.cs" />
-    <Compile Include="Domain\ISiteConfiguration.cs" />
     <Compile Include="Domain\PageContent.cs" />
     <Compile Include="Domain\PaymentStatus.cs" />
-    <Compile Include="Domain\SiteConfiguration.cs" />
     <Compile Include="Dto\DialogueHistoryEntry.cs" />
     <Compile Include="Dto\Error.cs" />
     <Compile Include="Dto\ErrorResponse.cs" />

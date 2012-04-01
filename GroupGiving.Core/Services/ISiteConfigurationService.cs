@@ -1,3 +1,4 @@
+using GroupGiving.Core.Configuration;
 using GroupGiving.Core.Domain;
 
 namespace GroupGiving.Core.Services

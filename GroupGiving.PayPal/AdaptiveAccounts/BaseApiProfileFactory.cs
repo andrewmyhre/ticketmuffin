@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using GroupGiving.Core.Configuration;
 using GroupGiving.PayPal.Configuration;
 using PayPal.Platform.SDK;
 
@@ -9,7 +10,7 @@ namespace GroupGiving.PayPal.AdaptiveAccounts
 {
     public class BaseApiProfileFactory
     {
-        public static BaseAPIProfile CreateFromConfiguration(GroupGiving.Core.Domain.ISiteConfiguration configuration)
+        public static BaseAPIProfile CreateFromConfiguration(ISiteConfiguration configuration)
         {
             return new BaseAPIProfile()
                        {

@@ -14,7 +14,7 @@ namespace GroupGiving.PayPal
 {
     public class HttpChannel
     {
-        public TResponse ExecuteRequest<TRequest, TResponse>(string action, TRequest request, ApiClientSettings clientSettings) 
+        public TResponse ExecuteRequest<TRequest, TResponse>(string api, string action, TRequest request, ApiClientSettings clientSettings) 
             where TRequest : IPayPalRequest
             where TResponse : ResponseBase
         {
@@ -31,7 +31,7 @@ namespace GroupGiving.PayPal
             System.Diagnostics.Debug.WriteLine(requestXml);
 
             // create the http request and add headers
-            HttpWebRequest oPayRequest = (HttpWebRequest)WebRequest.Create(clientSettings.ActionUrl(action));
+            HttpWebRequest oPayRequest = (HttpWebRequest)WebRequest.Create(clientSettings.ActionUrl(api, action));
             oPayRequest.Method = "POST";
             byte[] array = Encoding.UTF8.GetBytes(requestXml.ToString());
             oPayRequest.ContentLength = array.Length;

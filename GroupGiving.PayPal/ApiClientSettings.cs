@@ -1,22 +1,25 @@
-﻿namespace GroupGiving.PayPal
+﻿using GroupGiving.Core.Configuration;
+using GroupGiving.Core.Domain;
+using GroupGiving.PayPal.Configuration;
+
+namespace GroupGiving.PayPal
 {
     public class ApiClientSettings
     {
-        public ApiClientSettings()
-        {
-            ApiEndpointBase = "https://svcs.sandbox.paypal.com/AdaptivePayments";
-            PayApiEndpoint = ApiEndpointBase+"/Pay";
-            ApiVersion = "1.1.0";
-            RequestDataBinding = "XML";
-            ResponseDataBinding = "XML";
-        }
+        private readonly AdaptiveAccountsConfiguration _paypalConfiguration;
 
-
-        public ApiClientSettings(string username, string password, string signature) : this()
+        public ApiClientSettings(AdaptiveAccountsConfiguration paypalConfiguration)
         {
-            this.Username = username;
-            this.Password = password;
-            this.Signature = signature;
+            _paypalConfiguration = paypalConfiguration;
+
+            ApiEndpointBase = paypalConfiguration.ApiBaseUrl;
+            ApiVersion = paypalConfiguration.ApiVersion;
+            RequestDataBinding = paypalConfiguration.RequestDataBinding;
+            ResponseDataBinding = paypalConfiguration.ResponseDataBinding;
+            Username = paypalConfiguration.ApiUsername;
+            Password = paypalConfiguration.ApiPassword;
+            Signature = paypalConfiguration.ApiSignature;
+            
         }
 
         protected string ApiEndpointBase { get; set; }
@@ -30,9 +33,9 @@
 
         public string PayApiEndpoint { get; set; }
 
-        public string ActionUrl(string action)
+        public string ActionUrl(string api, string action)
         {
-            return ApiEndpointBase + "/" + action;
+            return ApiEndpointBase + "/" + api + "/" + action;
         }
     }
 }

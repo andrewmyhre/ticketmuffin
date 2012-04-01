@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using GroupGiving.Core.Configuration;
 using GroupGiving.Core.Domain;
+using GroupGiving.PayPal.Configuration;
 using Raven.Client;
 
 namespace GroupGiving.Web.Areas.Admin.Controllers
@@ -31,7 +33,6 @@ namespace GroupGiving.Web.Areas.Admin.Controllers
                     configuration.AdaptiveAccountsConfiguration = new AdaptiveAccountsConfiguration();
                     configuration.DatabaseConfiguration = new DatabaseConfiguration();
                     configuration.JustGivingApiConfiguration = new JustGivingApiConfiguration();
-                    configuration.PayFlowProConfiguration = new PayFlowProConfiguration();
                 }
 
                 return View(configuration);
@@ -52,11 +53,15 @@ namespace GroupGiving.Web.Areas.Admin.Controllers
                     configuration.AdaptiveAccountsConfiguration = new AdaptiveAccountsConfiguration();
                     configuration.DatabaseConfiguration = new DatabaseConfiguration();
                     configuration.JustGivingApiConfiguration = new JustGivingApiConfiguration();
-                    configuration.PayFlowProConfiguration = new PayFlowProConfiguration();
                 }
 
                 if (TryUpdateModel(configuration, "", null, new[] {"Id"}))
                 {
+                    configuration.AdaptiveAccountsConfiguration.SandboxApiBaseUrl =
+                        configuration.AdaptiveAccountsConfiguration.SandboxApiBaseUrl.TrimEnd('/');
+                    configuration.AdaptiveAccountsConfiguration.LiveApiBaseUrl
+                        = configuration.AdaptiveAccountsConfiguration.LiveApiBaseUrl.TrimEnd('/');
+
                     if (newConfiguration)
                     {
                         session.Store(configuration);

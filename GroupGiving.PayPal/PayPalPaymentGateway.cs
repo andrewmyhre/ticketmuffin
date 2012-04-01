@@ -6,6 +6,7 @@ using GroupGiving.Core.Configuration;
 using GroupGiving.Core.Domain;
 using GroupGiving.Core.Dto;
 using GroupGiving.Core.Services;
+using GroupGiving.PayPal.Configuration;
 using GroupGiving.PayPal.Model;
 using ExecutePaymentRequest = GroupGiving.Core.Actions.ExecutePayment.ExecutePaymentRequest;
 using ExecutePaymentResponse = GroupGiving.Core.Actions.ExecutePayment.ExecutePaymentResponse;
@@ -18,12 +19,13 @@ namespace GroupGiving.PayPal
     public class PayPalPaymentGateway : IPaymentGateway
     {
         private readonly IApiClient _apiClient;
-        private readonly ISiteConfiguration _siteConfiguration;
+        private readonly AdaptiveAccountsConfiguration _paypalConiguration;
 
-        public PayPalPaymentGateway(IApiClient apiClient, ISiteConfiguration siteConfiguration)
+        public PayPalPaymentGateway(IApiClient apiClient, 
+            AdaptiveAccountsConfiguration paypalConiguration)
         {
             _apiClient = apiClient;
-            _siteConfiguration = siteConfiguration;
+            _paypalConiguration = paypalConiguration;
         }
 
         public PaymentGatewayResponse CreatePayment(PaymentGatewayRequest request)
@@ -68,7 +70,7 @@ namespace GroupGiving.PayPal
             return new PaymentGatewayResponse()
                        {
                            PaymentExecStatus = response.paymentExecStatus,
-                           PaymentPageUrl = string.Format(_siteConfiguration.PayFlowProConfiguration.PayFlowProPaymentPage, response.payKey),
+                           PaymentPageUrl = string.Format(_paypalConiguration.PayFlowProPaymentPage, response.payKey),
                            payKey = response.payKey,
                            DialogueEntry = ((ResponseBase)response).Raw
                        };

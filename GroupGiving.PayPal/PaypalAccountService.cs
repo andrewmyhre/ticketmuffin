@@ -1,4 +1,5 @@
 using System;
+using GroupGiving.Core.Configuration;
 using GroupGiving.Core.Domain;
 using GroupGiving.PayPal.AdaptiveAccounts;
 using GroupGiving.PayPal.Configuration;
@@ -13,7 +14,7 @@ namespace GroupGiving.PayPal
     {
         private readonly ISiteConfiguration _configuration;
 
-        public PaypalAccountService(GroupGiving.Core.Domain.ISiteConfiguration configuration)
+        public PaypalAccountService(ISiteConfiguration configuration)
         {
             _configuration = configuration;
         }

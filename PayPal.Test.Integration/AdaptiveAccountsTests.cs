@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
 using System.Text;
+using GroupGiving.Core.Configuration;
 using GroupGiving.Core.Domain;
 using GroupGiving.PayPal.AdaptiveAccounts;
 using GroupGiving.PayPal.Configuration;

@@ -10,6 +10,7 @@ using GroupGiving.Core.Email;
 using GroupGiving.Core.Services;
 using GroupGiving.PayPal;
 using GroupGiving.PayPal.Configuration;
+using GroupGiving.PayPal.Model;
 using GroupGiving.Web.Code;
 using GroupGiving.Web.Controllers;
 using Ninject.Activation;
@@ -116,16 +117,7 @@ namespace GroupGiving.Web.App_Start
             kernel.Bind<IApiClient>().ToMethod((request) =>
             {
                 var config = kernel.Get<ISiteConfiguration>();
-                return new ApiClient(new ApiClientSettings()
-                {
-                    Username = config.PayFlowProConfiguration.ApiMerchantUsername,
-                    Password = config.PayFlowProConfiguration.ApiMerchantPassword,
-                    Signature = config.PayFlowProConfiguration.ApiMerchantSignature,
-                    ApiVersion = config.PayFlowProConfiguration.ApiVersion,
-                    RequestDataBinding = config.PayFlowProConfiguration.RequestDataBinding,
-                    ResponseDataBinding = config.PayFlowProConfiguration.ResponseDataBinding
-                },
-                config);
+                return new ApiClient(new ApiClientSettings(config.AdaptiveAccountsConfiguration),config);
             });
             kernel.Bind<IPaymentGateway>().To<PayPalPaymentGateway>();
             kernel.Bind<ITaxAmountResolver>().To<NilTax>();
@@ -134,6 +126,8 @@ namespace GroupGiving.Web.App_Start
             kernel.Bind<IPaypalAccountService>().To<PaypalAccountService>();
             kernel.Bind<PaypalAdaptiveAccountsConfigurationSection>().ToMethod(r => 
                 ConfigurationManager.GetSection("adaptiveAccounts") as PaypalAdaptiveAccountsConfigurationSection);
+            kernel.Bind<AdaptiveAccountsConfiguration>().ToMethod(r=>kernel.Get<ISiteConfiguration>().AdaptiveAccountsConfiguration);
+            kernel.Bind<IPayRequestFactory>().To<PayRequestFactory>();
         }        
     }
 }

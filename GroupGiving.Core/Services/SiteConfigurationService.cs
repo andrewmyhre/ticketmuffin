@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using GroupGiving.Core.Configuration;
 using GroupGiving.Core.Domain;
 using Raven.Client;
 using log4net;
@@ -64,7 +65,15 @@ namespace GroupGiving.Core.Services
                     RequestDataFormat = "SOAP11",
                     ResponseDataFormat = "SOAP11",
                     SandboxMailAddress = "nothing",
-                    SandboxMode = true
+                    SandboxMode = true,
+                    SuccessCallbackUrl = "/Order/Success?payKey=${payKey}",
+                    FailureCallbackUrl = "/Order/Cancel?payKey=${payKey}",
+                    SandboxPayFlowProPaymentPage = "https://www.sandbox.paypal.com/webscr?cmd=_ap-payment&paykey={0}",
+                    LivePayFlowProPaymentPage = "https://www.paypal.com/webscr?cmd=_ap-payment&paykey={0}",
+                    ApiVersion = "1.1.0",
+                    RequestDataBinding = "XML",
+                    ResponseDataBinding = "XML"
+
                 },
                 DatabaseConfiguration = new DatabaseConfiguration()
                 {
@@ -76,21 +85,6 @@ namespace GroupGiving.Core.Services
                     JustGivingApiDomainBase = "https://api.staging.justgiving.com/",
                     JustGivingApiVersion = "1"
                 },
-                PayFlowProConfiguration = new PayFlowProConfiguration()
-                {
-                    SandboxMode = true,
-                    PayPalAccountEmail = "Muffin_1321277131_biz@gmail.com",
-                    ApiMerchantUsername = "Muffin_1321277131_biz_api1.gmail.com",
-                    ApiMerchantPassword = "1321277160",
-                    ApiMerchantSignature = "AFcWxV21C7fd0v3bYYYRCpSSRl31ANDzgYINyuYs1FQZcsN1DSKkJexD",
-                    SuccessCallbackUrl = "/Order/Success?payKey=${payKey}",
-                    FailureCallbackUrl = "/Order/Cancel?payKey=${payKey}",
-                    SandboxPayFlowProPaymentPage = "https://www.sandbox.paypal.com/webscr?cmd=_ap-payment&paykey={0}",
-                    LivePayFlowProPaymentPage = "https://www.paypal.com/webscr?cmd=_ap-payment&paykey={0}",
-                    ApiVersion = "1.1.0",
-                    RequestDataBinding = "XML",
-                    ResponseDataBinding = "XML"
-                }
             };
         }
 
@@ -101,11 +95,6 @@ namespace GroupGiving.Core.Services
             {
                 configuration = CreateDefaultConfiguration();
                 storeNew = true;
-            }
-            if (configuration.PayFlowProConfiguration == null)
-            {
-                configuration.PayFlowProConfiguration = new PayFlowProConfiguration();
-                update = true;
             }
             if (configuration.AdaptiveAccountsConfiguration == null)
             {

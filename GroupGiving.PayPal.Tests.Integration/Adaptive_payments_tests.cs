@@ -6,6 +6,7 @@ using System.Text;
 using GroupGiving.Core.Configuration;
 using GroupGiving.Core.Domain;
 using GroupGiving.Core.Dto;
+using GroupGiving.PayPal.Configuration;
 using GroupGiving.PayPal.Model;
 using NUnit.Framework;
 using RefundRequest = GroupGiving.PayPal.Model.RefundRequest;
@@ -16,61 +17,59 @@ namespace GroupGiving.PayPal.Tests.Integration
     public class Adaptive_payments_tests
     {
         private ApiClientSettings _apiSettings;
-        private ISiteConfiguration _paypalConfiguration;
+        private AdaptiveAccountsConfiguration _paypalConfiguration;
         private ApiClient _apiClient;
         private PayPalPaymentGateway _gateway;
+        private IPayRequestFactory _payRequestFactory;
+        private Receiver[] _receivers;
 
         [TestFixtureSetUp]
         public void SetupFixture()
         {
             log4net.Config.XmlConfigurator.Configure();
 
-            _apiSettings = new ApiClientSettings("seller_1304843436_biz_api1.gmail.com", "1304843443",
-                                                 "AFcWxV21C7fd0v3bYYYRCpSSRl31APG52hf-AmPfK7eyvf7LBc0.0sm7");
-
             _paypalConfiguration = ValidSiteConfiguration();
-            _apiClient = new ApiClient(_apiSettings, _paypalConfiguration);
+            _apiSettings = new ApiClientSettings(_paypalConfiguration);
+
+            _payRequestFactory = new PayRequestFactory(_paypalConfiguration);
+
+            _apiClient = new ApiClient(_apiSettings, new SiteConfiguration{AdaptiveAccountsConfiguration=_paypalConfiguration});
             _gateway = new PayPalPaymentGateway(_apiClient, _paypalConfiguration);
+
+            _receivers = new[]
+                             {
+                                 new Receiver("100", "Muffin_1321277131_biz@gmail.com", true),
+                                 new Receiver("90", "Raiser_1321277286_biz@gmail.com", false)
+                             };
         }
 
-        private ISiteConfiguration ValidSiteConfiguration()
+        private AdaptiveAccountsConfiguration ValidSiteConfiguration()
         {
-            return new SiteConfiguration()
-                       {
-                           PayFlowProConfiguration = new PayFlowProConfiguration()
-                                                         {
-                                                             FailureCallbackUrl = "http://somedomain.com/failure",
-                                                             SuccessCallbackUrl = "http://somedomain.com/success",
-                                                             ApiMerchantUsername = "seller_1304843436_biz_api1.gmail.com",
-                                                             ApiMerchantPassword = "",
-                                                             ApiMerchantSignature = "",
-                                                             ApiVersion="1.1.0",
-                                                             SandboxMode = true,
-                                                             SandboxPayFlowProPaymentPage = "https://www.sandbox.paypal.com/webscr?cmd=_ap-payment&amp;paykey={0}",
-                                                             RequestDataBinding = "SOAP11",
-                                                             ResponseDataBinding = "SOAP11",
-                                                             PayPalAccountEmail = "something@something.com"
-                                                         }
-                       };
+            return new AdaptiveAccountsConfiguration()
+                {
+                    FailureCallbackUrl = "http://somedomain.com/failure",
+                    SuccessCallbackUrl = "http://somedomain.com/success",
+                    ApiUsername = "Muffin_1321277131_biz_api1.gmail.com",
+                    ApiPassword = "1321277160",
+                    ApiSignature = "AFcWxV21C7fd0v3bYYYRCpSSRl31ANDzgYINyuYs1FQZcsN1DSKkJexD",
+                    ApiVersion="1.1.0",
+                    SandboxApiBaseUrl = "https://svcs.sandbox.paypal.com/AdaptivePayments",
+                    SandboxApplicationId = "APP-80W284485P519543T",
+                    SandboxMode = true,
+                    SandboxPayFlowProPaymentPage = "https://www.sandbox.paypal.com/webscr?cmd=_ap-payment&amp;paykey={0}",
+                    RequestDataBinding = "XML",
+                    ResponseDataBinding = "XML",
+                    PayPalAccountEmail = "something@something.com"
+                };
         }
 
         [Test]
         public void Can_create_a_chained_payment()
         {
             var response = _apiClient.SendPayRequest(
-                new PayRequest()
-                    {
-                        ActionType="PAY",
-                        CancelUrl = _paypalConfiguration.PayFlowProConfiguration.FailureCallbackUrl,
-                        ReturnUrl = _paypalConfiguration.PayFlowProConfiguration.SuccessCallbackUrl,
-                        Memo = "test payment " + Guid.NewGuid().ToString(),
-                        CurrencyCode = "GBP",
-                        Receivers = new []
-                                        {
-                                            new Receiver("100", "seller_1304843436_biz@gmail.com", true),
-                                            new Receiver("90", "sellr2_1304843519_biz@gmail.com", false)
-                                        }
-                    });
+                _payRequestFactory.ChainedPayment("GBP", _receivers,
+                                    "test payment " + Guid.NewGuid().ToString()
+                    ));
 
             Assert.That(response.paymentExecStatus, Is.StringMatching("CREATED"));
             System.Diagnostics.Debug.Write(response.payKey, "transaction id");
@@ -81,19 +80,7 @@ namespace GroupGiving.PayPal.Tests.Integration
         {
             string memoField = "test payment " + Guid.NewGuid().ToString();
             var response = _apiClient.SendPayRequest(
-                new PayRequest()
-                    {
-                        ActionType = "PAY",
-                        CancelUrl = _paypalConfiguration.PayFlowProConfiguration.FailureCallbackUrl,
-                        ReturnUrl = _paypalConfiguration.PayFlowProConfiguration.SuccessCallbackUrl,
-                        Memo = memoField,
-                        CurrencyCode = "GBP",
-                        Receivers = new []
-                                        {
-                                            new Receiver("100", "seller_1304843436_biz@gmail.com", true),
-                                            new Receiver("90", "sellr2_1304843519_biz@gmail.com", false)
-                                        }
-                    });
+                _payRequestFactory.RegularPayment("GBP", _receivers, memoField));
 
             var detailsResponse = _apiClient.SendPaymentDetailsRequest(new PaymentDetailsRequest(response.payKey));
 
@@ -103,26 +90,13 @@ namespace GroupGiving.PayPal.Tests.Integration
 
         }
 
-        [TestCase("AP-8YM45525JA853393V")]
-        [TestCase("AP-38W574546F953893A")]
-        public void Can_check_the_details_of_an_approved_payment(string payKey)
-        {
-            var detailsResponse = _apiClient.SendPaymentDetailsRequest(new PaymentDetailsRequest(payKey));
-
-
-            Assert.That(detailsResponse, Is.Not.Null);
-        }
-
         [Test]
         public void Can_refund_a_payment()
         {
             string memoField = "test payment " + Guid.NewGuid().ToString();
             var response = _apiClient.SendPayRequest(
-                new PayRequest()
+                new PayRequest(_paypalConfiguration)
                 {
-                    ActionType = "PAY",
-                    CancelUrl = _paypalConfiguration.PayFlowProConfiguration.FailureCallbackUrl,
-                    ReturnUrl = _paypalConfiguration.PayFlowProConfiguration.SuccessCallbackUrl,
                     Memo = memoField,
                     CurrencyCode = "GBP",
                     Receivers = new []
@@ -150,14 +124,12 @@ namespace GroupGiving.PayPal.Tests.Integration
         public void Can_create_a_delayed_payment()
         {
             var response = _apiClient.SendPayRequest(
-                new PayRequest()
+                new PayRequest(_paypalConfiguration)
                     {
                         ActionType = "PAY_PRIMARY",
-                        CancelUrl = _paypalConfiguration.PayFlowProConfiguration.FailureCallbackUrl,
                         CurrencyCode = "GBP",
                         FeesPayer = "EACHRECEIVER",
                         Memo = "test payment " + Guid.NewGuid().ToString(),
-                        ReturnUrl = _paypalConfiguration.PayFlowProConfiguration.SuccessCallbackUrl,
                         Receivers = new []
                                         {
                                             new Receiver("100", "seller_1304843436_biz@gmail.com", true),
@@ -179,14 +151,12 @@ namespace GroupGiving.PayPal.Tests.Integration
         public void Can_complete_a_delayed_payment()
         {
             var response = _apiClient.SendPayRequest(
-                new PayRequest()
+                new PayRequest(_paypalConfiguration)
                 {
                     ActionType = "PAY_PRIMARY",
-                    CancelUrl = _paypalConfiguration.PayFlowProConfiguration.FailureCallbackUrl,
                     CurrencyCode = "GBP",
                     FeesPayer = "EACHRECEIVER",
                     Memo = "test payment " + Guid.NewGuid().ToString(),
-                    ReturnUrl = _paypalConfiguration.PayFlowProConfiguration.SuccessCallbackUrl,
                     Receivers = new []
                                         {
                                             new Receiver("100", "seller_1304843436_biz@gmail.com", true),

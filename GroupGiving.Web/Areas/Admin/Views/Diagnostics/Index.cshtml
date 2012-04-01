@@ -32,3 +32,8 @@
             @Html.ActionLink("Refresh country list ("+ Model.CountryCount +" loaded)", "LoadCountries", "Diagnostics")
         </li>
     </ul>
+    
+<h2>PayPal</h2>
+<ul>
+    <li><a href="@Url.Action("AuthenticatePayPalApi", "Diagnostics")">Api Authenticate</a></li>
+</ul>

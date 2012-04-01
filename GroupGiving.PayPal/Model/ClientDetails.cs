@@ -1,5 +1,8 @@
 ﻿using System.Runtime.Serialization;
 using System.Xml.Serialization;
+using GroupGiving.Core.Configuration;
+using GroupGiving.Core.Domain;
+using GroupGiving.PayPal.Configuration;
 
 namespace GroupGiving.PayPal.Model
 {
@@ -37,6 +40,13 @@ namespace GroupGiving.PayPal.Model
 
                            };
             }
+        }
+
+        public static ClientDetails FromConfiguration(AdaptiveAccountsConfiguration configuration)
+        {
+            var client = ClientDetails.Default;
+            client.ApplicationId = configuration.ApplicationId;
+            return client;
         }
     }
 }

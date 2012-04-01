@@ -1,12 +1,19 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Web.Hosting;
 using System.Web.Mvc;
+using System.Xml;
+using System.Xml.Linq;
 using EmailProcessing;
+using GroupGiving.Core;
+using GroupGiving.Core.Configuration;
 using GroupGiving.Core.Data;
 using GroupGiving.Core.Domain;
 using GroupGiving.Core.Services;
+using GroupGiving.PayPal;
+using GroupGiving.PayPal.Model;
 using GroupGiving.Web.Models;
 using Raven.Client;
 
@@ -19,14 +26,23 @@ namespace GroupGiving.Web.Areas.Admin.Controllers
         IEmailFacade _emailFacade = null;
         private readonly IDocumentStore _storage;
         private readonly ICountryService _countryService;
+        private readonly IApiClient _apiClient;
+        private readonly ISiteConfiguration _siteConfiguration;
+        private readonly IPayRequestFactory _payRequestFactory;
         private IRepository<GroupGivingEvent> _eventRepository=null;
 
-        public DiagnosticsController(IRepository<GroupGivingEvent> eventRepository, IEmailFacade emailFacade, IDocumentStore storage, ICountryService countryService)
+        public DiagnosticsController(IRepository<GroupGivingEvent> eventRepository, 
+            IEmailFacade emailFacade, IDocumentStore storage, ICountryService countryService,
+            IApiClient apiClient, ISiteConfiguration siteConfiguration,
+            IPayRequestFactory payRequestFactory)
         {
             _eventRepository = eventRepository;
             _emailFacade = emailFacade;
             _storage = storage;
             _countryService = countryService;
+            _apiClient = apiClient;
+            _siteConfiguration = siteConfiguration;
+            _payRequestFactory = payRequestFactory;
             _emailFacade.LoadTemplates();
         }
 
@@ -141,6 +157,58 @@ namespace GroupGiving.Web.Areas.Admin.Controllers
             }
 
             return "finished";
+        }
+
+        public ActionResult AuthenticatePayPalApi()
+        {
+            PayResponse response = null;
+
+            try
+            {
+                var receivers = new Receiver[]
+                                                {
+                                                    new Receiver("5", "andrew.myhre@gmail.com", false)
+                                                };
+                var payRequest = _payRequestFactory.RegularPayment("GBP", receivers, "diagnostics " + DateTime.Now.ToString());
+                
+                response = _apiClient.SendPayRequest(payRequest);
+            }
+            catch (HttpChannelException exception)
+            {
+                response = new PayResponse()
+                               {
+                                   Raw = exception.FaultMessage.Raw,
+                                   responseEnvelope = new PayResponseResponseEnvelope()
+                               };
+            }
+
+            XDocument xml = null;
+            StringBuilder sb = new StringBuilder();
+            XmlWriterSettings xmlsettings=new XmlWriterSettings()
+                                              {
+                                                  Indent = true,
+                                                  NewLineHandling = NewLineHandling.Entitize,
+                                                  NewLineOnAttributes = true
+                                              };
+            using (XmlWriter writer = XmlWriter.Create(sb, xmlsettings))
+            {
+                xml = XDocument.Parse(response.Raw.Request);
+                xml.WriteTo(writer);
+                writer.Flush();
+                response.Raw.Request = sb.ToString();
+            }
+            sb.Clear();
+
+            using (XmlWriter writer = XmlWriter.Create(sb, xmlsettings))
+            {
+                xml = XDocument.Parse(response.Raw.Response);
+                xml.WriteTo(writer);
+                writer.Flush();
+                response.Raw.Response = sb.ToString();
+            }
+
+            return View(response);
+
         }
     }
 }

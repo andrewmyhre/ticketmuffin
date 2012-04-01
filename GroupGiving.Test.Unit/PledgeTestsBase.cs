@@ -8,6 +8,7 @@ using GroupGiving.Core.Dto;
 using GroupGiving.Core.Email;
 using GroupGiving.Core.Services;
 using GroupGiving.PayPal;
+using GroupGiving.PayPal.Configuration;
 using GroupGiving.PayPal.Model;
 using Moq;
 using Raven.Client;
@@ -147,21 +148,7 @@ namespace GroupGiving.Test.Unit
                                                                    RequestDataFormat = "XML",
                                                                    ResponseDataFormat = "XML",
                                                                    SandboxMailAddress = "something@something.com"
-                                                               },
-                           PayFlowProConfiguration = new PayFlowProConfiguration()
-                                                         {
-                                                             FailureCallbackUrl = "http://somedomain.com/failure",
-                                                             SuccessCallbackUrl = "http://somedomain.com/success",
-                                                             ApiMerchantUsername = "seller_1304843436_biz_api1.gmail.com",
-                                                             ApiMerchantPassword = "",
-                                                             ApiMerchantSignature = "",
-                                                             ApiVersion = "1.1.0",
-                                                             SandboxMode = true,
-                                                             SandboxPayFlowProPaymentPage = "https://www.sandbox.paypal.com/webscr?cmd=_ap-payment&amp;paykey={0}",
-                                                             RequestDataBinding = "SOAP11",
-                                                             ResponseDataBinding = "SOAP11",
-                                                             PayPalAccountEmail = "something@something.com"
-                                                         }
+                                                               }
                        };
         }
     }

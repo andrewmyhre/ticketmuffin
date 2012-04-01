@@ -17,6 +17,9 @@ namespace GroupGiving.PayPal
         private readonly ApiClientSettings _clientSettings;
         private readonly ISiteConfiguration _siteConfiguration;
 
+        public string AdaptiveAccountsUrl { get { return _siteConfiguration.AdaptiveAccountsConfiguration.ApiBaseUrl + "/AdaptiveAccounts"; } }
+        public string AdaptivePaymentsUrl { get { return _siteConfiguration.AdaptiveAccountsConfiguration.ApiBaseUrl + "/AdaptivePayments"; } }
+
         public ApiClient(ApiClientSettings clientSettings, ISiteConfiguration siteConfiguration)
         {
             _clientSettings = clientSettings;
@@ -25,22 +28,22 @@ namespace GroupGiving.PayPal
 
         public PayResponse SendPayRequest(PayRequest request)
         {
-            return new HttpChannel().ExecuteRequest<PayRequest, PayResponse>("Pay", request, _clientSettings);
+            return new HttpChannel().ExecuteRequest<PayRequest, PayResponse>("AdaptivePayments", "Pay", request, _clientSettings);
         }
 
         public PaymentDetailsResponse SendPaymentDetailsRequest(PaymentDetailsRequest request)
         {
-            return new HttpChannel().ExecuteRequest<PaymentDetailsRequest, PaymentDetailsResponse>("PaymentDetails", request, _clientSettings);
+            return new HttpChannel().ExecuteRequest<PaymentDetailsRequest, PaymentDetailsResponse>("AdaptivePayments", "PaymentDetails", request, _clientSettings);
         }
 
         public ExecutePaymentResponse SendExecutePaymentRequest(ExecutePaymentRequest request)
         {
-            return new HttpChannel().ExecuteRequest<ExecutePaymentRequest, ExecutePaymentResponse>("ExecutePayment", request, _clientSettings);
+            return new HttpChannel().ExecuteRequest<ExecutePaymentRequest, ExecutePaymentResponse>("AdaptivePayments", "ExecutePayment", request, _clientSettings);
         }
 
         public RefundResponse Refund(RefundRequest request)
         {
-            return new HttpChannel().ExecuteRequest<RefundRequest, RefundResponse>("Refund", request, _clientSettings);
+            return new HttpChannel().ExecuteRequest<RefundRequest, RefundResponse>("AdaptivePayments", "Refund", request, _clientSettings);
         }
     }
 }

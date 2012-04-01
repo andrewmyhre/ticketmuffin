@@ -245,7 +245,7 @@ namespace GroupGiving.Web.Controllers
                 return View(viewModel);
             }
 
-            var action = new MakePledgeAction(_taxResolver, _paymentGateway, _siteConfiguration, _documentStore);
+            var action = new MakePledgeAction(_taxResolver, _paymentGateway, _siteConfiguration.AdaptiveAccountsConfiguration, _documentStore);
             var makePledgeRequest = new MakePledgeRequest()
                                         {
                                             AttendeeNames = request.AttendeeName,

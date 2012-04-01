@@ -1,0 +1,14 @@
+﻿@model GroupGiving.PayPal.Model.PayResponse
+
+@{
+    ViewBag.Title = "Test pay";
+}
+
+<h2>Test pay</h2>
+
+<p>Status: @Model.paymentExecStatus<br/>
+    Error: @Model.Error<br/>
+    ACK: @Model.responseEnvelope.ack</p>
+    
+<p>Response:<br/><pre>@Model.Raw.Response</pre></p>
+<p>Request:<br /><pre>@Model.Raw.Request</pre></p>
