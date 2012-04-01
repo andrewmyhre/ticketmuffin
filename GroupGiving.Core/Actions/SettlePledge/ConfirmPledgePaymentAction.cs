@@ -66,12 +66,12 @@ namespace GroupGiving.Core.Actions.SettlePledge
 
                 // if the pledger does not have an account then we need to create one
                 var account = _accountService.RetrieveByEmailAddress(paymentDetails.SenderEmailAddress);
-                    if (account == null)
-                    {
-                        account = _accountService.CreateIncompleteAccount(paymentDetails.SenderEmailAddress, _emailRelayService);
-                        pledge.AccountId = account.Id;
-                        pledge.AccountEmailAddress = account.Email;
-                    }
+                if (account == null)
+                {
+                    account = _accountService.CreateIncompleteAccount(paymentDetails.SenderEmailAddress, _emailRelayService);
+                    pledge.AccountId = account.Id;
+                    pledge.AccountEmailAddress = account.Email;
+                }
             }
             
             return response;

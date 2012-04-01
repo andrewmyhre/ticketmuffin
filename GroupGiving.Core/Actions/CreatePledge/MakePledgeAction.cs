@@ -77,8 +77,8 @@ namespace GroupGiving.Core.Actions.CreatePledge
                                                 {
                                                     Amount = pledge.Total,
                                                     OrderMemo = "Tickets for " + @event.Title,
-                                                    SuccessCallbackUrl = request.WebsiteUrlBase.TrimEnd('/') + _paypalConfiguration.SuccessCallbackUrl,
-                                                    FailureCallbackUrl = request.WebsiteUrlBase.TrimEnd('/') + _paypalConfiguration.FailureCallbackUrl,
+                                                    SuccessCallbackUrl = _paypalConfiguration.SuccessCallbackUrl,
+                                                    FailureCallbackUrl = _paypalConfiguration.FailureCallbackUrl,
                                                     Recipients = new List<PaymentRecipient>()
                                                                      {
                                                                          // TicketMuffin.com

@@ -41,7 +41,7 @@ namespace GroupGiving.PayPal
             oPayRequest.Headers.Add("X-PAYPAL-SECURITY-PASSWORD", clientSettings.Password);
             oPayRequest.Headers.Add("X-PAYPAL-SECURITY-SIGNATURE", clientSettings.Signature);
             oPayRequest.Headers.Add("X-PAYPAL-SERVICE-VERSION", clientSettings.ApiVersion);
-            oPayRequest.Headers.Add("X-PAYPAL-APPLICATION-ID", request.ClientDetails.ApplicationId);
+            oPayRequest.Headers.Add("X-PAYPAL-APPLICATION-ID", clientSettings.ApplicationId);
             oPayRequest.Headers.Add("X-PAYPAL-REQUEST-DATA-FORMAT", clientSettings.RequestDataBinding);
             oPayRequest.Headers.Add("X-PAYPAL-RESPONSE-DATA-FORMAT", clientSettings.ResponseDataBinding);
 

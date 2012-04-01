@@ -19,7 +19,8 @@ namespace GroupGiving.PayPal
             Username = paypalConfiguration.ApiUsername;
             Password = paypalConfiguration.ApiPassword;
             Signature = paypalConfiguration.ApiSignature;
-            
+            ApplicationId = paypalConfiguration.ApplicationId;
+
         }
 
         protected string ApiEndpointBase { get; set; }
@@ -32,6 +33,8 @@ namespace GroupGiving.PayPal
         public string ResponseDataBinding { get; set; }
 
         public string PayApiEndpoint { get; set; }
+
+        public string ApplicationId { get; set; }
 
         public string ActionUrl(string api, string action)
         {
