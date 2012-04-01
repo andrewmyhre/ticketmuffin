@@ -68,6 +68,10 @@ namespace GroupGiving.PayPal
                 System.Diagnostics.Debug.WriteLine("parameter: " + faultMessage.Error.Parameter);
                 System.Diagnostics.Debug.WriteLine("message: " + faultMessage.Error.Message);
                 faultMessage.Raw = new DialogueHistoryEntry(requestXml.ToString(), responseString);
+                foreach (string header in oPayRequest.Headers.Keys)
+                {
+                    faultMessage.Raw.RequestHeaders.Add(header, oPayRequest.Headers[header]);
+                }
                 throw new HttpChannelException(faultMessage);
             }
 
