@@ -12,3 +12,12 @@
     
 <p>Response:<br/><pre>@Model.Raw.Response</pre></p>
 <p>Request:<br /><pre>@Model.Raw.Request</pre></p>
+<p>Request Headers:<br/>
+    <dl>
+        @foreach(var header in Model.Raw.RequestHeaders)
+        {
+            <dt>@header.Key: @header.Value</dt>
+        }
+        
+    </dl>
+</p>

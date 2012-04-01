@@ -91,6 +91,10 @@ namespace GroupGiving.PayPal
             }
 
             responseObject.Raw = new DialogueHistoryEntry(requestXml.ToString(), responseFormatted.ToString());
+            foreach(string header in oPayRequest.Headers.Keys)
+            {
+                responseObject.Raw.RequestHeaders.Add(header, oPayRequest.Headers[header]);
+            }
 
             return responseObject;
 

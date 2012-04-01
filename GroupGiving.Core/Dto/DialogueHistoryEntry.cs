@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 
 namespace GroupGiving.Core.Dto
 {
@@ -7,6 +8,7 @@ namespace GroupGiving.Core.Dto
         public DialogueHistoryEntry()
         {
             Timestamp = DateTime.Now;
+            RequestHeaders = new Dictionary<string, string>();
         }
 
         public DialogueHistoryEntry(string request, string response) : this()
@@ -18,5 +20,7 @@ namespace GroupGiving.Core.Dto
         public DateTime Timestamp { get; set; }
         public string Request { get; set; }
         public string Response { get; set; }
+
+        public Dictionary<string,string> RequestHeaders { get; set; }
     }
 }
