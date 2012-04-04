@@ -1,0 +1,28 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<emailTemplate xmlns="http://www.tanash.net/email/template">
+    <name>EventActivated</name>
+    <culture>pl</culture>
+    <from>noreply@ticketmuffin.com</from>
+    <subject>
+        @Model.Event.Title - wydarzenie zostało aktywowane!
+    </subject>
+    <html>
+        <![CDATA[
+<p>Cześć @(Model.Pledge.AccountName ?? "there"),</p>
+ <p>Wydarzenie, na które kupiłaś/eś bilet, @Model.Event.Title, właśnie osiągnęło minimalną ilość uczestników. To oznacza, że wydarzenie odbędzie się zgodnie z planem.</p>
+ <p>@Model.Event.Title</p>
+ <p>@Model.Event.StartDate.ToString("dd/MM/yyyy HH:mm")</p>
+ <p>
+ @Model.Event.Venue</br>
+ @Model.Event.AddressLine<br/>
+ @Model.Event.City<br/>
+ @Model.Event.Country
+ </p>
+ <p>Pozdrowienia,</p>
+ <p>TicketMuffin</p>
+]]>
+    </html>
+    <text>
+        Cześć @(Model.Pledge.AccountName ?? "there"), Wydarzenie, na które kupiłaś/eś bilet, @Model.Event.Title, właśnie osiągnęło minimalną ilość uczestników. To oznacza, że wydarzenie odbędzie się zgodnie z planem. @Model.Event.Title @Model.Event.StartDate.ToString("dd/MM/yyyy HH:mm") @Model.Event.Venue @Model.Event.AddressLine @Model.Event.City @Model.Event.Country Pozdrowienia, TicketMuffin
+    </text>
+</emailTemplate>

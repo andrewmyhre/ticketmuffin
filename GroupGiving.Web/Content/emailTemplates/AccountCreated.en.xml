@@ -1,7 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <emailTemplate xmlns="http://www.tanash.net/email/template">
     <name>AccountCreated</name>
-    <from>noreply@ticketmuffin.com</from>
+    <culture>en</culture>
+    <from>andrew.myhre@gmail.com</from>
     <subject>TicketMuffin - Thanks for registering @Model.Account.FirstName</subject>
     <html><![CDATA[<p>Hi @Model.Account.FirstName</p>
 <p>We're glad you've taken the time to register on our site.</p>

@@ -47,7 +47,8 @@ namespace GroupGiving.Core.Services
                 new {
                     Account=account,
                     AccountPageUrl = request.AccountPageUrl
-                });
+                },
+                "pl");
 
             return account;
         }
@@ -72,7 +73,7 @@ namespace GroupGiving.Core.Services
             _accountRepository.CommitUpdates();
 
             // send email
-            _emailFacade.Send(account.Email, "ResetYourPassword", new {Account=account});
+            _emailFacade.Send(account.Email, "ResetYourPassword", new { Account = account }, "pl");
 
             return SendPasswordResetResult.SuccessResult;
         }
@@ -98,7 +99,7 @@ namespace GroupGiving.Core.Services
 
             // send email
             _emailFacade.Send(account.Email, "GetYourAccountStarted",
-                new {Account=account});
+                new { Account = account }, "pl");
 
             return SendPasswordResetResult.SuccessResult;
         }

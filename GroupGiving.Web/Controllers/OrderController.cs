@@ -90,7 +90,7 @@ namespace GroupGiving.Web.Controllers
                     // send a purchase confirmation email
                     MvcApplication.EmailFacade.Send(pledge.AccountEmailAddress,
                                                     "PledgeConfirmation",
-                                                    new {Event = @event, Pledge = pledge, Account = account});
+                                                    new { Event = @event, Pledge = pledge, Account = account }, "pl");
 
                     // this pledge has activated the event);
                     if (@event.IsOn
@@ -101,7 +101,7 @@ namespace GroupGiving.Web.Controllers
                             MvcApplication.EmailFacade.Send(
                                 eventPledge.AccountEmailAddress,
                                 "EventActivated",
-                                new {Event = @event, Pledge = pledge});
+                                new { Event = @event, Pledge = pledge }, "pl");
                         }
                     }
 

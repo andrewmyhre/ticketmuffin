@@ -1,0 +1,21 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<emailTemplate xmlns="http://www.tanash.net/email/template">
+    <name>PledgeConfirmation</name>
+    <culture>pl</culture>
+    <from>noreply@ticketmuffin.com</from>
+    <subject>TicketMuffin - potwierdzenie zakupu</subject>
+    <html>
+        <![CDATA[
+<p>Cześć,</p>
+ <p>Dziękujemy za zakup biletu i chęć wzięcia udziału w wydzarzeniu <a href="http://www.ticketmuffin.com/@Model.Event.ShortUrl">@Model.Event.Title</a>!</p>
+ <p>Twój numer zamówienia to @Model.Pledge.OrderNumber. Zachowaj go na wypadek kontaktu z nami.</p>
+ <p>Pamiętaj, zawsze możesz zaktualizować swoje dane, zmienić hasło lub przejrzeć aktywność w serwisie, klikając tutaj:<br/>
+ @Model.AccountPageUrl</p>
+ <p>Pozdrowienia,</p>
+ <p>TicketMuffin</p>
+]]>
+    </html>
+    <text>
+        Cześć, @Model.Account.FirstName Dziękujemy za zakup biletu i chęć wzięcia udziału w wydzarzeniu @Model.Event.Title! Możesz przejrzeć szczegóły dotyczące wydarzenia tutaj: http://www.ticketmuffin.com/@Model.Event.ShortUrl Twój numer zamówienia to @Model.Pledge.OrderNumber. Zachowaj go na wypadek kontaktu z nami. Pamiętaj, zawsze możesz zaktualizować swoje dane, zmienić hasło lub przejrzeć aktywność w serwisie, klikając tutaj: @Model.AccountPageUrl Pozdrowienia, TicketMuffin
+    </text>
+</emailTemplate>
