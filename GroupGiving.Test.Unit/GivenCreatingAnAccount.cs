@@ -33,7 +33,7 @@ namespace GroupGiving.Test.Unit
         {
             // arrange
             _emailFacade
-                .Setup(m=>m.Send(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<object>()))
+                .Setup(m=>m.Send(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<object>(), "pl"))
                 .Verifiable();
             IAccountService accountService = new AccountService(_accountRepository.Object, _emailFacade.Object, _documentStore.Object);
             var createUserRequest = TestDataObjects.CreateValidCreateUserRequest();

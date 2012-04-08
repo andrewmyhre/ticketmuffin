@@ -1,0 +1,38 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<emailTemplate xmlns="http://www.tanash.net/email/template">
+    <name>GetYourAccountStarted</name>
+    <culture>pl</culture>
+    <from>noreply@ticketmuffin.com</from>
+    <subject>TicketMuffin - stwórzmy Twoje konto</subject>
+    <html>
+        <![CDATA[
+<p>Cześć,</p>
+ <p>Dziękujemy za zakup biletu na TicketMuffin - jest nam z tego powodu bardzo miło.</p>
+ <p>Przy okazji, chcielibyśmy zapytać Cię o kilka danych osobowych - na przykład o Twoje imię, tak aby móc się właściwie do Ciebie zwracać przy okazji przyszłej korespondencji.</p>
+ <p>Jeśli masz wolną chwilę, będziemy bardzo wdzięczni, jeśli klikniesz lub wkleisz ten link do przeglądarki:</p>
+ <p><a href="http://www.ticketmuffin.com/account/get-started/@Model.Account.PasswordResetToken">http://www.ticketmuffin.com/account/get-started/@Model.Account.PasswordResetToken</a></p>
+ <p>Na tej stronie możesz powiedzieć nam trochę więcej o sobie. Bez obaw, wszystkie informacje są opcjonalne i całkowicie prywatne.</p>
+ <p>Pozdrowienia,</p>
+ <p>TicketMuffin</p>
+]]>
+    </html>
+    <text>
+        <![CDATA[
+Cześć,
+ 
+ Dziękujemy za zakup biletu na TicketMuffin - jest nam z tego powodu bardzo miło.
+ 
+ Przy okazji, chcielibyśmy zapytać Cię o kilka danych osobowych - na przykład o Twoje imię, tak aby móc się właściwie do Ciebie zwracać przy okazji przyszłej korespondencji.
+ 
+ Jeśli masz wolną chwilę, będziemy bardzo wdzięczni, jeśli klikniesz lub wkleisz ten link do przeglądarki:
+ 
+ http://www.ticketmuffin.com/account/get-started/@Model.Account.PasswordResetToken
+ 
+ Na tej stronie możesz powiedzieć nam trochę więcej o sobie. Bez obaw, wszystkie informacje są opcjonalne i całkowicie prywatne.
+ 
+ Pozdrowienia,
+ 
+ TicketMuffin
+]]>
+    </text>
+</emailTemplate>

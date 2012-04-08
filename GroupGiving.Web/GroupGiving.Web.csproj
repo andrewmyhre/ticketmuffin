@@ -224,7 +224,16 @@
     </Content>
     <Content Include="Areas\Admin\Content\site.css" />
     <Content Include="Content\editorstyle.css" />
-    <Content Include="Content\emailTemplates\PledgeConfirmation.xml" />
+    <Content Include="Content\emailTemplates\AccountCreated.en.xml" />
+    <Content Include="Content\emailTemplates\AccountCreated.pl.xml" />
+    <Content Include="Content\emailTemplates\EventActivated.en.xml" />
+    <Content Include="Content\emailTemplates\EventActivated.pl.xml" />
+    <Content Include="Content\emailTemplates\GetYourAccountStarted.en.xml" />
+    <Content Include="Content\emailTemplates\GetYourAccountStarted.pl.xml" />
+    <Content Include="Content\emailTemplates\PledgeConfirmation.en.xml" />
+    <Content Include="Content\emailTemplates\PledgeConfirmation.pl.xml" />
+    <Content Include="Content\emailTemplates\ResetYourPassword.en.xml" />
+    <Content Include="Content\emailTemplates\ResetYourPassword.pl.xml" />
     <Content Include="Content\images\ajax-loader.gif" />
     <Content Include="Content\images\cross.png" />
     <Content Include="Content\images\tick.png" />
@@ -267,10 +276,6 @@
     <Content Include="Content\img\stepGrey.jpg" />
     <Content Include="Content\jquery-ui-1.8.16.custom.css" />
     <Content Include="Content\style.m.css" />
-    <Content Include="Content\emailTemplates\AccountCreated.xml" />
-    <Content Include="Content\emailTemplates\ResetYourPassword.xml" />
-    <Content Include="Content\emailTemplates\EventActivated.xml" />
-    <Content Include="Content\emailTemplates\GetYourAccountStarted.xml" />
     <Content Include="Content\img\barProgress.png" />
     <Content Include="Content\img\blueButton.png" />
     <Content Include="Content\img\body_bg.jpg" />

@@ -1,0 +1,22 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<emailTemplate xmlns="http://www.tanash.net/email/template">
+    <name>AccountCreated</name>
+    <culture>pl</culture>
+    <from>noreply@ticketmuffin.com</from>
+    <subject>
+        TicketMuffin - dziękujemy za rejestrację @Model.Account.FirstName
+    </subject>
+    <html>
+        <![CDATA[
+<p>Cześć @Model.Account.FirstName</p>
+ <p>Dziękujemy za rejestrację na naszej stronie.</p>
+ <p>Pamiętaj, zawsze możesz zaktualizować swoje dane, zmienić hasło lub przejrzeć aktywność w serwisie, klikając tutaj:</p>
+ <p>@Model.AccountPageUrl</p>
+ <p>Pozdrowienia,</p>
+ <p>TicketMuffin</p>
+]]>
+    </html>
+    <text>
+        Cześć @Model.Account.FirstName Dziękujemy za rejestrację na naszej stronie. Pamiętaj, zawsze możesz zaktualizować swoje dane, zmienić hasło lub przejrzeć aktywność w serwisie, klikając tutaj: @Model.AccountPageUrl Pozdrowienia, TicketMuffin
+    </text>
+</emailTemplate>

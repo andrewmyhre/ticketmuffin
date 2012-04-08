@@ -1,7 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <emailTemplate xmlns="http://www.tanash.net/email/template">
     <name>PledgeConfirmation</name>
-    <from>noreply@ticketmuffin.com</from>
+    <culture>en</culture>
+    <from>andrew.myhre@gmail.com</from>
     <subject>TicketMuffin - Your pledge confirmation</subject>
     <html><![CDATA[<p>Hi there,</p>
 <p>Thanks for pledging to attend <a href="http://www.ticketmuffin.com/@Model.Event.ShortUrl">@Model.Event.Title</a>!</p>
