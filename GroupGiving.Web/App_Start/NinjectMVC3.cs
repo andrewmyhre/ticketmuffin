@@ -113,7 +113,9 @@ namespace GroupGiving.Web.App_Start
                 .ToMethod(x => EmailSenderFactory.CreateRelayerFromConfiguration(ConfigurationManager.GetSection("emailBuilder") as EmailBuilderConfigurationSection));
             kernel.Bind<ICountryService>().To<CountryService>();
             kernel.Bind<ISiteConfigurationService>().To<SiteConfigurationService>();
-            kernel.Bind<ISiteConfiguration>().ToMethod(r => kernel.Get<ISiteConfigurationService>().GetConfiguration());
+            kernel.Bind<ISiteConfiguration>()
+                .ToMethod(r => kernel.Get<ISiteConfigurationService>().GetConfiguration())
+                .InSingletonScope();
             kernel.Bind<IApiClient>().ToMethod((request) =>
             {
                 var config = kernel.Get<ISiteConfiguration>();
