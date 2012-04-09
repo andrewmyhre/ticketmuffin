@@ -222,6 +222,7 @@
     <Content Include="App_Data\wurfl.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="app_online.htm" />
     <Content Include="Areas\Admin\Content\site.css" />
     <Content Include="Content\editorstyle.css" />
     <Content Include="Content\emailTemplates\AccountCreated.en.xml" />
