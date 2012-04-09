@@ -13,6 +13,6 @@
     <tags>website</tags>
   </metadata>
   <files>
-	<file src="*" exclude="**\*.log" />
+	<file src="*" exclude="**\*.log" target="content" />
   </files>
 </package>

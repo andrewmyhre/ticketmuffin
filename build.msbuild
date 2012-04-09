@@ -3,11 +3,13 @@
 <PropertyGroup>
 	<ArtifactsPath>$(MSBuildProjectDirectory)\build\artifacts</ArtifactsPath>
 	<PackagesPath>$(MSBuildProjectDirectory)\build\packages</PackagesPath>
+	<MsDeployPath>$(MSBuildProjectDirectory)\build\msdeploy</MsDeployPath>
 	<Version>1.0.0.0</Version>
 </PropertyGroup>
 	<Target Name="Package">
 		<CallTarget Targets="Clean" />
 		<CallTarget Targets="Build" />
+		<CallTarget Targets="Package-MsDeploy" />
 		<CallTarget Targets="Package-Nuget" />
 	</Target>
 	
@@ -23,12 +25,28 @@
 			
 	</Target>
 	
+	<Target Name="Package-MsDeploy">
+		<MakeDir Directories="$(ArtifactsPath)" Condition="!Exists('$(ArtifactsPath)')" />
+		<MakeDir Directories="$(MsDeployPath)" Condition="!Exists('$(MsDeployPath)')" />
+		<msbuild
+			projects="GroupGiving.Web\GroupGiving.Web.csproj"
+			Targets="Package"
+			Properties="DeployOnBuild=false;CreatePackageOnPublish=true;Configuration=Release;DeployTarget=Package;PackageAsSingleFile=true;PackageLocation=$(MsDeployPath)\TicketMuffin.Web\TicketMuffin.Web.zip" 
+			/>
+			
+		<ItemGroup>
+			<NuspecFile Include="GroupGiving.Web\TicketMuffin.Web.nuspec" />
+		</ItemGroup>
+		
+		<Copy SourceFiles="@(NuspecFile)" DestinationFolder="$(MsDeployPath)\TicketMuffin.Web" />
+	</Target>
+	
 	<Target Name="Package-Nuget">
 		<MakeDir Directories="$(ArtifactsPath)" Condition="!Exists('$(ArtifactsPath)')" />
 		<MakeDir Directories="$(PackagesPath)" Condition="!Exists('$(PackagesPath)')" />
 		
 		<ItemGroup>
-			<Nuspecs Include="$(ArtifactsPath)\_PublishedWebsites\GroupGiving.Web\GroupGiving.Web.nuspec" />
+			<Nuspecs Include="$(MsDeployPath)\TicketMuffin.Web\TicketMuffin.Web.nuspec" />
 			<Nuspecs Include="$(ArtifactsPath)\_PublishedWebsites\EmailRelayService\EmailRelayService.nuspec" />
 		</ItemGroup>
 		
