@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<package >
+  <metadata>
+    <id>TicketMuffin.Web</id>
+    <version>$version$</version>
+    <title>TicketMuffin.Web</title>
+    <authors>TicketMuffin</authors>
+    <owners>TicketMuffin</owners>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>TicketMuffin</description>
+    <releaseNotes></releaseNotes>
+    <copyright>Copyright 2012</copyright>
+    <tags>website</tags>
+  </metadata>
+  <files>
+	<file src="*" exclude="**\*.log" />
+  </files>
+</package>

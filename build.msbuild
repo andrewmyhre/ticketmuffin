@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<PropertyGroup>
+	<ArtifactsPath>$(MSBuildProjectDirectory)\build\artifacts</ArtifactsPath>
+	<PackagesPath>$(MSBuildProjectDirectory)\build\packages</PackagesPath>
+	<Version>1.0.0.0</Version>
+</PropertyGroup>
+	<Target Name="Package">
+		<CallTarget Targets="Build" />
+		<CallTarget Targets="Package-Nuget" />
+	</Target>
+
+	<Target Name="Build">
+		<Msbuild
+			Projects="GroupGiving.Web\GroupGiving.Web.csproj"
+			BuildInParallel="true"
+			Properties="OutputPath=$(ArtifactsPath)" />
+	</Target>
+	
+	<Target Name="Package-Nuget">
+		<MakeDir Directories="$(PackagesPath)" Condition="!Exists('$(PackagesPath)')" />
+		<Exec
+			Command="$(MSBuildProjectDirectory)\tools\nuget\nuget.exe pack $(ArtifactsPath)\_PublishedWebsites\GroupGiving.Web\GroupGiving.Web.nuspec -Version $(Version) -OutputDirectory $(PackagesPath)" />
+	</Target>
+</Project>
