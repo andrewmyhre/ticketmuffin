@@ -57,7 +57,7 @@ namespace GroupGiving.Web.Areas.Admin.Controllers
         }
 
         [AcceptVerbs(HttpVerbs.Post)]
-        public ActionResult SendTest(string toAddress, string emailTemplate)
+        public ActionResult SendTest(string toAddress, string emailTemplate, string culture)
         {
             var account = new Account()
             {
