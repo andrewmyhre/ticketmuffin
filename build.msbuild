@@ -6,8 +6,13 @@
 	<Version>1.0.0.0</Version>
 </PropertyGroup>
 	<Target Name="Package">
+		<CallTarget Targets="Clean" />
 		<CallTarget Targets="Build" />
 		<CallTarget Targets="Package-Nuget" />
+	</Target>
+	
+	<Target Name="Clean">
+		<RemoveDir Directories="$(ArtifactsPath)" />
 	</Target>
 
 	<Target Name="Build">
@@ -19,6 +24,7 @@
 	</Target>
 	
 	<Target Name="Package-Nuget">
+		<MakeDir Directories="$(ArtifactsPath)" Condition="!Exists('$(ArtifactsPath)')" />
 		<MakeDir Directories="$(PackagesPath)" Condition="!Exists('$(PackagesPath)')" />
 		
 		<ItemGroup>
