@@ -115,7 +115,7 @@ namespace GroupGiving.Web.App_Start
             kernel.Bind<ISiteConfigurationService>().To<SiteConfigurationService>();
             kernel.Bind<ISiteConfiguration>()
                 .ToMethod(r => kernel.Get<ISiteConfigurationService>().GetConfiguration())
-                .InSingletonScope();
+                .InRequestScope();
             kernel.Bind<IApiClient>().ToMethod((request) =>
             {
                 var config = kernel.Get<ISiteConfiguration>();
