@@ -62,14 +62,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AdaptiveAccounts\BaseApiProfileFactory.cs" />
     <Compile Include="ApiClient.cs" />
     <Compile Include="ApiClientSettings.cs" />
     <Compile Include="Configuration\PaypalAdaptiveAccountsConfigurationSection.cs" />
     <Compile Include="Configuration\PaypalEnvironment.cs" />
     <Compile Include="HttpChannel.cs" />
     <Compile Include="IApiClient.cs" />
-    <Compile Include="IPaypalAccountService.cs" />
     <Compile Include="Model\ClientDetails.cs" />
     <Compile Include="Model\CreatePayPalAccountRequest.cs" />
     <Compile Include="Model\CreatePaypalAccountResponse.cs" />
@@ -86,10 +84,8 @@
     <Compile Include="Model\RequestEnvelope.cs" />
     <Compile Include="Model\GetVerifiedStatusRequest.cs" />
     <Compile Include="Model\GetVerifiedStatusResponse.cs" />
-    <Compile Include="Model\VerifyPaypalAccountRequest.cs" />
     <Compile Include="Model\VerifyPaypalAccountResponse.cs" />
     <Compile Include="PaymentDetailsRequest.cs" />
-    <Compile Include="PaypalAccountService.cs" />
     <Compile Include="PaypalAdaptiveAccountsService.cs" />
     <Compile Include="PayPalPaymentGateway.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -104,14 +100,6 @@
     <ProjectReference Include="..\GroupGiving.Core\GroupGiving.Core.csproj">
       <Project>{665762CC-21C5-4DF4-A0AD-AB23C449DDF9}</Project>
       <Name>GroupGiving.Core</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\packages\PayPal\Base_AA\Base_AA.csproj">
-      <Project>{8F599E12-CF05-4EDF-BFC6-6F0B4EA4F36C}</Project>
-      <Name>Base_AA</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\packages\PayPal\Base_Common\Base_Common.csproj">
-      <Project>{1F5FF00B-CE0F-40B8-9BC4-7B5ED2087266}</Project>
-      <Name>Base_Common</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Xml.Serialization;
 
 namespace GroupGiving.Core.Dto
 {
@@ -21,6 +22,7 @@ namespace GroupGiving.Core.Dto
         public string Request { get; set; }
         public string Response { get; set; }
 
+        [XmlIgnore]
         public Dictionary<string,string> RequestHeaders { get; set; }
     }
 }

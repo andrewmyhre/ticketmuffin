@@ -13,6 +13,7 @@ using GroupGiving.PayPal;
 using GroupGiving.PayPal.Configuration;
 using GroupGiving.PayPal.Model;
 using GroupGiving.Web.Code;
+using GroupGiving.Web.Models;
 
 namespace GroupGiving.Web.Areas.Api.Controllers
 {

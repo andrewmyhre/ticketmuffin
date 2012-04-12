@@ -30,7 +30,7 @@ namespace GroupGiving.Test.Unit
         private Mock<IEventService> eventService = null;
         private Mock<MembershipProvider> _membershipProvider = new Mock<MembershipProvider>();
         private Mock<ICountryService> _countryService = new Mock<ICountryService>();
-        private Mock<IPaypalAccountService> _paypalAccountService = new Mock<IPaypalAccountService>();
+        private Mock<IAdaptiveAccountsService> _paypalAccountService = new Mock<IAdaptiveAccountsService>();
         private IIdentity _userIdentity = new System.Security.Principal.GenericIdentity("testuser@test.com");
 
         [SetUp]
@@ -70,8 +70,8 @@ namespace GroupGiving.Test.Unit
                 .Returns(new GroupGivingEvent());
 
             _paypalAccountService
-                .Setup(m => m.VerifyPaypalAccount(It.IsAny<VerifyPaypalAccountRequest>()))
-                .Returns(new VerifyPaypalAccountResponse() { Success = true, AccountStatus = "Verified" });
+                .Setup(m => m.AccountIsVerified(It.IsAny<string>(),It.IsAny<string>(),It.IsAny<string>()))
+                .Returns(true);
 
             var controller = new CreateEventController(accountService.Object, _countryService.Object, membershipService.Object,
                                                        formsAuthenticationService.Object, eventService.Object,
@@ -112,8 +112,8 @@ namespace GroupGiving.Test.Unit
                 .Returns(new GroupGivingEvent());
 
             _paypalAccountService
-                .Setup(m => m.VerifyPaypalAccount(It.IsAny<VerifyPaypalAccountRequest>()))
-                .Returns(new VerifyPaypalAccountResponse() { Success = true, AccountStatus = "Verified" });
+                .Setup(m => m.AccountIsVerified(It.IsAny<string>(),It.IsAny<string>(),It.IsAny<string>()))
+                .Returns(true);
 
             var controller = new CreateEventController(accountService.Object, _countryService.Object, membershipService.Object,
                                                        formsAuthenticationService.Object, eventService.Object,
@@ -140,8 +140,8 @@ namespace GroupGiving.Test.Unit
                 .Returns(new GroupGivingEvent());
 
             _paypalAccountService
-                .Setup(m => m.VerifyPaypalAccount(It.IsAny<VerifyPaypalAccountRequest>()))
-                .Returns(new VerifyPaypalAccountResponse() { Success = true, AccountStatus = "Verified" });
+                .Setup(m => m.AccountIsVerified(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
+                .Returns(true);
             
             var controller = new CreateEventController(accountService.Object, _countryService.Object,
                                                        membershipService.Object, formsAuthenticationService.Object,
@@ -161,8 +161,8 @@ namespace GroupGiving.Test.Unit
         public void InvalidTicketDetailsProvided_ReturnsRedirectToShareEvent()
         {
             _paypalAccountService
-                .Setup(m => m.VerifyPaypalAccount(It.IsAny<VerifyPaypalAccountRequest>()))
-                .Returns(new VerifyPaypalAccountResponse() {Success = true, AccountStatus = "Verified"});
+                .Setup(m => m.AccountIsVerified(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
+                .Returns(true);
                     
             var controller = new CreateEventController(accountService.Object, _countryService.Object,
                                                        membershipService.Object, formsAuthenticationService.Object,

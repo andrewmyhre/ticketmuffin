@@ -32,14 +32,13 @@ namespace GroupGiving.Web.Controllers
         private readonly IIdentity _userIdentity;
         private readonly IDocumentStore _storage;
         private readonly IMembershipProviderLocator _membershipProviderLocator;
-        private readonly IPaypalAccountService _paypalAccountService;
         Regex mustContainAlphaCharacters = new Regex(@".*\w.*");
         private readonly ILog _logger = LogManager.GetLogger(typeof (CreateEventController));
+        private IAdaptiveAccountsService _paypalAccountService;
 
         public CreateEventController(IAccountService accountService, ICountryService countryService, IMembershipService membershipService, 
             IFormsAuthenticationService formsAuthenticationService, IEventService eventService, 
-            IDocumentStore documentStore, IIdentity userIdentity, IDocumentStore storage, IMembershipProviderLocator membershipProviderLocator,
-            IPaypalAccountService paypalAccountService)
+            IDocumentStore documentStore, IIdentity userIdentity, IDocumentStore storage, IMembershipProviderLocator membershipProviderLocator, IAdaptiveAccountsService paypalAccountService)
         {
             _accountService = accountService;
             _countryService = countryService;
@@ -285,10 +284,8 @@ namespace GroupGiving.Web.Controllers
             }
 
             // paypal verification
-            var paypalVerificationRequest = new VerifyPaypalAccountRequest()
-                {Email = setTicketDetailsRequest.PayPalEmail, FirstName = setTicketDetailsRequest.PayPalFirstName, LastName = setTicketDetailsRequest.PayPalLastName};
-            var accountVerification = _paypalAccountService.VerifyPaypalAccount(paypalVerificationRequest);
-            if (!accountVerification.Success)
+            if (!_paypalAccountService.AccountIsVerified(setTicketDetailsRequest.PayPalEmail,setTicketDetailsRequest.PayPalFirstName,
+                setTicketDetailsRequest.PayPalLastName))
             {
                 ModelState.AddModelError("PayPalEmail", "A PayPal account matching the credentials your provided could not be found");
             } 
