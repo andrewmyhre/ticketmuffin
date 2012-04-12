@@ -2,7 +2,6 @@
 using System.Xml;
 using GroupGiving.Core.Configuration;
 using GroupGiving.Core.Domain;
-using GroupGiving.Core.Dto;
 using GroupGiving.PayPal.Model;
 using log4net;
 using PaymentDetailsResponse = GroupGiving.PayPal.Model.PaymentDetailsResponse;
@@ -44,6 +43,11 @@ namespace GroupGiving.PayPal
         public RefundResponse Refund(RefundRequest request)
         {
             return new HttpChannel().ExecuteRequest<RefundRequest, RefundResponse>("AdaptivePayments", "Refund", request, _clientSettings);
+        }
+
+        public GetVerifiedStatusResponse VerifyAccount(GetVerifiedStatusRequest request)
+        {
+            return new HttpChannel().ExecuteRequest<GetVerifiedStatusRequest, GetVerifiedStatusResponse>("AdaptiveAccounts", "GetVerifiedStatus", request, _clientSettings);
         }
     }
 }

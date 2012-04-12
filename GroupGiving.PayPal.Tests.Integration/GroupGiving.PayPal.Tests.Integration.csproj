@@ -47,7 +47,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AdaptiveAccountsTests.cs" />
     <Compile Include="Adaptive_payments_tests.cs" />
+    <Compile Include="PayPalHelpers.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

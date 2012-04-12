@@ -125,7 +125,7 @@ namespace GroupGiving.Web.App_Start
             kernel.Bind<ITaxAmountResolver>().To<NilTax>();
             kernel.Bind<IIdentity>().ToMethod(x=>HttpContext.Current.User.Identity);
             kernel.Bind<IMembershipProviderLocator>().To<RavenDbMembershipProviderLocator>();
-            kernel.Bind<IPaypalAccountService>().To<PaypalAccountService>();
+            kernel.Bind<IAdaptiveAccountsService>().To<PaypalAdaptiveAccountsService>();
             kernel.Bind<PaypalAdaptiveAccountsConfigurationSection>().ToMethod(r => 
                 ConfigurationManager.GetSection("adaptiveAccounts") as PaypalAdaptiveAccountsConfigurationSection);
             kernel.Bind<AdaptiveAccountsConfiguration>().ToMethod(r=>kernel.Get<ISiteConfiguration>().AdaptiveAccountsConfiguration);

@@ -84,10 +84,13 @@
     <Compile Include="Model\ReceiverList.cs" />
     <Compile Include="Model\RefundRequest.cs" />
     <Compile Include="Model\RequestEnvelope.cs" />
+    <Compile Include="Model\GetVerifiedStatusRequest.cs" />
+    <Compile Include="Model\GetVerifiedStatusResponse.cs" />
     <Compile Include="Model\VerifyPaypalAccountRequest.cs" />
     <Compile Include="Model\VerifyPaypalAccountResponse.cs" />
     <Compile Include="PaymentDetailsRequest.cs" />
     <Compile Include="PaypalAccountService.cs" />
+    <Compile Include="PaypalAdaptiveAccountsService.cs" />
     <Compile Include="PayPalPaymentGateway.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

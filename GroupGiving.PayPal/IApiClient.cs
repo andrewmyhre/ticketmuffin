@@ -8,5 +8,6 @@ namespace GroupGiving.PayPal
         PaymentDetailsResponse SendPaymentDetailsRequest(PaymentDetailsRequest request);
         RefundResponse Refund(RefundRequest request);
         ExecutePaymentResponse SendExecutePaymentRequest(ExecutePaymentRequest request);
+        GetVerifiedStatusResponse VerifyAccount(GetVerifiedStatusRequest request);
     }
 }

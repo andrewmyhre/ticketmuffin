@@ -12,6 +12,8 @@ using NUnit.Framework;
 using PayPal.Platform.SDK;
 using PayPal.Services.Private.AA;
 using log4net;
+using GetVerifiedStatusRequest = PayPal.Services.Private.AA.GetVerifiedStatusRequest;
+using GetVerifiedStatusResponse = PayPal.Services.Private.AA.GetVerifiedStatusResponse;
 
 namespace PayPal.Test.Integration
 {

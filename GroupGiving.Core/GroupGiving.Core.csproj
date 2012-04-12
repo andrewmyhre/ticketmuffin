@@ -145,6 +145,7 @@
     <Compile Include="Services\CreateUserRequest.cs" />
     <Compile Include="Services\EmailCreationService.cs" />
     <Compile Include="Services\EventService.cs" />
+    <Compile Include="Services\IAdaptiveAccountsService.cs" />
     <Compile Include="Services\ICountryService.cs" />
     <Compile Include="Services\IEmailCreationService.cs" />
     <Compile Include="Services\IEventService.cs" />

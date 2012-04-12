@@ -6,6 +6,7 @@ using GroupGiving.PayPal.Configuration;
 using GroupGiving.PayPal.Model;
 using PayPal.Platform.SDK;
 using PayPal.Services.Private.AA;
+using GetVerifiedStatusRequest = PayPal.Services.Private.AA.GetVerifiedStatusRequest;
 
 
 namespace GroupGiving.PayPal

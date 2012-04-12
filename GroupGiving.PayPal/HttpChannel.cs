@@ -21,7 +21,6 @@ namespace GroupGiving.PayPal
             // serialise the request
             XmlSerializer serializer = new XmlSerializer(typeof(TRequest));
             XmlSerializerNamespaces namespaces = new XmlSerializerNamespaces();
-            namespaces.Add("ns2", "http://svcs.paypal.com/types/ap");
             MemoryStream ms = new MemoryStream();
             serializer.Serialize(ms, request, namespaces);
             ms.Seek(0, SeekOrigin.Begin);
@@ -40,10 +39,15 @@ namespace GroupGiving.PayPal
             oPayRequest.Headers.Add("X-PAYPAL-SECURITY-USERID", clientSettings.Username);
             oPayRequest.Headers.Add("X-PAYPAL-SECURITY-PASSWORD", clientSettings.Password);
             oPayRequest.Headers.Add("X-PAYPAL-SECURITY-SIGNATURE", clientSettings.Signature);
-            oPayRequest.Headers.Add("X-PAYPAL-SERVICE-VERSION", clientSettings.ApiVersion);
+            //oPayRequest.Headers.Add("X-PAYPAL-SERVICE-VERSION", clientSettings.ApiVersion);
             oPayRequest.Headers.Add("X-PAYPAL-APPLICATION-ID", clientSettings.ApplicationId);
             oPayRequest.Headers.Add("X-PAYPAL-REQUEST-DATA-FORMAT", clientSettings.RequestDataBinding);
             oPayRequest.Headers.Add("X-PAYPAL-RESPONSE-DATA-FORMAT", clientSettings.ResponseDataBinding);
+
+            foreach(var headerKey in oPayRequest.Headers.AllKeys)
+            {
+                System.Diagnostics.Debug.WriteLine(string.Format("{0}={1}",headerKey,oPayRequest.Headers[headerKey]));
+            }
 
             // send the request
             Stream oStream = oPayRequest.GetRequestStream();

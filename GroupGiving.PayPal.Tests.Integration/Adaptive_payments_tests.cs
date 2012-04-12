@@ -28,7 +28,7 @@ namespace GroupGiving.PayPal.Tests.Integration
         {
             log4net.Config.XmlConfigurator.Configure();
 
-            _paypalConfiguration = ValidSiteConfiguration();
+            _paypalConfiguration = PayPalHelpers.SandboxConfiguration();
             _apiSettings = new ApiClientSettings(_paypalConfiguration);
 
             _payRequestFactory = new PayRequestFactory(_paypalConfiguration);
@@ -41,26 +41,6 @@ namespace GroupGiving.PayPal.Tests.Integration
                                  new Receiver("100", "Muffin_1321277131_biz@gmail.com", true),
                                  new Receiver("90", "Raiser_1321277286_biz@gmail.com", false)
                              };
-        }
-
-        private AdaptiveAccountsConfiguration ValidSiteConfiguration()
-        {
-            return new AdaptiveAccountsConfiguration()
-                {
-                    FailureCallbackUrl = "http://somedomain.com/failure",
-                    SuccessCallbackUrl = "http://somedomain.com/success",
-                    ApiUsername = "Muffin_1321277131_biz_api1.gmail.com",
-                    ApiPassword = "1321277160",
-                    ApiSignature = "AFcWxV21C7fd0v3bYYYRCpSSRl31ANDzgYINyuYs1FQZcsN1DSKkJexD",
-                    ApiVersion="1.1.0",
-                    SandboxApiBaseUrl = "https://svcs.sandbox.paypal.com/AdaptivePayments",
-                    SandboxApplicationId = "APP-80W284485P519543T",
-                    SandboxMode = true,
-                    SandboxPayFlowProPaymentPage = "https://www.sandbox.paypal.com/webscr?cmd=_ap-payment&amp;paykey={0}",
-                    RequestDataBinding = "XML",
-                    ResponseDataBinding = "XML",
-                    PayPalAccountEmail = "something@something.com"
-                };
         }
 
         [Test]
