@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using GroupGiving.Core.Configuration;
+using GroupGiving.Core.Dto;
+using GroupGiving.Core.PayPal;
 using GroupGiving.Core.Services;
-using GroupGiving.PayPal.Model;
 
 namespace GroupGiving.PayPal
 {
@@ -21,7 +22,7 @@ namespace GroupGiving.PayPal
             _configuration = configuration;
         }
 
-        public bool AccountIsVerified(string email, string firstname, string lastname)
+        public GetVerifiedStatusResponse AccountIsVerified(string email, string firstname, string lastname)
         {
             var getVerifiedStatusRequest = new GetVerifiedStatusRequest(_configuration)
                                                {
@@ -30,13 +31,13 @@ namespace GroupGiving.PayPal
                                                    EmailAddress=email
                                                };
 
-            try
-            {
-                return _apiClient.VerifyAccount(getVerifiedStatusRequest).Verified;
-            } catch
-            {
-                return false;
-            }
+            var response = _apiClient.VerifyAccount(getVerifiedStatusRequest);
+
+            return new GetVerifiedStatusResponse()
+                       {
+                           AccountStatus = response.AccountStatus,
+                           Success=true
+                       };
         }
     }
 }

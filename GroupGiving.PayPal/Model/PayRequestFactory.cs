@@ -1,4 +1,5 @@
 using GroupGiving.Core.Configuration;
+using GroupGiving.Core.PayPal;
 using GroupGiving.PayPal.Configuration;
 
 namespace GroupGiving.PayPal.Model

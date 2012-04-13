@@ -1,8 +1,7 @@
-using System.Xml.Schema;
 using System.Xml.Serialization;
 using GroupGiving.Core.Dto;
 
-namespace GroupGiving.PayPal.Model
+namespace GroupGiving.Core.PayPal
 {
     public class RefundRequest : IPayPalRequest
     {
@@ -38,8 +37,8 @@ namespace GroupGiving.PayPal.Model
     }
 
     [System.SerializableAttribute()]
-    [System.Xml.Serialization.XmlTypeAttribute(AnonymousType = true, Namespace = "http://svcs.paypal.com/types/ap")]
-    [System.Xml.Serialization.XmlRootAttribute(Namespace = "http://svcs.paypal.com/types/ap", IsNullable = false)]
+    [XmlType(AnonymousType = true, Namespace = "http://svcs.paypal.com/types/ap")]
+    [XmlRoot(Namespace = "http://svcs.paypal.com/types/ap", IsNullable = false)]
     public class RefundResponse : ResponseBase
     {
         private RefundResponseRefundInfo[] _refundInfoListField;
@@ -47,8 +46,8 @@ namespace GroupGiving.PayPal.Model
         [XmlElement(ElementName = "responseEnvelope", Form = System.Xml.Schema.XmlSchemaForm.Unqualified)]
         public PayResponseResponseEnvelope ResponseEnvelope { get; set; }
 
-        [System.Xml.Serialization.XmlArrayAttribute(Form = System.Xml.Schema.XmlSchemaForm.Unqualified)]
-        [System.Xml.Serialization.XmlArrayItemAttribute("refundInfo", Form = System.Xml.Schema.XmlSchemaForm.Unqualified, IsNullable = false)]
+        [XmlArray(Form = System.Xml.Schema.XmlSchemaForm.Unqualified)]
+        [XmlArrayItem("refundInfo", Form = System.Xml.Schema.XmlSchemaForm.Unqualified, IsNullable = false)]
         public RefundResponseRefundInfo[] refundInfoList
         {
             get
@@ -66,7 +65,7 @@ namespace GroupGiving.PayPal.Model
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
-    [System.Xml.Serialization.XmlTypeAttribute(AnonymousType = true, Namespace = "http://svcs.paypal.com/types/ap")]
+    [XmlType(AnonymousType = true, Namespace = "http://svcs.paypal.com/types/ap")]
     public partial class RefundResponseRefundInfo
     {
 
@@ -77,7 +76,7 @@ namespace GroupGiving.PayPal.Model
         private RefundResponseRefundInfoReceiver[] receiverField;
 
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Form = System.Xml.Schema.XmlSchemaForm.Unqualified)]
+        [XmlElement(Form = System.Xml.Schema.XmlSchemaForm.Unqualified)]
         public string refundStatus
         {
             get
@@ -91,7 +90,7 @@ namespace GroupGiving.PayPal.Model
         }
 
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Form = System.Xml.Schema.XmlSchemaForm.Unqualified)]
+        [XmlElement(Form = System.Xml.Schema.XmlSchemaForm.Unqualified)]
         public string refundHasBecomeFull
         {
             get
@@ -105,7 +104,7 @@ namespace GroupGiving.PayPal.Model
         }
 
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute("receiver", Form = System.Xml.Schema.XmlSchemaForm.Unqualified)]
+        [XmlElement("receiver", Form = System.Xml.Schema.XmlSchemaForm.Unqualified)]
         public RefundResponseRefundInfoReceiver[] receiver
         {
             get
@@ -123,7 +122,7 @@ namespace GroupGiving.PayPal.Model
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
-    [System.Xml.Serialization.XmlTypeAttribute(AnonymousType = true, Namespace = "http://svcs.paypal.com/types/ap")]
+    [XmlType(AnonymousType = true, Namespace = "http://svcs.paypal.com/types/ap")]
     public partial class RefundResponseRefundInfoReceiver
     {
 
@@ -132,7 +131,7 @@ namespace GroupGiving.PayPal.Model
         private string emailField;
 
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Form = System.Xml.Schema.XmlSchemaForm.Unqualified)]
+        [XmlElement(Form = System.Xml.Schema.XmlSchemaForm.Unqualified)]
         public string amount
         {
             get
@@ -146,7 +145,7 @@ namespace GroupGiving.PayPal.Model
         }
 
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Form = System.Xml.Schema.XmlSchemaForm.Unqualified)]
+        [XmlElement(Form = System.Xml.Schema.XmlSchemaForm.Unqualified)]
         public string email
         {
             get

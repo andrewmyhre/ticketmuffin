@@ -1,4 +1,4 @@
-namespace GroupGiving.PayPal.Model
+namespace GroupGiving.Core.PayPal
 {
     public interface IPayPalRequest
     {

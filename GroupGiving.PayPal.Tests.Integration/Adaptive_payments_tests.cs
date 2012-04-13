@@ -6,10 +6,11 @@ using System.Text;
 using GroupGiving.Core.Configuration;
 using GroupGiving.Core.Domain;
 using GroupGiving.Core.Dto;
+using GroupGiving.Core.PayPal;
 using GroupGiving.PayPal.Configuration;
 using GroupGiving.PayPal.Model;
 using NUnit.Framework;
-using RefundRequest = GroupGiving.PayPal.Model.RefundRequest;
+using RefundRequest = GroupGiving.Core.PayPal.RefundRequest;
 
 namespace GroupGiving.PayPal.Tests.Integration
 {

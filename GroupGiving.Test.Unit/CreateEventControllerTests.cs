@@ -6,6 +6,7 @@ using System.Text;
 using System.Web.Mvc;
 using System.Web.Security;
 using GroupGiving.Core.Domain;
+using GroupGiving.Core.PayPal;
 using GroupGiving.Core.Services;
 using GroupGiving.PayPal;
 using GroupGiving.PayPal.Configuration;
@@ -71,7 +72,7 @@ namespace GroupGiving.Test.Unit
 
             _paypalAccountService
                 .Setup(m => m.AccountIsVerified(It.IsAny<string>(),It.IsAny<string>(),It.IsAny<string>()))
-                .Returns(true);
+                .Returns(new GetVerifiedStatusResponse(){Success=true, AccountStatus = "VERIFIED"});
 
             var controller = new CreateEventController(accountService.Object, _countryService.Object, membershipService.Object,
                                                        formsAuthenticationService.Object, eventService.Object,
@@ -113,7 +114,7 @@ namespace GroupGiving.Test.Unit
 
             _paypalAccountService
                 .Setup(m => m.AccountIsVerified(It.IsAny<string>(),It.IsAny<string>(),It.IsAny<string>()))
-                .Returns(true);
+                .Returns(new GetVerifiedStatusResponse() { Success = true, AccountStatus = "VERIFIED" });
 
             var controller = new CreateEventController(accountService.Object, _countryService.Object, membershipService.Object,
                                                        formsAuthenticationService.Object, eventService.Object,
@@ -141,7 +142,7 @@ namespace GroupGiving.Test.Unit
 
             _paypalAccountService
                 .Setup(m => m.AccountIsVerified(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
-                .Returns(true);
+                .Returns(new GetVerifiedStatusResponse() { Success = true, AccountStatus = "VERIFIED" });
             
             var controller = new CreateEventController(accountService.Object, _countryService.Object,
                                                        membershipService.Object, formsAuthenticationService.Object,
@@ -162,7 +163,7 @@ namespace GroupGiving.Test.Unit
         {
             _paypalAccountService
                 .Setup(m => m.AccountIsVerified(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
-                .Returns(true);
+                .Returns(new GetVerifiedStatusResponse() { Success = true, AccountStatus = "VERIFIED" });
                     
             var controller = new CreateEventController(accountService.Object, _countryService.Object,
                                                        membershipService.Object, formsAuthenticationService.Object,

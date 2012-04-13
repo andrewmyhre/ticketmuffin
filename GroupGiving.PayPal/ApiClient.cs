@@ -2,11 +2,11 @@
 using System.Xml;
 using GroupGiving.Core.Configuration;
 using GroupGiving.Core.Domain;
-using GroupGiving.PayPal.Model;
+using GroupGiving.Core.PayPal;
 using log4net;
-using PaymentDetailsResponse = GroupGiving.PayPal.Model.PaymentDetailsResponse;
-using RefundRequest = GroupGiving.PayPal.Model.RefundRequest;
-using RefundResponse = GroupGiving.PayPal.Model.RefundResponse;
+using PaymentDetailsResponse = GroupGiving.Core.PayPal.PaymentDetailsResponse;
+using RefundRequest = GroupGiving.Core.PayPal.RefundRequest;
+using RefundResponse = GroupGiving.Core.PayPal.RefundResponse;
 
 namespace GroupGiving.PayPal
 {

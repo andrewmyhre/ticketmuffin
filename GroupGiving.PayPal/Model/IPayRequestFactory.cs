@@ -1,3 +1,5 @@
+using GroupGiving.Core.PayPal;
+
 namespace GroupGiving.PayPal.Model
 {
     public interface IPayRequestFactory

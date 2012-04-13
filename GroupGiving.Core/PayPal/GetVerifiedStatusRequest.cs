@@ -2,7 +2,7 @@ using System.Runtime.Serialization;
 using System.Xml.Serialization;
 using GroupGiving.Core.Configuration;
 
-namespace GroupGiving.PayPal.Model
+namespace GroupGiving.Core.PayPal
 {
     [DataContract(Name = "GetVerifiedStatusRequest", Namespace = "http://svcs.paypal.com/types/aa")]
     [XmlRoot(ElementName = "GetVerifiedStatusRequest", Namespace = "http://svcs.paypal.com/types/aa", IsNullable = false)]

@@ -5,9 +5,11 @@ using System.Linq;
 using System.Net;
 using System.Web;
 using System.Web.Mvc;
+using GroupGiving.Core;
 using GroupGiving.Core.Configuration;
 using GroupGiving.Core.Data;
 using GroupGiving.Core.Domain;
+using GroupGiving.Core.PayPal;
 using GroupGiving.Core.Services;
 using GroupGiving.PayPal;
 using GroupGiving.PayPal.Configuration;
@@ -40,7 +42,19 @@ namespace GroupGiving.Web.Areas.Api.Controllers
                 return new HttpStatusCodeResult((int)HttpStatusCode.BadRequest);
             }
 
-            return ApiResponse(_adaptiveAccountsService.AccountIsVerified(request.Email, request.FirstName, request.LastName));
+            GetVerifiedStatusResponse verifyResponse = null;
+
+            try
+            {
+                verifyResponse = _adaptiveAccountsService.AccountIsVerified(request.Email, request.FirstName,
+                                                                            request.LastName);
+            } catch (HttpChannelException exception)
+            {
+                System.Diagnostics.Debug.WriteLine(exception.Message);
+                verifyResponse = new GetVerifiedStatusResponse(){Success = false};
+            }
+
+            return ApiResponse(verifyResponse);
         }
 
     }

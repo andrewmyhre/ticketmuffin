@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using GroupGiving.Core.Dto;
 
-namespace GroupGiving.PayPal.Model
+namespace GroupGiving.Core.PayPal
 {
     [System.CodeDom.Compiler.GeneratedCodeAttribute("xsd", "4.0.30319.1")]
     [System.SerializableAttribute()]

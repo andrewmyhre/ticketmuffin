@@ -1,6 +1,6 @@
 using System;
 
-namespace GroupGiving.PayPal.Model
+namespace GroupGiving.Core.PayPal
 {
     public class CreatePayPalAccountRequest
     {

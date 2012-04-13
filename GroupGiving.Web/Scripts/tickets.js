@@ -19,8 +19,10 @@
 
     if ($('#PayPalFirstName').val() + $('#PayPalLastName').val() + ($('#PayPalEmail').val()) != '') {
         VerifyPayPalAccount(null);
+    } else {
+        $('#tickets-form input[type="submit"]').attr('disabled', 'disabled');
     }
-    $('#tickets-form input[type="submit"]').attr('disabled', 'disabled');
+    
 
 });
 

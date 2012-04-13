@@ -1,8 +1,8 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Runtime.Serialization;
 using System.Xml.Serialization;
 
-namespace GroupGiving.PayPal.Model
+namespace GroupGiving.Core.PayPal
 {
     [CollectionDataContract(Name = "receiverList", Namespace = "http://svcs.paypal.com/types/ap")]
     [KnownType(typeof(List<Receiver>))]

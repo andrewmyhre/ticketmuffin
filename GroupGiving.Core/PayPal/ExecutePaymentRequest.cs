@@ -1,11 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Xml.Serialization;
 using GroupGiving.Core.Dto;
 
-namespace GroupGiving.PayPal.Model
+namespace GroupGiving.Core.PayPal
 {
     public class ExecutePaymentRequest : IPayPalRequest
     {
@@ -36,8 +32,8 @@ namespace GroupGiving.PayPal.Model
     }
 
     [System.SerializableAttribute()]
-    [System.Xml.Serialization.XmlTypeAttribute(AnonymousType = true, Namespace = "http://svcs.paypal.com/types/ap")]
-    [System.Xml.Serialization.XmlRootAttribute(Namespace = "http://svcs.paypal.com/types/ap", IsNullable = false)]
+    [XmlType(AnonymousType = true, Namespace = "http://svcs.paypal.com/types/ap")]
+    [XmlRoot(Namespace = "http://svcs.paypal.com/types/ap", IsNullable = false)]
     public class ExecutePaymentResponse : ResponseBase
     {
         public DialogueHistoryEntry Raw { get; set; }

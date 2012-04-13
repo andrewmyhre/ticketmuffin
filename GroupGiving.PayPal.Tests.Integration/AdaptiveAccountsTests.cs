@@ -1,8 +1,7 @@
 using System.IO;
 using System.Net;
-using GroupGiving.Core.Actions;
 using GroupGiving.Core.Configuration;
-using GroupGiving.PayPal.Model;
+using GroupGiving.Core.PayPal;
 using NUnit.Framework;
 
 namespace GroupGiving.PayPal.Tests.Integration

@@ -1,7 +1,7 @@
-﻿using System.Runtime.Serialization;
+using System.Runtime.Serialization;
 using System.Xml.Serialization;
 
-namespace GroupGiving.PayPal.Model
+namespace GroupGiving.Core.PayPal
 {
     [DataContract(Name = "receiver", Namespace = "http://svcs.paypal.com/types/ap")]
     [XmlRoot(ElementName = "receiver")]

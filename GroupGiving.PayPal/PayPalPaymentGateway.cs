@@ -5,6 +5,7 @@ using GroupGiving.Core;
 using GroupGiving.Core.Configuration;
 using GroupGiving.Core.Domain;
 using GroupGiving.Core.Dto;
+using GroupGiving.Core.PayPal;
 using GroupGiving.Core.Services;
 using GroupGiving.PayPal.Configuration;
 using GroupGiving.PayPal.Model;
@@ -102,11 +103,11 @@ namespace GroupGiving.PayPal
                 throw new ArgumentException("Transaction Id must be provided", "request.TransactionId");
             }
 
-            Model.RefundResponse response = null;
+            Core.PayPal.RefundResponse response = null;
 
             try
             {
-                response = _apiClient.Refund(new Model.RefundRequest(request.TransactionId)
+                response = _apiClient.Refund(new Core.PayPal.RefundRequest(request.TransactionId)
                                                  {
                                                      Receivers = new ReceiverList(request.Receivers.Select(r=>new Receiver(r.AmountToReceive.ToString("#.00"), r.EmailAddress, r.Primary)))
                                                  });
@@ -147,12 +148,12 @@ namespace GroupGiving.PayPal
                 throw new ArgumentException("transactionid must be provided", "request.transactionid");
             }
 
-            Model.ExecutePaymentResponse response = null;
+            Core.PayPal.ExecutePaymentResponse response = null;
             
 
             try
             {
-                response = _apiClient.SendExecutePaymentRequest(new Model.ExecutePaymentRequest(request.TransactionId));
+                response = _apiClient.SendExecutePaymentRequest(new Core.PayPal.ExecutePaymentRequest(request.TransactionId));
             } catch (HttpChannelException exception)
             {
                 return new ExecutePaymentResponse()

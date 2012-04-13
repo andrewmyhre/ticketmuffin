@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Xml.Serialization;
+using GroupGiving.Core.PayPal;
 using GroupGiving.PayPal.Model;
 using NUnit.Framework;
 

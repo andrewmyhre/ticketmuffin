@@ -40,7 +40,8 @@ function VerifyPayPalAccount(onVerified) {
 
     $.post('/api/accounts/verify-paypal' + data)
             .success(function (response) {
-                    if (response) {
+                if (response.Success) {
+                    if (response.Verified) {
                         $('#pp-verify-result').html('These settings match a valid PayPal account');
                         $('#pp-verify-result').removeClass('pp-notfound pp-unverified pp-checking');
                         $('#pp-verify-result').addClass('pp-verified');
@@ -55,6 +56,7 @@ function VerifyPayPalAccount(onVerified) {
                     if (onVerified) {
                         onVerified();
                     }
-                })
+                }
+            })
                 .error(function () { });
 }

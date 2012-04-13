@@ -9,6 +9,7 @@ using System.Security.Principal;
 using System.Text.RegularExpressions;
 using System.Web.Hosting;
 using System.Web.Mvc;
+using GroupGiving.Core.PayPal;
 using GroupGiving.Core.Services;
 using GroupGiving.PayPal;
 using GroupGiving.PayPal.Model;
@@ -284,8 +285,18 @@ namespace GroupGiving.Web.Controllers
             }
 
             // paypal verification
-            if (!_paypalAccountService.AccountIsVerified(setTicketDetailsRequest.PayPalEmail,setTicketDetailsRequest.PayPalFirstName,
-                setTicketDetailsRequest.PayPalLastName))
+            GetVerifiedStatusResponse accountVerification = new GetVerifiedStatusResponse();
+            try
+            {
+                accountVerification = _paypalAccountService.AccountIsVerified(setTicketDetailsRequest.PayPalEmail,
+                                                        setTicketDetailsRequest.PayPalFirstName,
+                                                        setTicketDetailsRequest.PayPalLastName);
+            } catch
+            {
+                // TODO: be more specific about the exception
+            }
+
+            if (!accountVerification.Verified)
             {
                 ModelState.AddModelError("PayPalEmail", "A PayPal account matching the credentials your provided could not be found");
             } 
