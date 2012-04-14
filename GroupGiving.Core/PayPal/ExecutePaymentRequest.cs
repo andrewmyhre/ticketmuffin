@@ -7,7 +7,8 @@ namespace GroupGiving.Core.PayPal
     {
         public ExecutePaymentRequest()
         {
-            
+            ClientDetails = ClientDetails.Default;
+            RequestEnvelope = new RequestEnvelope();
         }
 
         public ExecutePaymentRequest(string payKey)

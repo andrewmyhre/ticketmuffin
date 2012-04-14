@@ -28,7 +28,7 @@ namespace GroupGiving.PayPal
             StreamReader reader = new StreamReader(ms);
             StringBuilder requestXml = new StringBuilder(reader.ReadToEnd());
             System.Diagnostics.Debug.WriteLine("request to paypal:");
-            System.Diagnostics.Debug.WriteLine(requestXml);
+            WriteXmlToDebug(requestXml.ToString());
 
             // create the http request and add headers
             HttpWebRequest oPayRequest = (HttpWebRequest)WebRequest.Create(clientSettings.ActionUrl(api, action));
@@ -61,6 +61,9 @@ namespace GroupGiving.PayPal
             var responseString = sreader.ReadToEnd();
             sreader.Close();
 
+            System.Diagnostics.Debug.WriteLine("Response from PayPal:");
+            WriteXmlToDebug(responseString);
+
             // check for fault message
             if (ResponseIsFaultMessage(responseString))
             {
@@ -81,8 +84,6 @@ namespace GroupGiving.PayPal
             }
 
             // deserialise the response
-            System.Diagnostics.Debug.WriteLine("response from paypal:");
-            System.Diagnostics.Debug.WriteLine(responseString);
             XmlSerializer deserializer = new XmlSerializer(typeof(TResponse));
             byte[] data = ASCIIEncoding.ASCII.GetBytes(responseString);
             MemoryStream responseStream = new MemoryStream(data);
@@ -107,6 +108,27 @@ namespace GroupGiving.PayPal
 
             return responseObject;
 
+        }
+
+        private void WriteXmlToDebug(string xml)
+        {
+            // format the xml
+            XmlDocument d = new XmlDocument();
+            d.LoadXml(xml);
+            StringBuilder sb = new StringBuilder();
+            XmlWriterSettings settings=new XmlWriterSettings()
+                                           {
+                                               Indent = true,
+                                               NewLineHandling = NewLineHandling.Entitize,
+                                               NewLineOnAttributes = true
+                                           };
+            using (var writer = XmlWriter.Create(sb, settings))
+            {
+                d.WriteTo(writer);
+                writer.Flush();
+            }
+
+            System.Diagnostics.Debug.WriteLine(sb.ToString());
         }
 
         private static T DeserializeObject<T>(string response)

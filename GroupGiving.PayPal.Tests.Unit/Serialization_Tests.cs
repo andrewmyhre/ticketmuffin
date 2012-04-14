@@ -81,5 +81,49 @@ namespace GroupGiving.PayPal.Tests.Unit
             Assert.That(responseObject.refundInfoList, Has.Length.GreaterThan(0));
             Assert.That(responseObject.refundInfoList[0].refundStatus, Is.StringMatching("ALREADY_REVERSED_OR_REFUNDED"));
         }
+
+        [Test]
+        public void Can_Deserialise_a_requestpermissions_response()
+        {
+            string response = @"<?xml version=""1.0"" encoding=""UTF-8""?>
+<ns2:RequestPermissionsResponse xmlns:ns2=""http://svcs.paypal.com/types/perm"">
+  <responseEnvelope>
+    <timestamp>2012-04-14T13:53:49.323-07:00</timestamp>
+    <ack>Success</ack>
+    <correlationId>7fa15f5b2152a</correlationId>
+    <build>2210301</build>
+  </responseEnvelope>
+  <token>AAAAAAAVsI4iWopwYseS</token>
+</ns2:RequestPermissionsResponse>";
+
+            var responseObject = DeserializeObject<RequestPermissionsResponse>(response);
+            Assert.That(responseObject, Is.Not.Null);
+            Assert.That(responseObject.Token, Is.Not.Null);
+        }
+
+        [Test]
+        public void GetACcessTokenResponse()
+        {
+            var response = @"<?xml version=""1.0"" encoding=""UTF-8""?>
+<ns2:GetAccessTokenResponse xmlns:ns2=""http://svcs.paypal.com/types/perm"">
+  <responseEnvelope>
+    <timestamp>2012-04-14T14:20:57.614-07:00</timestamp>
+    <ack>Success</ack>
+    <correlationId>009acfd8ae9c2</correlationId>
+    <build>2210301</build>
+  </responseEnvelope>
+  <scope>REFUND</scope>
+  <scope>DIRECT_PAYMENT</scope>
+  <scope>TRANSACTION_DETAILS</scope>
+  <scope>MASS_PAY</scope>
+  <token>8pg3FVMyS1dPieo5xkH29I53SWfUDk5tgnMzHkFLQX8W2DV1jQyz3Q</token>
+  <tokenSecret>qUQFPszLr4ErefVceHuT9fnA.Ec</tokenSecret>
+</ns2:GetAccessTokenResponse>";
+
+            var responseObject = DeserializeObject<GetAccessTokenResponse>(response);
+            Assert.That(responseObject, Is.Not.Null);
+            Assert.That(responseObject.Token,Is.Not.Null);
+            Assert.That(responseObject.TokenSecret, Is.Not.Null);
+        }
     }
 }

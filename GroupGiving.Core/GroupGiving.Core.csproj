@@ -141,6 +141,8 @@
     <Compile Include="PayPal\CreatePayPalAccountRequest.cs" />
     <Compile Include="PayPal\CreatePaypalAccountResponse.cs" />
     <Compile Include="PayPal\ExecutePaymentRequest.cs" />
+    <Compile Include="PayPal\GetAccessTokenRequest.cs" />
+    <Compile Include="PayPal\GetAccessTokenResponse.cs" />
     <Compile Include="PayPal\GetVerifiedStatusRequest.cs" />
     <Compile Include="PayPal\GetVerifiedStatusResponse.cs" />
     <Compile Include="PayPal\IPayPalRequest.cs" />
@@ -151,6 +153,8 @@
     <Compile Include="PayPal\ReceiverList.cs" />
     <Compile Include="PayPal\RefundRequest.cs" />
     <Compile Include="PayPal\RequestEnvelope.cs" />
+    <Compile Include="PayPal\RequestPermissionsRequest.cs" />
+    <Compile Include="PayPal\RequestPermissionsResponse.cs" />
     <Compile Include="PayPal\VerifyPaypalAccountResponse.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\Country.cs" />

@@ -49,5 +49,17 @@ namespace GroupGiving.PayPal
         {
             return new HttpChannel().ExecuteRequest<GetVerifiedStatusRequest, GetVerifiedStatusResponse>("AdaptiveAccounts", "GetVerifiedStatus", request, _clientSettings);
         }
+
+        public RequestPermissionsResponse RequestPermissions(RequestPermissionsRequest request)
+        {
+            return new HttpChannel().ExecuteRequest<RequestPermissionsRequest, RequestPermissionsResponse>
+                ("Permissions", "RequestPermissions", request, _clientSettings);
+        }
+
+        public GetAccessTokenResponse GetAccessToken(GetAccessTokenRequest request)
+        {
+            return new HttpChannel().ExecuteRequest<GetAccessTokenRequest, GetAccessTokenResponse>
+                ("Permissions", "GetAccessToken", request, _clientSettings);
+        }
     }
 }
