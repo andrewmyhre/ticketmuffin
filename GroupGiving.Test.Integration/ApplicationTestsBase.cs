@@ -5,7 +5,6 @@ using GroupGiving.Core.Services;
 using Moq;
 using Raven.Client;
 using Raven.Client.Document;
-using RavenDBMembership.Web.Models;
 
 namespace GroupGiving.Test.Integration
 {
