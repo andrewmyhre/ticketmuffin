@@ -15,8 +15,6 @@ namespace GroupGiving.Test.Integration
         protected IEmailFacade _emailService;
         protected Mock<IAccountService> _accountService = new Mock<IAccountService>();
         protected Mock<ICountryService> _countryService = new Mock<ICountryService>();
-        protected Mock<IMembershipService> _membershipService = new Mock<IMembershipService>();
-        protected Mock<IFormsAuthenticationService> _formsAuthenticationService = new Mock<IFormsAuthenticationService>();
         protected Mock<IDocumentStore> _documentStore = new Mock<IDocumentStore>();
         protected Mock<IDocumentSession> _documentSession = new Mock<IDocumentSession>();
         
