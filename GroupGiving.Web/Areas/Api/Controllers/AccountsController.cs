@@ -9,9 +9,9 @@ using GroupGiving.Core;
 using GroupGiving.Core.Configuration;
 using GroupGiving.Core.Data;
 using GroupGiving.Core.Domain;
-using GroupGiving.Core.PayPal;
 using GroupGiving.Core.Services;
 using GroupGiving.PayPal;
+using GroupGiving.PayPal.Clients;
 using GroupGiving.PayPal.Configuration;
 using GroupGiving.PayPal.Model;
 using GroupGiving.Web.Code;
@@ -22,13 +22,14 @@ namespace GroupGiving.Web.Areas.Api.Controllers
     public class AccountsController : ApiControllerBase
     {
         private readonly ISiteConfiguration _siteConfiguration;
-        private readonly IAdaptiveAccountsService _adaptiveAccountsService;
+        private readonly IApiClient _apiClient;
         //
         // GET: /Api/Accounts/
-        public AccountsController(IRepository<GroupGivingEvent> eventRepository, ISiteConfiguration siteConfiguration, IAdaptiveAccountsService adaptiveAccountsService)
+        public AccountsController(IRepository<GroupGivingEvent> eventRepository, ISiteConfiguration siteConfiguration, 
+            IApiClient apiClient)
         {
             _siteConfiguration = siteConfiguration;
-            _adaptiveAccountsService = adaptiveAccountsService;
+            _apiClient = apiClient;
         }
 
         [HttpPost]
@@ -43,18 +44,29 @@ namespace GroupGiving.Web.Areas.Api.Controllers
             }
 
             GetVerifiedStatusResponse verifyResponse = null;
-
             try
             {
-                verifyResponse = _adaptiveAccountsService.AccountIsVerified(request.Email, request.FirstName,
-                                                                            request.LastName);
-            } catch (HttpChannelException exception)
+                var getVerifiedStatusRequest = new GetVerifiedStatusRequest(_apiClient.Configuration)
+                                                   {
+                                                       EmailAddress=request.Email,
+                                                       FirstName=request.FirstName,
+                                                       LastName=request.LastName
+                                                   };
+                verifyResponse = _apiClient.Accounts.VerifyAccount(getVerifiedStatusRequest);
+                verifyResponse.Success = true;
+            }
+            catch (HttpChannelException exception)
             {
                 System.Diagnostics.Debug.WriteLine(exception.Message);
                 verifyResponse = new GetVerifiedStatusResponse(){Success = false};
             }
 
-            return ApiResponse(verifyResponse);
+            return ApiResponse(new 
+            {
+                Success=verifyResponse.Success, 
+                AccountStatus=verifyResponse.AccountStatus,
+                Verified=verifyResponse.Verified
+            });
         }
 
     }

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using GroupGiving.Core.Dto;
 using GroupGiving.PayPal;
+using GroupGiving.PayPal.Model;
 
 namespace GroupGiving.Web.Models
 {

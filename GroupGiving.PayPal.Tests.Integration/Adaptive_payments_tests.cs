@@ -1,16 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Linq;
-using System.Text;
-using GroupGiving.Core.Configuration;
-using GroupGiving.Core.Domain;
-using GroupGiving.Core.Dto;
-using GroupGiving.Core.PayPal;
+using GroupGiving.PayPal.Clients;
 using GroupGiving.PayPal.Configuration;
 using GroupGiving.PayPal.Model;
 using NUnit.Framework;
-using RefundRequest = GroupGiving.Core.PayPal.RefundRequest;
+using RefundRequest = GroupGiving.PayPal.Model.RefundRequest;
 
 namespace GroupGiving.PayPal.Tests.Integration
 {
@@ -34,7 +27,7 @@ namespace GroupGiving.PayPal.Tests.Integration
 
             _payRequestFactory = new PayRequestFactory(_paypalConfiguration);
 
-            _apiClient = new ApiClient(_apiSettings, new SiteConfiguration{AdaptiveAccountsConfiguration=_paypalConfiguration});
+            _apiClient = new ApiClient(_apiSettings);
             _gateway = new PayPalPaymentGateway(_apiClient, _paypalConfiguration);
 
             _receivers = new[]
@@ -47,7 +40,7 @@ namespace GroupGiving.PayPal.Tests.Integration
         [Test]
         public void Can_create_a_chained_payment()
         {
-            var response = _apiClient.SendPayRequest(
+            var response = _apiClient.Payments.SendPayRequest(
                 _payRequestFactory.ChainedPayment("GBP", _receivers,
                                     "test payment " + Guid.NewGuid().ToString()
                     ));
@@ -60,10 +53,10 @@ namespace GroupGiving.PayPal.Tests.Integration
         public void Can_check_the_details_of_a_payment()
         {
             string memoField = "test payment " + Guid.NewGuid().ToString();
-            var response = _apiClient.SendPayRequest(
+            var response = _apiClient.Payments.SendPayRequest(
                 _payRequestFactory.RegularPayment("GBP", _receivers, memoField));
 
-            var detailsResponse = _apiClient.SendPaymentDetailsRequest(new PaymentDetailsRequest(response.payKey));
+            var detailsResponse = _apiClient.Payments.SendPaymentDetailsRequest(new PaymentDetailsRequest(response.payKey));
 
 
             Assert.That(detailsResponse, Is.Not.Null);
@@ -75,7 +68,7 @@ namespace GroupGiving.PayPal.Tests.Integration
         public void Can_refund_a_payment()
         {
             string memoField = "test payment " + Guid.NewGuid().ToString();
-            var response = _apiClient.SendPayRequest(
+            var response = _apiClient.Payments.SendPayRequest(
                 new PayRequest(_paypalConfiguration)
                 {
                     Memo = memoField,
@@ -90,7 +83,7 @@ namespace GroupGiving.PayPal.Tests.Integration
             System.Diagnostics.Debug.Write(response.payKey, "paykey");
             System.Diagnostics.Debug.WriteLine(string.Format("https://www.sandbox.paypal.com/webscr?cmd=_ap-payment&amp;paykey={0}", response.payKey), "authorization url");
 
-            var refundResponse = _apiClient.Refund(new RefundRequest(response.payKey));
+            var refundResponse = _apiClient.Payments.Refund(new RefundRequest(response.payKey));
 
             System.Diagnostics.Debug.WriteLine(refundResponse.ResponseEnvelope.ack, "ack");
 
@@ -104,7 +97,7 @@ namespace GroupGiving.PayPal.Tests.Integration
         [Ignore("We don't have delayed payments yet")]
         public void Can_create_a_delayed_payment()
         {
-            var response = _apiClient.SendPayRequest(
+            var response = _apiClient.Payments.SendPayRequest(
                 new PayRequest(_paypalConfiguration)
                     {
                         ActionType = "PAY_PRIMARY",
@@ -122,7 +115,7 @@ namespace GroupGiving.PayPal.Tests.Integration
             
             System.Diagnostics.Debug.Write(response.payKey, "paykey");
 
-            var paymentDetails = _apiClient.SendPaymentDetailsRequest(new PaymentDetailsRequest(response.payKey));
+            var paymentDetails = _apiClient.Payments.SendPaymentDetailsRequest(new PaymentDetailsRequest(response.payKey));
 
             Assert.That(paymentDetails.status, Is.StringMatching("INCOMPLETE"));
         }
@@ -131,7 +124,7 @@ namespace GroupGiving.PayPal.Tests.Integration
         [Ignore("We don't have delayed payments yet")]
         public void Can_complete_a_delayed_payment()
         {
-            var response = _apiClient.SendPayRequest(
+            var response = _apiClient.Payments.SendPayRequest(
                 new PayRequest(_paypalConfiguration)
                 {
                     ActionType = "PAY_PRIMARY",
@@ -150,9 +143,9 @@ namespace GroupGiving.PayPal.Tests.Integration
             System.Diagnostics.Debug.WriteLine(response.payKey, "paykey");
             System.Diagnostics.Debug.WriteLine(string.Format("https://www.sandbox.paypal.com/webscr?cmd=_ap-payment&amp;paykey={0}", response.payKey), "authorization url");
 
-            var paymentDetails = _apiClient.SendPaymentDetailsRequest(new PaymentDetailsRequest(response.payKey));
+            var paymentDetails = _apiClient.Payments.SendPaymentDetailsRequest(new PaymentDetailsRequest(response.payKey));
 
-            var executePaymentResponse = _apiClient.SendExecutePaymentRequest(new ExecutePaymentRequest(response.payKey));
+            var executePaymentResponse = _apiClient.Payments.SendExecutePaymentRequest(new ExecutePaymentRequest(response.payKey));
         }
     }
 }

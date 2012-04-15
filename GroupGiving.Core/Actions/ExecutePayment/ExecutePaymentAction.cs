@@ -3,12 +3,16 @@ using System.Linq;
 using GroupGiving.Core.Domain;
 using GroupGiving.Core.Dto;
 using GroupGiving.Core.Services;
+using GroupGiving.PayPal;
+using GroupGiving.PayPal.Model;
 using Raven.Client;
+using log4net;
 
 namespace GroupGiving.Core.Actions.ExecutePayment
 {
     public class ExecutePaymentAction
     {
+        private ILog _logger = log4net.LogManager.GetLogger(typeof (ExecutePaymentAction));
         private readonly IPaymentGateway _paymentGateway;
 
         public ExecutePaymentAction(IPaymentGateway paymentGateway)
@@ -47,34 +51,31 @@ namespace GroupGiving.Core.Actions.ExecutePayment
 
             var request = new ExecutePaymentRequest()
                               {
-                                  TransactionId = pledge.TransactionId
+                                  PayKey = pledge.TransactionId
                               };
 
             // send a 'execute payment' request to paypal
-            var response  = _paymentGateway
-                .ExecutePayment(request);
-
-            // if successful mark the pledge as fully paid
-            if (response.Successful)
+            try
             {
+                var response = _paymentGateway.ExecutePayment(request);
+
+                // if successful mark the pledge as fully paid
                 pledge.PaymentStatus = PaymentStatus.Reconciled;
-            }
 
-            pledge.PaymentGatewayHistory.Add(response.DialogueEntry);
-            session.SaveChanges();
-
-            return new ExecutePaymentResponse()
+                pledge.PaymentGatewayHistory.Add(response.Raw);
+                session.SaveChanges();
+                return new ExecutePaymentResponse()
+                           {
+                               DialogueEntry = new DialogueHistoryEntry(response.Raw.Request, response.Raw.Response),
+                           };
+            } catch (HttpChannelException fault)
             {
-                Successful = response.Successful,
-                DialogueEntry = response.DialogueEntry,
-                RawResponse = response.RawResponse
-            };
-        }
-    }
+                _logger.Warn("paypal error", fault);
+                _logger.Warn(fault + "\r\n" + fault.Message + "\r\n" + fault.FaultMessage.Raw.Request + "\r\n" + fault.FaultMessage.Raw.Response);
 
-    public class ExecutePaymentRequest
-    {
-        public string TransactionId { get; set; }
+                throw;
+            }
+        }
     }
 
     public class ExecutePaymentResponse

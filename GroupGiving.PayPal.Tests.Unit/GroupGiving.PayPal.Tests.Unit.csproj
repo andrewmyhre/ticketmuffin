@@ -71,10 +71,6 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\GroupGiving.Core\GroupGiving.Core.csproj">
-      <Project>{665762CC-21C5-4DF4-A0AD-AB23C449DDF9}</Project>
-      <Name>GroupGiving.Core</Name>
-    </ProjectReference>
     <ProjectReference Include="..\GroupGiving.PayPal\GroupGiving.PayPal.csproj">
       <Project>{69AC82E2-904E-4A5F-9A94-E5EDD91534AB}</Project>
       <Name>GroupGiving.PayPal</Name>

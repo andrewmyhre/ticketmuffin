@@ -76,12 +76,15 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ApiMockExtensions.cs" />
     <Compile Include="GivenCreatingAnAccount.cs" />
     <Compile Include="CreateEventControllerTests.cs" />
     <Compile Include="MakingAPaymentGatewayRequest.cs" />
     <Compile Include="MakingAPledgeWithValidRequest.cs" />
+    <Compile Include="PaymentGatewayTestsBase.cs" />
     <Compile Include="PledgeTestsBase.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Helpers.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -98,10 +101,6 @@
     <ProjectReference Include="..\GroupGiving.PayPal\GroupGiving.PayPal.csproj">
       <Project>{69AC82E2-904E-4A5F-9A94-E5EDD91534AB}</Project>
       <Name>GroupGiving.PayPal</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\GroupGiving.Test.Common\GroupGiving.Test.Common.csproj">
-      <Project>{8D1BC929-6F29-4B15-902E-5644935575B1}</Project>
-      <Name>GroupGiving.Test.Common</Name>
     </ProjectReference>
     <ProjectReference Include="..\GroupGiving.Web\GroupGiving.Web.csproj">
       <Project>{B75BD700-F6ED-4B72-AB58-19875F157585}</Project>

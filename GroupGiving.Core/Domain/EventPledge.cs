@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using GroupGiving.Core.Dto;
+using GroupGiving.PayPal.Model;
 
 namespace GroupGiving.Core.Domain
 {

@@ -11,9 +11,9 @@ using GroupGiving.Core;
 using GroupGiving.Core.Configuration;
 using GroupGiving.Core.Data;
 using GroupGiving.Core.Domain;
-using GroupGiving.Core.PayPal;
 using GroupGiving.Core.Services;
 using GroupGiving.PayPal;
+using GroupGiving.PayPal.Clients;
 using GroupGiving.PayPal.Model;
 using GroupGiving.Web.Models;
 using Raven.Client;
@@ -172,7 +172,7 @@ namespace GroupGiving.Web.Areas.Admin.Controllers
                                                 };
                 var payRequest = _payRequestFactory.RegularPayment("GBP", receivers, "diagnostics " + DateTime.Now.ToString());
                 
-                response = _apiClient.SendPayRequest(payRequest);
+                response = _apiClient.Payments.SendPayRequest(payRequest);
             }
             catch (HttpChannelException exception)
             {

@@ -1,5 +1,6 @@
 ﻿using System;
 using GroupGiving.Core.Dto;
+using GroupGiving.PayPal.Model;
 
 namespace GroupGiving.Core.Actions.CreatePledge
 {

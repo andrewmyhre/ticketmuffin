@@ -1,4 +1,4 @@
-using GroupGiving.Core.Configuration;
+using GroupGiving.PayPal.Configuration;
 
 namespace GroupGiving.PayPal.Tests.Integration
 {

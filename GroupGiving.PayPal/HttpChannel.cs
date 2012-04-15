@@ -1,15 +1,10 @@
-using System;
 using System.IO;
 using System.Net;
 using System.Text;
 using System.Xml;
 using System.Xml.Linq;
 using System.Xml.Serialization;
-using GroupGiving.Core;
-using GroupGiving.Core.Dto;
-using GroupGiving.Core.PayPal;
 using GroupGiving.PayPal.Model;
-using log4net.Util;
 
 namespace GroupGiving.PayPal
 {

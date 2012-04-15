@@ -9,9 +9,9 @@ using System.Security.Principal;
 using System.Text.RegularExpressions;
 using System.Web.Hosting;
 using System.Web.Mvc;
-using GroupGiving.Core.PayPal;
 using GroupGiving.Core.Services;
 using GroupGiving.PayPal;
+using GroupGiving.PayPal.Clients;
 using GroupGiving.PayPal.Model;
 using GroupGiving.Web.Code;
 using JustGiving.Api.Sdk;
@@ -33,13 +33,14 @@ namespace GroupGiving.Web.Controllers
         private readonly IIdentity _userIdentity;
         private readonly IDocumentStore _storage;
         private readonly IMembershipProviderLocator _membershipProviderLocator;
+        private readonly IApiClient _apiClient;
         Regex mustContainAlphaCharacters = new Regex(@".*\w.*");
         private readonly ILog _logger = LogManager.GetLogger(typeof (CreateEventController));
-        private IAdaptiveAccountsService _paypalAccountService;
 
         public CreateEventController(IAccountService accountService, ICountryService countryService, IMembershipService membershipService, 
             IFormsAuthenticationService formsAuthenticationService, IEventService eventService, 
-            IDocumentStore documentStore, IIdentity userIdentity, IDocumentStore storage, IMembershipProviderLocator membershipProviderLocator, IAdaptiveAccountsService paypalAccountService)
+            IDocumentStore documentStore, IIdentity userIdentity, IDocumentStore storage, 
+            IMembershipProviderLocator membershipProviderLocator, IApiClient apiClient)
         {
             _accountService = accountService;
             _countryService = countryService;
@@ -50,7 +51,7 @@ namespace GroupGiving.Web.Controllers
             _storage = storage;
             
             _membershipProviderLocator = membershipProviderLocator;
-            _paypalAccountService = paypalAccountService;
+            _apiClient = apiClient;
 
             if (_membershipProviderLocator.Provider() is RavenDBMembership.Provider.RavenDBMembershipProvider)
             {
@@ -288,9 +289,13 @@ namespace GroupGiving.Web.Controllers
             GetVerifiedStatusResponse accountVerification = new GetVerifiedStatusResponse();
             try
             {
-                accountVerification = _paypalAccountService.AccountIsVerified(setTicketDetailsRequest.PayPalEmail,
-                                                        setTicketDetailsRequest.PayPalFirstName,
-                                                        setTicketDetailsRequest.PayPalLastName);
+                GetVerifiedStatusRequest verifyAccountRequest=new GetVerifiedStatusRequest(_apiClient.Configuration)
+                                                                  {
+                                                                      EmailAddress=setTicketDetailsRequest.PayPalEmail,
+                                                                      FirstName=setTicketDetailsRequest.PayPalFirstName,
+                                                                      LastName=setTicketDetailsRequest.PayPalLastName
+                                                                  };
+                accountVerification = _apiClient.Accounts.VerifyAccount(verifyAccountRequest);
             } catch
             {
                 // TODO: be more specific about the exception

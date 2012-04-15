@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Web.Mvc;
 using GroupGiving.Core.Dto;
+using GroupGiving.PayPal.Model;
 using GroupGiving.Web.Areas.Api.Models;
 using GroupGiving.Web.Models;
 

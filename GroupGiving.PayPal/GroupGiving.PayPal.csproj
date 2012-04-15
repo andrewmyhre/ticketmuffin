@@ -62,16 +62,55 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ApiClient.cs" />
+    <Compile Include="Api.cs" />
     <Compile Include="ApiClientSettings.cs" />
+    <Compile Include="Clients\AccountsClient.cs" />
+    <Compile Include="Clients\ApiClient.cs" />
+    <Compile Include="Clients\IApiClient.cs" />
+    <Compile Include="Clients\PaymentsClient.cs" />
+    <Compile Include="Configuration\AdaptiveAccountsConfiguration.cs" />
     <Compile Include="Configuration\PaypalAdaptiveAccountsConfigurationSection.cs" />
     <Compile Include="Configuration\PaypalEnvironment.cs" />
     <Compile Include="HttpChannel.cs" />
-    <Compile Include="IApiClient.cs" />
+    <Compile Include="IPaymentGateway.cs" />
+    <Compile Include="Model\ClientDetails.cs" />
+    <Compile Include="Model\CreatePayPalAccountRequest.cs" />
+    <Compile Include="Model\CreatePaypalAccountResponse.cs" />
+    <Compile Include="Model\DialogueHistoryEntry.cs" />
+    <Compile Include="Model\Error.cs" />
+    <Compile Include="Model\ErrorResponse.cs" />
+    <Compile Include="Model\ExecutePaymentRequest.cs" />
+    <Compile Include="Model\ExecutePaymentResponse.cs" />
+    <Compile Include="Model\FaultMessage.cs" />
+    <Compile Include="Model\GetAccessTokenRequest.cs" />
+    <Compile Include="Model\GetAccessTokenResponse.cs" />
+    <Compile Include="Model\GetVerifiedStatusRequest.cs" />
+    <Compile Include="Model\GetVerifiedStatusResponse.cs" />
+    <Compile Include="Model\HttpChannelException.cs" />
+    <Compile Include="Model\IPaymentGatewayResponse.cs" />
+    <Compile Include="Model\IPayPalRequest.cs" />
     <Compile Include="Model\IPayRequestFactory.cs" />
+    <Compile Include="Model\IResponseEnvelope.cs" />
+    <Compile Include="Model\NewDataSet.cs" />
+    <Compile Include="Model\PaymentDetailsResponse.cs" />
+    <Compile Include="Model\PaymentGatewayRequest.cs" />
+    <Compile Include="Model\PaymentGatewayResponse.cs" />
+    <Compile Include="Model\PayPalError.cs" />
+    <Compile Include="Model\PayResponse.cs" />
+    <Compile Include="Model\PayRequest.cs" />
     <Compile Include="Model\PayRequestFactory.cs" />
+    <Compile Include="Model\PayResponseResponseEnvelope.cs" />
+    <Compile Include="Model\Receiver.cs" />
+    <Compile Include="Model\ReceiverList.cs" />
+    <Compile Include="Model\RefundRequest.cs" />
+    <Compile Include="Model\RefundResponse.cs" />
+    <Compile Include="Model\RequestEnvelope.cs" />
+    <Compile Include="Model\RequestPermissionsRequest.cs" />
+    <Compile Include="Model\RequestPermissionsResponse.cs" />
+    <Compile Include="Model\ResponseBase.cs" />
+    <Compile Include="Model\ResponseError.cs" />
+    <Compile Include="Model\VerifyPaypalAccountResponse.cs" />
     <Compile Include="PaymentDetailsRequest.cs" />
-    <Compile Include="PaypalAdaptiveAccountsService.cs" />
     <Compile Include="PayPalPaymentGateway.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -80,12 +119,6 @@
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\GroupGiving.Core\GroupGiving.Core.csproj">
-      <Project>{665762CC-21C5-4DF4-A0AD-AB23C449DDF9}</Project>
-      <Name>GroupGiving.Core</Name>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include=".NETFramework,Version=v4.0">

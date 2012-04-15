@@ -4,7 +4,9 @@ using GroupGiving.Core.Actions.RefundPledge;
 using GroupGiving.Core.Domain;
 using GroupGiving.Core.Dto;
 using GroupGiving.Core.Services;
+using GroupGiving.PayPal;
 using Raven.Client;
+using RefundResponse = GroupGiving.PayPal.Model.RefundResponse;
 
 namespace GroupGiving.Core.Actions.CancelEvent
 {

@@ -6,6 +6,9 @@ using GroupGiving.Core.Data;
 using GroupGiving.Core.Domain;
 using GroupGiving.Core.Dto;
 using GroupGiving.Core.Services;
+using GroupGiving.PayPal;
+using GroupGiving.PayPal.Configuration;
+using GroupGiving.PayPal.Model;
 using Raven.Client;
 
 namespace GroupGiving.Core.Actions.CreatePledge

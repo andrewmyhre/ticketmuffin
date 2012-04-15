@@ -1,4 +1,5 @@
 using GroupGiving.Core.Domain;
+using GroupGiving.PayPal.Configuration;
 
 namespace GroupGiving.Core.Configuration
 {

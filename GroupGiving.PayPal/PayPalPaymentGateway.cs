@@ -1,19 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using GroupGiving.Core;
-using GroupGiving.Core.Configuration;
-using GroupGiving.Core.Domain;
-using GroupGiving.Core.Dto;
-using GroupGiving.Core.PayPal;
-using GroupGiving.Core.Services;
+using GroupGiving.PayPal.Clients;
 using GroupGiving.PayPal.Configuration;
 using GroupGiving.PayPal.Model;
-using ExecutePaymentRequest = GroupGiving.Core.Actions.ExecutePayment.ExecutePaymentRequest;
-using ExecutePaymentResponse = GroupGiving.Core.Actions.ExecutePayment.ExecutePaymentResponse;
-using PaymentDetailsResponse = GroupGiving.Core.Dto.PaymentDetailsResponse;
-using RefundRequest = GroupGiving.Core.Dto.RefundRequest;
-using RefundResponse = GroupGiving.Core.Dto.RefundResponse;
 
 namespace GroupGiving.PayPal
 {
@@ -66,7 +55,7 @@ namespace GroupGiving.PayPal
                                                 .ToArray()
                                         };
 
-            var response = _apiClient.SendPayRequest(payRequest);
+            var response = _apiClient.Payments.SendPayRequest(payRequest);
 
             return new PaymentGatewayResponse()
                        {
@@ -82,100 +71,45 @@ namespace GroupGiving.PayPal
             return SendPaymentRequest(request, "PAY_PRIMARY");
         }
 
-        public PaymentDetailsResponse RetrievePaymentDetails(Core.Dto.PaymentDetailsRequest request)
+        public PaymentDetailsResponse RetrievePaymentDetails(string transactionId)
         {
-            var result = _apiClient.SendPaymentDetailsRequest(
-                new PaymentDetailsRequest(request.TransactionId));
+            var result = _apiClient.Payments.SendPaymentDetailsRequest(
+                new PaymentDetailsRequest(transactionId));
 
             return new PaymentDetailsResponse()
                        {
-                           Status = result.status,
-                           SenderEmailAddress = result.senderEmail,
-                           RawResponse = result,
-                           DialogueEntry = ((ResponseBase)result).Raw
+                           status = result.status,
+                           senderEmail= result.senderEmail,
+                           Raw = result.Raw
                        };
         }
 
         public RefundResponse Refund(RefundRequest request)
         {
-            if (string.IsNullOrWhiteSpace(request.TransactionId))
+            if (string.IsNullOrWhiteSpace(request.PayKey))
             {
                 throw new ArgumentException("Transaction Id must be provided", "request.TransactionId");
             }
 
-            Core.PayPal.RefundResponse response = null;
+            RefundResponse response = null;
 
-            try
-            {
-                response = _apiClient.Refund(new Core.PayPal.RefundRequest(request.TransactionId)
-                                                 {
-                                                     Receivers = new ReceiverList(request.Receivers.Select(r=>new Receiver(r.AmountToReceive.ToString("#.00"), r.EmailAddress, r.Primary)))
+            return _apiClient.Payments.Refund(new RefundRequest(request.PayKey)
+                                                {
+                                                    Receivers = new ReceiverList(
+                                                        request.Receivers.Select(r=>
+                                                            new Receiver(r.Amount.ToString("#.00"), 
+                                                                r.Email, r.Primary)))
                                                  });
-            } catch (HttpChannelException ex)
-            {
-                return new RefundResponse()
-                           {
-                               Successful = false,
-                               RawResponse = ex,
-                               DialogueEntry = ((ResponseBase)ex.FaultMessage).Raw
-                           };
-            } catch (Exception ex)
-            {
-                return new RefundResponse()
-                {
-                    Successful = false,
-                    RawResponse = ex
-                };
-            }
-
-            return new RefundResponse()
-                       {
-                           Successful = response.ResponseEnvelope.ack.StartsWith("Success")
-                            && response.refundInfoList.All(ri => ri.refundStatus == "REFUNDED" 
-                                || ri.refundStatus == "REFUNDED_PENDING" 
-                                || ri.refundStatus == "NOT_PAID" 
-                                || ri.refundStatus == "ALREADY_REVERSED_OR_REFUNDED"),
-                           RawResponse = response,
-                           DialogueEntry = ((ResponseBase)response).Raw,
-                           Message = response.refundInfoList.First().refundStatus
-                       };
         }
 
         public ExecutePaymentResponse ExecutePayment(ExecutePaymentRequest request)
         {
-            if (string.IsNullOrWhiteSpace(request.TransactionId))
+            if (string.IsNullOrWhiteSpace(request.PayKey))
             {
                 throw new ArgumentException("transactionid must be provided", "request.transactionid");
             }
 
-            Core.PayPal.ExecutePaymentResponse response = null;
-            
-
-            try
-            {
-                response = _apiClient.SendExecutePaymentRequest(new Core.PayPal.ExecutePaymentRequest(request.TransactionId));
-            } catch (HttpChannelException exception)
-            {
-                return new ExecutePaymentResponse()
-                           {
-                               Successful = false,
-                               RawResponse = exception,
-                               DialogueEntry = ((ResponseBase) exception.FaultMessage).Raw
-                           };
-            } catch (Exception exception)
-            {
-                return new ExecutePaymentResponse()
-                           {
-                               Successful = false,
-                               RawResponse = exception
-                           };
-            }
-
-            return new ExecutePaymentResponse()
-                       {
-                           Successful = true,
-                           DialogueEntry = ((ResponseBase) response).Raw
-                       };
+            return _apiClient.Payments.SendExecutePaymentRequest(new ExecutePaymentRequest(request.PayKey));
         }
     }
 }

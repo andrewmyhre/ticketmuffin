@@ -1,7 +1,8 @@
 using System.IO;
 using System.Net;
-using GroupGiving.Core.Configuration;
-using GroupGiving.Core.PayPal;
+using GroupGiving.PayPal.Clients;
+using GroupGiving.PayPal.Configuration;
+using GroupGiving.PayPal.Model;
 using NUnit.Framework;
 
 namespace GroupGiving.PayPal.Tests.Integration
@@ -18,7 +19,7 @@ namespace GroupGiving.PayPal.Tests.Integration
         {
             _paypalConfiguration = PayPalHelpers.SandboxConfiguration();
             _apiSettings = new ApiClientSettings(_paypalConfiguration);
-            _apiClient = new ApiClient(_apiSettings, new SiteConfiguration { AdaptiveAccountsConfiguration = _paypalConfiguration });
+            _apiClient = new ApiClient(_apiSettings );
 
             GetVerifiedStatusRequest request=new GetVerifiedStatusRequest(_paypalConfiguration)
             {
@@ -28,7 +29,7 @@ namespace GroupGiving.PayPal.Tests.Integration
             };
             try
             {
-                var response = _apiClient.VerifyAccount(request);
+                var response = _apiClient.Accounts.VerifyAccount(request);
                 Assert.That(response, Is.Not.Null);
                 Assert.That(response.AccountStatus, Is.StringContaining("VERIFIED"));
             } catch (WebException ex)
@@ -46,7 +47,7 @@ namespace GroupGiving.PayPal.Tests.Integration
         {
             _paypalConfiguration = PayPalHelpers.SandboxConfiguration();
             _apiSettings = new ApiClientSettings(_paypalConfiguration);
-            _apiClient = new ApiClient(_apiSettings, new SiteConfiguration(){AdaptiveAccountsConfiguration = _paypalConfiguration});
+            _apiClient = new ApiClient(_apiSettings);
 
             RequestPermissionsRequest request = new RequestPermissionsRequest(_paypalConfiguration)
             {
@@ -54,7 +55,7 @@ namespace GroupGiving.PayPal.Tests.Integration
                 Callback = "http://localhost/PayPal/Permissions"
             };
 
-            var response = _apiClient.RequestPermissions(request);
+            var response = _apiClient.Accounts.RequestPermissions(request);
             Assert.That(response.Token, Is.Not.Null);
             Assert.That(response.Token, Has.Length.GreaterThan(0));
             System.Diagnostics.Debug.WriteLine(string.Format("sandbox: https://www.sandbox.paypal.com/cgi-bin/webscr?cmd=_grant-permission&request_token={0}", response.Token));
@@ -63,19 +64,19 @@ namespace GroupGiving.PayPal.Tests.Integration
         }
 
         [Test]
+        [Ignore("This step depends on user interaction to obtain the verification code")]
         public void Can_get_accesstoken()
         {
             _paypalConfiguration = PayPalHelpers.SandboxConfiguration();
             _apiSettings = new ApiClientSettings(_paypalConfiguration);
-            _apiClient = new ApiClient(_apiSettings, new SiteConfiguration() { AdaptiveAccountsConfiguration = _paypalConfiguration });
+            _apiClient = new ApiClient(_apiSettings );
 
-            string verificationCode = "EF8MjKKO35.aOsjvl.9myg";
             var getACcessTokenRequest = new GetAccessTokenRequest()
             {
                 Verifier = "EF8MjKKO35.aOsjvl.9myg",
                 Token = "AAAAAAAVsJJs368CZSYT"
             };
-            var getACcessTOkenResponse = _apiClient.GetAccessToken(getACcessTokenRequest);
+            var getACcessTOkenResponse = _apiClient.Accounts.GetAccessToken(getACcessTokenRequest);
 
             Assert.That(getACcessTOkenResponse.Token, Is.Not.Null);
             Assert.That(getACcessTOkenResponse.TokenSecret, Is.Not.Null);

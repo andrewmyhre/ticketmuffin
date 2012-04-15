@@ -1,5 +1,4 @@
 using System.Xml.Serialization;
-using GroupGiving.Core.PayPal;
 using GroupGiving.PayPal.Model;
 
 namespace GroupGiving.PayPal

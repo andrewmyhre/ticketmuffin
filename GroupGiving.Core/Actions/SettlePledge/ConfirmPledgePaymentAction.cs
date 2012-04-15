@@ -3,24 +3,22 @@ using System.Collections.Generic;
 using System.Linq;
 using GroupGiving.Core.Data;
 using GroupGiving.Core.Domain;
-using GroupGiving.Core.Dto;
 using GroupGiving.Core.Email;
 using GroupGiving.Core.Services;
-using Raven.Client;
+using GroupGiving.PayPal;
+using GroupGiving.PayPal.Model;
+using PaymentDetailsRequest = GroupGiving.Core.Dto.PaymentDetailsRequest;
 
 namespace GroupGiving.Core.Actions.SettlePledge
 {
     public class ConfirmPledgePaymentAction
     {
-        private readonly IDocumentSession _session;
         private readonly IPaymentGateway _paymentGateway;
         private readonly IAccountService _accountService;
         private readonly IEmailRelayService _emailRelayService;
 
-        public ConfirmPledgePaymentAction(IDocumentSession session, 
-            IPaymentGateway paymentGateway, IAccountService accountService, IEmailRelayService emailRelayService)
+        public ConfirmPledgePaymentAction(IPaymentGateway paymentGateway, IAccountService accountService, IEmailRelayService emailRelayService)
         {
-            _session = session;
             _paymentGateway = paymentGateway;
             _accountService = accountService;
             this._emailRelayService = emailRelayService;
@@ -42,33 +40,32 @@ namespace GroupGiving.Core.Actions.SettlePledge
 
             // get the payment details from payment gateway
             var paymentDetails =
-                _paymentGateway.RetrievePaymentDetails(new PaymentDetailsRequest()
-                                                           {TransactionId = pledge.TransactionId});
+                _paymentGateway.RetrievePaymentDetails(pledge.TransactionId);
             if (pledge.PaymentGatewayHistory == null)
                 pledge.PaymentGatewayHistory = new List<DialogueHistoryEntry>();
-            pledge.PaymentGatewayHistory.Add(paymentDetails.DialogueEntry);
+            pledge.PaymentGatewayHistory.Add(new DialogueHistoryEntry(paymentDetails.Raw.Request, paymentDetails.Raw.Response));
 
-            if (paymentDetails.Status == "INCOMPLETE") // delayed payment will be incomplete until execute payment is called
+            if (paymentDetails.status == "INCOMPLETE") // delayed payment will be incomplete until execute payment is called
             {
                 pledge.PaymentStatus = PaymentStatus.PaidPendingReconciliation;
                 pledge.Paid = true;
                 pledge.DatePledged = DateTime.Now;
             }
-            else if (paymentDetails.Status == "CREATED")
+            else if (paymentDetails.status == "CREATED")
             {
                 pledge.PaymentStatus = PaymentStatus.Reconciled;
                 pledge.Paid = true;
                 pledge.DatePledged = DateTime.Now;
             }
-            if (!string.IsNullOrWhiteSpace(paymentDetails.SenderEmailAddress))
+            if (!string.IsNullOrWhiteSpace(paymentDetails.senderEmail))
             {
-                pledge.AccountEmailAddress = paymentDetails.SenderEmailAddress;
+                pledge.AccountEmailAddress = paymentDetails.senderEmail;
 
                 // if the pledger does not have an account then we need to create one
-                var account = _accountService.RetrieveByEmailAddress(paymentDetails.SenderEmailAddress);
+                var account = _accountService.RetrieveByEmailAddress(paymentDetails.senderEmail);
                 if (account == null)
                 {
-                    account = _accountService.CreateIncompleteAccount(paymentDetails.SenderEmailAddress, _emailRelayService);
+                    account = _accountService.CreateIncompleteAccount(paymentDetails.senderEmail, _emailRelayService);
                     pledge.AccountId = account.Id;
                     pledge.AccountEmailAddress = account.Email;
                 }

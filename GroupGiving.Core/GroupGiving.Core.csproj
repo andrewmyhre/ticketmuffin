@@ -95,9 +95,7 @@
     <Compile Include="Actions\SettlePledge\ConfirmPledgePaymentAction.cs" />
     <Compile Include="Actions\SettlePledge\SettlePledgeRequest.cs" />
     <Compile Include="Actions\SettlePledge\SettlePledgeResponse.cs" />
-    <Compile Include="Api.cs" />
     <Compile Include="BCrypt.cs" />
-    <Compile Include="Configuration\AdaptiveAccountsConfiguration.cs" />
     <Compile Include="Configuration\DatabaseConfiguration.cs" />
     <Compile Include="Configuration\ISiteConfiguration.cs" />
     <Compile Include="Configuration\JustGivingApiConfiguration.cs" />
@@ -119,43 +117,12 @@
     <Compile Include="Domain\IDomainObject.cs" />
     <Compile Include="Domain\PageContent.cs" />
     <Compile Include="Domain\PaymentStatus.cs" />
-    <Compile Include="Dto\DialogueHistoryEntry.cs" />
-    <Compile Include="Dto\Error.cs" />
-    <Compile Include="Dto\ErrorResponse.cs" />
-    <Compile Include="Dto\IPaymentGatewayResponse.cs" />
-    <Compile Include="Dto\IResponseEnvelope.cs" />
     <Compile Include="Dto\PaymentDetailsRequest.cs" />
-    <Compile Include="Dto\PaymentDetailsResponse.cs" />
-    <Compile Include="Dto\PaymentGatewayRequest.cs" />
-    <Compile Include="Dto\PaymentGatewayResponse.cs" />
-    <Compile Include="Dto\RefundRequest.cs" />
-    <Compile Include="Dto\RefundResponse.cs" />
-    <Compile Include="Dto\ResponseBase.cs" />
-    <Compile Include="Dto\ResponseError.cs" />
+    <Compile Include="Dto\PaymentDetails.cs" />
     <Compile Include="Email\EmailTemplate.cs" />
     <Compile Include="Email\SimpleSmtpEmailRelayService.cs" />
     <Compile Include="Email\IEmailTemplate.cs" />
     <Compile Include="Email\IEmailRelayService.cs" />
-    <Compile Include="HttpChannelException.cs" />
-    <Compile Include="PayPal\ClientDetails.cs" />
-    <Compile Include="PayPal\CreatePayPalAccountRequest.cs" />
-    <Compile Include="PayPal\CreatePaypalAccountResponse.cs" />
-    <Compile Include="PayPal\ExecutePaymentRequest.cs" />
-    <Compile Include="PayPal\GetAccessTokenRequest.cs" />
-    <Compile Include="PayPal\GetAccessTokenResponse.cs" />
-    <Compile Include="PayPal\GetVerifiedStatusRequest.cs" />
-    <Compile Include="PayPal\GetVerifiedStatusResponse.cs" />
-    <Compile Include="PayPal\IPayPalRequest.cs" />
-    <Compile Include="PayPal\PaymentDetailsResponse.cs" />
-    <Compile Include="PayPal\PaymentGatewayResponse.cs" />
-    <Compile Include="PayPal\PayRequest.cs" />
-    <Compile Include="PayPal\Receiver.cs" />
-    <Compile Include="PayPal\ReceiverList.cs" />
-    <Compile Include="PayPal\RefundRequest.cs" />
-    <Compile Include="PayPal\RequestEnvelope.cs" />
-    <Compile Include="PayPal\RequestPermissionsRequest.cs" />
-    <Compile Include="PayPal\RequestPermissionsResponse.cs" />
-    <Compile Include="PayPal\VerifyPaypalAccountResponse.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\Country.cs" />
     <Compile Include="Services\CountryService.cs" />
@@ -164,13 +131,11 @@
     <Compile Include="Services\CreateUserRequest.cs" />
     <Compile Include="Services\EmailCreationService.cs" />
     <Compile Include="Services\EventService.cs" />
-    <Compile Include="Services\IAdaptiveAccountsService.cs" />
     <Compile Include="Services\ICountryService.cs" />
     <Compile Include="Services\IEmailCreationService.cs" />
     <Compile Include="Services\IEventService.cs" />
     <Compile Include="Services\IAccountService.cs" />
     <Compile Include="Services\IGetVerifiedStatusResponse.cs" />
-    <Compile Include="Services\IPaymentGateway.cs" />
     <Compile Include="Services\ISiteConfigurationService.cs" />
     <Compile Include="Services\ITaxAmountResolver.cs" />
     <Compile Include="Services\QueuedCommand.cs" />
@@ -190,6 +155,10 @@
     <ProjectReference Include="..\EmailProcessing\EmailProcessing\EmailProcessing.csproj">
       <Project>{F511818D-59DF-4358-8946-10FB3933E5B2}</Project>
       <Name>EmailProcessing</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\GroupGiving.PayPal\GroupGiving.PayPal.csproj">
+      <Project>{69AC82E2-904E-4A5F-9A94-E5EDD91534AB}</Project>
+      <Name>GroupGiving.PayPal</Name>
     </ProjectReference>
     <ProjectReference Include="..\RavenDBMembership\RavenDBMembership.csproj">
       <Project>{07CCE5B6-9111-46DC-AAEC-00D80E19FE4A}</Project>
@@ -218,6 +187,7 @@
       <Install>true</Install>
     </BootstrapperPackage>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

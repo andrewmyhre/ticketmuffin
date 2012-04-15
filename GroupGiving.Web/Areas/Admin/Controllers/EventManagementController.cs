@@ -9,8 +9,9 @@ using GroupGiving.Core.Actions.CancelEvent;
 using GroupGiving.Core.Actions.ExecutePayment;
 using GroupGiving.Core.Actions.RefundPledge;
 using GroupGiving.Core.Domain;
-using GroupGiving.Core.Dto;
 using GroupGiving.Core.Services;
+using GroupGiving.PayPal;
+using GroupGiving.PayPal.Model;
 using GroupGiving.Web.Controllers;
 using GroupGiving.Web.Models;
 using Raven.Client;
@@ -203,7 +204,7 @@ namespace GroupGiving.Web.Areas.Admin.Controllers
                 RefundViewModel viewModel = new RefundViewModel();
                 RefundPledgeAction action = new RefundPledgeAction(_paymentGateway);
 
-                RefundResponse refundResult = null;
+                PayPal.Model.RefundResponse refundResult = null;
                 try
                 {
                     refundResult = action.Execute(session, "groupgivingevents/" + id, orderNumber);

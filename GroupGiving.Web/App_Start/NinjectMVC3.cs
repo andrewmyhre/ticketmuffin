@@ -9,6 +9,7 @@ using GroupGiving.Core.Domain;
 using GroupGiving.Core.Email;
 using GroupGiving.Core.Services;
 using GroupGiving.PayPal;
+using GroupGiving.PayPal.Clients;
 using GroupGiving.PayPal.Configuration;
 using GroupGiving.PayPal.Model;
 using GroupGiving.Web.Code;
@@ -118,14 +119,13 @@ namespace GroupGiving.Web.App_Start
                 .InRequestScope();
             kernel.Bind<IApiClient>().ToMethod((request) =>
             {
-                var config = kernel.Get<ISiteConfiguration>();
-                return new ApiClient(new ApiClientSettings(config.AdaptiveAccountsConfiguration),config);
+                var configuration = kernel.Get<ISiteConfiguration>();
+                return new ApiClient(new ApiClientSettings(configuration.AdaptiveAccountsConfiguration));
             });
             kernel.Bind<IPaymentGateway>().To<PayPalPaymentGateway>();
             kernel.Bind<ITaxAmountResolver>().To<NilTax>();
             kernel.Bind<IIdentity>().ToMethod(x=>HttpContext.Current.User.Identity);
             kernel.Bind<IMembershipProviderLocator>().To<RavenDbMembershipProviderLocator>();
-            kernel.Bind<IAdaptiveAccountsService>().To<PaypalAdaptiveAccountsService>();
             kernel.Bind<PaypalAdaptiveAccountsConfigurationSection>().ToMethod(r => 
                 ConfigurationManager.GetSection("adaptiveAccounts") as PaypalAdaptiveAccountsConfigurationSection);
             kernel.Bind<AdaptiveAccountsConfiguration>().ToMethod(r=>kernel.Get<ISiteConfiguration>().AdaptiveAccountsConfiguration);

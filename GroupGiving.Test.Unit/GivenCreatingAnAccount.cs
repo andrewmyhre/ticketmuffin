@@ -1,13 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using EmailProcessing;
+﻿using EmailProcessing;
 using GroupGiving.Core.Data;
 using GroupGiving.Core.Domain;
-using GroupGiving.Core.Email;
 using GroupGiving.Core.Services;
-using GroupGiving.Test.Common;
 using Moq;
 using NUnit.Framework;
 using Raven.Client;
@@ -36,7 +30,7 @@ namespace GroupGiving.Test.Unit
                 .Setup(m=>m.Send(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<object>(), "pl"))
                 .Verifiable();
             IAccountService accountService = new AccountService(_accountRepository.Object, _emailFacade.Object, _documentStore.Object);
-            var createUserRequest = TestDataObjects.CreateValidCreateUserRequest();
+            var createUserRequest = Helpers.CreateValidCreateUserRequest();
 
             // act
             accountService.CreateUser(createUserRequest);
@@ -53,7 +47,7 @@ namespace GroupGiving.Test.Unit
                 .Setup(m=>m.SaveOrUpdate(It.IsAny<Account>()))
                 .Verifiable();
             IAccountService accountService = new AccountService(_accountRepository.Object, _emailFacade.Object, _documentStore.Object);
-            var createUserRequest = TestDataObjects.CreateValidCreateUserRequest();
+            var createUserRequest = Helpers.CreateValidCreateUserRequest();
 
             // act
             accountService.CreateUser(createUserRequest);

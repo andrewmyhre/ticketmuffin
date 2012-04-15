@@ -83,7 +83,7 @@ namespace GroupGiving.Web.Controllers
                 if (!pledge.Paid && pledge.PaymentStatus == PaymentStatus.Unpaid)
                 {
                     ConfirmPledgePaymentAction action
-                        = new ConfirmPledgePaymentAction(session, _paymentGateway, _accountService, _emailRelayService);
+                        = new ConfirmPledgePaymentAction(_paymentGateway, _accountService, _emailRelayService);
 
                     var paymentConfirmationResult = action.ConfirmPayment(@event, new SettlePledgeRequest() {PayPalPayKey = payKey});
 

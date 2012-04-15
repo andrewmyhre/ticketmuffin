@@ -1,5 +1,5 @@
 ﻿<?xml version='1.0' encoding='UTF-8'?>
-<ns2:PaymentDetailsResponse xmlns:ns2="http://svcs.paypal.com/types/ap">
+<ns2:PaymentDetails xmlns:ns2="http://svcs.paypal.com/types/ap">
     <responseEnvelope>
         <timestamp>2011-11-07T09:37:29.491-08:00</timestamp>
         <ack>Success</ack>
@@ -46,4 +46,4 @@
         <email>buyer1_1304843364_per@gmail.com</email>
         <useCredentials>false</useCredentials>
     </sender>
-</ns2:PaymentDetailsResponse>
+</ns2:PaymentDetails>

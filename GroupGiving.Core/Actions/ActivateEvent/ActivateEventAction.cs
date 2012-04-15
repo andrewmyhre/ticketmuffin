@@ -5,6 +5,7 @@ using System.Text;
 using GroupGiving.Core.Actions.ExecutePayment;
 using GroupGiving.Core.Domain;
 using GroupGiving.Core.Services;
+using GroupGiving.PayPal;
 using Raven.Client;
 
 namespace GroupGiving.Core.Actions.ActivateEvent

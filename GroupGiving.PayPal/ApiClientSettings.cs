@@ -1,6 +1,4 @@
-﻿using GroupGiving.Core.Configuration;
-using GroupGiving.Core.Domain;
-using GroupGiving.PayPal.Configuration;
+﻿using GroupGiving.PayPal.Configuration;
 
 namespace GroupGiving.PayPal
 {
@@ -35,6 +33,12 @@ namespace GroupGiving.PayPal
         public string PayApiEndpoint { get; set; }
 
         public string ApplicationId { get; set; }
+
+        public AdaptiveAccountsConfiguration Configuration
+        {
+            get { return _paypalConfiguration; }
+            set { throw new System.NotImplementedException(); }
+        }
 
         public string ActionUrl(string api, string action)
         {

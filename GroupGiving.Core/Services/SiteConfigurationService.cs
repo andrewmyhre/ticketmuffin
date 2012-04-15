@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using GroupGiving.Core.Configuration;
 using GroupGiving.Core.Domain;
+using GroupGiving.PayPal.Configuration;
 using Raven.Client;
 using log4net;
 

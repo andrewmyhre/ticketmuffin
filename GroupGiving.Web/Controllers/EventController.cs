@@ -34,8 +34,7 @@ using Ninject;
 using RavenDBMembership.Provider;
 using RavenDBMembership.Web.Models;
 using log4net;
-using RefundRequest = GroupGiving.Core.Dto.RefundRequest;
-using RefundResponse = GroupGiving.Core.Dto.RefundResponse;
+using RefundResponse = GroupGiving.PayPal.Model.RefundResponse;
 
 namespace GroupGiving.Web.Controllers
 {
@@ -472,6 +471,7 @@ namespace GroupGiving.Web.Controllers
 
                     return View(viewModel);
                 }
+
                 RefundResponse refundResult = null;
                 RefundPledgeAction action = new RefundPledgeAction(_paymentGateway);
                 try

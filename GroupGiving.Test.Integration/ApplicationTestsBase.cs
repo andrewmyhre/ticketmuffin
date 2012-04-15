@@ -2,7 +2,6 @@ using EmailProcessing;
 using GroupGiving.Core.Data;
 using GroupGiving.Core.Domain;
 using GroupGiving.Core.Services;
-using GroupGiving.Test.Common;
 using Moq;
 using Raven.Client;
 using Raven.Client.Document;
@@ -56,7 +55,7 @@ namespace GroupGiving.Test.Integration
             IRepository<Account> accountRepository = new RavenDBRepositoryBase<Account>(session);
             IAccountService accountService = new AccountService(accountRepository, _emailService, _documentStore.Object);
 
-            CreateUserRequest createUserRequest = TestDataObjects.CreateValidCreateUserRequest();
+            CreateUserRequest createUserRequest = Helpers.CreateValidCreateUserRequest();
             // act
             var account = accountService.CreateUser(createUserRequest);
             return account;

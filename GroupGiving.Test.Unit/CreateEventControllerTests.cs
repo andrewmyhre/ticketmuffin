@@ -1,20 +1,14 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Security.Principal;
-using System.Text;
 using System.Web.Mvc;
 using System.Web.Security;
 using GroupGiving.Core.Domain;
-using GroupGiving.Core.PayPal;
 using GroupGiving.Core.Services;
 using GroupGiving.PayPal;
-using GroupGiving.PayPal.Configuration;
+using GroupGiving.PayPal.Clients;
 using GroupGiving.PayPal.Model;
-using GroupGiving.Test.Common;
 using GroupGiving.Web.Code;
 using GroupGiving.Web.Controllers;
-using GroupGiving.Web.Models;
 using Moq;
 using NUnit.Framework;
 using RavenDBMembership.Web.Models;
@@ -22,7 +16,7 @@ using RavenDBMembership.Web.Models;
 namespace GroupGiving.Test.Unit
 {
     [TestFixture]
-    public class CreateEventControllerTests
+    public class CreateEventControllerTests : PaymentGatewayTestsBase
     {
         Mock<IAccountService> accountService = null;
         Mock<IMembershipService> membershipService = null;
@@ -31,8 +25,9 @@ namespace GroupGiving.Test.Unit
         private Mock<IEventService> eventService = null;
         private Mock<MembershipProvider> _membershipProvider = new Mock<MembershipProvider>();
         private Mock<ICountryService> _countryService = new Mock<ICountryService>();
-        private Mock<IAdaptiveAccountsService> _paypalAccountService = new Mock<IAdaptiveAccountsService>();
         private IIdentity _userIdentity = new System.Security.Principal.GenericIdentity("testuser@test.com");
+        private Mock<IApiClient> _apiClient = new Mock<IApiClient>();
+        private Mock<IAccountsApiClient> _accountsApi = new Mock<IAccountsApiClient>();
 
         [SetUp]
         public void SetUp()
@@ -58,6 +53,8 @@ namespace GroupGiving.Test.Unit
             accountService
                 .Setup(m => m.RetrieveByEmailAddress(It.IsAny<string>()))
                 .Returns(new Account() {Email = "testuser@test.com"});
+
+            _apiClient.SetupProperty(a => a.Accounts, _accountsApi.Object);
         }
 
         [Test]
@@ -70,13 +67,11 @@ namespace GroupGiving.Test.Unit
                 .Setup(m => m.Retrieve(It.IsAny<string>()))
                 .Returns(new GroupGivingEvent());
 
-            _paypalAccountService
-                .Setup(m => m.AccountIsVerified(It.IsAny<string>(),It.IsAny<string>(),It.IsAny<string>()))
-                .Returns(new GetVerifiedStatusResponse(){Success=true, AccountStatus = "VERIFIED"});
+            _accountsApi.AllAccountsVerified();
 
             var controller = new CreateEventController(accountService.Object, _countryService.Object, membershipService.Object,
                                                        formsAuthenticationService.Object, eventService.Object,
-                                                       null, _userIdentity, null, _membershipProviderLocator.Object, _paypalAccountService.Object);
+                                                       null, _userIdentity, null, _membershipProviderLocator.Object, _apiClient.Object);
 
             var createEventRequest = new CreateEventRequest(){ShortUrl="test-event"};
             createEventRequest.StartDate = DateTime.Now.AddDays(10).ToString("dd/MM/yyyy");
@@ -112,13 +107,11 @@ namespace GroupGiving.Test.Unit
                 .Setup(m => m.Retrieve(It.IsAny<string>()))
                 .Returns(new GroupGivingEvent());
 
-            _paypalAccountService
-                .Setup(m => m.AccountIsVerified(It.IsAny<string>(),It.IsAny<string>(),It.IsAny<string>()))
-                .Returns(new GetVerifiedStatusResponse() { Success = true, AccountStatus = "VERIFIED" });
+            _accountsApi.AllAccountsVerified();
 
             var controller = new CreateEventController(accountService.Object, _countryService.Object, membershipService.Object,
                                                        formsAuthenticationService.Object, eventService.Object,
-                                                       null, _userIdentity, null, _membershipProviderLocator.Object, _paypalAccountService.Object);
+                                                       null, _userIdentity, null, _membershipProviderLocator.Object, _apiClient.Object);
             controller.ModelState.AddModelError("*", "invalid model state");
 
             var result = controller.EventDetails(new CreateEventRequest()) as ViewResult;
@@ -140,13 +133,12 @@ namespace GroupGiving.Test.Unit
                 .Setup(m => m.Retrieve(It.IsAny<string>()))
                 .Returns(new GroupGivingEvent());
 
-            _paypalAccountService
-                .Setup(m => m.AccountIsVerified(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
-                .Returns(new GetVerifiedStatusResponse() { Success = true, AccountStatus = "VERIFIED" });
+            _accountsApi.AllAccountsVerified();
             
             var controller = new CreateEventController(accountService.Object, _countryService.Object,
                                                        membershipService.Object, formsAuthenticationService.Object,
-                                                       eventService.Object, null, _userIdentity, null, _membershipProviderLocator.Object, _paypalAccountService.Object);
+                                                       eventService.Object, null, _userIdentity, null, 
+                                                       _membershipProviderLocator.Object, _apiClient.Object);
 
             var setTicketDetailsRequest = new SetTicketDetailsRequest() {ShortUrl="test-event"};
             setTicketDetailsRequest.SalesEndDate = DateTime.Now.AddDays(10).ToString("dd/MM/yyyy");
@@ -161,13 +153,12 @@ namespace GroupGiving.Test.Unit
         [Test]
         public void InvalidTicketDetailsProvided_ReturnsRedirectToShareEvent()
         {
-            _paypalAccountService
-                .Setup(m => m.AccountIsVerified(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
-                .Returns(new GetVerifiedStatusResponse() { Success = true, AccountStatus = "VERIFIED" });
+            _accountsApi.AllAccountsVerified();
                     
             var controller = new CreateEventController(accountService.Object, _countryService.Object,
                                                        membershipService.Object, formsAuthenticationService.Object,
-                                                       eventService.Object, null, _userIdentity, null, _membershipProviderLocator.Object, _paypalAccountService.Object);
+                                                       eventService.Object, null, _userIdentity, null,
+                                                       _membershipProviderLocator.Object, _apiClient.Object);
             controller.ModelState.AddModelError("*", "Invalid model state");
             eventService
                 .Setup(m => m.Retrieve(It.IsAny<string>()))

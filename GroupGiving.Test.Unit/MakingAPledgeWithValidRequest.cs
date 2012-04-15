@@ -236,7 +236,7 @@ namespace GroupGiving.Test.Unit.Pledging
         public void PaymentStatusSetToPaidPendingReconciliation()
         {
             var request = new SettlePledgeRequest(){PayPalPayKey = PaypalPayKey};
-            var action = new ConfirmPledgePaymentAction(DocumentSession.Object, PaymentGateway.Object, AccountService.Object, EmailRelayService.Object);
+            var action = new ConfirmPledgePaymentAction(PaymentGateway.Object, AccountService.Object, EmailRelayService.Object);
             action.ConfirmPayment(Event, request);
 
             var pledge = Event.Pledges.LastOrDefault();
@@ -251,7 +251,7 @@ namespace GroupGiving.Test.Unit.Pledging
             pledge.PaymentStatus = PaymentStatus.PaidPendingReconciliation;
 
             var request = new SettlePledgeRequest() { PayPalPayKey = PaypalPayKey };
-            var action = new ConfirmPledgePaymentAction(DocumentSession.Object, PaymentGateway.Object, AccountService.Object, EmailRelayService.Object);
+            var action = new ConfirmPledgePaymentAction(PaymentGateway.Object, AccountService.Object, EmailRelayService.Object);
 
             Assert.Throws<InvalidOperationException>(() => action.ConfirmPayment(Event, request));
         }
@@ -260,7 +260,7 @@ namespace GroupGiving.Test.Unit.Pledging
         public void PledgeDateSetToNow()
         {
             var request = new SettlePledgeRequest() { PayPalPayKey = PaypalPayKey };
-            var action = new ConfirmPledgePaymentAction(DocumentSession.Object, PaymentGateway.Object, AccountService.Object, EmailRelayService.Object);
+            var action = new ConfirmPledgePaymentAction(PaymentGateway.Object, AccountService.Object, EmailRelayService.Object);
             action.ConfirmPayment(Event, request);
 
             var pledge = Event.Pledges.LastOrDefault();
@@ -417,7 +417,7 @@ namespace GroupGiving.Test.Unit.Pledging
             pledgeAction.Attempt(Event.Id, organiserAccount, request);
 
             var completeAction =
-                new ConfirmPledgePaymentAction(DocumentSession.Object, PaymentGateway.Object, AccountService.Object, EmailRelayService.Object);
+                new ConfirmPledgePaymentAction(PaymentGateway.Object, AccountService.Object, EmailRelayService.Object);
             completeAction.ConfirmPayment(Event, new SettlePledgeRequest() { PayPalPayKey = PaypalPayKey });
 
 

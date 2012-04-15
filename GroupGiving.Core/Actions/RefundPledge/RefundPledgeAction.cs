@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using GroupGiving.Core.Domain;
-using GroupGiving.Core.Dto;
 using GroupGiving.Core.Services;
+using GroupGiving.PayPal;
+using GroupGiving.PayPal.Model;
 using Raven.Client;
 
 namespace GroupGiving.Core.Actions.RefundPledge
@@ -39,12 +40,12 @@ namespace GroupGiving.Core.Actions.RefundPledge
                 {
                     refundResponse = _paymentGateway.Refund(new RefundRequest()
                                                               {
-                                                                  TransactionId = pledge.TransactionId,
-                                                                  Receivers = new List<PaymentRecipient>()
+                                                                  PayKey = pledge.TransactionId,
+                                                                  Receivers = new ReceiverList()
                                                                                   {
-                                                                                      new PaymentRecipient(
+                                                                                      new Receiver(pledge.Total,
                                                                                           pledge.AccountEmailAddress,
-                                                                                          pledge.Total, true)
+                                                                                          true)
                                                                                   }
                                                               });
                 }
@@ -59,9 +60,8 @@ namespace GroupGiving.Core.Actions.RefundPledge
 
                 if (pledge.PaymentGatewayHistory == null)
                     pledge.PaymentGatewayHistory = new List<DialogueHistoryEntry>();
-                pledge.PaymentGatewayHistory.Add(refundResponse.DialogueEntry);
+                pledge.PaymentGatewayHistory.Add(new DialogueHistoryEntry(refundResponse.Raw.Request, refundResponse.Raw.Response));
 
-                pledge.Notes = refundResponse.Message;
                 if (refundResponse.Successful)
                 {
                     pledge.DateRefunded = DateTime.Now;
