@@ -90,7 +90,8 @@ namespace GroupGiving.Web.Controllers
                     // send a purchase confirmation email
                     MvcApplication.EmailFacade.Send(pledge.AccountEmailAddress,
                                                     "PledgeConfirmation",
-                                                    new { Event = @event, Pledge = pledge, Account = account }, "pl");
+                                                    new { Event = @event, Pledge = pledge, Account = account, 
+                                                        AccountPageUrl="http://www.ticketmuffin.com/YourAccount" }, "pl");
 
                     // this pledge has activated the event);
                     if (@event.IsOn
