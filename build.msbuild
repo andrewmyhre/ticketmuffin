@@ -15,6 +15,7 @@
 	
 	<Target Name="Clean">
 		<RemoveDir Directories="$(ArtifactsPath)" />
+		<RemoveDir Directories="$(PackagesPath)" />
 	</Target>
 
 	<Target Name="Build">
