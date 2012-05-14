@@ -66,11 +66,14 @@ namespace GroupGiving.Web.Areas.Admin.Controllers
                 LastName = "Myhre",
                 Email = "andrew.myhre@gmail.com"
             };
+            var @event = CreateSampleEvent();
             switch (emailTemplate)
             {
                 case "EventActivated":
-                    var @event = CreateSampleEvent();
                     _emailFacade.Send(toAddress, emailTemplate, new {Event=@event, Pledge = @event.Pledges.First()});
+                    break;
+                case "PledgeConfirmation":
+                    _emailFacade.Send(toAddress, emailTemplate, new { Event = @event, Pledge = @event.Pledges.First(), AccountPageUrl = "http://somedomain.com/YourAccount" });
                     break;
                 case "AccountCreated":
                     _emailFacade.Send(toAddress, emailTemplate, new {Account=account, AccountPageUrl="http://somedomain.com/YourAccount"});
