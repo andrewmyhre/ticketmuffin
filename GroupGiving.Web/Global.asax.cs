@@ -9,8 +9,6 @@ using GroupGiving.Web.Code;
 using Microsoft.Web.Mvc.Resources;
 using log4net;
 using Ninject;
-using System.Configuration;
-using EmailProcessing.Configuration;
 
 namespace GroupGiving.Web
 {
@@ -21,6 +19,7 @@ namespace GroupGiving.Web
     {
         public static EmailFacade EmailFacade { get; private set; }
         private static ILog _logger = LogManager.GetLogger(typeof(MvcApplication));
+        public static IEnumerable<IWindowsService> Services = null;
 
         public static void RegisterGlobalFilters(GlobalFilterCollection filters)
         {
@@ -199,22 +198,19 @@ namespace GroupGiving.Web
 
             try
             {
-                EmailFacade = EmailFacadeFactory.CreateFromConfiguration();
+                EmailFacade = new EmailFacadeFactory().CreateFromConfiguration();
                 EmailFacade.LoadTemplates();
             }
             catch (Exception e)
             {
                 _logger.Fatal("Failed to load email sender", e);
             }
+
+            Services = ServiceLocator.Instance.GetAll<IWindowsService>();
+            foreach(var service in Services)
+            {
+                service.Start();
+            }
         }
     }
-
-    public static class EmailFacadeFactory
-    {
-        internal static EmailFacade CreateFromConfiguration()
-        {
-            return new EmailFacade(ConfigurationManager.GetSection("emailBuilder") as EmailBuilderConfigurationSection);
-        }
-    }
-
 }

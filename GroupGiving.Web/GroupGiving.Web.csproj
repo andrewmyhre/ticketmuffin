@@ -184,6 +184,7 @@
     <Compile Include="Controllers\MarkdownController.cs" />
     <Compile Include="Controllers\OrderController.cs" />
     <Compile Include="Controllers\ShareEventController.cs" />
+    <Compile Include="EmailFacadeFactory.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>

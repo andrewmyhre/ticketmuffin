@@ -104,7 +104,7 @@ namespace GroupGiving.Web.App_Start
             kernel.Bind<IEmailRelayService>().To<SimpleSmtpEmailRelayService>();
             kernel.Bind<IEmailFacade>().ToMethod((request) =>
                                                      {
-                                                         var service = EmailFacadeFactory.CreateFromConfiguration();
+                                                         var service = new EmailFacadeFactory().CreateFromConfiguration();
                                                          service.LoadTemplates();
 
                                                          return service;
@@ -130,6 +130,8 @@ namespace GroupGiving.Web.App_Start
                 ConfigurationManager.GetSection("adaptiveAccounts") as PaypalAdaptiveAccountsConfigurationSection);
             kernel.Bind<AdaptiveAccountsConfiguration>().ToMethod(r=>kernel.Get<ISiteConfiguration>().AdaptiveAccountsConfiguration);
             kernel.Bind<IPayRequestFactory>().To<PayRequestFactory>();
+
+            kernel.Bind<IWindowsService>().To<SiteWarmupService>();
         }        
     }
 }

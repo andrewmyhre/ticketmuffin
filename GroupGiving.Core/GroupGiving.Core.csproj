@@ -138,6 +138,7 @@
     <Compile Include="Services\IGetVerifiedStatusResponse.cs" />
     <Compile Include="Services\ISiteConfigurationService.cs" />
     <Compile Include="Services\ITaxAmountResolver.cs" />
+    <Compile Include="Services\IWindowsService.cs" />
     <Compile Include="Services\QueuedCommand.cs" />
     <Compile Include="Services\ResetPasswordResult.cs" />
     <Compile Include="Services\SendPasswordResetResult.cs" />
@@ -145,6 +146,7 @@
     <Compile Include="Services\SetTicketDetailsRequest.cs" />
     <Compile Include="Services\NilTax.cs" />
     <Compile Include="Services\SiteConfigurationService.cs" />
+    <Compile Include="Services\SiteWarmupService.cs" />
     <Compile Include="Services\UpdateUserRequest.cs" />
     <Compile Include="Services\AccountService.cs" />
   </ItemGroup>
