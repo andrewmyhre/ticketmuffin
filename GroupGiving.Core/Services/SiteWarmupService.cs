@@ -11,25 +11,31 @@ namespace GroupGiving.Core.Services
         private Timer _warmupTimer;
         public string RemoteUrl { get; set; }
 
-        public SiteWarmupService(string remoteUrl="localhost")
+        public SiteWarmupService()
         {
             _warmupTimer = new Timer(60000);
+            RemoteUrl = "http://localhost";
+        }
+
+        public SiteWarmupService(string remoteUrl="http://localhost") : this()
+        {
             RemoteUrl = remoteUrl;
-            _warmupTimer.Elapsed += (sender, args) =>
-                                        {
-                                            HttpWebRequest request = HttpWebRequest.Create(RemoteUrl) as HttpWebRequest;
-                                            try
-                                            {
-                                                request.GetResponse();
-                                            } catch (Exception ex)
-                                            {
-                                                _logger.Error("Site warmup failed", ex);
-                                            }
-                                        };
         }
 
         public void Start()
         {
+            _warmupTimer.Elapsed += (sender, args) =>
+            {
+                HttpWebRequest request = HttpWebRequest.Create(RemoteUrl) as HttpWebRequest;
+                try
+                {
+                    request.GetResponse();
+                }
+                catch (Exception ex)
+                {
+                    _logger.Error("Site warmup failed", ex);
+                }
+            };
             _warmupTimer.Start();
         }
 
