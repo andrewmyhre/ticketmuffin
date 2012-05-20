@@ -13,3 +13,5 @@ log.txt
 email/
 GroupGiving.Web/eventImages
 *.orig
+build
+precompiledweb
