@@ -111,7 +111,6 @@ namespace GroupGiving.Core.Domain
         public bool ReadyToActivate
         {
             get { return this.PaidAttendeeCount >= this.MinimumParticipants
-                && this.SalesEndDateTime > DateTime.Now
                 && this.State == EventState.SalesReady; }
         }
 
