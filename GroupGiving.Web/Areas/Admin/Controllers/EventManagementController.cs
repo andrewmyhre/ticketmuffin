@@ -255,12 +255,18 @@ namespace GroupGiving.Web.Areas.Admin.Controllers
             }
         }
 
-        public ActionResult TransactionHistory(int id, string orderNumber)
+        public ActionResult TransactionHistory(string id)
         {
             using (var session = _documentStore.OpenSession())
             {
-                var @event = session.Load<GroupGivingEvent>("groupgivingevents/" + id);
-                var pledge = @event.Pledges.Where(p => p.OrderNumber == orderNumber).FirstOrDefault();
+                var @event = session.Query<GroupGivingEvent>()
+                    .FirstOrDefault(e => e.Pledges.Any(p=>p.OrderNumber.Equals(id, StringComparison.InvariantCulture)));
+                if (@event==null)
+                {
+                    ModelState.AddModelError("ordernumber", "We couldn't locate a pledge with that order number.");
+                }
+
+                var pledge = @event.Pledges.FirstOrDefault(p => p.OrderNumber == id);
 
                 if (pledge == null)
                 {
@@ -271,8 +277,8 @@ namespace GroupGiving.Web.Areas.Admin.Controllers
                 if (pledge.PaymentGatewayHistory == null)
                     pledge.PaymentGatewayHistory = new List<DialogueHistoryEntry>();
                 viewModel.Messages = pledge.PaymentGatewayHistory.Where(h=>h != null).OrderByDescending(h => h.Timestamp).Take(1024).ToList();
-                viewModel.EventId = id;
-                viewModel.OrderNumber = orderNumber;
+                viewModel.EventId = int.Parse(@event.Id.Substring(@event.Id.IndexOf('/')+1));
+                viewModel.OrderNumber = id;
 
                 return View(viewModel);
             }

@@ -1,0 +1,27 @@
+﻿@using GroupGiving.Core.Domain
+@model dynamic
+@{
+    ViewBag.Title = "Search";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Search</h2>
+
+<table>
+@foreach(EventPledge pledge in Model.Pledges)
+{
+    <tr>
+        <td>@pledge.AccountName</td>
+        <td>@pledge.AccountEmailAddress</td>
+        <td>@pledge.PaymentStatus</td>
+        <td>@pledge.TransactionId</td>
+        <td>@pledge.OrderNumber</td>
+        <td>@Html.ActionLink("View messages", "TransactionHistory", "EventManagement",
+                new
+                {
+                    id = Model.Id.Substring(Model.Id.IndexOf('/')),
+                    OrderNumber = pledge.OrderNumber
+                })</td>
+    </tr>
+}
+</table>

@@ -31,8 +31,7 @@
                     <span>@Html.ActionLink("Send payment", "execute-payment", new {id=Model.Id.Substring(Model.Id.IndexOf('/')), orderNumber = pledge.OrderNumber}, null)</span></text>
             } </td>
         <td>@Html.ActionLink("View messages", "TransactionHistory", 
-                new {id = Model.Id.Substring(Model.Id.IndexOf('/')), 
-                OrderNumber = pledge.OrderNumber})</td>
+                new {id = pledge.OrderNumber})</td>
     </tr>
 }
 

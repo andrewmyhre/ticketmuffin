@@ -5,11 +5,14 @@ using System.Xml;
 using System.Xml.Linq;
 using System.Xml.Serialization;
 using GroupGiving.PayPal.Model;
+using log4net;
 
 namespace GroupGiving.PayPal
 {
     public class HttpChannel
     {
+        private ILog _log = LogManager.GetLogger(typeof (HttpChannel));
+
         public TResponse ExecuteRequest<TRequest, TResponse>(string api, string action, TRequest request, ApiClientSettings clientSettings) 
             where TRequest : IPayPalRequest
             where TResponse : ResponseBase
@@ -46,9 +49,20 @@ namespace GroupGiving.PayPal
             }
 
             // send the request
-            Stream oStream = oPayRequest.GetRequestStream();
-            oStream.Write(array, 0, array.Length);
-            oStream.Close();
+            try
+            {
+                Stream oStream = oPayRequest.GetRequestStream();
+                oStream.Write(array, 0, array.Length);
+                oStream.Close();
+            } catch (WebException exception)
+            {
+                _log.Error("Error contacting remote host", exception);
+                var response = exception.Response as HttpWebResponse;
+                if(response != null)
+                    _log.ErrorFormat("server returned {0}: {1}", response.StatusCode, response.StatusDescription);
+
+                throw;
+            }
 
             // get the response
             HttpWebResponse oPayResponse = (HttpWebResponse)oPayRequest.GetResponse();
