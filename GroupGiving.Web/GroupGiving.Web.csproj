@@ -47,8 +47,9 @@
     <Reference Include="log4net">
       <HintPath>..\packages\log4net.1.2.10\lib\2.0\log4net.dll</HintPath>
     </Reference>
-    <Reference Include="Lucene.Net">
-      <HintPath>..\packages\RavenDB-Embedded.1.0.0.371\lib\net40\Lucene.Net.dll</HintPath>
+    <Reference Include="Lucene.Net, Version=2.9.2.1, Culture=neutral, PublicKeyToken=02f879aa45933051, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\RavenDB.Database.1.0.888\lib\net40\Lucene.Net.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="Microsoft.Http">
@@ -70,10 +71,11 @@
     </Reference>
     <Reference Include="Raven.Abstractions, Version=1.0.0.0, Culture=neutral, PublicKeyToken=37f41c7f99471593, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\RavenDB.1.0.0.371\lib\net40\Raven.Abstractions.dll</HintPath>
+      <HintPath>..\packages\RavenDB.Client.1.0.888\lib\net40\Raven.Abstractions.dll</HintPath>
     </Reference>
-    <Reference Include="Raven.Client.Lightweight">
-      <HintPath>..\packages\RavenDB-Embedded.1.0.0.371\lib\net40\Raven.Client.Lightweight.dll</HintPath>
+    <Reference Include="Raven.Client.Lightweight, Version=1.0.0.0, Culture=neutral, PublicKeyToken=37f41c7f99471593, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\RavenDB.Client.1.0.888\lib\net40\Raven.Client.Lightweight.dll</HintPath>
     </Reference>
     <Reference Include="Raven.Json, Version=1.0.0.0, Culture=neutral, PublicKeyToken=37f41c7f99471593, processorArchitecture=MSIL" />
     <Reference Include="RouteDebugger, Version=2.1.1.0, Culture=neutral, processorArchitecture=MSIL">
@@ -136,6 +138,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="App_Start\DenormalizedPledges.cs" />
     <Compile Include="App_Start\NinjectMVC3.cs" />
     <Compile Include="App_Start\RavenDbAppData.cs" />
     <Compile Include="App_Start\RavenDbIndexes.cs" />
@@ -217,6 +220,7 @@
     <Compile Include="Models\ShareViaEmailViewModel.cs" />
     <Compile Include="Models\SignInModel.cs" />
     <Compile Include="Models\SignUpModel.cs" />
+    <Compile Include="Models\TransactionHistoryItem.cs" />
     <Compile Include="Models\UpdateEventViewModel.cs" />
     <Compile Include="Models\VerifyPaypalAccountRequest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -500,7 +504,6 @@
     <Content Include="Views\About\Contact.cshtml" />
     <Content Include="Areas\Admin\Views\Diagnostics\AuthenticatePayPalApi.cshtml" />
     <Content Include="TicketMuffin.Web.nuspec" />
-    <Content Include="Areas\Admin\Views\Pledge\Index.cshtml" />
     <Content Include="Areas\Admin\Views\Pledge\Search.cshtml" />
     <None Include="_bin_deployableAssemblies\System.Web.Mvc.dll" />
     <None Include="_bin_deployableAssemblies\WebMatrix.WebData.xml" />

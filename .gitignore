@@ -7,8 +7,10 @@ obj/
 logs/
 App_Data/RavenDb
 *Publish.xml
-packages/RavenDB.1.0.0.371/server/Data
-packages/RavenDB.1.0.0.371/server/*.log*
+packages/Raven*/**/Data
+packages/Raven*/**/*.log*
+packages/Raven*/Data
+packages/Raven*/*.log*
 log.txt
 email/
 GroupGiving.Web/eventImages

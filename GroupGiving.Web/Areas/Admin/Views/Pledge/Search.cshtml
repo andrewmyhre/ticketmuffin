@@ -1,27 +1,39 @@
 ﻿@using GroupGiving.Core.Domain
+@using GroupGiving.Web.Models
 @model dynamic
 @{
     ViewBag.Title = "Search";
     Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
 }
 
-<h2>Search</h2>
+<h2>Transactions</h2>
+
+@using (Html.BeginForm("Search", "Pledge", FormMethod.Get))
+{
+    <fieldset>
+        <h2>Find Pledges</h2>
+        <input type="text" name="q" value="@Request["q"]" />
+        <em>Search by transaction id, paypal paykey, name etc</em>
+        <button type="submit">Search</button>
+    </fieldset>
+}
 
 <table>
-@foreach(EventPledge pledge in Model.Pledges)
+@foreach(TransactionHistoryItem pledge in Model.Pledges)
 {
     <tr>
         <td>@pledge.AccountName</td>
+        <td>@pledge.AttendeeName</td>
+        <td>@Html.ActionLink("Event", "ManageEvent","EventManagement", new {Id=pledge.EventId.Substring(pledge.EventId.IndexOf('/')+1)},
+     new { title = string.Format("Event:{0}\nOrganiser:{1}", pledge.EventName,pledge.EventOrganiser) })</td>
         <td>@pledge.AccountEmailAddress</td>
         <td>@pledge.PaymentStatus</td>
         <td>@pledge.TransactionId</td>
-        <td>@pledge.OrderNumber</td>
-        <td>@Html.ActionLink("View messages", "TransactionHistory", "EventManagement",
-                new
-                {
-                    id = Model.Id.Substring(Model.Id.IndexOf('/')),
-                    OrderNumber = pledge.OrderNumber
-                })</td>
+        <td>@Html.ActionLink(pledge.OrderNumber, "TransactionHistory", "EventManagement",
+                       new
+                           {
+                               id = pledge.OrderNumber
+                           }, null)</td>
     </tr>
 }
 </table>

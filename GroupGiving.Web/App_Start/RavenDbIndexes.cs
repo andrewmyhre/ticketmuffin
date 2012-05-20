@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Configuration;
-using System.Linq;
 using System.Web;
 using Lucene.Net.Analysis;
 using Lucene.Net.Analysis.Standard;
@@ -74,9 +73,12 @@ select new {e.Id, e.Title, e.State, Location=e.City +"", "" + e.Country, e.City,
                                                                 @"from e in docs.GroupGivingEvents
 from pledge in Hierarchy(e, ""Pledges"")
 from history in Hierarchy(pledge, ""PaymentGatewayHistory"")
-select new {e.Id, pledge.OrderNumber, pledge.PaymentStatus, pledge.AccountEmailAddress, history.TimeStamp, history.Request, history.Response}"
+select new {e.Id, pledge.OrderNumber, pledge.TransactionId, pledge.PaymentStatus, pledge.AccountEmailAddress, history.TimeStamp, history.Request, history.Response}"
 
                                                         });
+
+            documentStore.DatabaseCommands.PutIndex("pledges", new DenormalizedPledges(), true);
         }
-    }
+
+}
 }
