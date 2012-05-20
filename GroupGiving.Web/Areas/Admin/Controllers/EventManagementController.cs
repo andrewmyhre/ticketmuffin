@@ -12,6 +12,7 @@ using GroupGiving.Core.Domain;
 using GroupGiving.Core.Services;
 using GroupGiving.PayPal;
 using GroupGiving.PayPal.Model;
+using GroupGiving.Web.Areas.Admin.Models;
 using GroupGiving.Web.Controllers;
 using GroupGiving.Web.Models;
 using Raven.Client;

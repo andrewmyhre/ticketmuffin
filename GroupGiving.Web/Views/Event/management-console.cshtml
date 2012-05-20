@@ -6,7 +6,7 @@
     ViewBag.Title = "title";
 }
 
-<h2>Management Console for @Model.Title</h2>
+<h2>Manage Your Event @Model.Title</h2>
 
 @switch (Model.State)
 {
@@ -49,18 +49,22 @@
 }
 
 <ul>
+    @if (Model.Pledges.Count > 0)
+    {
+        <li>@Html.ActionLink("View the attendee list", "Attendees", new {shortUrl=Model.ShortUrl})</li>
+    }
     <li>@Html.ActionLink("View the event page", "index", new {shortUrl = Model.ShortUrl})</li>
-@if (Model.State != EventState.Cancelled && Model.State != EventState.Completed)
-{
-    <li>@Html.ActionLink("Edit the event details", "edit-event", new {shortUrl = Model.ShortUrl})</li>
-}
+    @if (Model.State != EventState.Cancelled && Model.State != EventState.Completed)
+    {
+        <li>@Html.ActionLink("Edit the event details", "edit-event", new {shortUrl = Model.ShortUrl})</li>
+    }
     <li>@Html.ActionLink("View and refund pledges for the event", "event-pledges", new { shortUrl = Model.ShortUrl })</li>
-@if (Model.State != EventState.Cancelled && Model.State != EventState.Completed)
-{
-    <li>@Html.ActionLink("Cancel the event", "cancel-event", new {shortUrl = Model.ShortUrl})</li>
-}
-@if (Model.State == EventState.SalesReady && Model.ReadyToActivate)
-{
-    <li>@Html.ActionLink("Activate the event", "Activate", new {shortUrl = Model.ShortUrl})</li>
-}
+    @if (Model.State != EventState.Cancelled && Model.State != EventState.Completed)
+    {
+        <li>@Html.ActionLink("Cancel the event", "cancel-event", new {shortUrl = Model.ShortUrl})</li>
+    }
+    @if (Model.State == EventState.SalesReady && Model.ReadyToActivate)
+    {
+        <li>@Html.ActionLink("Activate the event", "Activate", new {shortUrl = Model.ShortUrl})</li>
+    }
 </ul>

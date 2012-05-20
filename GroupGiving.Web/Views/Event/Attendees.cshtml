@@ -1,0 +1,16 @@
+﻿@model GroupGiving.Web.Models.AttendeeListViewModel
+
+@{
+    ViewBag.Title = "Attendees";
+}
+
+<nav>@Html.ActionLink("< back to management console", "management-console", new {shortUrl=Model.ShortUrl})</nav>
+
+<h2>Attendees for @Model.EventName</h2>
+
+<ol>
+@foreach(var attendee in Model.Attendees)
+{
+    <li>@attendee.FullName</li>
+}
+</ol>

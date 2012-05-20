@@ -1,7 +1,7 @@
-﻿@model GroupGiving.Web.Models.UpdateEventViewModel
+﻿@model GroupGiving.Web.Models.PledgeListViewModel
 
 @{
-    ViewBag.Title = "Pledges for " + Model.Title;
+    ViewBag.Title = "Pledges for " + Model.EventName;
 }
 
 <style>
@@ -13,27 +13,38 @@
 
 @Html.ActionLink("back to event management console", "management-console", new {shortUrl = Model.ShortUrl})
 
-<h2>Pledges for @Model.Title</h2>
+<h2>Pledges for @Model.EventName</h2>
+
+<table width="100%">
+    <thead>
+        <tr>
+            <th>Pledge Date</th>
+            <th>Reference</th>
+            <th>Name</th>
+            <th>Attendees</th>
+            <th>Status</th>
+            <th></th>
+        </tr>
+    </thead>
 
 @foreach (var pledge in Model.Pledges)
 {
-<div id="pledgeList">
-    <span>#@pledge.DatePledged</span>
-    <span><strong>#@pledge.OrderNumber</strong></span>
-    <span>#@pledge.TransactionId</span>
-    <span>@string.Join(", ", pledge.Attendees.Select(a=>a.FullName).ToArray())</span>
-    <span>@pledge.Total.ToString("c")</span>
+<tr>
+    <td>@pledge.DatePledged</td>
+    <td><strong>@pledge.OrderNumber</strong></td>
+    <td>@string.Join(", ", pledge.Attendees.Select(a=>a.FullName).ToArray())</td>
+    <td>@pledge.Total.ToString("c")</td>
     @if (pledge.Paid) {
-        <text><span>Paid</span><span>@Html.ActionLink("Refund", "refund-pledge", new { shortUrl=Model.ShortUrl, orderNumber = pledge.OrderNumber }, null)</span></text>
+        <text><td>Paid</td><td>@Html.ActionLink("Refund", "refund-pledge", new { shortUrl=Model.ShortUrl, orderNumber = pledge.OrderNumber }, null)</td></text>
     } else if (pledge.PaymentStatus == GroupGiving.Core.Domain.PaymentStatus.Refunded)
     {
-        <text><span>Refunded</span></text>
-        <span>@pledge.DateRefunded.Value.ToString("dd-MM-yyyy hh:mm")</span>
+        <text><td>Refunded</td></text>
+        <td>@pledge.DateRefunded.Value.ToString("dd-MM-yyyy hh:mm")</td>
     }
     else if (pledge.PaymentStatus == GroupGiving.Core.Domain.PaymentStatus.Unpaid)
     {
-        <span>Unpaid</span>
+        <td>Unpaid</td>
     }
-    
-</div>
+</tr>
 }
+</table>

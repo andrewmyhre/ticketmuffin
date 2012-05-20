@@ -9,6 +9,9 @@ body {
   font-size: 14px;
   line-height: 22px;
 }
+table td {
+    text-align: center;
+}
 img {
   border: none;
 }

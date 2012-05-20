@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Configuration;
 using System.Drawing;
 using System.Drawing.Imaging;
@@ -341,7 +340,10 @@ namespace GroupGiving.Web.Controllers
             var groupGivingEvent = _eventService.Retrieve(shortUrl);
 
             AutoMapper.Mapper.CreateMap<GroupGivingEvent, UpdateEventViewModel>();
-            var viewModel = AutoMapper.Mapper.Map<GroupGivingEvent, UpdateEventViewModel>(groupGivingEvent);
+            var viewModel = new PledgeListViewModel();
+            viewModel.Pledges = groupGivingEvent.Pledges.Where(p => p.PaymentStatus != PaymentStatus.Unpaid);
+            viewModel.EventName = groupGivingEvent.Title;
+            viewModel.ShortUrl = groupGivingEvent.ShortUrl;
 
             return View(viewModel);
         }
@@ -358,6 +360,27 @@ namespace GroupGiving.Web.Controllers
             return View(viewModel);
 
         }
+
+        public ActionResult Attendees(string shortUrl)
+        {
+            var viewModel = new AttendeeListViewModel();
+            var @event = _eventService.Retrieve(shortUrl);
+
+            viewModel.Attendees = from pledge in @event.Pledges
+                                  from attendee in pledge.Attendees
+                                  select new AttendeeViewModel()
+                                             {
+                                                 FullName = attendee.FullName,
+                                                 OrderNumber = pledge.OrderNumber
+                                             };
+            viewModel.EventName = @event.Title;
+            viewModel.ShortUrl = @event.ShortUrl;
+
+            return View(viewModel);
+
+        }
+
+
 
         [ActionName("cancel-event")]
         [HttpGet]
