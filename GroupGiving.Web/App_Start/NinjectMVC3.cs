@@ -132,6 +132,7 @@ namespace GroupGiving.Web.App_Start
             kernel.Bind<IPayRequestFactory>().To<PayRequestFactory>();
 
             kernel.Bind<IWindowsService>().To<SiteWarmupService>();
+            kernel.Bind<ICultureService>().To<CultureService>().InRequestScope();
         }        
     }
 }

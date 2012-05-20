@@ -81,10 +81,8 @@ namespace GroupGiving.Web.Code
 
         public static MvcHtmlString Content(this HtmlHelper html, string defaultContent = "", string pageAddress = "", string label = "")
         {
-
-            string culture = html.ViewContext.RequestContext.HttpContext.Request.Cookies["culture"] != null
-                                 ? html.ViewContext.RequestContext.HttpContext.Request.Cookies["culture"].Value
-                                 : "en";
+            var cultureService = ServiceLocator.Instance.Get<ICultureService>();
+            string culture = cultureService.GetCultureOrDefault(html.ViewContext.HttpContext);
 
             if (string.IsNullOrWhiteSpace(label))
             {
@@ -137,9 +135,8 @@ namespace GroupGiving.Web.Code
 
         public static string CurrentCulture(this HtmlHelper html)
         {
-            return html.ViewContext.RequestContext.HttpContext.Request.Cookies["culture"] != null
-                                 ? html.ViewContext.RequestContext.HttpContext.Request.Cookies["culture"].Value
-                                 : "en";
+            var cultureService = ServiceLocator.Instance.Get<ICultureService>();
+            return cultureService.GetCultureOrDefault(html.ViewContext.HttpContext);
         }
 
         public static CultureInfo CurrentCultureInfo(this HtmlHelper html)
@@ -193,31 +190,6 @@ namespace GroupGiving.Web.Code
         public static CultureInfo CurrencyFormat(this HtmlHelper html, GroupGiving.Core.Domain.Currency currency)
         {
             return currency.AsCulture();
-        }
-
-        public static string ChangeCultureForUri(this HtmlHelper html, Uri uri, string newCulture)
-        {
-            var currentRoute = RouteUtils.GetRouteDataByUrl("/" + uri.PathAndQuery);
-
-            if (currentRoute==null)
-            {
-                return "/" + newCulture;
-            }
-
-            if (currentRoute.Values.ContainsKey("culture"))
-            {
-                if (newCulture != "en")
-                    currentRoute.Values["culture"] = newCulture;
-                else
-                    currentRoute.Values.Remove("culture");
-            } else if (newCulture != "en")
-            {
-                currentRoute.Values.Add("culture", newCulture);
-            }
-
-            string link = RouteTable.Routes.GetVirtualPath(html.ViewContext.RequestContext, currentRoute.Values).VirtualPath;
-
-            return link;
         }
 
         public static MvcHtmlString TicketPricesInCurrencyFormatAsJsonObject(this HtmlHelper html, int count, decimal ticketPrice, CultureInfo cultureInfo)

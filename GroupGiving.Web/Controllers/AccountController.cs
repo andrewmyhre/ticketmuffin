@@ -30,6 +30,7 @@ namespace GroupGiving.Web.Controllers
         private ICountryService _countryService;
         private readonly IEmailRelayService _emailRelayService;
         private readonly IRepository<GroupGivingEvent> _eventRepository;
+        private readonly ICultureService _cultureService;
 
         public AccountController(IAccountService accountService, 
             IFormsAuthenticationService formsService, 
@@ -37,7 +38,8 @@ namespace GroupGiving.Web.Controllers
             ICountryService countryService, 
             IDocumentStore documentStore, 
             IEmailRelayService emailRelayService,
-            IRepository<GroupGivingEvent> eventRepository)
+            IRepository<GroupGivingEvent> eventRepository,
+            ICultureService cultureService)
         {
             _accountService = accountService;
             _formsService = formsService;
@@ -45,6 +47,7 @@ namespace GroupGiving.Web.Controllers
             _countryService = countryService;
             _emailRelayService = emailRelayService;
             _eventRepository = eventRepository;
+            _cultureService = cultureService;
             ((RavenDBMembershipProvider) Membership.Provider).DocumentStore
                 = documentStore;
         }
@@ -466,24 +469,7 @@ namespace GroupGiving.Web.Controllers
 
         public ActionResult ChangeCulture(string lang, string returnUrl)
         {
-            if (returnUrl.Length >= 6)
-            {
-                returnUrl = returnUrl.Substring(6);
-            }
-
-            var cultureCookie = Request.Cookies["culture"];
-            if (cultureCookie == null)
-            {
-                cultureCookie = new HttpCookie("culture", lang);
-            }
-            else
-            {
-                cultureCookie.Value = lang;
-            }
-
-            cultureCookie.Expires = DateTime.Now.AddDays(7);
-            Response.SetCookie(cultureCookie);
-
+            _cultureService.SetCurrentCulture(HttpContext, lang);
             return Redirect("/" + returnUrl);
         }
 

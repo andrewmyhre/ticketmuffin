@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Web;
 using System.Web.Mvc;
 using System.Web.Routing;
 using EmailProcessing;
@@ -211,6 +212,17 @@ namespace GroupGiving.Web
             {
                 service.Start();
             }
+        }
+
+        protected void Application_BeginRequest(object sender, EventArgs e)
+        {
+            var cultureService = ServiceLocator.Instance.Get<ICultureService>();
+            var context = new HttpContextWrapper(HttpContext.Current);
+            if (!cultureService.HasCulture(context))
+            {
+                cultureService.SetCurrentCulture(context, cultureService.DeterminePreferredCulture(context.Request.UserLanguages));
+            }
+
         }
     }
 }

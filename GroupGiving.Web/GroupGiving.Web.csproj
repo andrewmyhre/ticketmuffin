@@ -172,6 +172,7 @@
     <Compile Include="Code\CommaSeparatedEmailListValidatorAttribute.cs" />
     <Compile Include="Code\ContentTypeAwareViewEngine.cs" />
     <Compile Include="Code\CultureConstraint.cs" />
+    <Compile Include="Code\CultureService.cs" />
     <Compile Include="Code\CultureViewEngine.cs" />
     <Compile Include="Code\HtmlHelperExtensions.cs" />
     <Compile Include="Code\IContentProvider.cs" />

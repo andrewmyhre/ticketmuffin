@@ -77,6 +77,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ApiMockExtensions.cs" />
+    <Compile Include="CultureServiceTests.cs" />
     <Compile Include="GivenCreatingAnAccount.cs" />
     <Compile Include="CreateEventControllerTests.cs" />
     <Compile Include="MakingAPaymentGatewayRequest.cs" />

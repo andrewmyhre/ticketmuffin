@@ -6,7 +6,7 @@
     ViewBag.Title = "title";
 }
 
-<h2>Manage Your Event @Model.Title</h2>
+<h2>Manage Your Event @Html.ActionLink(Model.Title, "Index", new {Model.ShortUrl})</h2>
 
 @switch (Model.State)
 {
