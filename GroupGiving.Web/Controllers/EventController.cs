@@ -4,32 +4,24 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
-using System.Runtime.Serialization;
+using System.Net;
 using System.Security.Principal;
-using System.Text;
-using System.Web;
 using System.Web.Hosting;
 using System.Web.Security;
-using System.Xml;
-using GroupGiving.Core;
+using EmailProcessing;
 using GroupGiving.Core.Actions.ActivateEvent;
 using GroupGiving.Core.Actions.CancelEvent;
 using GroupGiving.Core.Actions.RefundPledge;
 using GroupGiving.Core.Configuration;
-using GroupGiving.Core.Dto;
+using GroupGiving.Web.Code;
 using Raven.Client;
 using anrControls;
 using GroupGiving.Core.Actions.CreatePledge;
-using GroupGiving.Core.Data;
 using GroupGiving.Core.Domain;
-using GroupGiving.Core.Email;
 using GroupGiving.Core.Services;
 using GroupGiving.PayPal;
-using GroupGiving.PayPal.Model;
-using GroupGiving.Web.Code;
 using GroupGiving.Web.Models;
 using System.Web.Mvc;
-using Ninject;
 using RavenDBMembership.Provider;
 using RavenDBMembership.Web.Models;
 using log4net;
@@ -48,16 +40,20 @@ namespace GroupGiving.Web.Controllers
         private ISiteConfiguration _siteConfiguration;
         private readonly IDocumentStore _documentStore;
         private static Markdown _markdown = new Markdown();
-        private IEmailRelayService _emailRelayService;
         private readonly IIdentity _userIdentity;
         private readonly IEventService _eventService;
+        private readonly IEmailFacade _emailService;
+        private readonly ICultureService _cultureService;
 
         public EventController(IAccountService accountService,
                                IFormsAuthenticationService formsService, IMembershipService membershipService,
                                IPaymentGateway paymentGateway,
                                ITaxAmountResolver taxResolver, ISiteConfiguration siteConfiguration,
-                               IDocumentStore documentStore,
-                               IEmailRelayService emailRelayService, IIdentity userIdentity, IEventService eventService)
+                               IDocumentStore documentStore, 
+            IIdentity userIdentity, 
+            IEventService eventService,
+            IEmailFacade emailService,
+            ICultureService cultureService)
         {
             _accountService = accountService;
             _formsService = formsService;
@@ -68,9 +64,10 @@ namespace GroupGiving.Web.Controllers
             _documentStore = documentStore;
             ((RavenDBMembershipProvider) Membership.Provider).DocumentStore
                 = documentStore;
-            _emailRelayService = emailRelayService;
             _userIdentity = userIdentity;
             _eventService = eventService;
+            _emailService = emailService;
+            _cultureService = cultureService;
         }
 
         //
@@ -607,6 +604,36 @@ namespace GroupGiving.Web.Controllers
             }
 
             return RedirectToAction("management-console", new {shortUrl = shortUrl});
+        }
+
+        [HttpPost]
+        [ValidateInput(false)]
+        public ActionResult Contact(string shortUrl, string message, string senderName, string senderEmail)
+        {
+            // send the organiser an email
+            // todo: messaging should all be done through TM
+            using(var session = _documentStore.OpenSession())
+            {
+                var @event = session.Query<GroupGivingEvent>().FirstOrDefault(e => e.ShortUrl == shortUrl);
+                var account = session.Query<Account>().FirstOrDefault(a => a.Id == @event.OrganiserId);
+                _emailService.Send(account.Email, "NewMessage",
+                    new
+                        {
+                            Account=account,
+                            Event=@event,
+                            Message=message,
+                            SenderName=senderName,
+                            SenderEmail=senderEmail
+                        },
+                        _cultureService.GetCultureOrDefault(HttpContext, "pl"));
+            }
+            
+            
+            if (Request.AcceptTypes.Contains("application/json"))
+            {
+                return new HttpStatusCodeResult((int)HttpStatusCode.OK);
+            }
+            return RedirectToAction("Index", new {shortUrl = shortUrl});
         }
     }
 }

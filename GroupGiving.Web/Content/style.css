@@ -130,7 +130,7 @@ div#manageEvent {
   top: 65px;
     text-align: right;
 }
-input[type="submit"], a.bigButton {
+input[type="submit"], a.bigButton, button {
   border: none;
   font-family: Arial, sans-serif;
   color: #ffffff;
@@ -154,7 +154,7 @@ input[type="submit"]:hover {
 div#pledge {
   padding: 30px 0;
 }
-input.bigButton {
+input.bigButton, button.bigButton {
   width:auto;
   padding-left:1em;
   padding-right:1em;
@@ -172,7 +172,7 @@ input.blueButton {
   font-size: 20px;
   background: url(/content/img/blueButton.png) center center repeat-x;
 }
-input.smallButton {
+input.smallButton, button.smallButton {
   padding: 0 20px
   height: 25px;
   line-height: 25px;
@@ -380,7 +380,7 @@ div#confirmPageEvenInfo div#eventDate {
   float: left;
   margin: 0 10px 0 0;
 }
-div.validation-summary-errors, .field-validation-error
+div.validation-summary-errors, .field-validation-error, label.error
 {
 color:Red;
 }
@@ -640,3 +640,11 @@ fieldset
     -webkit-border-radius: 3px;
     padding: 0 10px;
     }
+    
+div.contact-box {
+    margin-top: 1em;
+}
+textarea.event-contact-message {
+    width: 210px;
+    height: 80px;
+}

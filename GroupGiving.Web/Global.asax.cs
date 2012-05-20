@@ -18,7 +18,7 @@ namespace GroupGiving.Web
 
     public class MvcApplication : System.Web.HttpApplication
     {
-        public static EmailFacade EmailFacade { get; private set; }
+        public static IEmailFacade EmailFacade { get; private set; }
         private static ILog _logger = LogManager.GetLogger(typeof(MvcApplication));
         public static IEnumerable<IWindowsService> Services = null;
 
@@ -197,15 +197,7 @@ namespace GroupGiving.Web
 
             ModelBinders.Binders.DefaultBinder = new ResourceModelBinder();
 
-            try
-            {
-                EmailFacade = new EmailFacadeFactory().CreateFromConfiguration();
-                EmailFacade.LoadTemplates();
-            }
-            catch (Exception e)
-            {
-                _logger.Fatal("Failed to load email sender", e);
-            }
+            EmailFacade = ServiceLocator.Instance.Get<IEmailFacade>();
 
             Services = ServiceLocator.Instance.GetAll<IWindowsService>();
             foreach(var service in Services)

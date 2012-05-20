@@ -3,7 +3,23 @@
 
 <div class="eventBoxTop">@Html.Content("Organiser")</div>
 
-            <div class="eventBoxBottom">
-              <strong>@Model.ContactName</strong><br /><br />   
-              <input type="submit" class="smallButton" value="@Html.Content("Contact")" />
+<div class="eventBoxBottom">
+    <strong>@Model.ContactName</strong>&nbsp;<a class="contact-organiser smallButton" href="#contact">@Html.Content("Contact")</a>
+    
+    <form class="form" id="contactForm" method="POST" action="@Url.Action("Contact", "Event", new {shortUrl=Model.ShortUrl})">
+        <div class="contact-box">
+            <div class="error" style="display:none;">
+                <span></span>
             </div>
+            <a name="contact" />
+            Send a message to the organiser:<br/>
+            <textarea name="message" class="event-contact-message required"></textarea><br/>
+            <label for="senderName">Your Name (required):</label><input type="text" name="senderName" class="required" style="width:213px"/><br/>
+            <label for="senderEmail">Your Email (required):</label><input type="text" name="senderEmail" class="email required" style="width:213px"/><br/>
+            <input type="submit" class="submit smallButton" value="Send"/>
+        </div>
+    </form>
+    
+    <div id="message-sent" style="display:none">Message Sent</div>
+</div>
+

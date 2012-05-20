@@ -1,3 +1,4 @@
+using System;
 using System.Configuration;
 using System.Security.Principal;
 using System.Web;
@@ -102,9 +103,25 @@ namespace GroupGiving.Web.App_Start
             kernel.Bind<AccountController>().ToSelf();
 
             kernel.Bind<IEmailRelayService>().To<SimpleSmtpEmailRelayService>();
+            kernel.Bind<IEmailTemplateManager>().ToMethod(ctx =>
+                                                              {
+                                                                  var configuration =
+                                                                      kernel.Get<EmailBuilderConfigurationSection>();
+                                                                  var templateManager =
+                                                                      new EmailTemplateManager(
+                                                                          configuration.TemplateLocation);
+                                                                  templateManager.LoadTemplates();
+                                                                  return templateManager;
+                                                              }).InSingletonScope();
+            kernel.Bind<EmailBuilderConfigurationSection>()
+                .ToMethod(ctx => ConfigurationManager.GetSection("emailBuilder") as EmailBuilderConfigurationSection);
             kernel.Bind<IEmailFacade>().ToMethod((request) =>
                                                      {
-                                                         var service = new EmailFacadeFactory().CreateFromConfiguration();
+                                                         var configuration =
+                                                             kernel.Get<EmailBuilderConfigurationSection>();
+                                                         var service = new EmailFacade(configuration,
+                                                             Activator.CreateInstance(Type.GetType(configuration.EmailSenderType), configuration) as IEmailPackageRelayer,
+                                                             kernel.Get<IEmailTemplateManager>());
                                                          service.LoadTemplates();
 
                                                          return service;
