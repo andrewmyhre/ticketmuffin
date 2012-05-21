@@ -2,14 +2,11 @@
 using System.Collections.Generic;
 using System.Configuration.Provider;
 using System.Linq;
-using System.Text;
 using System.Web.Security;
-using Raven.Abstractions.Exceptions;
-using Raven.Client;
 using Microsoft.Practices.ServiceLocation;
 using System.Collections.Specialized;
-using System.IO;
-using Raven.Http.Exceptions;
+using Raven.Abstractions.Exceptions;
+using Raven.Client;
 
 namespace RavenDBMembership.Provider
 {

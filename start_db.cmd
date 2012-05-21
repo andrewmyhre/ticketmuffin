@@ -1,1 +1,1 @@
-packages\RavenDB.Server.1.2.2002-Unstable\Raven.Server.exe
+packages\RavenDB-Build-800\Server\Raven.Server.exe
