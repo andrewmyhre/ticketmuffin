@@ -1,0 +1,28 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<emailTemplate xmlns="http://www.tanash.net/email/template">
+    <name>NewMessage</name>
+    <culture>pl</culture>
+    <from>noreply@ticketmuffin.com</from>
+    <subject>TicketMuffin - Someone sent you a message</subject>
+    <html>
+        <![CDATA[<p>Hi @Model.Account.FirstName,</p>
+<p>Someone on TicketMuffin.com has sent you a message about your event @Model.Event.Title.</p>
+<p>Message from @Model.SenderName (@Model.SenderEmail)</p>
+<pre>@Model.Message</pre>
+<p>Regards,</p>
+<p>TicketMuffin</p>
+]]>
+    </html>
+    <text>
+        Hi @Model.Account.FirstName,
+        Someone on TicketMuffin.com has sent you a message about your event @Model.Event.Title.
+        
+        Message from @Model.SenderName (@Model.SenderEmail)
+
+        @Model.Message
+
+
+        Regards,
+        TicketMuffin
+    </text>
+</emailTemplate>

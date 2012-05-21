@@ -252,9 +252,8 @@
     <Content Include="Content\emailTemplates\EventActivated.pl.xml" />
     <Content Include="Content\emailTemplates\GetYourAccountStarted.en.xml" />
     <Content Include="Content\emailTemplates\GetYourAccountStarted.pl.xml" />
-    <Content Include="Content\emailTemplates\NewMessage.xml">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
+    <Content Include="Content\emailTemplates\NewMessage.en.xml" />
+    <Content Include="Content\emailTemplates\NewMessage.pl.xml" />
     <Content Include="Content\emailTemplates\PledgeConfirmation.en.xml" />
     <Content Include="Content\emailTemplates\PledgeConfirmation.pl.xml" />
     <Content Include="Content\emailTemplates\ResetYourPassword.en.xml" />
