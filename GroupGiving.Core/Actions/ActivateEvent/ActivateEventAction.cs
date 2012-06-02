@@ -12,12 +12,10 @@ namespace GroupGiving.Core.Actions.ActivateEvent
 {
     public class ActivateEventAction
     {
-        private readonly IDocumentStore _documentStore;
         private readonly IPaymentGateway _paymentGateway;
 
-        public ActivateEventAction(IDocumentStore documentStore, IPaymentGateway paymentGateway)
+        public ActivateEventAction(IPaymentGateway paymentGateway)
         {
-            _documentStore = documentStore;
             _paymentGateway = paymentGateway;
         }
 
@@ -67,14 +65,6 @@ namespace GroupGiving.Core.Actions.ActivateEvent
             session.SaveChanges();
 
             return response;
-        }
-
-        public ActivateEventResponse Execute(string eventId)
-        {
-            using (var session = _documentStore.OpenSession())
-            {
-                return Execute(eventId, session);
-            }
         }
 
         public class ActivateEventResponse

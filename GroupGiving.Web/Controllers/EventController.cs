@@ -38,7 +38,7 @@ namespace GroupGiving.Web.Controllers
         private readonly IPaymentGateway _paymentGateway;
         private readonly ITaxAmountResolver _taxResolver;
         private ISiteConfiguration _siteConfiguration;
-        private readonly IDocumentStore _documentStore;
+        private readonly IDocumentSession _ravenSession;
         private static Markdown _markdown = new Markdown();
         private readonly IIdentity _userIdentity;
         private readonly IEventService _eventService;
@@ -49,7 +49,7 @@ namespace GroupGiving.Web.Controllers
                                IFormsAuthenticationService formsService, IMembershipService membershipService,
                                IPaymentGateway paymentGateway,
                                ITaxAmountResolver taxResolver, ISiteConfiguration siteConfiguration,
-                               IDocumentStore documentStore, 
+                               IDocumentSession ravenSession, 
             IIdentity userIdentity, 
             IEventService eventService,
             IEmailFacade emailService,
@@ -61,9 +61,9 @@ namespace GroupGiving.Web.Controllers
             _paymentGateway = paymentGateway;
             _taxResolver = taxResolver;
             _siteConfiguration = siteConfiguration;
-            _documentStore = documentStore;
+            _ravenSession = ravenSession;
             ((RavenDBMembershipProvider) Membership.Provider).DocumentStore
-                = documentStore;
+                = _ravenSession.Advanced.DocumentStore;
             _userIdentity = userIdentity;
             _eventService = eventService;
             _emailService = emailService;
@@ -218,7 +218,7 @@ namespace GroupGiving.Web.Controllers
             EventPledgeViewModel viewModel = null;
             var eventDetails = _eventService.Retrieve(request.ShortUrl);
             var account = _accountService.RetrieveByEmailAddress(request.EmailAddress);
-            var organiserAccount = _accountService.RetrieveById(eventDetails.OrganiserId);
+            var organiserAccount = _accountService.GetById(eventDetails.OrganiserId);
 
             if (!request.AcceptTerms)
             {
@@ -240,7 +240,7 @@ namespace GroupGiving.Web.Controllers
                 return View(viewModel);
             }
 
-            var action = new MakePledgeAction(_taxResolver, _paymentGateway, _siteConfiguration.AdaptiveAccountsConfiguration, _documentStore);
+            var action = new MakePledgeAction(_taxResolver, _paymentGateway, _siteConfiguration.AdaptiveAccountsConfiguration, _ravenSession);
             var makePledgeRequest = new MakePledgeRequest()
                                         {
                                             AttendeeNames = request.AttendeeName,
@@ -300,33 +300,28 @@ namespace GroupGiving.Web.Controllers
                 return View(viewModel);
             }
 
-            using (var session = _documentStore.OpenSession())
+            var groupGivingEvent = _ravenSession.Load<GroupGivingEvent>(viewModel.Id);
+            this.TryUpdateModel(groupGivingEvent);
+            groupGivingEvent.Currency = (int)viewModel.Currency;
+
+            // update organiser details if we have an organiser id but not organiser name set on the event
+            if (string.IsNullOrWhiteSpace(groupGivingEvent.OrganiserName)
+                && !string.IsNullOrWhiteSpace(groupGivingEvent.OrganiserId))
             {
-                var groupGivingEvent = session.Load<GroupGivingEvent>(viewModel.Id);
-                this.TryUpdateModel(groupGivingEvent);
-                groupGivingEvent.Currency = (int)viewModel.Currency;
-
-                // update organiser details if we have an organiser id but not organiser name set on the event
-                if (string.IsNullOrWhiteSpace(groupGivingEvent.OrganiserName)
-                    && !string.IsNullOrWhiteSpace(groupGivingEvent.OrganiserId))
+                var organiser = _ravenSession.Load<Account>(groupGivingEvent.OrganiserId);
+                if (organiser != null)
                 {
-                    var organiser = session.Load<Account>(groupGivingEvent.OrganiserId);
-                    if (organiser != null)
-                    {
-                        groupGivingEvent.OrganiserName = organiser.FirstName + " " + organiser.LastName;
-                    }
+                    groupGivingEvent.OrganiserName = organiser.FirstName + " " + organiser.LastName;
                 }
-
-                if (groupGivingEvent.SalesEndDateTime > DateTime.Now)
-                    groupGivingEvent.State = EventState.SalesReady;
-                else if (groupGivingEvent.StartDate > DateTime.Now)
-                    groupGivingEvent.State = EventState.SalesClosed;
-                else
-                    groupGivingEvent.State = EventState.Completed;
-
-
-                session.SaveChanges();
             }
+
+            if (groupGivingEvent.SalesEndDateTime > DateTime.Now)
+                groupGivingEvent.State = EventState.SalesReady;
+            else if (groupGivingEvent.StartDate > DateTime.Now)
+                groupGivingEvent.State = EventState.SalesClosed;
+            else
+                groupGivingEvent.State = EventState.Completed;
+            
             return RedirectToAction("edit-event", new {shortUrl = shortUrl});
         }
 
@@ -401,38 +396,28 @@ namespace GroupGiving.Web.Controllers
             }
 
             // cancel the event - refund each pledger
-            using (var session = _documentStore.OpenSession())
+            var @event =_eventService.Retrieve(shortUrl);
+
+            if (@event.State == EventState.Cancelled || @event.State == EventState.Completed)
             {
-
-
-                var @event =
-                    session.Query<GroupGivingEvent>().Where(e => e.ShortUrl == shortUrl && e.State != EventState.Deleted)
-                        .FirstOrDefault();
-
-                if (@event.State == EventState.Cancelled || @event.State == EventState.Completed)
-                {
-                    return RedirectToAction("Index", new {shortUrl = shortUrl});
-                }
-
-                CancelEventAction action = new CancelEventAction(_paymentGateway);
-                var cancelEventResponse = action.Execute(session, @event.Id);
-
-                if (cancelEventResponse.Success)
-                {
-                    @event.State = EventState.Cancelled;
-                    session.SaveChanges();
-                    TempData["failures"] = false;
-                    return RedirectToAction("event-cancelled", new {shortUrl = shortUrl});
-                }
-                else
-                {
-                    TempData["failures"] = true;
-                    return RedirectToAction("cancel-event", new {shortUrl = shortUrl});
-                }
-
+                return RedirectToAction("Index", new {shortUrl = shortUrl});
             }
 
+            CancelEventAction action = new CancelEventAction(_paymentGateway);
+            var cancelEventResponse = action.Execute(_ravenSession, @event.Id);
 
+            if (cancelEventResponse.Success)
+            {
+                @event.State = EventState.Cancelled;
+                _ravenSession.SaveChanges();
+                TempData["failures"] = false;
+                return RedirectToAction("event-cancelled", new {shortUrl = shortUrl});
+            }
+            else
+            {
+                TempData["failures"] = true;
+                return RedirectToAction("cancel-event", new {shortUrl = shortUrl});
+            }
         }
 
         [ActionName("event-cancelled")]
@@ -467,56 +452,53 @@ namespace GroupGiving.Web.Controllers
         [AcceptVerbs(HttpVerbs.Post)]
         public ActionResult RefundPledge(string shortUrl, string orderNumber, bool? confirm)
         {
-            using (var session = _documentStore.OpenSession())
+            var @event = _ravenSession.Query<GroupGivingEvent>().SingleOrDefault(e => e.ShortUrl == shortUrl);
+            var pledge = @event.Pledges.SingleOrDefault(p => p.OrderNumber == orderNumber);
+            RefundViewModel viewModel = new RefundViewModel();
+
+            if (pledge == null)
             {
-                var @event = session.Query<GroupGivingEvent>().Where(e => e.ShortUrl == shortUrl).FirstOrDefault();
-                var pledge = @event.Pledges.Where(p => p.OrderNumber == orderNumber).FirstOrDefault();
-                RefundViewModel viewModel = new RefundViewModel();
+                ModelState.AddModelError("ordernumber", "We couldn't locate a pledge with that order number.");
+            }
 
-                if (pledge == null)
-                {
-                    ModelState.AddModelError("ordernumber", "We couldn't locate a pledge with that order number.");
-                }
+            if (!confirm.HasValue || !confirm.Value)
+            {
+                ModelState.AddModelError("confirm",
+                                            "You have to confirm that you definitely want to refund this pledge.");
+            }
 
-                if (!confirm.HasValue || !confirm.Value)
-                {
-                    ModelState.AddModelError("confirm",
-                                             "You have to confirm that you definitely want to refund this pledge.");
-                }
-
-                if (!ModelState.IsValid)
-                {
-                    viewModel.Event = @event;
-                    viewModel.PledgeToBeRefunded = pledge;
-
-                    return View(viewModel);
-                }
-
-                RefundResponse refundResult = null;
-                RefundPledgeAction action = new RefundPledgeAction(_paymentGateway);
-                try
-                {
-                    refundResult = action.Execute(session, @event.Id, pledge.OrderNumber);
-
-                }
-                catch (Exception exception)
-                {
-                    logger.Fatal("Could not refund pledge with transaction id " + pledge.TransactionId, exception);
-                    return RedirectToAction("event-pledges", new {shortUrl = shortUrl});
-                }
-
-                if (refundResult.Successful)
-                {
-                    TempData["refunded"] = true;
-                    return RedirectToAction("event-pledges", new {shortUrl = shortUrl});
-                }
-
+            if (!ModelState.IsValid)
+            {
                 viewModel.Event = @event;
                 viewModel.PledgeToBeRefunded = pledge;
-                viewModel.RefundFailed = true;
 
                 return View(viewModel);
             }
+
+            RefundResponse refundResult = null;
+            RefundPledgeAction action = new RefundPledgeAction(_paymentGateway);
+            try
+            {
+                refundResult = action.Execute(_ravenSession, @event.Id, pledge.OrderNumber);
+
+            }
+            catch (Exception exception)
+            {
+                logger.Fatal("Could not refund pledge with transaction id " + pledge.TransactionId, exception);
+                return RedirectToAction("event-pledges", new {shortUrl = shortUrl});
+            }
+
+            if (refundResult.Successful)
+            {
+                TempData["refunded"] = true;
+                return RedirectToAction("event-pledges", new {shortUrl = shortUrl});
+            }
+
+            viewModel.Event = @event;
+            viewModel.PledgeToBeRefunded = pledge;
+            viewModel.RefundFailed = true;
+
+            return View(viewModel);
         }
 
         [HttpPost]
@@ -549,21 +531,16 @@ namespace GroupGiving.Web.Controllers
 
                     image.Save(imagePath, ImageFormat.Jpeg);
 
-                    using (var session = _documentStore.OpenSession())
+                    var @event = _eventService.Retrieve(shortUrl);
+                    if (@event == null)
                     {
-                        var @event = session.Query<GroupGivingEvent>().Where(e => e.ShortUrl == shortUrl
-                                                                                  && e.State != EventState.Deleted)
-                            .FirstOrDefault();
-                        if (@event == null)
-                        {
-                            return RedirectToAction("Index", new {shortUrl = shortUrl});
-                        }
-
-                        @event.ImageFilename = imagePath;
-                        @event.ImageUrl =
-                            Url.Content(string.Format(ConfigurationManager.AppSettings["EventImagePathFormat"], shortUrl));
-                        session.SaveChanges();
+                        return RedirectToAction("Index", new {shortUrl = shortUrl});
                     }
+
+                    @event.ImageFilename = imagePath;
+                    @event.ImageUrl =
+                        Url.Content(string.Format(ConfigurationManager.AppSettings["EventImagePathFormat"], shortUrl));
+                    _ravenSession.SaveChanges();
                 }
                 catch (Exception exception)
                 {
@@ -578,15 +555,12 @@ namespace GroupGiving.Web.Controllers
         {
             var viewModel = new ActivateEventViewModel();
 
-            using (var session = _documentStore.OpenSession())
-            {
-                viewModel.Event = session.Query<GroupGivingEvent>().Where(e => e.ShortUrl == shortUrl).FirstOrDefault();
-                viewModel.TotalAmountOwedToFundraiser = viewModel.Event.Pledges.Sum(p => p.Total);
+            viewModel.Event = _eventService.Retrieve(shortUrl);
+            viewModel.TotalAmountOwedToFundraiser = viewModel.Event.Pledges.Sum(p => p.Total);
 
-                if (!viewModel.Event.ReadyToActivate)
-                {
-                    return RedirectToAction("Index", new {shortUrl = shortUrl});
-                }
+            if (!viewModel.Event.ReadyToActivate)
+            {
+                return RedirectToAction("Index", new {shortUrl = shortUrl});
             }
 
             return View(viewModel);
@@ -595,13 +569,10 @@ namespace GroupGiving.Web.Controllers
         [HttpPost]
         public ActionResult Activate(string shortUrl, string confirm)
         {
-            using (var session = _documentStore.OpenSession())
-            {
-                var @event = session.Query<GroupGivingEvent>().Where(e => e.ShortUrl == shortUrl).FirstOrDefault();
-                var action = new ActivateEventAction(_documentStore, _paymentGateway);
-                var response = action.Execute(@event.Id, session);
-                TempData["activate_response"] = response;
-            }
+            var @event = _eventService.Retrieve(shortUrl);
+            var action = new ActivateEventAction(_paymentGateway);
+            var response = action.Execute(@event.Id, _ravenSession);
+            TempData["activate_response"] = response;
 
             return RedirectToAction("management-console", new {shortUrl = shortUrl});
         }
@@ -612,22 +583,18 @@ namespace GroupGiving.Web.Controllers
         {
             // send the organiser an email
             // todo: messaging should all be done through TM
-            using(var session = _documentStore.OpenSession())
-            {
-                var @event = session.Query<GroupGivingEvent>().FirstOrDefault(e => e.ShortUrl == shortUrl);
-                var account = session.Query<Account>().FirstOrDefault(a => a.Id == @event.OrganiserId);
-                _emailService.Send(account.Email, "NewMessage",
-                    new
-                        {
-                            Account=account,
-                            Event=@event,
-                            Message=message,
-                            SenderName=senderName,
-                            SenderEmail=senderEmail
-                        },
-                        _cultureService.GetCultureOrDefault(HttpContext, "pl"));
-            }
-            
+            var @event = _eventService.Retrieve(shortUrl);
+            var account = _ravenSession.Query<Account>().FirstOrDefault(a => a.Id == @event.OrganiserId);
+            _emailService.Send(account.Email, "NewMessage",
+                new
+                    {
+                        Account=account,
+                        Event=@event,
+                        Message=message,
+                        SenderName=senderName,
+                        SenderEmail=senderEmail
+                    },
+                    _cultureService.GetCultureOrDefault(HttpContext, "pl"));
             
             if (Request.AcceptTypes.Contains("application/json"))
             {

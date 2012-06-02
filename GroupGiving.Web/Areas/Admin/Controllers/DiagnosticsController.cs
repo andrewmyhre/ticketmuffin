@@ -25,6 +25,7 @@ namespace GroupGiving.Web.Areas.Admin.Controllers
         //
         // GET: /Diagnostics/
         IEmailFacade _emailFacade = null;
+        private readonly IDocumentSession _documentSession;
         private readonly IDocumentStore _storage;
         private readonly ICountryService _countryService;
         private readonly IApiClient _apiClient;
@@ -33,13 +34,13 @@ namespace GroupGiving.Web.Areas.Admin.Controllers
         private IRepository<GroupGivingEvent> _eventRepository=null;
 
         public DiagnosticsController(IRepository<GroupGivingEvent> eventRepository, 
-            IEmailFacade emailFacade, IDocumentStore storage, ICountryService countryService,
+            IEmailFacade emailFacade, IDocumentSession documentSession, ICountryService countryService,
             IApiClient apiClient, ISiteConfiguration siteConfiguration,
             IPayRequestFactory payRequestFactory)
         {
             _eventRepository = eventRepository;
             _emailFacade = emailFacade;
-            _storage = storage;
+            _documentSession = documentSession;
             _countryService = countryService;
             _apiClient = apiClient;
             _siteConfiguration = siteConfiguration;
@@ -50,10 +51,7 @@ namespace GroupGiving.Web.Areas.Admin.Controllers
         public ActionResult Index()
         {
             var viewModel = new DiagnosticsDashboardViewModel();
-            using (var session = _storage.OpenSession())
-            {
-                viewModel.CountryCount = session.Query<Country>().Count();
-            }
+            viewModel.CountryCount = _documentSession.Query<Country>().Count();
             return View(viewModel);
         }
 
@@ -143,14 +141,11 @@ namespace GroupGiving.Web.Areas.Admin.Controllers
             try
             {
                 string sourceFilePath = HostingEnvironment.MapPath("~/App_Data/countrylist.csv");
-                using (var session = _storage.OpenSession())
-                {
-                    var loaded = _countryService.LoadCountriesFromCsv(session, sourceFilePath);
+                var loaded = _countryService.LoadCountriesFromCsv(_documentSession, sourceFilePath);
 
-                    foreach(var country in loaded)
-                    {
-                        Response.Write(string.Format("<p>{0}</p>", country.Name));
-                    }
+                foreach(var country in loaded)
+                {
+                    Response.Write(string.Format("<p>{0}</p>", country.Name));
                 }
             }
             catch (Exception ex)

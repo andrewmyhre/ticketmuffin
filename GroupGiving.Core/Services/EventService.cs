@@ -11,26 +11,23 @@ namespace GroupGiving.Core.Services
 {
     public class EventService : IEventService
     {
-        private readonly IDocumentStore _documentStore;
+        private readonly IDocumentSession _ravenSession;
 
-        public EventService(IDocumentStore documentStore)
+        public EventService(IDocumentSession ravenSession)
         {
-            _documentStore = documentStore;
+            _ravenSession = ravenSession;
         }
 
-        public IEnumerable<GroupGivingEvent> RetrieveAllEvents()
+        public IEnumerable<GroupGivingEvent> List(int pageSize=20, int pageIndex=0)
         {
-            using (var session = _documentStore.OpenSession())
-            {
-                return session.Query<GroupGivingEvent>().Take(1024);
-            }
+            return _ravenSession.Query<GroupGivingEvent>().Skip(pageIndex*pageSize).Take(pageSize);
         }
 
         public CreateEventResult CreateEvent(CreateEventRequest request)
         {
-            using (var session = _documentStore.OpenSession())
-            {
-                if (session.Query<GroupGivingEvent>().Any(e=>e.ShortUrl == request.ShortUrl && e.State != EventState.Deleted))
+                if (_ravenSession
+                    .Query<GroupGivingEvent>()
+                    .Any(e=>e.ShortUrl == request.ShortUrl && e.State != EventState.Deleted))
                 {
                     throw new InvalidOperationException("Short url is not available");
                 }
@@ -43,10 +40,9 @@ namespace GroupGiving.Core.Services
                         throw new ArgumentException("Charity Id must be provided if event is for a charity");
                     }
 
-                    charity = session.Query<Charity>()
-                        .Where(c => c.DonationGatewayName == request.CharityDonationGatewayName
-                                    && c.DonationGatewayCharityId == request.CharityId)
-                        .FirstOrDefault();
+                    charity = _ravenSession.Query<Charity>()
+                        .FirstOrDefault(c => c.DonationGatewayName == request.CharityDonationGatewayName
+                                             && c.DonationGatewayCharityId == request.CharityId);
 
                     if (charity == null)
                     {
@@ -58,102 +54,86 @@ namespace GroupGiving.Core.Services
                                           DonationGatewayName = request.CharityDonationGatewayName,
                                           DonationGatewayCharityId = request.CharityId.Value,
                                           LogoUrl = request.CharityLogoUrl,
-                                          DonationPageUrl=request.CharityDonationPageUrl
+                                          DonationPageUrl = request.CharityDonationPageUrl
                                       };
-                        session.Store(charity);
+                        _ravenSession.Store(charity);
                     }
                 }
 
-                GroupGivingEvent ggEvent = new GroupGivingEvent()
-                                               {
-                                                   Title = request.Title,
-                                                   Description = request.Description,
-                                                   City = request.City,
-                                                   StartDate = request.StartDateTime,
-                                                   Venue = request.Venue,
-                                                   AddressLine = request.AddressLine,
-                                                   ShortUrl = request.ShortUrl,
-                                                   IsPrivate = request.IsPrivate,
-                                                   IsFeatured = request.IsFeatured,
-                                                   PhoneNumber = request.PhoneNumber,
-                                                   OrganiserId = request.OrganiserAccountId,
-                                                   OrganiserName = request.OrganiserName,
-                                                   State = EventState.Creating,
-                                                   Latitude = request.Latitude,
-                                                   Longitude = request.Longitude,
-                                                   Postcode = request.Postcode,
-                                                   Country = request.Country,
+            GroupGivingEvent ggEvent = new GroupGivingEvent()
+                {
+                    Title = request.Title,
+                    Description = request.Description,
+                    City = request.City,
+                    StartDate = request.StartDateTime,
+                    Venue = request.Venue,
+                    AddressLine = request.AddressLine,
+                    ShortUrl = request.ShortUrl,
+                    IsPrivate = request.IsPrivate,
+                    IsFeatured = request.IsFeatured,
+                    PhoneNumber = request.PhoneNumber,
+                    OrganiserId = request.OrganiserAccountId,
+                    OrganiserName = request.OrganiserName,
+                    State = EventState.Creating,
+                    Latitude = request.Latitude,
+                    Longitude = request.Longitude,
+                    Postcode = request.Postcode,
+                    Country = request.Country,
                                                    
-                                                   ImageFilename=request.ImageFilename,
-                                                   ImageUrl=request.ImageUrl,
-                                                   CharityDetails = charity
-                                               };
+                    ImageFilename=request.ImageFilename,
+                    ImageUrl=request.ImageUrl,
+                    CharityDetails = charity
+                };
 
-                
-                session.Store(ggEvent);
-                session.SaveChanges();
 
-                return new CreateEventResult() { Success = true, Event = ggEvent };
-            }
+            _ravenSession.Store(ggEvent);
 
+            return new CreateEventResult() { Success = true, Event = ggEvent };
         }
 
         public void SetTicketDetails(SetTicketDetailsRequest setTicketDetailsRequest)
         {
-            using (var session = _documentStore.OpenSession())
-            {
-                var @event = GetEventByShortUrl(setTicketDetailsRequest.ShortUrl, session);
+            var @event = GetEventByShortUrl(setTicketDetailsRequest.ShortUrl, _ravenSession);
 
-                if (@event == null)
-                    throw new ArgumentException("Event not found");
+            if (@event == null)
+                throw new ArgumentException("Event not found");
 
-                @event.TicketPrice = setTicketDetailsRequest.TicketPrice.Value;
-                @event.MinimumParticipants = setTicketDetailsRequest.MinimumParticipants.Value;
-                @event.MaximumParticipants = setTicketDetailsRequest.MaximumParticipants;
-                @event.SalesEndDateTime = setTicketDetailsRequest.SalesEndDateTime;
-                @event.AdditionalBenefits = setTicketDetailsRequest.AdditionalBenefits;
-                @event.PaypalAccountEmailAddress = setTicketDetailsRequest.PayPalEmail;
-                @event.PayPalAccountFirstName = setTicketDetailsRequest.PayPalFirstName;
-                @event.PayPalAccountLastName = setTicketDetailsRequest.PayPalLastName;
-                @event.Currency = (int) setTicketDetailsRequest.Currency;
-                @event.State = EventState.SalesReady;
+            @event.TicketPrice = setTicketDetailsRequest.TicketPrice.Value;
+            @event.MinimumParticipants = setTicketDetailsRequest.MinimumParticipants.Value;
+            @event.MaximumParticipants = setTicketDetailsRequest.MaximumParticipants;
+            @event.SalesEndDateTime = setTicketDetailsRequest.SalesEndDateTime;
+            @event.AdditionalBenefits = setTicketDetailsRequest.AdditionalBenefits;
+            @event.PaypalAccountEmailAddress = setTicketDetailsRequest.PayPalEmail;
+            @event.PayPalAccountFirstName = setTicketDetailsRequest.PayPalFirstName;
+            @event.PayPalAccountLastName = setTicketDetailsRequest.PayPalLastName;
+            @event.Currency = (int) setTicketDetailsRequest.Currency;
+            @event.State = EventState.SalesReady;
 
-                session.SaveChanges();
-            }
+            _ravenSession.SaveChanges();
         }
 
         private static GroupGivingEvent GetEventByShortUrl(string shortUrl,
                                                            IDocumentSession session)
         {
-            var @event =
-                session.Query<GroupGivingEvent>().Where(e => e.ShortUrl == shortUrl)
-                    .FirstOrDefault();
-            return @event;
+            return session.Query<GroupGivingEvent>().SingleOrDefault(e => e.ShortUrl == shortUrl);
         }
 
         public bool ShortUrlAvailable(string shortUrl)
         {
-            using (var session = _documentStore.OpenSession())
-            {
-                return !session.Query<GroupGivingEvent>().Any(e => e.ShortUrl == shortUrl && e.State != EventState.Deleted);
-            }
+            return !_ravenSession.Query<GroupGivingEvent>()
+                .Any(e => e.ShortUrl == shortUrl && e.State != EventState.Deleted);
         }
 
         public GroupGivingEvent Retrieve(int eventId)
         {
-            using (var session = _documentStore.OpenSession())
-            {
-                return session.Load<GroupGivingEvent>(eventId);
-            }
+            return _ravenSession.Load<GroupGivingEvent>(eventId);
         }
 
         public GroupGivingEvent Retrieve(string shortUrl)
         {
-            using (var session = _documentStore.OpenSession())
-            {
-                var @event = session.Query<GroupGivingEvent>().Where(e => e.ShortUrl == shortUrl && e.State != EventState.Deleted).FirstOrDefault();
-                return @event;
-            }
+            var @event = _ravenSession.Query<GroupGivingEvent>()
+                .SingleOrDefault(e => e.ShortUrl == shortUrl && e.State != EventState.Deleted);
+            return @event;
         }
 
         public void SendEventInvitationEmails(IEmailPackageRelayer emailPackageRelayer, string recipients, string body, string subject)

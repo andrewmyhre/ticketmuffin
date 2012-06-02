@@ -28,6 +28,7 @@ namespace GroupGiving.Web.Controllers
         private readonly IMembershipService _membershipService;
         private readonly IAccountService _accountService;
         private ICountryService _countryService;
+        private readonly IDocumentSession _documentSession;
         private readonly IEmailRelayService _emailRelayService;
         private readonly IRepository<GroupGivingEvent> _eventRepository;
         private readonly ICultureService _cultureService;
@@ -36,7 +37,7 @@ namespace GroupGiving.Web.Controllers
             IFormsAuthenticationService formsService, 
             IMembershipService accountMembershipService, 
             ICountryService countryService, 
-            IDocumentStore documentStore, 
+            IDocumentSession documentSession, 
             IEmailRelayService emailRelayService,
             IRepository<GroupGivingEvent> eventRepository,
             ICultureService cultureService)
@@ -45,11 +46,12 @@ namespace GroupGiving.Web.Controllers
             _formsService = formsService;
             _membershipService = accountMembershipService;
             _countryService = countryService;
+            _documentSession = documentSession;
             _emailRelayService = emailRelayService;
             _eventRepository = eventRepository;
             _cultureService = cultureService;
             ((RavenDBMembershipProvider) Membership.Provider).DocumentStore
-                = documentStore;
+                = documentSession.Advanced.DocumentStore;
         }
 
         [HttpGet]
@@ -107,7 +109,6 @@ namespace GroupGiving.Web.Controllers
                 return View(model);
             }
 
-            ((RavenDBMembershipProvider)Membership.Provider).DocumentStore = RavenDbDocumentStore.Instance;
             if (_membershipService.ValidateUser(request.EmailAddress, request.Password))
             {
                 _formsService.SignIn(request.EmailAddress, request.RememberMe);
@@ -149,7 +150,6 @@ namespace GroupGiving.Web.Controllers
                 return View(request);
             }
 
-            ((RavenDBMembershipProvider)Membership.Provider).DocumentStore = RavenDbDocumentStore.Instance;
             var createResult = _membershipService.CreateUser(request.Email, request.NewPassword, request.Email);
 
             if (createResult == MembershipCreateStatus.Success)
@@ -372,9 +372,7 @@ namespace GroupGiving.Web.Controllers
                 return RedirectToAction("ResetPassword", new {token = token});
             }
 
-            using (var session = RavenDbDocumentStore.Instance.OpenSession())
-            {
-                var q = from u in session.Query<User>()
+            var q = from u in _documentSession.Query<User>()
                         where u.Username == account.Email 
                         select u;
                 var user = q.SingleOrDefault();
@@ -382,8 +380,7 @@ namespace GroupGiving.Web.Controllers
                 user.PasswordSalt = PasswordUtil.CreateRandomSalt();
                 user.PasswordHash = PasswordUtil.HashPassword(resetPasswordViewModel.NewPassword, user.PasswordSalt);
 
-                session.SaveChanges();
-            }
+                _documentSession.SaveChanges();
             
             _accountService.ResetPassword(token, resetPasswordViewModel.NewPassword);
 
@@ -432,7 +429,7 @@ namespace GroupGiving.Web.Controllers
                 account.City = viewModel.Town;
                 account.PostCode = viewModel.PostCode;
                 account.Country = viewModel.Country;
-                _accountService.UpdateAccount(account);
+
                 viewModel.UpdatedSuccessfully = true;
                 viewModel.Email = account.Email;
             }
@@ -463,7 +460,7 @@ namespace GroupGiving.Web.Controllers
             account.PayPalEmail = model.PayPalEmail;
             account.PayPalFirstName = model.PayPalFirstName;
             account.PayPalLastName = model.PayPalLastName;
-            _accountService.UpdateAccount(account);
+
             return RedirectToAction("PayPalSettings");
         }
 

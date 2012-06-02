@@ -161,7 +161,12 @@
     <Compile Include="Areas\Admin\Controllers\PledgeController.cs" />
     <Compile Include="Areas\Admin\Controllers\SiteConfigurationController.cs" />
     <Compile Include="Areas\Admin\Controllers\UserManagementController.cs" />
+    <Compile Include="Areas\Admin\Models\ExecutePaymentViewModel.cs" />
+    <Compile Include="Areas\Admin\Models\ManageAccountViewModel.cs" />
     <Compile Include="Areas\Admin\Models\PledgeIndexViewModel.cs" />
+    <Compile Include="Areas\Admin\Models\TransactionHistoryEntry.cs" />
+    <Compile Include="Areas\Admin\Models\TransactionHistoryViewModel.cs" />
+    <Compile Include="Areas\Admin\Models\UserListViewModel.cs" />
     <Compile Include="Areas\Api\ApiAreaRegistration.cs" />
     <Compile Include="Areas\Api\Code\AutoMappingConfiguration.cs" />
     <Compile Include="Areas\Api\Code\XmlModelBinderProvider.cs" />
@@ -189,7 +194,6 @@
     <Compile Include="Code\MustBeTrueAttribute.cs" />
     <Compile Include="Code\PageContentService.cs" />
     <Compile Include="Code\RavenDbContentProvider.cs" />
-    <Compile Include="Code\RavenDbDocumentStore.cs" />
     <Compile Include="Code\ServiceLocator.cs" />
     <Compile Include="Controllers\AboutController.cs" />
     <Compile Include="Controllers\AccountController.cs" />

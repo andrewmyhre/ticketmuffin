@@ -12,17 +12,14 @@ namespace GroupGiving.Core.Services
 {
     public class AccountService : IAccountService
     {
-        private readonly IRepository<Account> _accountRepository;
         private readonly IEmailFacade _emailFacade;
-        private readonly IDocumentStore _documentStore;
+        private readonly IDocumentSession _documentSession;
 
-        public AccountService(IRepository<Account> accountRepository,
-            IEmailFacade emailFacade,
-            IDocumentStore documentStore)
+        public AccountService(IEmailFacade emailFacade,
+            IDocumentSession documentSession)
         {
-            _accountRepository = accountRepository;
             _emailFacade = emailFacade;
-            _documentStore = documentStore;
+            _documentSession = documentSession;
         }
 
         public Account CreateUser(CreateUserRequest request)
@@ -38,8 +35,8 @@ namespace GroupGiving.Core.Services
                 Country =  request.Country
             };
 
-            _accountRepository.SaveOrUpdate(account);
-            _accountRepository.CommitUpdates();
+            _documentSession.Store(account);
+            _documentSession.SaveChanges();
 
             _emailFacade.Send(
                 request.Email, 
@@ -55,22 +52,15 @@ namespace GroupGiving.Core.Services
 
         public SendPasswordResetResult SendPasswordResetEmail(string emailAddress, IEmailRelayService emailRelayService)
         {
-            var account = _accountRepository.Retrieve(a => a.Email == emailAddress);
+            var account = RetrieveByEmailAddress(emailAddress);
             if (account == null)
                 return SendPasswordResetResult.AccountNotFoundResult;
 
-            // generate a unique token
-            string token = Guid.NewGuid().ToString().Replace("{", "").Replace("-", "");
-            var otherAccounts = _accountRepository.Query(a => a.ResetPasswordToken == token);
-            while(otherAccounts.Count() > 0)
-            {
-                token = Guid.NewGuid().ToString().Replace("{", "").Replace("-", "");
-                otherAccounts = _accountRepository.Query(a => a.ResetPasswordToken == token);
-            }
+            var token = GenerateAUniquePasswordResetToken();
+
             account.ResetPasswordToken = token;
             account.ResetPasswordTokenExpiry = DateTime.Now.AddDays(1);
-            _accountRepository.SaveOrUpdate(account);
-            _accountRepository.CommitUpdates();
+            _documentSession.SaveChanges();
 
             // send email
             _emailFacade.Send(account.Email, "ResetYourPassword", new { Account = account }, "pl");
@@ -78,24 +68,31 @@ namespace GroupGiving.Core.Services
             return SendPasswordResetResult.SuccessResult;
         }
 
+        private string GenerateAUniquePasswordResetToken()
+        {
+            string token = "";
+            do
+            {
+                token = Guid.NewGuid().ToString().Replace("{", "").Replace("-", "");
+            } while (_documentSession.Query<Account>().Any(a => a.ResetPasswordToken == token));
+            return token;
+        }
+
+        public Account RetrieveByEmailAddress(string emailAddress)
+        {
+            var account = _documentSession.Query<Account>().SingleOrDefault(a => a.Email == emailAddress);
+            return account;
+        }
+
         public SendPasswordResetResult SendGetYourAccountStartedEmail(string emailAddress, IEmailRelayService emailRelayService)
         {
-            var account = _accountRepository.Retrieve(a => a.Email == emailAddress);
+            var account = RetrieveByEmailAddress(emailAddress);
             if (account == null)
                 return SendPasswordResetResult.AccountNotFoundResult;
 
-            // generate a unique token
-            string token = Guid.NewGuid().ToString().Replace("{", "").Replace("-", "");
-            var otherAccounts = _accountRepository.Query(a => a.ResetPasswordToken == token);
-            while (otherAccounts.Count() > 0)
-            {
-                token = Guid.NewGuid().ToString().Replace("{", "").Replace("-", "");
-                otherAccounts = _accountRepository.Query(a => a.ResetPasswordToken == token);
-            }
-            account.ResetPasswordToken = token;
+            var token = GenerateAUniquePasswordResetToken(); account.ResetPasswordToken = token;
             account.ResetPasswordTokenExpiry = DateTime.MaxValue;
-            _accountRepository.SaveOrUpdate(account);
-            _accountRepository.CommitUpdates();
+            _documentSession.SaveChanges();
 
             // send email
             _emailFacade.Send(account.Email, "GetYourAccountStarted",
@@ -106,8 +103,8 @@ namespace GroupGiving.Core.Services
 
         public Account RetrieveAccountByPasswordResetToken(string resetPasswordToken)
         {
-            return _accountRepository
-                .Retrieve(a => a.ResetPasswordToken == resetPasswordToken
+            return _documentSession.Query<Account>()
+                .SingleOrDefault(a => a.ResetPasswordToken == resetPasswordToken
                                && a.ResetPasswordTokenExpiry > DateTime.Now);
         }
 
@@ -118,69 +115,41 @@ namespace GroupGiving.Core.Services
 
             account.ResetPasswordToken = null;
             account.ResetPasswordTokenExpiry = DateTime.MinValue;
-            _accountRepository.SaveOrUpdate(account);
-            _accountRepository.CommitUpdates();
+            _documentSession.SaveChanges();
 
             return ResetPasswordResult.SuccessResult;
         }
 
-        public Account RetrieveByEmailAddress(string email)
-        {
-            using (var session = _documentStore.OpenSession())
-            {
-                return session.Query<Account>().Where(a => a.Email == email).FirstOrDefault();
-            }
-        }
-
-        public void UpdateAccount(Account account)
-        {
-            _accountRepository.SaveOrUpdate(account);
-            _accountRepository.CommitUpdates();
-        }
-
         public Account CreateAnonymousAccountPendingTransaction(string transactionId, bool optInForSpecialOffers)
         {
-            using (var session = _documentStore.OpenSession())
-            {
-                var account = new Account()
-                                  {
-                                      PendingTransactionId = transactionId,
-                                      OptInForOffers = optInForSpecialOffers
-                                  };
-                session.Store(account);
-                session.SaveChanges();
+            var account = new Account()
+                                {
+                                    PendingTransactionId = transactionId,
+                                    OptInForOffers = optInForSpecialOffers
+                                };
+            _documentSession.Store(account);
 
-                return account;
-            }
-
+            return account;
         }
 
         public Account CreateIncompleteAccount(string emailAddress, IEmailRelayService emailRelayService)
         {
-            using (var session = _documentStore.OpenSession())
+            var account = new Account()
             {
-                var account = new Account()
-                {
-                    Email = emailAddress,
-                    ResetPasswordToken = Guid.NewGuid().ToString(),
-                    ResetPasswordTokenExpiry = DateTime.MaxValue
-                };
-                session.Store(account);
-                session.SaveChanges();
+                Email = emailAddress,
+                ResetPasswordToken = Guid.NewGuid().ToString(),
+                ResetPasswordTokenExpiry = DateTime.MaxValue
+            };
+            _documentSession.Store(account);
 
-                SendGetYourAccountStartedEmail(emailAddress, emailRelayService);
+            SendGetYourAccountStartedEmail(emailAddress, emailRelayService);
 
-                return account;
-            }
-
+            return account;
         }
 
-        public Account RetrieveById(string accountId)
+        public Account GetById(string accountId)
         {
-            using (var session = _documentStore.OpenSession())
-            {
-                return session.Load<Account>(accountId);
-            }
+            return _documentSession.Load<Account>(accountId);
         }
     }
 }

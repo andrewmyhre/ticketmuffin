@@ -11,6 +11,7 @@ using GroupGiving.Web.Code;
 using GroupGiving.Web.Controllers;
 using Moq;
 using NUnit.Framework;
+using Raven.Client.Embedded;
 using RavenDBMembership.Web.Models;
 
 namespace GroupGiving.Test.Unit
@@ -28,10 +29,13 @@ namespace GroupGiving.Test.Unit
         private IIdentity _userIdentity = new System.Security.Principal.GenericIdentity("testuser@test.com");
         private Mock<IApiClient> _apiClient = new Mock<IApiClient>();
         private Mock<IAccountsApiClient> _accountsApi = new Mock<IAccountsApiClient>();
+        private EmbeddableDocumentStore _documentStore;
 
         [SetUp]
         public void SetUp()
         {
+            _documentStore = InMemoryStore();
+
             accountService = new Mock<IAccountService>();
             membershipService = new Mock<IMembershipService>();
             formsAuthenticationService = new Mock<IFormsAuthenticationService>();
@@ -57,29 +61,40 @@ namespace GroupGiving.Test.Unit
             _apiClient.SetupProperty(a => a.Accounts, _accountsApi.Object);
         }
 
+        [TearDown]
+        public void TearDown()
+        {
+            _documentStore.Dispose();
+        }
+
         [Test]
         public void ValidCreateEventDetailsProvided_ReturnsRedirectToTicketOptions()
         {
-            EventCreationAlwaysSuccessful("test-event");
-            AnyShortUrlIsAvailable();
+            using (var session = _documentStore.OpenSession())
+            {
+                EventCreationAlwaysSuccessful("test-event");
+                AnyShortUrlIsAvailable();
 
-            eventService
-                .Setup(m => m.Retrieve(It.IsAny<string>()))
-                .Returns(new GroupGivingEvent());
+                eventService
+                    .Setup(m => m.Retrieve(It.IsAny<string>()))
+                    .Returns(new GroupGivingEvent());
 
-            _accountsApi.AllAccountsVerified();
+                _accountsApi.AllAccountsVerified();
 
-            var controller = new CreateEventController(accountService.Object, _countryService.Object, membershipService.Object,
-                                                       formsAuthenticationService.Object, eventService.Object,
-                                                       null, _userIdentity, null, _membershipProviderLocator.Object, _apiClient.Object);
+                var controller = new CreateEventController(accountService.Object, _countryService.Object,
+                                                           membershipService.Object,
+                                                           formsAuthenticationService.Object, eventService.Object,
+                                                           _userIdentity, _membershipProviderLocator.Object,
+                                                           _apiClient.Object, session);
 
-            var createEventRequest = new CreateEventRequest(){ShortUrl="test-event"};
-            createEventRequest.StartDate = DateTime.Now.AddDays(10).ToString("dd/MM/yyyy");
-            createEventRequest.StartTime = "10:00PM";
-            var result = controller.EventDetails(createEventRequest) as RedirectToRouteResult;
+                var createEventRequest = new CreateEventRequest() {ShortUrl = "test-event"};
+                createEventRequest.StartDate = DateTime.Now.AddDays(10).ToString("dd/MM/yyyy");
+                createEventRequest.StartTime = "10:00PM";
+                var result = controller.EventDetails(createEventRequest) as RedirectToRouteResult;
 
-            Assert.That(result, Is.Not.Null);
-            Assert.That(result.RouteName, Is.StringMatching("CreateEvent_TicketDetails"));
+                Assert.That(result, Is.Not.Null);
+                Assert.That(result.RouteName, Is.StringMatching("CreateEvent_TicketDetails"));
+            }
         }
 
         private void EventCreationAlwaysSuccessful(string shortUrl)
@@ -99,74 +114,85 @@ namespace GroupGiving.Test.Unit
         [Test]
         public void InvalidCreateEventDetailsProvided_ReturnsViewWithInvalidModelState()
         {
-            eventService
-                .Setup(m => m.CreateEvent(It.IsAny<CreateEventRequest>()))
-                .Returns(new CreateEventResult() { Success = false });
+            using (var session = _documentStore.OpenSession())
+            {
+                eventService
+                    .Setup(m => m.CreateEvent(It.IsAny<CreateEventRequest>()))
+                    .Returns(new CreateEventResult() {Success = false});
 
-            eventService
-                .Setup(m => m.Retrieve(It.IsAny<string>()))
-                .Returns(new GroupGivingEvent());
+                eventService
+                    .Setup(m => m.Retrieve(It.IsAny<string>()))
+                    .Returns(new GroupGivingEvent());
 
-            _accountsApi.AllAccountsVerified();
+                _accountsApi.AllAccountsVerified();
 
-            var controller = new CreateEventController(accountService.Object, _countryService.Object, membershipService.Object,
-                                                       formsAuthenticationService.Object, eventService.Object,
-                                                       null, _userIdentity, null, _membershipProviderLocator.Object, _apiClient.Object);
-            controller.ModelState.AddModelError("*", "invalid model state");
+                var controller = new CreateEventController(accountService.Object, _countryService.Object,
+                                                           membershipService.Object,
+                                                           formsAuthenticationService.Object, eventService.Object,
+                                                           _userIdentity, _membershipProviderLocator.Object,
+                                                           _apiClient.Object, session);
+                controller.ModelState.AddModelError("*", "invalid model state");
 
-            var result = controller.EventDetails(new CreateEventRequest()) as ViewResult;
+                var result = controller.EventDetails(new CreateEventRequest()) as ViewResult;
 
-            Assert.That(result, Is.Not.Null);
-            Assert.That(controller.ModelState.IsValid, Is.False);
+                Assert.That(result, Is.Not.Null);
+                Assert.That(controller.ModelState.IsValid, Is.False);
+            }
         }
 
         [Test]
         [Ignore("find an alternative to membership provider")]
         public void ValidTicketDetailsProvided_ReturnsRedirectToShareEvent()
         {
-            var groupGivingEvent = new GroupGivingEvent() {ShortUrl = "shorturl"};  
-            eventService
-                .Setup(m => m.Retrieve(It.IsAny<int>()))
-                .Returns(groupGivingEvent);
+            using (var session = _documentStore.OpenSession())
+            {
+                var groupGivingEvent = new GroupGivingEvent() {ShortUrl = "shorturl"};
+                eventService
+                    .Setup(m => m.Retrieve(It.IsAny<int>()))
+                    .Returns(groupGivingEvent);
 
-            eventService
-                .Setup(m => m.Retrieve(It.IsAny<string>()))
-                .Returns(new GroupGivingEvent());
+                eventService
+                    .Setup(m => m.Retrieve(It.IsAny<string>()))
+                    .Returns(new GroupGivingEvent());
 
-            _accountsApi.AllAccountsVerified();
-            
-            var controller = new CreateEventController(accountService.Object, _countryService.Object,
-                                                       membershipService.Object, formsAuthenticationService.Object,
-                                                       eventService.Object, null, _userIdentity, null, 
-                                                       _membershipProviderLocator.Object, _apiClient.Object);
+                _accountsApi.AllAccountsVerified();
 
-            var setTicketDetailsRequest = new SetTicketDetailsRequest() {ShortUrl="test-event"};
-            setTicketDetailsRequest.SalesEndDate = DateTime.Now.AddDays(10).ToString("dd/MM/yyyy");
-            setTicketDetailsRequest.SalesEndTime = "10:00PM";
-            var result = controller.TicketDetails(setTicketDetailsRequest) as RedirectToRouteResult;
+                var controller = new CreateEventController(accountService.Object, _countryService.Object,
+                                                           membershipService.Object, formsAuthenticationService.Object,
+                                                           eventService.Object, _userIdentity,
+                                                           _membershipProviderLocator.Object, _apiClient.Object, session);
 
-            Assert.That(result, Is.Not.Null);
-            Assert.That(result.RouteName, Is.StringMatching("Event_ShareYourEvent"));
-            Assert.That(result.RouteValues["shortUrl"], Is.EqualTo(groupGivingEvent.ShortUrl));
+                var setTicketDetailsRequest = new SetTicketDetailsRequest() {ShortUrl = "test-event"};
+                setTicketDetailsRequest.SalesEndDate = DateTime.Now.AddDays(10).ToString("dd/MM/yyyy");
+                setTicketDetailsRequest.SalesEndTime = "10:00PM";
+                var result = controller.TicketDetails(setTicketDetailsRequest) as RedirectToRouteResult;
+
+                Assert.That(result, Is.Not.Null);
+                Assert.That(result.RouteName, Is.StringMatching("Event_ShareYourEvent"));
+                Assert.That(result.RouteValues["shortUrl"], Is.EqualTo(groupGivingEvent.ShortUrl));
+            }
         }
 
         [Test]
         public void InvalidTicketDetailsProvided_ReturnsRedirectToShareEvent()
         {
-            _accountsApi.AllAccountsVerified();
-                    
-            var controller = new CreateEventController(accountService.Object, _countryService.Object,
-                                                       membershipService.Object, formsAuthenticationService.Object,
-                                                       eventService.Object, null, _userIdentity, null,
-                                                       _membershipProviderLocator.Object, _apiClient.Object);
-            controller.ModelState.AddModelError("*", "Invalid model state");
-            eventService
-                .Setup(m => m.Retrieve(It.IsAny<string>()))
-                .Returns(new GroupGivingEvent());
-            var result = controller.TicketDetails(new SetTicketDetailsRequest()) as ViewResult;
+            using (var session = _documentStore.OpenSession())
+            {
+                _accountsApi.AllAccountsVerified();
 
-            Assert.That(result, Is.Not.Null);
-            Assert.That(controller.ModelState.IsValid, Is.False);
+                var controller = new CreateEventController(accountService.Object, _countryService.Object,
+                                                           membershipService.Object, formsAuthenticationService.Object,
+                                                           eventService.Object, _userIdentity,
+                                                           _membershipProviderLocator.Object, _apiClient.Object, session);
+                controller.ModelState.AddModelError("*", "Invalid model state");
+                eventService
+                    .Setup(m => m.Retrieve(It.IsAny<string>()))
+                    .Returns(new GroupGivingEvent());
+                var result = controller.TicketDetails(new SetTicketDetailsRequest()) as ViewResult;
+
+                Assert.That(result, Is.Not.Null);
+                Assert.That(controller.ModelState.IsValid, Is.False);
+            }
         }
     }
 }

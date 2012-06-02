@@ -12,6 +12,8 @@ using GroupGiving.PayPal;
 using GroupGiving.PayPal.Model;
 using Moq;
 using NUnit.Framework;
+using Raven.Client;
+using Raven.Client.Embedded;
 
 namespace GroupGiving.Test.Unit.Pledging
 {
@@ -29,125 +31,182 @@ namespace GroupGiving.Test.Unit.Pledging
         public virtual void SetUp()
         {
             _taxRate = 0.15m;
-            _attendee = new string[] { "some guy" };
+            _attendee = new string[] {"some guy"};
             _expectedTaxValue = 15.75m;
             _expectedTotalCharge = 115.8m;
             PaypalPayKey = "12345";
-            Event = new GroupGivingEvent() { Id = "events/1", Country = "some country", 
-                TicketPrice = 100, 
-                MaximumParticipants = 100, MinimumParticipants = 10};
+            Event = new GroupGivingEvent()
+                        {
+                            Id = "events/1",
+                            Country = "some country",
+                            TicketPrice = 100,
+                            MaximumParticipants = 100,
+                            MinimumParticipants = 10
+                        };
+            using(var session = DocumentStore.OpenSession())
+            {
+                session.Store(Event);
+                session.SaveChanges();
+            }
 
             EventRepositoryReturns(Event);
             SetTaxRateForCountry(Event.Country, _taxRate);
             PayPalGatewayReturnsTransactionIdWithVerification();
             EventRepositoryStoresEventWithVerification();
-            SetUpDocumentStore();
-            SessionLoadsAccount(ValidAccount());
             PayPalGatewayCanCreateDelayedPayment(PaypalPayKey);
         }
 
         [Test]
         public void PledgeIsCreated()
         {
-            var organiserAccount = ValidAccount();
-            var request = new MakePledgeRequest() { AttendeeNames = _attendee, WebsiteUrlBase = "http://ticketmuffin.com/" };
-            var action = new MakePledgeAction(TaxResolverMock.Object,
-                PaymentGateway.Object, ValidSiteConfiguration().AdaptiveAccountsConfiguration, DocumentStore.Object);
-            _result = action.Attempt(Event.Id, organiserAccount, request);
-            Assert.That(Event.Pledges, Has.Count.EqualTo(1));
+            using (var session = DocumentStore.OpenSession())
+            {
+                var organiserAccount = ValidAccount();
+                var request = new MakePledgeRequest() { AttendeeNames = _attendee, WebsiteUrlBase = "http://ticketmuffin.com/" };
+                var action = new MakePledgeAction(TaxResolverMock.Object,
+                    PaymentGateway.Object, ValidSiteConfiguration().AdaptiveAccountsConfiguration, session);
+                _result = action.Attempt(Event.Id, organiserAccount, request);
+                var _event = session.Load<GroupGivingEvent>(Event.Id);
+                Assert.That(_event.Pledges, Has.Count.EqualTo(1));
+            }
         }
 
         [Test]
         public void PledgeIsSaved()
         {
-            DocumentSession
-                .Setup(m => m.SaveChanges())
-                .Verifiable();
-
-            var organiserAccount = ValidAccount();
-            var request = new MakePledgeRequest() { AttendeeNames = _attendee, WebsiteUrlBase = "http://ticketmuffin.com/" };
-            var action = new MakePledgeAction(TaxResolverMock.Object,
-                PaymentGateway.Object, ValidSiteConfiguration().AdaptiveAccountsConfiguration, DocumentStore.Object);
-            _result = action.Attempt(Event.Id, organiserAccount, request);
-            DocumentSession.Verify(m=>m.SaveChanges());
+            using (var session = DocumentStore.OpenSession())
+            {
+                var organiserAccount = ValidAccount();
+                var request = new MakePledgeRequest()
+                                  {AttendeeNames = _attendee, WebsiteUrlBase = "http://ticketmuffin.com/"};
+                var action = new MakePledgeAction(TaxResolverMock.Object,
+                                                  PaymentGateway.Object,
+                                                  ValidSiteConfiguration().AdaptiveAccountsConfiguration,
+                                                  session);
+                _result = action.Attempt(Event.Id, organiserAccount, request);
+                var _event = session.Load<GroupGivingEvent>(Event.Id);
+                Assert.That(_event.Pledges.Any(p => p.TransactionId.Equals(PaypalPayKey)));
+            }
         }
 
         [Test]
         public void SubTotalIsTicketPriceTimesAttendeeCount()
         {
-            var organiserAccount = ValidAccount();
-            var request = new MakePledgeRequest() { AttendeeNames = _attendee, WebsiteUrlBase = "http://ticketmuffin.com/" };
-            var action = new MakePledgeAction(TaxResolverMock.Object,
-                PaymentGateway.Object, ValidSiteConfiguration().AdaptiveAccountsConfiguration, DocumentStore.Object);
-            _result = action.Attempt(Event.Id, organiserAccount, request);
-            var pledge = Event.Pledges.LastOrDefault();
+            using (var session = DocumentStore.OpenSession())
+            {
+                var organiserAccount = ValidAccount();
+                var request = new MakePledgeRequest()
+                                  {AttendeeNames = _attendee, WebsiteUrlBase = "http://ticketmuffin.com/"};
+                var action = new MakePledgeAction(TaxResolverMock.Object,
+                                                  PaymentGateway.Object,
+                                                  ValidSiteConfiguration().AdaptiveAccountsConfiguration,
+                                                  session);
+                _result = action.Attempt(Event.Id, organiserAccount, request);
 
-            Assert.That(pledge.SubTotal, Is.EqualTo(Event.TicketPrice));
+                var _event = session.Load<GroupGivingEvent>(Event.Id);
+                var pledge = _event.Pledges.LastOrDefault();
+
+                Assert.That(pledge.SubTotal, Is.EqualTo(Event.TicketPrice));
+            }
         }
 
         [Test]
         [Ignore("Tax logic is undefined")]
         public void TaxIsAddedToSubTotal()
         {
-            var organiserAccount = ValidAccount();
-            var request = new MakePledgeRequest() { AttendeeNames = _attendee, WebsiteUrlBase = "http://ticketmuffin.com/" };
-            var action = new MakePledgeAction(TaxResolverMock.Object,
-                PaymentGateway.Object, ValidSiteConfiguration().AdaptiveAccountsConfiguration, DocumentStore.Object);
-            _result = action.Attempt(Event.Id, organiserAccount, request);
-            var pledge = Event.Pledges.LastOrDefault();
+            using (var session = DocumentStore.OpenSession())
+            {
+                var organiserAccount = ValidAccount();
+                var request = new MakePledgeRequest()
+                                  {AttendeeNames = _attendee, WebsiteUrlBase = "http://ticketmuffin.com/"};
+                var action = new MakePledgeAction(TaxResolverMock.Object,
+                                                  PaymentGateway.Object,
+                                                  ValidSiteConfiguration().AdaptiveAccountsConfiguration,
+                                                  session);
+                _result = action.Attempt(Event.Id, organiserAccount, request);
+                var _event = session.Load<GroupGivingEvent>(Event.Id);
+                var pledge = _event.Pledges.LastOrDefault();
 
-            Assert.That(pledge.Tax, Is.EqualTo(_expectedTaxValue));
+                Assert.That(pledge.Tax, Is.EqualTo(_expectedTaxValue));
+            }
         }
 
         [Test]
         [Ignore("Tax logic is undefined")]
         public void TotalIsSubTotalPlusTax()
         {
-            var organiserAccount = ValidAccount();
-            var request = new MakePledgeRequest() { AttendeeNames = _attendee, WebsiteUrlBase = "http://ticketmuffin.com/" };
-            var action = new MakePledgeAction(TaxResolverMock.Object,
-                PaymentGateway.Object, ValidSiteConfiguration().AdaptiveAccountsConfiguration, DocumentStore.Object);
-            _result = action.Attempt(Event.Id, organiserAccount, request);
-            var pledge = Event.Pledges.LastOrDefault();
+            using (var session = DocumentStore.OpenSession())
+            {
+                var organiserAccount = ValidAccount();
+                var request = new MakePledgeRequest()
+                                  {AttendeeNames = _attendee, WebsiteUrlBase = "http://ticketmuffin.com/"};
+                var action = new MakePledgeAction(TaxResolverMock.Object,
+                                                  PaymentGateway.Object,
+                                                  ValidSiteConfiguration().AdaptiveAccountsConfiguration,
+                                                  session);
+                _result = action.Attempt(Event.Id, organiserAccount, request);
+                var _event = session.Load<GroupGivingEvent>(Event.Id);
+                var pledge = _event.Pledges.LastOrDefault();
 
-            Assert.That(pledge.Total, Is.EqualTo(_expectedTotalCharge));
+                Assert.That(pledge.Total, Is.EqualTo(_expectedTotalCharge));
+            }
         }
 
         [Test]
         public void StatusIsUnpaid()
         {
-            var organiserAccount = ValidAccount();
-            var request = new MakePledgeRequest() { AttendeeNames = _attendee, WebsiteUrlBase = "http://ticketmuffin.com/" };
-            var action = new MakePledgeAction(TaxResolverMock.Object,
-                PaymentGateway.Object, ValidSiteConfiguration().AdaptiveAccountsConfiguration, DocumentStore.Object);
-            _result = action.Attempt(Event.Id, organiserAccount, request);
-            var pledge = Event.Pledges.LastOrDefault();
+            using (var session = DocumentStore.OpenSession())
+            {
+                var organiserAccount = ValidAccount();
+                var request = new MakePledgeRequest()
+                                  {AttendeeNames = _attendee, WebsiteUrlBase = "http://ticketmuffin.com/"};
+                var action = new MakePledgeAction(TaxResolverMock.Object,
+                                                  PaymentGateway.Object,
+                                                  ValidSiteConfiguration().AdaptiveAccountsConfiguration,
+                                                  session);
+                _result = action.Attempt(Event.Id, organiserAccount, request);
+                var _event = session.Load<GroupGivingEvent>(Event.Id);
+                var pledge = _event.Pledges.LastOrDefault();
 
-            Assert.That(pledge.PaymentStatus, Is.EqualTo(PaymentStatus.Unpaid));
-            Assert.That(pledge.Paid, Is.False);
+                Assert.That(pledge.PaymentStatus, Is.EqualTo(PaymentStatus.Unpaid));
+                Assert.That(pledge.Paid, Is.False);
+            }
         }
 
         [Test]
         public void ResultContainsGatewayResponse()
         {
-            var organiserAccount = ValidAccount();
-            var request = new MakePledgeRequest() { AttendeeNames = _attendee, WebsiteUrlBase = "http://ticketmuffin.com/" };
-            var action = new MakePledgeAction(TaxResolverMock.Object,
-                PaymentGateway.Object, ValidSiteConfiguration().AdaptiveAccountsConfiguration, DocumentStore.Object);
-            _result = action.Attempt(Event.Id, organiserAccount, request);
-            Assert.That(_result.GatewayResponse, Is.Not.Null);
-            Assert.That(_result.GatewayResponse.payKey, Is.EqualTo(PaypalPayKey));
+            using (var session = DocumentStore.OpenSession())
+            {
+                var organiserAccount = ValidAccount();
+                var request = new MakePledgeRequest()
+                                  {AttendeeNames = _attendee, WebsiteUrlBase = "http://ticketmuffin.com/"};
+                var action = new MakePledgeAction(TaxResolverMock.Object,
+                                                  PaymentGateway.Object,
+                                                  ValidSiteConfiguration().AdaptiveAccountsConfiguration,
+                                                  session);
+                _result = action.Attempt(Event.Id, organiserAccount, request);
+
+                Assert.That(_result.GatewayResponse, Is.Not.Null);
+                Assert.That(_result.GatewayResponse.payKey, Is.EqualTo(PaypalPayKey));
+            }
         }
 
         [Test]
         public void ResultSuccessful()
         {
-            var organiserAccount = ValidAccount();
-            var request = new MakePledgeRequest() { AttendeeNames = _attendee, WebsiteUrlBase = "http://ticketmuffin.com/" };
-            var action = new MakePledgeAction(TaxResolverMock.Object,
-                PaymentGateway.Object, ValidSiteConfiguration().AdaptiveAccountsConfiguration, DocumentStore.Object);
-            _result = action.Attempt(Event.Id, organiserAccount, request);
-            Assert.That(_result.Succeeded, Is.True);
+            using (var session = DocumentStore.OpenSession())
+            {
+                var organiserAccount = ValidAccount();
+                var request = new MakePledgeRequest()
+                                  {AttendeeNames = _attendee, WebsiteUrlBase = "http://ticketmuffin.com/"};
+                var action = new MakePledgeAction(TaxResolverMock.Object,
+                                                  PaymentGateway.Object,
+                                                  ValidSiteConfiguration().AdaptiveAccountsConfiguration,
+                                                  session);
+                _result = action.Attempt(Event.Id, organiserAccount, request);
+                Assert.That(_result.Succeeded, Is.True);
+            }
         }
     }
 
@@ -170,23 +229,34 @@ namespace GroupGiving.Test.Unit.Pledging
             PaypalPayKey = "12345";
             Event = new GroupGivingEvent() { Id = "events/1", Country = "some country", TicketPrice = 100, MaximumParticipants = 100, MinimumParticipants = 10};
 
+            using (var session = DocumentStore.OpenSession())
+            {
+                session.Store(Event);
+                session.SaveChanges();
+            }
+
             PaypalGatewayReturnsAnErrorWhenMakingDelayedPaymentRequest();
             EventRepositoryReturns(Event);
             SetTaxRateForCountry(Event.Country, TaxRate);
             EventRepositoryStoresEventWithVerification();
-            SetUpDocumentStore();
             PayPalGatewayReturnsPaymentDetailsForTransactionId("INCOMPLETE");
         }
 
         [Test]
         public void PledgeActionSucceededIsFalse()
         {
-            var organiserAccount = ValidAccount();
-            var request = new MakePledgeRequest() { AttendeeNames = Attendee, WebsiteUrlBase = "http://ticketmuffin.com/"};
-            var action = new MakePledgeAction(TaxResolverMock.Object,
-                PaymentGateway.Object, ValidSiteConfiguration().AdaptiveAccountsConfiguration, DocumentStore.Object);
-            _result = action.Attempt(Event.Id, organiserAccount, request);
-            Assert.That(_result.Succeeded, Is.False);
+            using (var session = DocumentStore.OpenSession())
+            {
+                var organiserAccount = ValidAccount();
+                var request = new MakePledgeRequest()
+                                  {AttendeeNames = Attendee, WebsiteUrlBase = "http://ticketmuffin.com/"};
+                var action = new MakePledgeAction(TaxResolverMock.Object,
+                                                  PaymentGateway.Object,
+                                                  ValidSiteConfiguration().AdaptiveAccountsConfiguration,
+                                                  session);
+                _result = action.Attempt(Event.Id, organiserAccount, request);
+                Assert.That(_result.Succeeded, Is.False);
+            }
         }
     }
 
@@ -198,6 +268,7 @@ namespace GroupGiving.Test.Unit.Pledging
         protected string[] _attendee;
         protected decimal _taxRate;
         private CreatePledgeActionResult _result;
+        private IDocumentSession _documentSession;
 
         [SetUp]
         public virtual void SetUp()
@@ -220,16 +291,24 @@ namespace GroupGiving.Test.Unit.Pledging
             SetTaxRateForCountry(Event.Country, _taxRate);
             PayPalGatewayReturnsTransactionIdWithVerification();
             EventRepositoryStoresEventWithVerification();
-            SetUpDocumentStore();
-            SessionLoadsAccount(ValidAccount());
             PayPalGatewayCanCreateDelayedPayment(PaypalPayKey);
             PayPalGatewayReturnsPaymentDetailsForTransactionId("INCOMPLETE");
+
+            _documentSession = DocumentStore.OpenSession();
+            _documentSession.Store(Event);
+            _documentSession.SaveChanges();
 
             var organiserAccount = ValidAccount();
             var request = new MakePledgeRequest() { AttendeeNames = _attendee, WebsiteUrlBase = "http://ticketmuffin.com/" };
             var action = new MakePledgeAction(TaxResolverMock.Object,
-                PaymentGateway.Object, ValidSiteConfiguration().AdaptiveAccountsConfiguration, DocumentStore.Object);
+                PaymentGateway.Object, ValidSiteConfiguration().AdaptiveAccountsConfiguration, _documentSession);
             _result = action.Attempt(Event.Id, organiserAccount, request);
+        }
+
+        [TearDown]
+        public void TearDown()
+        {
+            _documentSession.Dispose();
         }
 
         [Test]
@@ -239,7 +318,9 @@ namespace GroupGiving.Test.Unit.Pledging
             var action = new ConfirmPledgePaymentAction(PaymentGateway.Object, AccountService.Object, EmailRelayService.Object);
             action.ConfirmPayment(Event, request);
 
-            var pledge = Event.Pledges.LastOrDefault();
+            var _event = _documentSession.Load<GroupGivingEvent>(Event.Id);
+            var pledge = _event.Pledges.LastOrDefault();
+
             Assert.That(pledge.PaymentStatus, Is.EqualTo(PaymentStatus.PaidPendingReconciliation));
             Assert.That(pledge.Paid, Is.True);
         }
@@ -247,7 +328,8 @@ namespace GroupGiving.Test.Unit.Pledging
         [Test]
         public void PledgeNotInUnpaidState_ThrowInvalidOperationException()
         {
-            var pledge = Event.Pledges.LastOrDefault();
+            var _event = _documentSession.Load<GroupGivingEvent>(Event.Id);
+            var pledge = _event.Pledges.LastOrDefault();
             pledge.PaymentStatus = PaymentStatus.PaidPendingReconciliation;
 
             var request = new SettlePledgeRequest() { PayPalPayKey = PaypalPayKey };
@@ -263,7 +345,8 @@ namespace GroupGiving.Test.Unit.Pledging
             var action = new ConfirmPledgePaymentAction(PaymentGateway.Object, AccountService.Object, EmailRelayService.Object);
             action.ConfirmPayment(Event, request);
 
-            var pledge = Event.Pledges.LastOrDefault();
+            var _event = _documentSession.Load<GroupGivingEvent>(Event.Id);
+            var pledge = _event.Pledges.LastOrDefault();
             Assert.That(pledge.DatePledged, Is.GreaterThan(DateTime.Now.AddSeconds(-1)));
             Assert.That(pledge.DatePledged, Is.LessThan(DateTime.Now.AddSeconds(1)));
         }
@@ -303,27 +386,38 @@ namespace GroupGiving.Test.Unit.Pledging
                                       }
                               }};
 
+            using (var session = DocumentStore.OpenSession())
+            {
+                session.Store(Event);
+                session.SaveChanges();
+            }
+
             PaymentRequestIsSuccessful(PaypalPayKey);
             EventRepositoryReturns(Event);
             SetTaxRateForCountry(Event.Country, _taxRate);
             PayPalGatewayReturnsTransactionIdWithVerification();
             EventRepositoryStoresEventWithVerification();
-            SetUpDocumentStore();
         }
 
         [Test]
         public void ToManyAttendeesFails()
         {
-            var request = new MakePledgeRequest()
+            using (var session = DocumentStore.OpenSession())
             {
-                AttendeeNames = new[] { "attendee1", "attendee2", "attendee3", "attendee4" },
-                WebsiteUrlBase = "http://ticketmuffin.com/"
-            };
-            var organiserAccount = ValidAccount();
-            var action = new MakePledgeAction(TaxResolverMock.Object,
-                PaymentGateway.Object, ValidSiteConfiguration().AdaptiveAccountsConfiguration, DocumentStore.Object);
+                var request = new MakePledgeRequest()
+                                  {
+                                      AttendeeNames = new[] {"attendee1", "attendee2", "attendee3", "attendee4"},
+                                      WebsiteUrlBase = "http://ticketmuffin.com/"
+                                  };
+                var organiserAccount = ValidAccount();
+                var action = new MakePledgeAction(TaxResolverMock.Object,
+                                                  PaymentGateway.Object,
+                                                  ValidSiteConfiguration().AdaptiveAccountsConfiguration,
+                                                  session);
 
-            Assert.Throws<InvalidOperationException>(() => action.Attempt(Event.Id, organiserAccount, request), "Number of attendees exceeded");
+                Assert.Throws<InvalidOperationException>(() => action.Attempt(Event.Id, organiserAccount, request),
+                                                         "Number of attendees exceeded");
+            }
         }
     }
 
@@ -387,6 +481,12 @@ namespace GroupGiving.Test.Unit.Pledging
                               }
             };
 
+            using (var session = DocumentStore.OpenSession())
+            {
+                session.Store(Event);
+                session.SaveChanges();
+            }
+
             PaymentRequestIsSuccessful(PaypalPayKey);
             EventRepositoryReturns(Event);
             SetTaxRateForCountry(Event.Country, _taxRate);
@@ -394,7 +494,6 @@ namespace GroupGiving.Test.Unit.Pledging
             EventRepositoryStoresEventWithVerification();
             PayPalGatewayReturnsPaymentDetailsForTransactionId("CREATED");
             PayPalGatewayCanCreateDelayedPayment(PaypalPayKey);
-            SetUpDocumentStore();
         }
 
         [Test]
@@ -407,21 +506,23 @@ namespace GroupGiving.Test.Unit.Pledging
             };
 
             var organiserAccount = ValidAccount();
-            DocumentSession
-                .Setup(s => s.Load<GroupGivingEvent>(It.IsAny<string>()))
-                .Returns(Event);
+
+            using (var session = DocumentStore.OpenSession())
+            {
+                var pledgeAction = new MakePledgeAction(TaxResolverMock.Object, PaymentGateway.Object,
+                                                        ValidSiteConfiguration().AdaptiveAccountsConfiguration,
+                                                        session);
+                pledgeAction.Attempt(Event.Id, organiserAccount, request);
+                var @event = session.Load<GroupGivingEvent>(Event.Id);
+
+                var completeAction =
+                    new ConfirmPledgePaymentAction(PaymentGateway.Object, AccountService.Object,
+                                                   EmailRelayService.Object);
+                completeAction.ConfirmPayment(@event, new SettlePledgeRequest() {PayPalPayKey = PaypalPayKey});
 
 
-            var pledgeAction = new MakePledgeAction(TaxResolverMock.Object, PaymentGateway.Object,
-                                                    ValidSiteConfiguration().AdaptiveAccountsConfiguration, DocumentStore.Object);
-            pledgeAction.Attempt(Event.Id, organiserAccount, request);
-
-            var completeAction =
-                new ConfirmPledgePaymentAction(PaymentGateway.Object, AccountService.Object, EmailRelayService.Object);
-            completeAction.ConfirmPayment(Event, new SettlePledgeRequest() { PayPalPayKey = PaypalPayKey });
-
-
-            Assert.That(Event.IsOn, Is.True);
+                Assert.That(@event.IsOn, Is.True);
+            }
         }
     }
 }

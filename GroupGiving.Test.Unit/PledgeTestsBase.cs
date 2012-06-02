@@ -11,34 +11,32 @@ using GroupGiving.PayPal;
 using GroupGiving.PayPal.Configuration;
 using GroupGiving.PayPal.Model;
 using Moq;
+using NUnit.Framework;
 using Raven.Client;
+using Raven.Client.Embedded;
 
 namespace GroupGiving.Test.Unit
 {
-    public class PledgeTestsBase
+    public class PledgeTestsBase : InMemoryStoreTest
     {
         protected Mock<IEmailRelayService> EmailRelayService = new Mock<IEmailRelayService>();
         protected Mock<IPaymentGateway> PaymentGateway = new Mock<IPaymentGateway>();
         protected Mock<IRepository<GroupGivingEvent>> EventRepositoryMock = new Mock<IRepository<GroupGivingEvent>>();
         protected Mock<ITaxAmountResolver> TaxResolverMock = new Mock<ITaxAmountResolver>();
-        protected Mock<IDocumentStore> DocumentStore = new Mock<IDocumentStore>();
-        protected Mock<IDocumentSession> DocumentSession = new Mock<IDocumentSession>();
         protected Mock<IAccountService> AccountService = new Mock<IAccountService>();
         protected GroupGivingEvent Event;
         protected string PaypalPayKey;
+        protected EmbeddableDocumentStore DocumentStore;
 
-        protected void SetUpDocumentStore()
+        [SetUp]
+        public void Setup()
         {
-            DocumentStore
-                .Setup(m => m.OpenSession())
-                .Returns(DocumentSession.Object);
+            DocumentStore = InMemoryStore();
         }
-
-        protected void SessionLoadsAccount(Account account)
+        [TearDown]
+        public void TearDown()
         {
-            DocumentSession
-                .Setup(m => m.Load<Account>(It.IsAny<string>()))
-                .Returns(account);
+            DocumentStore.Dispose();
         }
 
         protected Account ValidAccount()
@@ -58,10 +56,6 @@ namespace GroupGiving.Test.Unit
 
         protected void EventRepositoryReturns(GroupGivingEvent @event)
         {
-            DocumentSession
-                .Setup(m => m.Load<GroupGivingEvent>(It.IsAny<string>()))
-                .Returns(@event);
-
             EventRepositoryMock
                 .Setup(m => m.Retrieve(It.IsAny<Func<GroupGivingEvent, bool>>()))
                 .Returns(@event);
@@ -145,6 +139,14 @@ namespace GroupGiving.Test.Unit
                                                                    SandboxMailAddress = "something@something.com"
                                                                }
                        };
+        }
+    }
+
+    public class InMemoryStoreTest
+    {
+        public EmbeddableDocumentStore InMemoryStore()
+        {
+            return new EmbeddableDocumentStore { RunInMemory = true }.Initialize() as EmbeddableDocumentStore;
         }
     }
 }

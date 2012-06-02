@@ -12,19 +12,18 @@ namespace GroupGiving.Web.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly IRepository<GroupGivingEvent> _eventRepository;
+        private readonly IDocumentSession _ravenSession;
 
-        public HomeController(IRepository<GroupGivingEvent> eventRepository)
+        public HomeController(IDocumentSession ravenSession)
         {
-            _eventRepository = eventRepository;
+            _ravenSession = ravenSession;
         }
 
         public ActionResult Index()
         {
             var viewModel = new HomePageViewModel();
-            viewModel.Events = _eventRepository
-                .Query(e=>e.StartDate > DateTime.Now 
-                && e.City.Contains("London")
+            viewModel.Events = _ravenSession
+                .Query<GroupGivingEvent>().Where(e=>e.StartDate > DateTime.Now 
                 && e.IsFeatured
                 && (e.State == EventState.SalesReady || e.State == EventState.Activated));
 

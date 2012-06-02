@@ -12,11 +12,11 @@ namespace GroupGiving.Web.Areas.Admin.Controllers
 {
     public class SiteConfigurationController : Controller
     {
-        private readonly IDocumentStore _documentStore;
+        private readonly IDocumentSession _documentSession;
 
-        public SiteConfigurationController(IDocumentStore documentStore)
+        public SiteConfigurationController(IDocumentSession documentSession)
         {
-            _documentStore = documentStore;
+            _documentSession = documentSession;
         }
 
         //
@@ -24,53 +24,47 @@ namespace GroupGiving.Web.Areas.Admin.Controllers
 
         public ActionResult Index()
         {
-            using (var session = _documentStore.OpenSession())
+            var configuration = _documentSession.Query<SiteConfiguration>().FirstOrDefault();
+            if (configuration == null)
             {
-                var configuration = session.Query<SiteConfiguration>().FirstOrDefault();
-                if (configuration == null)
-                {
-                    configuration = new SiteConfiguration();
-                    configuration.AdaptiveAccountsConfiguration = new AdaptiveAccountsConfiguration();
-                    configuration.DatabaseConfiguration = new DatabaseConfiguration();
-                    configuration.JustGivingApiConfiguration = new JustGivingApiConfiguration();
-                }
-
-                return View(configuration);
+                configuration = new SiteConfiguration();
+                configuration.AdaptiveAccountsConfiguration = new AdaptiveAccountsConfiguration();
+                configuration.DatabaseConfiguration = new DatabaseConfiguration();
+                configuration.JustGivingApiConfiguration = new JustGivingApiConfiguration();
             }
+
+            return View(configuration);
         }
 
         [HttpPost]
         public ActionResult Index(SiteConfiguration model)
         {
-            using (var session = _documentStore.OpenSession())
+            bool newConfiguration = false;
+            var configuration = _documentSession.Query<SiteConfiguration>().FirstOrDefault();
+            if (configuration == null)
             {
-                bool newConfiguration = false;
-                var configuration = session.Query<SiteConfiguration>().FirstOrDefault();
-                if (configuration == null)
-                {
-                    newConfiguration = true;
-                    configuration = new SiteConfiguration();
-                    configuration.AdaptiveAccountsConfiguration = new AdaptiveAccountsConfiguration();
-                    configuration.DatabaseConfiguration = new DatabaseConfiguration();
-                    configuration.JustGivingApiConfiguration = new JustGivingApiConfiguration();
-                }
+                newConfiguration = true;
+                configuration = new SiteConfiguration();
+                configuration.AdaptiveAccountsConfiguration = new AdaptiveAccountsConfiguration();
+                configuration.DatabaseConfiguration = new DatabaseConfiguration();
+                configuration.JustGivingApiConfiguration = new JustGivingApiConfiguration();
+            }
 
-                if (TryUpdateModel(configuration, "", null, new[] {"Id"}))
-                {
-                    configuration.AdaptiveAccountsConfiguration.SandboxApiBaseUrl =
-                        configuration.AdaptiveAccountsConfiguration.SandboxApiBaseUrl.TrimEnd('/');
-                    configuration.AdaptiveAccountsConfiguration.LiveApiBaseUrl
-                        = configuration.AdaptiveAccountsConfiguration.LiveApiBaseUrl.TrimEnd('/');
+            if (TryUpdateModel(configuration, "", null, new[] {"Id"}))
+            {
+                configuration.AdaptiveAccountsConfiguration.SandboxApiBaseUrl =
+                    configuration.AdaptiveAccountsConfiguration.SandboxApiBaseUrl.TrimEnd('/');
+                configuration.AdaptiveAccountsConfiguration.LiveApiBaseUrl
+                    = configuration.AdaptiveAccountsConfiguration.LiveApiBaseUrl.TrimEnd('/');
 
-                    if (newConfiguration)
-                    {
-                        session.Store(configuration);
-                    }
-                    session.SaveChanges();
-                } else
+                if (newConfiguration)
                 {
-                    return View(model);
+                    _documentSession.Store(configuration);
                 }
+                _documentSession.SaveChanges();
+            } else
+            {
+                return View(model);
             }
 
             return RedirectToAction("Index");

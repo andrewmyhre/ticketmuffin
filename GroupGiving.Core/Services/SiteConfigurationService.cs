@@ -12,38 +12,32 @@ namespace GroupGiving.Core.Services
 {
     public class SiteConfigurationService : ISiteConfigurationService
     {
+        private readonly IDocumentSession _session;
         private ILog _log = LogManager.GetLogger(typeof (SiteConfigurationService));
-        private readonly IDocumentStore _documentStore;
 
-        public SiteConfigurationService(IDocumentStore documentStore)
+        public SiteConfigurationService(IDocumentSession session)
         {
-            _documentStore = documentStore;
+            _session = session;
         }
 
         public ISiteConfiguration GetConfiguration()
         {
-            using (var session = _documentStore.OpenSession())
-            {
-                _log.Debug("loading site configuration");
-                ISiteConfiguration configuration = session.Query<SiteConfiguration>().FirstOrDefault();
-                configuration = EnsureValidConfigurationObject(configuration, session);
-                return configuration;
-            }
+            _log.Debug("loading site configuration");
+            ISiteConfiguration configuration = _session.Query<SiteConfiguration>().FirstOrDefault();
+            configuration = EnsureValidConfigurationObject(configuration, _session);
+            return configuration;
         }
 
         public void EnsureConfigurationData()
         {
-            using (var session = _documentStore.OpenSession())
+            var configuration = _session.Query<SiteConfiguration>().FirstOrDefault();
+            if (configuration == null)
             {
-                var configuration = session.Query<SiteConfiguration>().FirstOrDefault();
-                if (configuration == null)
-                {
-                    _log.Info("No site configuration found, creating");
-                    configuration = CreateDefaultConfiguration();
-                    session.Store(configuration);
-                    session.SaveChanges();
-                    _log.Info("Created default configuration");
-                }
+                _log.Info("No site configuration found, creating");
+                configuration = CreateDefaultConfiguration();
+                _session.Store(configuration);
+                _session.SaveChanges();
+                _log.Info("Created default configuration");
             }
         }
 

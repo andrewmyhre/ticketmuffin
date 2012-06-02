@@ -15,11 +15,11 @@ namespace GroupGiving.Web.Areas.Admin.Controllers
 {
     public class PledgeController : Controller
     {
-        private readonly IDocumentStore _documentStore;
+        private readonly IDocumentSession _documentSession;
 
-        public PledgeController(IDocumentStore documentStore)
+        public PledgeController(IDocumentSession documentSession)
         {
-            _documentStore = documentStore;
+            _documentSession = documentSession;
         }
 
         //
@@ -27,9 +27,7 @@ namespace GroupGiving.Web.Areas.Admin.Controllers
 
         public ActionResult Search(string q)
         {
-            using (var session = _documentStore.OpenSession())
-            {
-                var query = session.Advanced.LuceneQuery<TransactionHistoryItem>("pledges");
+            var query = _documentSession.Advanced.LuceneQuery<TransactionHistoryItem>("pledges");
                 if (!string.IsNullOrWhiteSpace(q))
                 {
                     query = query.OpenSubclause()
@@ -46,8 +44,6 @@ namespace GroupGiving.Web.Areas.Admin.Controllers
                 viewModel.Pledges = query.ToList();
 
                 return View(viewModel);
-            }
-
         }
     }
 }

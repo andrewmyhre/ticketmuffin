@@ -19,11 +19,11 @@ namespace GroupGiving.Web.Controllers
 
     public class ContentManagerController : Controller
     {
-        private readonly IDocumentStore _store;
+        private readonly IDocumentSession _session;
 
-        public ContentManagerController(IDocumentStore store)
+        public ContentManagerController(IDocumentSession session)
         {
-            _store = store;
+            _session = session;
         }
 
         //
@@ -32,21 +32,17 @@ namespace GroupGiving.Web.Controllers
         public ActionResult Index(string q)
         {
             var viewModel = new ContentListViewModel();
-            using (var session = _store.OpenSession())
+            if (!string.IsNullOrWhiteSpace(q))
             {
-                if (!string.IsNullOrWhiteSpace(q))
-                {
-                    // load items from index
-                    viewModel.Pages = session.Advanced.LuceneQuery<PageContent>("contentSearch")
-                        .WhereContains("Content", q)
-                        .OrElse().WhereContains("Label", q)
-                        .OrElse().WhereContains("Address", q);
+                // load items from index
+                viewModel.Pages = _session.Advanced.LuceneQuery<PageContent>("contentSearch")
+                    .WhereContains("Content", q)
+                    .OrElse().WhereContains("Label", q)
+                    .OrElse().WhereContains("Address", q);
                     
-                } else
-                {
-                    viewModel.Pages = session.Query<PageContent>().Take(1024);
-                }
-
+            } else
+            {
+                viewModel.Pages = _session.Query<PageContent>().Take(1024);
             }
             viewModel.Query = q;
             return View(viewModel);
@@ -54,14 +50,11 @@ namespace GroupGiving.Web.Controllers
 
         public ActionResult DeletePage(string id)
         {
-            using (var session = _store.OpenSession())
+            var pageContent = _session.Load<PageContent>("pagecontents/" + id);
+            if (pageContent != null)
             {
-                var pageContent = session.Load<PageContent>("pagecontents/"+id);
-                if (pageContent != null)
-                {
-                    session.Delete(pageContent);
-                    session.SaveChanges();
-                }
+                _session.Delete(pageContent);
+                _session.SaveChanges();
             }
 
             return RedirectToAction("Index");
@@ -70,30 +63,27 @@ namespace GroupGiving.Web.Controllers
         [HttpPost]
         public ActionResult UpdateContentDefinition(int pageId, string contentLabel, string culture, string content)
         {
-            using (var session = _store.OpenSession())
+            var page = _session.Load<PageContent>("pagecontents/" + pageId);
+            if (page==null)
             {
-                var page = session.Load<PageContent>("pagecontents/" + pageId);
-                if (page==null)
-                {
-                    return HttpNotFound();
-                }
-
-                var contentDefinition = page.Content.Where(cd => cd.Label == contentLabel).FirstOrDefault();
-                if (contentDefinition==null)
-                {
-                    return HttpNotFound();
-                }
-
-                var localContent = contentDefinition.ContentByCulture.SingleOrDefault(lc => lc.Culture == culture);
-                if (localContent != null)
-                {
-                    localContent.Value = content;
-                } else
-                {
-                    contentDefinition.ContentByCulture.Add(new LocalisedContent(){Culture = culture, Value = content});
-                }
-                session.SaveChanges();
+                return HttpNotFound();
             }
+
+            var contentDefinition = page.Content.Where(cd => cd.Label == contentLabel).FirstOrDefault();
+            if (contentDefinition==null)
+            {
+                return HttpNotFound();
+            }
+
+            var localContent = contentDefinition.ContentByCulture.SingleOrDefault(lc => lc.Culture == culture);
+            if (localContent != null)
+            {
+                localContent.Value = content;
+            } else
+            {
+                contentDefinition.ContentByCulture.Add(new LocalisedContent(){Culture = culture, Value = content});
+            }
+            _session.SaveChanges();
 
             return RedirectToAction("Index");
         }

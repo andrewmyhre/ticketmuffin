@@ -11,9 +11,8 @@ namespace GroupGiving.Core.Services
         SendPasswordResetResult SendGetYourAccountStartedEmail(string emailAddress, IEmailRelayService emailRelayService);
         Account RetrieveAccountByPasswordResetToken(string resetPasswordToken);
         ResetPasswordResult ResetPassword(string resetPasswordToken, string newPassword);
-        Account RetrieveByEmailAddress(string email);
-        void UpdateAccount(Account account);
         Account CreateIncompleteAccount(string emailAddress, IEmailRelayService emailRelayService);
-        Account RetrieveById(string accountId);
+        Account GetById(string accountId);
+        Account RetrieveByEmailAddress(string emailAddress);
     }
 }

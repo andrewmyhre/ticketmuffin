@@ -3,8 +3,10 @@ using GroupGiving.Core.Data;
 using GroupGiving.Core.Domain;
 using GroupGiving.Core.Services;
 using Moq;
+using NUnit.Framework;
 using Raven.Client;
 using Raven.Client.Document;
+using Raven.Client.Embedded;
 
 namespace GroupGiving.Test.Integration
 {
@@ -14,19 +16,14 @@ namespace GroupGiving.Test.Integration
         protected IEmailFacade _emailService;
         protected Mock<IAccountService> _accountService = new Mock<IAccountService>();
         protected Mock<ICountryService> _countryService = new Mock<ICountryService>();
-        protected Mock<IDocumentStore> _documentStore = new Mock<IDocumentStore>();
-        protected Mock<IDocumentSession> _documentSession = new Mock<IDocumentSession>();
-        
-        protected IDocumentStore _storage;
 
-        public ApplicationTestsBase()
+        protected IDocumentStore _documentStore;
+
+        [SetUp]
+        public void SetUp()
         {
             _emailService = new Mock<IEmailFacade>().Object;
-            _storage = new DocumentStore()
-                           {
-                               Url = "http://localhost:8080"
-                           };
-            _storage.Initialize();
+            _documentStore = new EmbeddableDocumentStore() {RunInMemory = true}.Initialize();
 
             _eventService
                 .Setup(x => x.ShortUrlAvailable("availableUrl"))
@@ -34,9 +31,12 @@ namespace GroupGiving.Test.Integration
             _eventService
                 .Setup(x => x.ShortUrlAvailable("takenUrl"))
                 .Returns(false);
-            _documentStore
-                .Setup(m => m.OpenSession())
-                .Returns(_documentSession.Object);
+        }
+
+        [TearDown]
+        public void TearDown()
+        {
+            _documentStore.Dispose();
         }
 
         protected void SetAccountServiceToReturn(Account account)
@@ -49,8 +49,7 @@ namespace GroupGiving.Test.Integration
 
         public Account CreateTestUserAccount(IDocumentSession session)
         {
-            IRepository<Account> accountRepository = new RavenDBRepositoryBase<Account>(session);
-            IAccountService accountService = new AccountService(accountRepository, _emailService, _documentStore.Object);
+            IAccountService accountService = new AccountService(_emailService, session);
 
             CreateUserRequest createUserRequest = Helpers.CreateValidCreateUserRequest();
             // act

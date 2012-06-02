@@ -4,7 +4,7 @@ using GroupGiving.PayPal.Model;
 
 namespace GroupGiving.Test.Unit
 {
-    public class PaymentGatewayTestsBase
+    public class PaymentGatewayTestsBase : InMemoryStoreTest
     {
         protected static PaymentGatewayRequest ValidPaymentGatewayRequest()
         {

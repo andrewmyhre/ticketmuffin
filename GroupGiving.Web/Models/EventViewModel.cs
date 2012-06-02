@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using GroupGiving.Core.Domain;
 using GroupGiving.Web.Areas.Admin.Controllers;
+using GroupGiving.Web.Areas.Admin.Models;
 using Raven.Client.Linq;
 
 namespace GroupGiving.Web.Models

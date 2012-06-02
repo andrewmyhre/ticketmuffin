@@ -7,24 +7,21 @@ namespace GroupGiving.Web.Areas.Admin.Controllers
 {
     public class CharityManagementController : Controller
     {
-        private readonly IDocumentStore _documentStore;
+        private readonly IDocumentSession _documentSession;
 
-        public CharityManagementController(IDocumentStore documentStore)
+        public CharityManagementController(IDocumentSession documentSession)
         {
-            _documentStore = documentStore;
+            _documentSession = documentSession;
         }
 
         public ActionResult Index()
         {
-            using (var session = _documentStore.OpenSession())
-            {
-                var allCharities = session.Query<Charity>()
-                    .OrderBy(c => c.Name)
-                    .Take(1024)
-                    .ToList();
+            var allCharities = _documentSession.Query<Charity>()
+                .OrderBy(c => c.Name)
+                .Take(1024)
+                .ToList();
 
-                return View(allCharities);
-            }
+            return View(allCharities);
         }
     }
 }

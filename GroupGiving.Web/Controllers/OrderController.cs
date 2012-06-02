@@ -34,12 +34,12 @@ namespace GroupGiving.Web.Controllers
         private readonly IPaymentGateway _paymentGateway;
         private readonly ITaxAmountResolver _taxResolver;
         private readonly ISiteConfiguration _siteConfiguration;
-        private readonly IDocumentStore _documentStore;
+        private readonly IDocumentSession _documentSession;
         private IEmailRelayService _emailRelayService;
 
         public OrderController(IFormsAuthenticationService formsService, IMembershipService membershipService, 
             IAccountService accountService, IPaymentGateway paymentGateway, ITaxAmountResolver taxResolver, 
-            ISiteConfiguration siteConfiguration, IDocumentStore documentStore, IEmailRelayService emailRelayService)
+            ISiteConfiguration siteConfiguration, IDocumentSession documentSession, IEmailRelayService emailRelayService)
         {
             _formsService = formsService;
             _membershipService = membershipService;
@@ -47,9 +47,9 @@ namespace GroupGiving.Web.Controllers
             _paymentGateway = paymentGateway;
             _taxResolver = taxResolver;
             _siteConfiguration = siteConfiguration;
-            _documentStore = documentStore;
+            _documentSession = documentSession;
             ((RavenDBMembershipProvider)Membership.Provider).DocumentStore
-                = documentStore;
+                = documentSession.Advanced.DocumentStore;
             _emailRelayService = emailRelayService;
         }
 
@@ -58,63 +58,62 @@ namespace GroupGiving.Web.Controllers
             return View();
         }
 
-        
+
 
         public ActionResult Success(string payKey)
         {
             // update the pledge
             GroupGivingEvent @event = null;
-            EventPledge pledge=null;
+            EventPledge pledge = null;
             Account account = null;
-            using (var session = RavenDbDocumentStore.Instance.OpenSession())
+            @event =
+                _documentSession.Query<GroupGivingEvent>()
+                    .SingleOrDefault(e => e.Pledges.Any(p => p.TransactionId == payKey));
+            if (@event == null)
+                return new HttpNotFoundResult();
+            pledge = @event.Pledges.Where(p => p.TransactionId == payKey).FirstOrDefault();
+
+            if (pledge == null)
+                return new HttpNotFoundResult();
+
+            // user may just be reloading the page - fine, don't do any updates and present the view
+            if (!pledge.Paid && pledge.PaymentStatus == PaymentStatus.Unpaid)
             {
-                @event =
-                    session.Query<GroupGivingEvent>()
-                        .Where(e => e.Pledges.Any(p => p.TransactionId == payKey))
-                        .FirstOrDefault();
-                if (@event == null)
-                    return new HttpNotFoundResult();
-                pledge = @event.Pledges.Where(p => p.TransactionId == payKey).FirstOrDefault();
+                ConfirmPledgePaymentAction action
+                    = new ConfirmPledgePaymentAction(_paymentGateway, _accountService, _emailRelayService);
 
-                if (pledge == null)
-                    return new HttpNotFoundResult();
+                var paymentConfirmationResult = action.ConfirmPayment(@event,
+                                                                      new SettlePledgeRequest() {PayPalPayKey = payKey});
 
-                // user may just be reloading the page - fine, don't do any updates and present the view
-                if (!pledge.Paid && pledge.PaymentStatus == PaymentStatus.Unpaid)
+                // send a purchase confirmation email
+                MvcApplication.EmailFacade.Send(pledge.AccountEmailAddress,
+                                                "PledgeConfirmation",
+                                                new
+                                                    {
+                                                        Event = @event,
+                                                        Pledge = pledge,
+                                                        Account = account,
+                                                        AccountPageUrl = "http://www.ticketmuffin.com/YourAccount"
+                                                    }, "pl");
+
+                // this pledge has activated the event);
+                if (@event.IsOn
+                    && (@event.PaidAttendeeCount - pledge.Attendees.Count < @event.MinimumParticipants))
                 {
-                    ConfirmPledgePaymentAction action
-                        = new ConfirmPledgePaymentAction(_paymentGateway, _accountService, _emailRelayService);
-
-                    var paymentConfirmationResult = action.ConfirmPayment(@event, new SettlePledgeRequest() {PayPalPayKey = payKey});
-
-                    // send a purchase confirmation email
-                    MvcApplication.EmailFacade.Send(pledge.AccountEmailAddress,
-                                                    "PledgeConfirmation",
-                                                    new { Event = @event, Pledge = pledge, Account = account, 
-                                                        AccountPageUrl="http://www.ticketmuffin.com/YourAccount" }, "pl");
-
-                    // this pledge has activated the event);
-                    if (@event.IsOn
-                        && (@event.PaidAttendeeCount - pledge.Attendees.Count < @event.MinimumParticipants))
+                    foreach (var eventPledge in @event.Pledges)
                     {
-                        foreach (var eventPledge in @event.Pledges)
-                        {
-                            MvcApplication.EmailFacade.Send(
-                                eventPledge.AccountEmailAddress,
-                                "EventActivated",
-                                new { Event = @event, Pledge = pledge }, "pl");
-                        }
+                        MvcApplication.EmailFacade.Send(
+                            eventPledge.AccountEmailAddress,
+                            "EventActivated",
+                            new {Event = @event, Pledge = pledge}, "pl");
                     }
-
-                    session.SaveChanges();
                 }
+
+                _documentSession.SaveChanges();
             }
 
-            using (var session = _documentStore.OpenSession())
-            {
-                @event = session.Load<GroupGivingEvent>(@event.Id);
-                pledge = @event.Pledges.Where(p => p.TransactionId == payKey).FirstOrDefault();
-            }
+            @event = _documentSession.Load<GroupGivingEvent>(@event.Id);
+            pledge = @event.Pledges.Where(p => p.TransactionId == payKey).FirstOrDefault();
             var viewModel = new OrderConfirmationViewModel();
             viewModel.Event = @event;
             viewModel.PledgesRequired = viewModel.Event.MinimumParticipants -

@@ -9,20 +9,16 @@ namespace GroupGiving.Core.Services
 {
     public class CountryService : ICountryService
     {
-        private readonly IDocumentStore _store;
+        private readonly IDocumentSession _session;
 
-        public CountryService(IDocumentStore store)
+        public CountryService(IDocumentSession session)
         {
-            _store = store;
+            _session = session;
         }
 
         public IEnumerable<Country> RetrieveAllCountries()
         {
-            using (var session = _store.OpenSession())
-            {
-                return session.Query<Country>().Take(1000).ToList();
-            }
-
+            return _session.Query<Country>().Take(1000).ToList();
         }
 
         public IEnumerable<Country> LoadCountriesFromCsv(IDocumentSession session, string sourceFilePath)
@@ -54,13 +50,10 @@ namespace GroupGiving.Core.Services
 
         public void EnsureCountryData(string countryDataSourceFile)
         {
-            using (var session = _store.OpenSession())
+            var countries = _session.Query<Country>().Count();
+            if (countries == 0)
             {
-                var countries = session.Query<Country>().Count();
-                if (countries == 0)
-                {
-                    LoadCountriesFromCsv(session, countryDataSourceFile);
-                }
+                LoadCountriesFromCsv(_session, countryDataSourceFile);
             }
         }
     }

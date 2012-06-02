@@ -17,10 +17,6 @@ namespace GroupGiving.Web.App_Start
                 return;
             }
 
-            if (documentStore.DatabaseCommands.GetIndex("contentSearch") != null)
-            {
-                documentStore.DatabaseCommands.DeleteIndex("contentSearch");
-            }
             documentStore.DatabaseCommands.PutIndex("contentSearch",
                                                     new IndexDefinition()
                                                         {
@@ -34,12 +30,8 @@ select new {c.Id, c.Address, contentDefinition.Label, contentByCulture.Key, cont
                                                                     {"Label", typeof (StopAnalyzer).FullName},
                                                                     {"Value", typeof (StopAnalyzer).FullName},
                                                                 }
-                                                        });
+                                                        }, true);
 
-            if (documentStore.DatabaseCommands.GetIndex("eventSearch") != null)
-            {
-                documentStore.DatabaseCommands.DeleteIndex("eventSearch");
-            }
             documentStore.DatabaseCommands.PutIndex("eventSearch",
                                                     new IndexDefinition()
                                                         {
@@ -57,12 +49,8 @@ select new {e.Id, e.Title, e.State, Location=e.City +"", "" + e.Country, e.City,
                                                                     {"SalesEndDateTime", typeof (WhitespaceAnalyzer).FullName},
                                                                     {"PledgeCount", typeof (StandardAnalyzer).FullName}
                                                                 }
-                                                        });
+                                                        }, true);
 
-            if (documentStore.DatabaseCommands.GetIndex("transactionHistory") != null)
-            {
-                documentStore.DatabaseCommands.DeleteIndex("transactionHistory");
-            }
             documentStore.DatabaseCommands.PutIndex("transactionHistory",
                                                     new IndexDefinition()
                                                         {
@@ -72,7 +60,7 @@ from pledge in Hierarchy(e, ""Pledges"")
 from history in Hierarchy(pledge, ""PaymentGatewayHistory"")
 select new {e.Id, pledge.OrderNumber, pledge.TransactionId, pledge.PaymentStatus, pledge.AccountEmailAddress, history.TimeStamp, history.Request, history.Response}"
 
-                                                        });
+                                                        }, true);
 
             documentStore.DatabaseCommands.PutIndex("pledges", new DenormalizedPledges(), true);
         }

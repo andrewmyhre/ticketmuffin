@@ -84,15 +84,34 @@ namespace GroupGiving.Web.App_Start
 
             kernel.Bind<IAccountService>().To<AccountService>();
             kernel.Bind<IEventService>().To<EventService>();
-            kernel.Bind<IDocumentSession>()
-                .ToMethod(delegate
+
+            kernel.Bind<IDocumentStore>()
+                .ToMethod(ctx =>
                               {
-                                  {
-                                      return RavenDbDocumentStore.Instance.OpenSession();
-                                  }
+                                  var documentStore = new Raven.Client.Document.DocumentStore()
+                                                          {
+                                                              Url = "http://localhost:8080"
+                                                          };
+                                  documentStore.Initialize();
+                                  RavenDbIndexes.Initialise(documentStore);
+                                  return documentStore;
                               })
-                .InRequestScope();
-            kernel.Bind<IDocumentStore>().ToMethod(x=>RavenDbDocumentStore.Instance);
+                .InSingletonScope();
+
+            kernel.Bind<IDocumentSession>()
+                .ToMethod(ctx=>kernel.Get<IDocumentStore>().OpenSession())
+                .InRequestScope()
+                .OnDeactivation((ctx,session)=>
+                                    {
+                                        var request = ctx.GetScope() as HttpRequestBase;
+                                        if (request != null)
+                                        {
+                                            if (request.RequestContext.HttpContext.Error == null)
+                                            {
+                                                session.SaveChanges();
+                                            }
+                                        }
+                                    });
 
             kernel.Bind<IRepository<GroupGivingEvent>>().To<RavenDBRepositoryBase<GroupGivingEvent>>();
             kernel.Bind<IRepository<Account>>().To<RavenDBRepositoryBase<Account>>();

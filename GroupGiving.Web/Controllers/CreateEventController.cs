@@ -31,16 +31,16 @@ namespace GroupGiving.Web.Controllers
         private readonly IEventService _eventService;
         private readonly ICountryService _countryService;
         private readonly IIdentity _userIdentity;
-        private readonly IDocumentStore _storage;
         private readonly IMembershipProviderLocator _membershipProviderLocator;
         private readonly IApiClient _apiClient;
+        private readonly IDocumentSession _ravenSession;
         Regex mustContainAlphaCharacters = new Regex(@".*\w.*");
         private readonly ILog _logger = LogManager.GetLogger(typeof (CreateEventController));
 
         public CreateEventController(IAccountService accountService, ICountryService countryService, IMembershipService membershipService, 
-            IFormsAuthenticationService formsAuthenticationService, IEventService eventService, 
-            IDocumentStore documentStore, IIdentity userIdentity, IDocumentStore storage, 
-            IMembershipProviderLocator membershipProviderLocator, IApiClient apiClient)
+            IFormsAuthenticationService formsAuthenticationService, IEventService eventService, IIdentity userIdentity, 
+            IMembershipProviderLocator membershipProviderLocator, IApiClient apiClient,
+            IDocumentSession ravenSession)
         {
             _accountService = accountService;
             _countryService = countryService;
@@ -48,15 +48,15 @@ namespace GroupGiving.Web.Controllers
             _formsAuthenticationService = formsAuthenticationService;
             _eventService = eventService;
             _userIdentity = userIdentity;
-            _storage = storage;
             
             _membershipProviderLocator = membershipProviderLocator;
             _apiClient = apiClient;
+            _ravenSession = ravenSession;
 
             if (_membershipProviderLocator.Provider() is RavenDBMembership.Provider.RavenDBMembershipProvider)
             {
                 ((RavenDBMembership.Provider.RavenDBMembershipProvider) _membershipProviderLocator.Provider()).
-                    DocumentStore = documentStore;
+                    DocumentStore = _ravenSession.Advanced.DocumentStore;
             }
         }
 
@@ -88,10 +88,7 @@ namespace GroupGiving.Web.Controllers
             viewModel.StartDateTime = DateTime.Now;
             viewModel.StartTimes = TimeOptions();
 
-            using (var session = _storage.OpenSession())
-            {
-                viewModel.Countries = new SelectList(session.Query<Country>().Take(600).ToList(), "Name", "Name", "United Kingdom");
-            }
+            viewModel.Countries = new SelectList(_ravenSession.Query<Country>().Take(600).ToList(), "Name", "Name", "United Kingdom");
 
             return View(viewModel);
         }
@@ -323,7 +320,6 @@ namespace GroupGiving.Web.Controllers
                 account.PayPalEmail = setTicketDetailsRequest.PayPalEmail;
                 account.PayPalFirstName = setTicketDetailsRequest.PayPalFirstName;
                 account.PayPalLastName = setTicketDetailsRequest.PayPalLastName;
-                _accountService.UpdateAccount(account);
             }
 
             

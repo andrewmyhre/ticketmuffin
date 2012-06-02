@@ -6,7 +6,7 @@ namespace GroupGiving.Core.Services
 {
     public interface IEventService
     {
-        IEnumerable<GroupGivingEvent> RetrieveAllEvents();
+        IEnumerable<GroupGivingEvent> List(int pageSize = 20, int pageIndex = 0);
         CreateEventResult CreateEvent(CreateEventRequest request);
         void SetTicketDetails(SetTicketDetailsRequest setTicketDetailsRequest);
         bool ShortUrlAvailable(string shortUrl);
