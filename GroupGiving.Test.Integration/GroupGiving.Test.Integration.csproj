@@ -106,10 +106,6 @@
       <Project>{665762CC-21C5-4DF4-A0AD-AB23C449DDF9}</Project>
       <Name>GroupGiving.Core</Name>
     </ProjectReference>
-    <ProjectReference Include="..\RavenDBMembership\RavenDBMembership.csproj">
-      <Project>{07CCE5B6-9111-46DC-AAEC-00D80E19FE4A}</Project>
-      <Name>RavenDBMembership</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

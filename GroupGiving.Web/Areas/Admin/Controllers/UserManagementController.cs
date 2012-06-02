@@ -64,7 +64,7 @@ namespace GroupGiving.Web.Areas.Admin.Controllers
         {
             using (var transactionScope = new TransactionScope())
             {
-                var account = _ravenSession.Load<Account>(id);
+                var account = _ravenSession.Load<Account>("accounts/" + id);
                 string previousEmailAddress = account.Email;
 
                 account.FirstName = model.FirstName;

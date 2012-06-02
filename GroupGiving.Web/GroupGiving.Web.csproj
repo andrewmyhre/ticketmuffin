@@ -574,7 +574,7 @@
       <Project>{69AC82E2-904E-4A5F-9A94-E5EDD91534AB}</Project>
       <Name>GroupGiving.PayPal</Name>
     </ProjectReference>
-    <ProjectReference Include="..\RavenDBMembership\RavenDBMembership.csproj">
+    <ProjectReference Include="..\RavenDBMembership\src\RavenDBMembership\RavenDBMembership.csproj">
       <Project>{07CCE5B6-9111-46DC-AAEC-00D80E19FE4A}</Project>
       <Name>RavenDBMembership</Name>
     </ProjectReference>

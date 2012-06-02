@@ -7,8 +7,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GroupGiving.PayPal", "Group
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GroupGiving.Core", "GroupGiving.Core\GroupGiving.Core.csproj", "{665762CC-21C5-4DF4-A0AD-AB23C449DDF9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RavenDBMembership", "RavenDBMembership\RavenDBMembership.csproj", "{07CCE5B6-9111-46DC-AAEC-00D80E19FE4A}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GroupGiving.Test.Integration", "GroupGiving.Test.Integration\GroupGiving.Test.Integration.csproj", "{0C062F11-2A45-4F19-AD3D-4DE280CEA6A1}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GroupGiving.Test.Unit", "GroupGiving.Test.Unit\GroupGiving.Test.Unit.csproj", "{41153002-7854-4FE3-9302-67927EE2B091}"
@@ -48,6 +46,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EmailRelay.App", "EmailProcessing\EmailRelay\EmailRelay.App.csproj", "{0AE676C6-BC06-4580-9EDF-D3569135F10B}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EmailRelay.App.Tests.Unit", "EmailProcessing\EmailRelay.App.Tests.Unit\EmailRelay.App.Tests.Unit.csproj", "{458145FF-2777-42E8-ABEC-BDFD0B423665}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RavenDBMembership", "RavenDBMembership\src\RavenDBMembership\RavenDBMembership.csproj", "{07CCE5B6-9111-46DC-AAEC-00D80E19FE4A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -89,16 +89,6 @@ Global
 		{665762CC-21C5-4DF4-A0AD-AB23C449DDF9}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{665762CC-21C5-4DF4-A0AD-AB23C449DDF9}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{665762CC-21C5-4DF4-A0AD-AB23C449DDF9}.Release|x86.ActiveCfg = Release|Any CPU
-		{07CCE5B6-9111-46DC-AAEC-00D80E19FE4A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{07CCE5B6-9111-46DC-AAEC-00D80E19FE4A}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{07CCE5B6-9111-46DC-AAEC-00D80E19FE4A}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
-		{07CCE5B6-9111-46DC-AAEC-00D80E19FE4A}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
-		{07CCE5B6-9111-46DC-AAEC-00D80E19FE4A}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{07CCE5B6-9111-46DC-AAEC-00D80E19FE4A}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{07CCE5B6-9111-46DC-AAEC-00D80E19FE4A}.Release|Any CPU.Build.0 = Release|Any CPU
-		{07CCE5B6-9111-46DC-AAEC-00D80E19FE4A}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
-		{07CCE5B6-9111-46DC-AAEC-00D80E19FE4A}.Release|Mixed Platforms.Build.0 = Release|Any CPU
-		{07CCE5B6-9111-46DC-AAEC-00D80E19FE4A}.Release|x86.ActiveCfg = Release|Any CPU
 		{0C062F11-2A45-4F19-AD3D-4DE280CEA6A1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{0C062F11-2A45-4F19-AD3D-4DE280CEA6A1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0C062F11-2A45-4F19-AD3D-4DE280CEA6A1}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
@@ -205,6 +195,16 @@ Global
 		{458145FF-2777-42E8-ABEC-BDFD0B423665}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{458145FF-2777-42E8-ABEC-BDFD0B423665}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{458145FF-2777-42E8-ABEC-BDFD0B423665}.Release|x86.ActiveCfg = Release|Any CPU
+		{07CCE5B6-9111-46DC-AAEC-00D80E19FE4A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{07CCE5B6-9111-46DC-AAEC-00D80E19FE4A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{07CCE5B6-9111-46DC-AAEC-00D80E19FE4A}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{07CCE5B6-9111-46DC-AAEC-00D80E19FE4A}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{07CCE5B6-9111-46DC-AAEC-00D80E19FE4A}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{07CCE5B6-9111-46DC-AAEC-00D80E19FE4A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{07CCE5B6-9111-46DC-AAEC-00D80E19FE4A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{07CCE5B6-9111-46DC-AAEC-00D80E19FE4A}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{07CCE5B6-9111-46DC-AAEC-00D80E19FE4A}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{07CCE5B6-9111-46DC-AAEC-00D80E19FE4A}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

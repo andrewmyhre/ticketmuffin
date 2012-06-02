@@ -1,3 +1,6 @@
 [submodule "EmailProcessing"]
 	path = EmailProcessing
 	url = git@github.com:andrewmyhre/EmailProcessing.git
+[submodule "RavenDBMembership"]
+	path = RavenDBMembership
+	url = git://github.com/martijnboland/RavenDBMembership.git
