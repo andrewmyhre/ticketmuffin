@@ -13,7 +13,6 @@
 {
     <tr>
         <td>@Html.ActionLink(account.Email??"(no email)", "account", new {Id=account.Id.Substring(account.Id.IndexOf('/')+1)})</td>
-        <td>@(account.MembershipUser == null)</td>
         <td>@account.LastName</td>
         <td>@account.FirstName</td>
     </tr>

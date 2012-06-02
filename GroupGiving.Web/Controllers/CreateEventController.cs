@@ -9,6 +9,7 @@ using System.Security.Principal;
 using System.Text.RegularExpressions;
 using System.Web.Hosting;
 using System.Web.Mvc;
+using System.Web.Security;
 using GroupGiving.Core.Services;
 using GroupGiving.PayPal;
 using GroupGiving.PayPal.Clients;
@@ -31,7 +32,7 @@ namespace GroupGiving.Web.Controllers
         private readonly IEventService _eventService;
         private readonly ICountryService _countryService;
         private readonly IIdentity _userIdentity;
-        private readonly IMembershipProviderLocator _membershipProviderLocator;
+        private readonly MembershipProvider _membershipProvider;
         private readonly IApiClient _apiClient;
         private readonly IDocumentSession _ravenSession;
         Regex mustContainAlphaCharacters = new Regex(@".*\w.*");
@@ -39,7 +40,7 @@ namespace GroupGiving.Web.Controllers
 
         public CreateEventController(IAccountService accountService, ICountryService countryService, IMembershipService membershipService, 
             IFormsAuthenticationService formsAuthenticationService, IEventService eventService, IIdentity userIdentity, 
-            IMembershipProviderLocator membershipProviderLocator, IApiClient apiClient,
+            MembershipProvider membershipProvider, IApiClient apiClient,
             IDocumentSession ravenSession)
         {
             _accountService = accountService;
@@ -48,16 +49,10 @@ namespace GroupGiving.Web.Controllers
             _formsAuthenticationService = formsAuthenticationService;
             _eventService = eventService;
             _userIdentity = userIdentity;
-            
-            _membershipProviderLocator = membershipProviderLocator;
+            _membershipProvider = membershipProvider;
+
             _apiClient = apiClient;
             _ravenSession = ravenSession;
-
-            if (_membershipProviderLocator.Provider() is RavenDBMembership.Provider.RavenDBMembershipProvider)
-            {
-                ((RavenDBMembership.Provider.RavenDBMembershipProvider) _membershipProviderLocator.Provider()).
-                    DocumentStore = _ravenSession.Advanced.DocumentStore;
-            }
         }
 
         [AcceptVerbs(HttpVerbs.Get)]

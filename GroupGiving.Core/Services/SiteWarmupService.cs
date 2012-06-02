@@ -17,7 +17,8 @@ namespace GroupGiving.Core.Services
             RemoteUrl = "http://localhost";
         }
 
-        public SiteWarmupService(string remoteUrl="http://localhost") : this()
+        public SiteWarmupService(string remoteUrl = "http://localhost:56840")
+            : this()
         {
             RemoteUrl = remoteUrl;
         }

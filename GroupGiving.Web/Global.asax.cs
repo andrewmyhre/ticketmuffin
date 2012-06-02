@@ -183,6 +183,9 @@ namespace GroupGiving.Web
 
         protected void Application_Start()
         {
+            Microsoft.Practices.ServiceLocation.ServiceLocator
+                .SetLocatorProvider(() => new NinjectAdapter.NinjectServiceLocator(ServiceLocator.Instance));
+
             log4net.Config.XmlConfigurator.Configure();
             AreaRegistration.RegisterAllAreas();
 
@@ -205,6 +208,7 @@ namespace GroupGiving.Web
             {
                 service.Start();
             }
+
         }
 
         protected void Application_BeginRequest(object sender, EventArgs e)

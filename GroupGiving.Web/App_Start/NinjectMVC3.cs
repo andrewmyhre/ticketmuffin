@@ -2,6 +2,7 @@ using System;
 using System.Configuration;
 using System.Security.Principal;
 using System.Web;
+using System.Web.Security;
 using EmailProcessing;
 using EmailProcessing.Configuration;
 using GroupGiving.Core.Configuration;
@@ -161,7 +162,25 @@ namespace GroupGiving.Web.App_Start
             kernel.Bind<IPaymentGateway>().To<PayPalPaymentGateway>();
             kernel.Bind<ITaxAmountResolver>().To<NilTax>();
             kernel.Bind<IIdentity>().ToMethod(x=>HttpContext.Current.User.Identity);
-            kernel.Bind<IMembershipProviderLocator>().To<RavenDbMembershipProviderLocator>();
+            kernel.Bind<MembershipProvider>()
+                .ToMethod(ctx=>
+                              {
+                                  var provider =
+                                      System.Web.Security.Membership.Provider as
+                                      RavenDBMembership.Provider.RavenDBMembershipProvider;
+                                  provider.DocumentStore = kernel.Get<IDocumentStore>();
+                                  provider.ApplicationName = "TicketMuffin";
+                                  return provider;
+                              });
+            kernel.Bind<RoleProvider>()
+                .ToMethod(ctx =>
+                              {
+                                  var provider = System.Web.Security.Roles.Provider
+                                                 as RavenDBMembership.Provider.RavenDBRoleProvider;
+                                  provider.DocumentStore = kernel.Get<IDocumentStore>();
+                                  provider.ApplicationName = "TicketMuffin";
+                                  return provider;
+                              });
             kernel.Bind<PaypalAdaptiveAccountsConfigurationSection>().ToMethod(r => 
                 ConfigurationManager.GetSection("adaptiveAccounts") as PaypalAdaptiveAccountsConfigurationSection);
             kernel.Bind<AdaptiveAccountsConfiguration>().ToMethod(r=>kernel.Get<ISiteConfiguration>().AdaptiveAccountsConfiguration);

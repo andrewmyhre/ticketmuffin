@@ -60,6 +60,9 @@
     <Reference Include="Microsoft.Http.Extensions">
       <HintPath>..\packages\justgiving-sdk.1.5.1\lib\Net35\Microsoft.Http.Extensions.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.Practices.ServiceLocation, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\CommonServiceLocator.1.0\lib\NET35\Microsoft.Practices.ServiceLocation.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.Web.Infrastructure, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
     <Reference Include="Microsoft.Web.Mvc">
       <HintPath>..\packages\Microsoft.Web.Mvc.dll</HintPath>
@@ -73,6 +76,9 @@
     </Reference>
     <Reference Include="Ninject.Web.Mvc, Version=2.2.0.0, Culture=neutral, PublicKeyToken=c7192dc5380945e7, processorArchitecture=MSIL">
       <HintPath>..\packages\Ninject.MVC3.2.2.2.0\lib\net40-Full\Ninject.Web.Mvc.dll</HintPath>
+    </Reference>
+    <Reference Include="NinjectAdapter">
+      <HintPath>..\packages\CommonServiceLocator.NinjectAdapter.1.0.0.0\lib\NinjectAdapter.dll</HintPath>
     </Reference>
     <Reference Include="NLog">
       <HintPath>..\packages\RavenDB-Build-800\Client\NLog.dll</HintPath>
@@ -158,7 +164,6 @@
     <Compile Include="Areas\Admin\Controllers\DashboardController.cs" />
     <Compile Include="Areas\Admin\Controllers\DiagnosticsController.cs" />
     <Compile Include="Areas\Admin\Controllers\EventManagementController.cs" />
-    <Compile Include="Areas\Admin\Controllers\MembershipController.cs" />
     <Compile Include="Areas\Admin\Controllers\PledgeController.cs" />
     <Compile Include="Areas\Admin\Controllers\SiteConfigurationController.cs" />
     <Compile Include="Areas\Admin\Controllers\UserManagementController.cs" />
@@ -188,7 +193,6 @@
     <Compile Include="Code\IContentProvider.cs" />
     <Compile Include="Code\Markdown.cs" />
     <Compile Include="Code\MarkdownViewModel.cs" />
-    <Compile Include="Code\RavenDbMembershipProviderLocator.cs" />
     <Compile Include="Code\MobileSupport.cs" />
     <Compile Include="Code\ModelStateExtensions.cs" />
     <Compile Include="Code\MultiCultureMvcRouteHandler.cs" />

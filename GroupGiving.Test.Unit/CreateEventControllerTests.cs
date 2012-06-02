@@ -22,7 +22,6 @@ namespace GroupGiving.Test.Unit
         Mock<IAccountService> accountService = null;
         Mock<IMembershipService> membershipService = null;
         Mock<IFormsAuthenticationService> formsAuthenticationService = null;
-        private Mock<IMembershipProviderLocator> _membershipProviderLocator = new Mock<IMembershipProviderLocator>();
         private Mock<IEventService> eventService = null;
         private Mock<MembershipProvider> _membershipProvider = new Mock<MembershipProvider>();
         private Mock<ICountryService> _countryService = new Mock<ICountryService>();
@@ -30,6 +29,7 @@ namespace GroupGiving.Test.Unit
         private Mock<IApiClient> _apiClient = new Mock<IApiClient>();
         private Mock<IAccountsApiClient> _accountsApi = new Mock<IAccountsApiClient>();
         private EmbeddableDocumentStore _documentStore;
+        private Mock<MembershipProvider> _membershipProviderLocator = new Mock<MembershipProvider>();
 
         [SetUp]
         public void SetUp()
@@ -40,9 +40,6 @@ namespace GroupGiving.Test.Unit
             membershipService = new Mock<IMembershipService>();
             formsAuthenticationService = new Mock<IFormsAuthenticationService>();
             eventService = new Mock<IEventService>();
-            _membershipProviderLocator
-                .Setup(m => m.Provider())
-                .Returns(_membershipProvider.Object);
 
             _countryService
                 .Setup(m=>m.RetrieveAllCountries())
