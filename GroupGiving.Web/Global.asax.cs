@@ -199,6 +199,7 @@ namespace GroupGiving.Web
 
             EmailFacade = ServiceLocator.Instance.Get<IEmailFacade>();
 
+            ServiceLocator.Instance.Get<ApplicationDataSetup>().Start();
             Services = ServiceLocator.Instance.GetAll<IWindowsService>();
             foreach(var service in Services)
             {

@@ -169,6 +169,7 @@ namespace GroupGiving.Web.App_Start
 
             kernel.Bind<IWindowsService>().To<SiteWarmupService>();
             kernel.Bind<ICultureService>().To<CultureService>().InRequestScope();
+            kernel.Bind<ApplicationDataSetup>().ToSelf();
         }        
     }
 }

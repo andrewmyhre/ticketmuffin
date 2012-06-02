@@ -150,7 +150,7 @@
   <ItemGroup>
     <Compile Include="App_Start\DenormalizedPledges.cs" />
     <Compile Include="App_Start\NinjectMVC3.cs" />
-    <Compile Include="App_Start\RavenDbAppData.cs" />
+    <Compile Include="App_Start\ApplicationDataSetup.cs" />
     <Compile Include="App_Start\RavenDbIndexes.cs" />
     <Compile Include="Areas\Admin\AdminAreaRegistration.cs" />
     <Compile Include="Areas\Admin\Controllers\CharityManagementController.cs" />
@@ -158,6 +158,7 @@
     <Compile Include="Areas\Admin\Controllers\DashboardController.cs" />
     <Compile Include="Areas\Admin\Controllers\DiagnosticsController.cs" />
     <Compile Include="Areas\Admin\Controllers\EventManagementController.cs" />
+    <Compile Include="Areas\Admin\Controllers\MembershipController.cs" />
     <Compile Include="Areas\Admin\Controllers\PledgeController.cs" />
     <Compile Include="Areas\Admin\Controllers\SiteConfigurationController.cs" />
     <Compile Include="Areas\Admin\Controllers\UserManagementController.cs" />
