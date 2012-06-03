@@ -2,9 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using GroupGiving.Core.Configuration;
-using GroupGiving.Core.Data;
 using GroupGiving.Core.Domain;
-using GroupGiving.Core.Dto;
 using GroupGiving.Core.Services;
 using GroupGiving.PayPal;
 using GroupGiving.PayPal.Configuration;

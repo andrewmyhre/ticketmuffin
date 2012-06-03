@@ -3,11 +3,7 @@ using System.Runtime.Serialization;
 using System.Text;
 using System.Web.Mvc;
 using System.Xml;
-using GroupGiving.Core.Data;
-using GroupGiving.Core.Domain;
 using System.Linq;
-using GroupGiving.Core.Services;
-using Ninject;
 
 namespace GroupGiving.Web.Areas.Api.Controllers
 {

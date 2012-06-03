@@ -1,12 +1,9 @@
 ﻿using System.Linq;
 using EmailProcessing;
-using GroupGiving.Core.Data;
 using GroupGiving.Core.Domain;
 using GroupGiving.Core.Services;
 using Moq;
 using NUnit.Framework;
-using Raven.Client;
-using Raven.Client.Document;
 using Raven.Client.Embedded;
 
 namespace GroupGiving.Test.Unit
@@ -14,7 +11,6 @@ namespace GroupGiving.Test.Unit
     [TestFixture]
     public class GivenCreatingAnAccount : InMemoryStoreTest
     {
-        Mock<IRepository<Account>> _accountRepository = new Mock<IRepository<Account>>();
         Mock<IEmailFacade> _emailFacade = new Mock<IEmailFacade>();
         private EmbeddableDocumentStore _documentStore;
 

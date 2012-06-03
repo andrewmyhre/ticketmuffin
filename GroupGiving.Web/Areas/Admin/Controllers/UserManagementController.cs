@@ -5,6 +5,7 @@ using System.Web;
 using System.Web.Mvc;
 using System.Web.Security;
 using GroupGiving.Core.Domain;
+using GroupGiving.Core.Services;
 using GroupGiving.Web.Areas.Admin.Models;
 using Raven.Client;
 using RavenDBMembership.Provider;
@@ -14,10 +15,12 @@ namespace GroupGiving.Web.Areas.Admin.Controllers
     public class UserManagementController : Controller
     {
         private readonly IDocumentSession _ravenSession;
+        private readonly IAccountService _accountService;
 
-        public UserManagementController(IDocumentSession ravenSession)
+        public UserManagementController(IDocumentSession ravenSession, IAccountService accountService)
         {
             _ravenSession = ravenSession;
+            _accountService = accountService;
             AutoMapper.Mapper.CreateMap<Account, ManageAccountViewModel>();
         }
 
@@ -52,8 +55,9 @@ namespace GroupGiving.Web.Areas.Admin.Controllers
             AutoMapper.Mapper.CreateMap<Account, ManageAccountViewModel>();
 
 
-            var account = _ravenSession.Load<Account>("accounts/"+id);
+            var account = _ravenSession.Load<Account>(id);
             manageAccountViewModel = AutoMapper.Mapper.Map<ManageAccountViewModel>(account);
+            manageAccountViewModel.MembershipUser = Membership.Provider.GetUser(account.Email, false);
 
             return View(manageAccountViewModel);
         }

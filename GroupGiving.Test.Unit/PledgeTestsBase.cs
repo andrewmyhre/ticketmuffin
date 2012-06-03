@@ -1,10 +1,6 @@
 ﻿using System;
-using GroupGiving.Core;
-using GroupGiving.Core.Actions.CreatePledge;
 using GroupGiving.Core.Configuration;
-using GroupGiving.Core.Data;
 using GroupGiving.Core.Domain;
-using GroupGiving.Core.Dto;
 using GroupGiving.Core.Email;
 using GroupGiving.Core.Services;
 using GroupGiving.PayPal;
@@ -12,7 +8,6 @@ using GroupGiving.PayPal.Configuration;
 using GroupGiving.PayPal.Model;
 using Moq;
 using NUnit.Framework;
-using Raven.Client;
 using Raven.Client.Embedded;
 
 namespace GroupGiving.Test.Unit
@@ -21,7 +16,6 @@ namespace GroupGiving.Test.Unit
     {
         protected Mock<IEmailRelayService> EmailRelayService = new Mock<IEmailRelayService>();
         protected Mock<IPaymentGateway> PaymentGateway = new Mock<IPaymentGateway>();
-        protected Mock<IRepository<GroupGivingEvent>> EventRepositoryMock = new Mock<IRepository<GroupGivingEvent>>();
         protected Mock<ITaxAmountResolver> TaxResolverMock = new Mock<ITaxAmountResolver>();
         protected Mock<IAccountService> AccountService = new Mock<IAccountService>();
         protected GroupGivingEvent Event;
@@ -54,16 +48,6 @@ namespace GroupGiving.Test.Unit
                 .Returns(tax);
         }
 
-        protected void EventRepositoryReturns(GroupGivingEvent @event)
-        {
-            EventRepositoryMock
-                .Setup(m => m.Retrieve(It.IsAny<Func<GroupGivingEvent, bool>>()))
-                .Returns(@event);
-            EventRepositoryMock
-                .Setup(m => m.Query(It.IsAny<Func<GroupGivingEvent, bool>>()))
-                .Returns(new []{@event});
-        }
-
         protected void PaymentRequestIsSuccessful(string paypalPayKey)
         {
             PaymentGateway
@@ -84,13 +68,6 @@ namespace GroupGiving.Test.Unit
                 .Setup(m => m.CreateDelayedPayment(It.IsAny<PaymentGatewayRequest>()))
                 .Throws(new HttpChannelException(new FaultMessage() { Error = new PayPalError() { Message = "failed" },
                 Raw = new DialogueHistoryEntry("request", "response")}));
-        }
-
-        protected void EventRepositoryStoresEventWithVerification()
-        {
-            EventRepositoryMock
-                .Setup(m => m.SaveOrUpdate(Event))
-                .Verifiable();
         }
 
         protected void PayPalGatewayReturnsTransactionIdWithVerification()

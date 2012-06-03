@@ -1,15 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Net;
-using System.Web;
+﻿using System.Net;
 using System.Web.Mvc;
 using EmailProcessing;
-using GroupGiving.Core.Data;
 using GroupGiving.Core.Domain;
 using GroupGiving.Core.Services;
 using GroupGiving.Web.Areas.Api.Models;
 using GroupGiving.Web.Code;
-using GroupGiving.Web.Models;
 
 namespace GroupGiving.Web.Areas.Api.Controllers
 {

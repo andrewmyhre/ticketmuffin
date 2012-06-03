@@ -1,15 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using System.Web.Mvc;
+﻿using System.Web.Mvc;
 using EmailProcessing;
-using GroupGiving.Core.Data;
-using GroupGiving.Core.Domain;
-using GroupGiving.Core.Email;
 using GroupGiving.Core.Services;
 using GroupGiving.Web.Models;
-using Ninject;
 
 namespace GroupGiving.Web.Controllers
 {

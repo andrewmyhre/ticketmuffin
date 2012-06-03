@@ -49,10 +49,8 @@ namespace GroupGiving.Test.Unit.Pledging
                 session.SaveChanges();
             }
 
-            EventRepositoryReturns(Event);
             SetTaxRateForCountry(Event.Country, _taxRate);
             PayPalGatewayReturnsTransactionIdWithVerification();
-            EventRepositoryStoresEventWithVerification();
             PayPalGatewayCanCreateDelayedPayment(PaypalPayKey);
         }
 
@@ -236,9 +234,7 @@ namespace GroupGiving.Test.Unit.Pledging
             }
 
             PaypalGatewayReturnsAnErrorWhenMakingDelayedPaymentRequest();
-            EventRepositoryReturns(Event);
             SetTaxRateForCountry(Event.Country, TaxRate);
-            EventRepositoryStoresEventWithVerification();
             PayPalGatewayReturnsPaymentDetailsForTransactionId("INCOMPLETE");
         }
 
@@ -287,10 +283,8 @@ namespace GroupGiving.Test.Unit.Pledging
                 MinimumParticipants = 10
             };
 
-            EventRepositoryReturns(Event);
             SetTaxRateForCountry(Event.Country, _taxRate);
             PayPalGatewayReturnsTransactionIdWithVerification();
-            EventRepositoryStoresEventWithVerification();
             PayPalGatewayCanCreateDelayedPayment(PaypalPayKey);
             PayPalGatewayReturnsPaymentDetailsForTransactionId("INCOMPLETE");
 
@@ -393,10 +387,8 @@ namespace GroupGiving.Test.Unit.Pledging
             }
 
             PaymentRequestIsSuccessful(PaypalPayKey);
-            EventRepositoryReturns(Event);
             SetTaxRateForCountry(Event.Country, _taxRate);
             PayPalGatewayReturnsTransactionIdWithVerification();
-            EventRepositoryStoresEventWithVerification();
         }
 
         [Test]
@@ -488,10 +480,8 @@ namespace GroupGiving.Test.Unit.Pledging
             }
 
             PaymentRequestIsSuccessful(PaypalPayKey);
-            EventRepositoryReturns(Event);
             SetTaxRateForCountry(Event.Country, _taxRate);
             PayPalGatewayReturnsTransactionIdWithVerification();
-            EventRepositoryStoresEventWithVerification();
             PayPalGatewayReturnsPaymentDetailsForTransactionId("CREATED");
             PayPalGatewayCanCreateDelayedPayment(PaypalPayKey);
         }

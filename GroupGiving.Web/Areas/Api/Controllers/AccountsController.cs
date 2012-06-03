@@ -1,34 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Linq;
-using System.Net;
-using System.Web;
+﻿using System.Net;
 using System.Web.Mvc;
-using GroupGiving.Core;
-using GroupGiving.Core.Configuration;
-using GroupGiving.Core.Data;
-using GroupGiving.Core.Domain;
-using GroupGiving.Core.Services;
-using GroupGiving.PayPal;
 using GroupGiving.PayPal.Clients;
-using GroupGiving.PayPal.Configuration;
 using GroupGiving.PayPal.Model;
-using GroupGiving.Web.Code;
 using GroupGiving.Web.Models;
 
 namespace GroupGiving.Web.Areas.Api.Controllers
 {
     public class AccountsController : ApiControllerBase
     {
-        private readonly ISiteConfiguration _siteConfiguration;
         private readonly IApiClient _apiClient;
         //
         // GET: /Api/Accounts/
-        public AccountsController(IRepository<GroupGivingEvent> eventRepository, ISiteConfiguration siteConfiguration, 
-            IApiClient apiClient)
+        public AccountsController(IApiClient apiClient)
         {
-            _siteConfiguration = siteConfiguration;
             _apiClient = apiClient;
         }
 

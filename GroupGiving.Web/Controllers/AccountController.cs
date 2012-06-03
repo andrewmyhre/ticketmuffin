@@ -2,11 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Transactions;
-using System.Web;
 using System.Web.Mvc;
-using System.Web.Routing;
 using System.Web.Security;
-using GroupGiving.Core.Data;
 using GroupGiving.Core.Domain;
 using GroupGiving.Core.Email;
 using GroupGiving.Core.Services;
@@ -14,7 +11,6 @@ using GroupGiving.Web.Code;
 using GroupGiving.Web.Models;
 using Raven.Client;
 using log4net;
-using Ninject;
 using RavenDBMembership;
 using RavenDBMembership.Provider;
 using RavenDBMembership.Web.Models;
@@ -30,7 +26,6 @@ namespace GroupGiving.Web.Controllers
         private ICountryService _countryService;
         private readonly IDocumentSession _documentSession;
         private readonly IEmailRelayService _emailRelayService;
-        private readonly IRepository<GroupGivingEvent> _eventRepository;
         private readonly ICultureService _cultureService;
 
         public AccountController(IAccountService accountService, 
@@ -39,7 +34,6 @@ namespace GroupGiving.Web.Controllers
             ICountryService countryService, 
             IDocumentSession documentSession, 
             IEmailRelayService emailRelayService,
-            IRepository<GroupGivingEvent> eventRepository,
             ICultureService cultureService)
         {
             _accountService = accountService;
@@ -48,7 +42,6 @@ namespace GroupGiving.Web.Controllers
             _countryService = countryService;
             _documentSession = documentSession;
             _emailRelayService = emailRelayService;
-            _eventRepository = eventRepository;
             _cultureService = cultureService;
             ((RavenDBMembershipProvider) Membership.Provider).DocumentStore
                 = documentSession.Advanced.DocumentStore;
@@ -515,7 +508,8 @@ namespace GroupGiving.Web.Controllers
             var membershipUser = Membership.GetUser(true);
             var account = _accountService.RetrieveByEmailAddress(membershipUser.Email);
             var viewModel = new EventListViewModel();
-            viewModel.Events = _eventRepository.RetrieveAll();
+            viewModel.Events = _documentSession.Query<GroupGivingEvent>()
+                .Where(e => e.OrganiserId == account.Id);
             return View(viewModel);
         }
     }

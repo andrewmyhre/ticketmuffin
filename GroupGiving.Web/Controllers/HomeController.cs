@@ -1,10 +1,7 @@
 ﻿using System;
 using System.Web.Mvc;
-using GroupGiving.Core.Data;
 using GroupGiving.Core.Domain;
-using GroupGiving.Core.Services;
 using GroupGiving.Web.Models;
-using Ninject;
 using Raven.Client;
 using Raven.Client.Linq;
 

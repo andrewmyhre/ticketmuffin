@@ -1,17 +1,12 @@
 ﻿using System;
 using System.Globalization;
-using System.Linq;
 using System.Linq.Expressions;
 using System.Web;
 using System.Web.Mvc;
 using System.Text;
 using System.Web.Routing;
-using GroupGiving.Core.Data;
 using GroupGiving.Core.Domain;
-using GroupGiving.Core.Services;
-using System.Web.Mvc.Html;
 using Ninject;
-using Raven.Client;
 
 namespace GroupGiving.Web.Code
 {

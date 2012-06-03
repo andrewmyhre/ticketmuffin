@@ -1,13 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using GroupGiving.Core.Data;
 using GroupGiving.Core.Domain;
 using GroupGiving.Core.Email;
 using GroupGiving.Core.Services;
 using GroupGiving.PayPal;
 using GroupGiving.PayPal.Model;
-using PaymentDetailsRequest = GroupGiving.Core.Dto.PaymentDetailsRequest;
 
 namespace GroupGiving.Core.Actions.SettlePledge
 {

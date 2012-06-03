@@ -6,7 +6,6 @@ using System.Web.Security;
 using EmailProcessing;
 using EmailProcessing.Configuration;
 using GroupGiving.Core.Configuration;
-using GroupGiving.Core.Data;
 using GroupGiving.Core.Domain;
 using GroupGiving.Core.Email;
 using GroupGiving.Core.Services;
@@ -26,7 +25,6 @@ using log4net;
 
 namespace GroupGiving.Web.App_Start
 {
-    using System.Reflection;
     using Microsoft.Web.Infrastructure.DynamicModuleHelper;
     using Ninject;
     using Ninject.Web.Mvc;
@@ -113,9 +111,6 @@ namespace GroupGiving.Web.App_Start
                                             }
                                         }
                                     });
-
-            kernel.Bind<IRepository<GroupGivingEvent>>().To<RavenDBRepositoryBase<GroupGivingEvent>>();
-            kernel.Bind<IRepository<Account>>().To<RavenDBRepositoryBase<Account>>();
 
             kernel.Bind<IFormsAuthenticationService>().To<FormsAuthenticationService>();
             kernel.Bind<IMembershipService>().To<AccountMembershipService>();

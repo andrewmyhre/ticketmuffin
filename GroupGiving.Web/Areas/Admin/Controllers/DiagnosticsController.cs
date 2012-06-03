@@ -7,12 +7,8 @@ using System.Web.Mvc;
 using System.Xml;
 using System.Xml.Linq;
 using EmailProcessing;
-using GroupGiving.Core;
-using GroupGiving.Core.Configuration;
-using GroupGiving.Core.Data;
 using GroupGiving.Core.Domain;
 using GroupGiving.Core.Services;
-using GroupGiving.PayPal;
 using GroupGiving.PayPal.Clients;
 using GroupGiving.PayPal.Model;
 using GroupGiving.Web.Models;
@@ -26,24 +22,18 @@ namespace GroupGiving.Web.Areas.Admin.Controllers
         // GET: /Diagnostics/
         IEmailFacade _emailFacade = null;
         private readonly IDocumentSession _documentSession;
-        private readonly IDocumentStore _storage;
         private readonly ICountryService _countryService;
         private readonly IApiClient _apiClient;
-        private readonly ISiteConfiguration _siteConfiguration;
         private readonly IPayRequestFactory _payRequestFactory;
-        private IRepository<GroupGivingEvent> _eventRepository=null;
 
-        public DiagnosticsController(IRepository<GroupGivingEvent> eventRepository, 
-            IEmailFacade emailFacade, IDocumentSession documentSession, ICountryService countryService,
-            IApiClient apiClient, ISiteConfiguration siteConfiguration,
+        public DiagnosticsController(IEmailFacade emailFacade, IDocumentSession documentSession, ICountryService countryService,
+            IApiClient apiClient,
             IPayRequestFactory payRequestFactory)
         {
-            _eventRepository = eventRepository;
             _emailFacade = emailFacade;
             _documentSession = documentSession;
             _countryService = countryService;
             _apiClient = apiClient;
-            _siteConfiguration = siteConfiguration;
             _payRequestFactory = payRequestFactory;
             _emailFacade.LoadTemplates();
         }
