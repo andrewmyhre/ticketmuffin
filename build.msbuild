@@ -20,7 +20,7 @@
 
 	<Target Name="Build">
 		<Msbuild
-			Projects="GroupGiving.sln"
+			Projects="TicketMuffin.sln"
 			BuildInParallel="true"
 			Properties="OutputPath=$(ArtifactsPath)" />
 			
@@ -30,13 +30,13 @@
 		<MakeDir Directories="$(ArtifactsPath)" Condition="!Exists('$(ArtifactsPath)')" />
 		<MakeDir Directories="$(MsDeployPath)" Condition="!Exists('$(MsDeployPath)')" />
 		<msbuild
-			projects="GroupGiving.Web\GroupGiving.Web.csproj"
+			projects="TicketMuffin.Web\TicketMuffin.Web.csproj"
 			Targets="Package"
 			Properties="DeployOnBuild=false;CreatePackageOnPublish=true;Configuration=Release;DeployTarget=Package;PackageAsSingleFile=true;PackageLocation=$(MsDeployPath)\TicketMuffin.Web\TicketMuffin.Web.zip" 
 			/>
 			
 		<ItemGroup>
-			<NuspecFile Include="GroupGiving.Web\TicketMuffin.Web.nuspec" />
+			<NuspecFile Include="TicketMuffin.Web\TicketMuffin.Web.nuspec" />
 		</ItemGroup>
 		
 		<Copy SourceFiles="@(NuspecFile)" DestinationFolder="$(MsDeployPath)\TicketMuffin.Web" />
