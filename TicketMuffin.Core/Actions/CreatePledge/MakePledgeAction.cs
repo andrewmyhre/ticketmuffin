@@ -40,7 +40,12 @@ namespace GroupGiving.Core.Actions.CreatePledge
 
             if (@event.IsFull)
             {
-                throw new InvalidOperationException("Maximum attendees exceeded");
+                throw new InvalidOperationException("This event is full");
+            }
+
+            if (@event.SalesEnded)
+            {
+                throw new InvalidOperationException("Sales for this event have ended");
             }
 
             if (@event.IsOn)
@@ -125,7 +130,7 @@ namespace GroupGiving.Core.Actions.CreatePledge
             if (gatewayResponse.PaymentExecStatus == "CREATED")
             {
                 result.Succeeded = true;
-                pledge.TransactionId = gatewayResponse.payKey;
+                result.TransactionId = pledge.TransactionId = gatewayResponse.payKey;
 
                 pledge.Paid = false;
                 pledge.PaymentStatus = PaymentStatus.Unpaid;

@@ -114,6 +114,11 @@ namespace GroupGiving.Core.Domain
                 && this.State == EventState.SalesReady; }
         }
 
+        public bool SalesEnded
+        {
+            get { return SalesEndDateTime < DateTime.Now; }
+        }
+
         public GroupGivingEvent()
         {
             Pledges = new List<EventPledge>();

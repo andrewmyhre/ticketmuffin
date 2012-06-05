@@ -1,0 +1,215 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using GroupGiving.Core.Actions.CreatePledge;
+using GroupGiving.Core.Actions.SettlePledge;
+using GroupGiving.Core.Domain;
+using GroupGiving.Core.Email;
+using GroupGiving.Core.Services;
+using GroupGiving.PayPal;
+using GroupGiving.PayPal.Configuration;
+using Moq;
+using NUnit.Framework;
+using Raven.Client;
+using Raven.Client.Embedded;
+using TechTalk.SpecFlow;
+
+namespace TicketMuffin.Specs
+{
+    [Binding]
+    public class Pledging
+    {
+        private GroupGivingEvent _event;
+        private Mock<ITaxAmountResolver> taxResolver=new Mock<ITaxAmountResolver>();
+        private Mock<IPaymentGateway> paymentGateway =new Mock<IPaymentGateway>();
+        private Mock<AdaptiveAccountsConfiguration> paypalConfiguration=new Mock<AdaptiveAccountsConfiguration>();
+        private IDocumentStore documentStore;
+        private IDocumentSession documentSession;
+        private Account OrganiserAccount;
+        private CreatePledgeActionResult pledgeResult;
+        private Exception _exception;
+        private Mock<IAccountService> accountService=new Mock<IAccountService>();
+        private Mock<IEmailRelayService> emailRelayService=new Mock<IEmailRelayService>();
+
+        [BeforeScenario]
+        public void SetUp()
+        {
+            Helpers.NoTax(taxResolver);
+            Helpers.CreateDelayedPaymentSucceeds(paymentGateway);
+            Helpers.PaymentGatewayReturnsSuccessful(paymentGateway);
+
+            documentStore = new EmbeddableDocumentStore()
+            {
+                RunInMemory = true
+            };
+            documentStore.Initialize();
+            documentSession = documentStore.OpenSession();
+            OrganiserAccount = Helpers.TestAccount();
+            documentSession.Store(OrganiserAccount);
+            accountService.Setup(x => x.RetrieveByEmailAddress(OrganiserAccount.Email)).Returns(OrganiserAccount);
+
+            _event = new GroupGivingEvent()
+            {
+                SalesEndDateTime = DateTime.Now.AddDays(10),
+                MinimumParticipants = 10,
+                MaximumParticipants = 20,
+                OrganiserId = OrganiserAccount.Id,
+                State = EventState.SalesReady
+            };
+
+            documentSession.Store(_event);
+
+            documentSession.SaveChanges();
+        }
+
+        [AfterScenario]
+        public void TearDown()
+        {
+            documentSession.Dispose();
+            documentStore.Dispose();
+        }
+
+        [Given(@"Sales have ended")]
+        public void GivenSalesHaveEnded()
+        {
+            _event.SalesEndDateTime = DateTime.Now.AddDays(-1);
+
+            documentSession.SaveChanges();
+
+            Assert.That(_event.SalesEnded, Is.True);
+        }
+
+        [When(@"I pledge to attend")]
+        public void WhenIPledgeToAttend()
+        {
+            var createPledge = 
+                new MakePledgeAction(taxResolver.Object, paymentGateway.Object, paypalConfiguration.Object, documentSession);
+
+            MakePledgeRequest pledgeRequest =new MakePledgeRequest()
+            {
+                AttendeeNames = new string[]{"tom","dick","harry"}
+            };
+            
+            try
+            {
+                pledgeResult = createPledge.Attempt(_event.Id, OrganiserAccount, pledgeRequest);
+            } catch (Exception exception)
+            {
+                _exception = exception;
+            }
+        }
+
+
+        [Then(@"the pledge should not be accepted with message ""(.*)""")]
+        public void ThenThePledgeShouldNotBeAccepted(string message)
+        {
+            Assert.That(_exception, Is.Not.Null);
+            Assert.That(_exception, Is.TypeOf<InvalidOperationException>());
+            Assert.That(_exception.Message, Is.StringMatching(message));
+        }
+
+        [Given(@"The event is full")]
+        public void GivenTheEventIsFull()
+        {
+            _event.MaximumParticipants = 10;
+            _event.MinimumParticipants = 5;
+            _event.Pledges
+                = new List<EventPledge>()
+                      {
+                          new EventPledge()
+                              {
+                                  Attendees =
+                                      new List<EventPledgeAttendee>(Helpers.Attendees(10)),
+                                      Paid=true,
+                                      PaymentStatus = PaymentStatus.Reconciled,
+                                      OrderNumber=Guid.NewGuid().ToString(),
+                                      TransactionId = "98765"
+                              }
+                      };
+
+            documentSession.SaveChanges();
+        }
+
+        [Given(@"Sales have not ended yet")]
+        public void GivenSalesHaveNotEndedYet()
+        {
+            _event.SalesEndDateTime = DateTime.Now.AddDays(10);
+
+            documentSession.SaveChanges();
+        }
+
+        [Given(@"The event needs one more pledge to be ready to activate")]
+        public void GivenTheEventNeedsOneMorePledgeToBeReadyToActivate()
+        {
+            _event.Pledges
+                = new List<EventPledge>()
+                      {
+                          new EventPledge()
+                              {
+                                  Attendees =
+                                      new List<EventPledgeAttendee>(Helpers.Attendees(9)),
+                                      PaymentStatus = PaymentStatus.PaidPendingReconciliation,
+                                      TransactionId = "12345",
+                                      DatePledged = DateTime.Now,
+                                      OrderNumber = Guid.NewGuid().ToString(),
+                                      Paid=true
+                              }
+                      };
+            documentSession.SaveChanges();
+            Assert.That(_event.PaidAttendeeCount, Is.EqualTo(_event.MinimumParticipants-1));
+        }
+
+        [When(@"I complete the payment through paypal")]
+        public void WhenICompleteThePaymentThroughPaypal()
+        {
+            ConfirmPledgePaymentAction confirmPledge
+                =new ConfirmPledgePaymentAction(paymentGateway.Object, accountService.Object, emailRelayService.Object);
+
+            SettlePledgeRequest request=new SettlePledgeRequest()
+                                            {
+                                                PayPalPayKey=pledgeResult.GatewayResponse.payKey
+                                            };
+            confirmPledge.ConfirmPayment(_event, request);
+
+            // check that the pledge took
+            var pledge = _event.Pledges.SingleOrDefault(p => p.TransactionId == pledgeResult.GatewayResponse.payKey);
+            Assert.That(pledge, Is.Not.Null);
+            Assert.That(pledge.Paid, Is.True);
+            Assert.That(pledge.PaymentStatus, Is.EqualTo(PaymentStatus.Reconciled));
+        }
+
+
+        [Then(@"the event should be ready to activate")]
+        public void ThenTheEventShouldBeReadyToActivate()
+        {
+            Assert.That(_event.ReadyToActivate, Is.True);
+        }
+
+        [Given(@"The event is not full")]
+        public void GivenTheEventIsNotFull()
+        {
+            _event.MaximumParticipants = _event.AttendeeCount + 10;
+            documentSession.SaveChanges();
+        }
+
+        [Then(@"the pledge should be accepted")]
+        public void ThenThePledgeShouldBeAccepted()
+        {
+            Assert.That(pledgeResult.Succeeded, Is.True);
+        }
+
+        [Given(@"The event has 2 spaces left")]
+        public void GivenTheEventHas2SpacesLeft()
+        {
+            _event.MinimumParticipants = 5;
+            _event.MaximumParticipants = 10;
+            _event.Pledges=new List<EventPledge>()
+            {
+                new EventPledge(){Attendees = Helpers.Attendees(8).ToList(), Paid=true, PaymentStatus= PaymentStatus.Reconciled},
+            };
+            documentSession.SaveChanges();
+        }
+
+    }
+}

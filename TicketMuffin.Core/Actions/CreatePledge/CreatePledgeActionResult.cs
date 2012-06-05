@@ -11,5 +11,7 @@ namespace GroupGiving.Core.Actions.CreatePledge
         public bool Succeeded { get; set; }
 
         public Exception Exception { get; set; }
+
+        public string TransactionId { get; set; }
     }
 }

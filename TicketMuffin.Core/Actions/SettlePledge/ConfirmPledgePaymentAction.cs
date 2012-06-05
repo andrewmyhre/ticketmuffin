@@ -29,7 +29,7 @@ namespace GroupGiving.Core.Actions.SettlePledge
             if (@event==null)
                 throw new ArgumentException("No such event found");
 
-            var pledge = @event.Pledges.Where(p => p.TransactionId == request.PayPalPayKey).SingleOrDefault();
+            var pledge = @event.Pledges.SingleOrDefault(p => p.TransactionId == request.PayPalPayKey);
             if (pledge == null)
                 throw new ArgumentException("No such pledge found");
 
