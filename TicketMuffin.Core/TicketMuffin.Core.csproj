@@ -113,9 +113,9 @@
     <Compile Include="Dto\PaymentDetailsRequest.cs" />
     <Compile Include="Dto\PaymentDetails.cs" />
     <Compile Include="Email\EmailTemplate.cs" />
-    <Compile Include="Email\SimpleSmtpEmailRelayService.cs" />
-    <Compile Include="Email\IEmailTemplate.cs" />
     <Compile Include="Email\IEmailRelayService.cs" />
+    <Compile Include="Email\IEmailTemplate.cs" />
+    <Compile Include="Email\SimpleSmtpEmailRelayService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\Country.cs" />
     <Compile Include="Services\CountryService.cs" />
