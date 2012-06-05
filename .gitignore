@@ -12,7 +12,6 @@ packages/Raven*/**/*.log*
 packages/Raven*/Data
 packages/Raven*/*.log*
 log.txt
-email/
 GroupGiving.Web/eventImages
 *.orig
 build
