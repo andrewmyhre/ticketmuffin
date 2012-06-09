@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace GroupGiving.Core.Domain
+namespace TicketMuffin.Core.Domain
 {
     public class ContentDefinition
     {

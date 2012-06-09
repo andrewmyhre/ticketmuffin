@@ -1,7 +1,7 @@
-using GroupGiving.Core.Services;
+using TicketMuffin.Core.Services;
 using log4net;
 
-namespace GroupGiving.Service
+namespace TicketMuffin.Service
 {
     public class GroupGivingQueueListener : IAsyncListenerCommand
     {

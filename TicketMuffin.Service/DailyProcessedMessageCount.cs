@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace GroupGiving.Service
+namespace TicketMuffin.Service
 {
     public class DailyProcessedMessageCount
     {

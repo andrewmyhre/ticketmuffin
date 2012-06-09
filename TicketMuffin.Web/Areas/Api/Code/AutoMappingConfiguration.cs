@@ -1,11 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using GroupGiving.Core.Domain;
-using GroupGiving.Web.Areas.Api.Models;
+﻿using TicketMuffin.Core.Domain;
+using TicketMuffin.Web.Areas.Api.Models;
 
-namespace GroupGiving.Web.Areas.Api.Code
+namespace TicketMuffin.Web.Areas.Api.Code
 {
     public static class AutoMappingConfiguration
     {

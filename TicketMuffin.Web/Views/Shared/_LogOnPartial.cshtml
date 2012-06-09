@@ -1,4 +1,4 @@
-﻿@using GroupGiving.Web.Code
+﻿@using TicketMuffin.Web.Code
 @if(Request.IsAuthenticated) {
     <text>@Html.Content("Welcome back!", pageAddress: "global/header") [ <a href="@Url.Action("Index", "Account")">@Html.Content("Account", pageAddress:"global/header")</a> ]
     [ <a href="@Url.Action("SignOut", "Account")">@Html.Content("SIGN OUT", pageAddress:"global/header")</a> ] </text>

@@ -1,14 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
+﻿using System.Linq;
 using System.Web.Mvc;
-using GroupGiving.Core.Configuration;
-using GroupGiving.Core.Domain;
-using GroupGiving.PayPal.Configuration;
 using Raven.Client;
+using TicketMuffin.Core.Configuration;
+using TicketMuffin.PayPal.Configuration;
 
-namespace GroupGiving.Web.Areas.Admin.Controllers
+namespace TicketMuffin.Web.Areas.Admin.Controllers
 {
     public class SiteConfigurationController : Controller
     {

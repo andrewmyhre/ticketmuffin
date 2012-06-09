@@ -1,13 +1,13 @@
 using System.Xml.Serialization;
 
-namespace GroupGiving.PayPal.Model
+namespace TicketMuffin.PayPal.Model
 {
     [System.CodeDom.Compiler.GeneratedCodeAttribute("xsd", "4.0.30319.1")]
     [System.SerializableAttribute()]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
-    [System.Xml.Serialization.XmlTypeAttribute(AnonymousType = true, Namespace = "http://svcs.paypal.com/types/common")]
-    [System.Xml.Serialization.XmlRootAttribute(Namespace = "http://svcs.paypal.com/types/common", IsNullable = false)]
+    [XmlType(AnonymousType = true, Namespace = "http://svcs.paypal.com/types/common")]
+    [XmlRoot(Namespace = "http://svcs.paypal.com/types/common", IsNullable = false)]
     public partial class FaultMessage : ResponseBase
     {
 
@@ -18,7 +18,7 @@ namespace GroupGiving.PayPal.Model
         private PayResponseResponseEnvelope responseEnvelopeField;
 
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Form = System.Xml.Schema.XmlSchemaForm.Unqualified)]
+        [XmlElement(Form = System.Xml.Schema.XmlSchemaForm.Unqualified)]
         public string payKey
         {
             get { return this.payKeyField; }
@@ -26,7 +26,7 @@ namespace GroupGiving.PayPal.Model
         }
 
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Form = System.Xml.Schema.XmlSchemaForm.Unqualified)]
+        [XmlElement(Form = System.Xml.Schema.XmlSchemaForm.Unqualified)]
         public string paymentExecStatus
         {
             get { return this.paymentExecStatusField; }
@@ -34,7 +34,7 @@ namespace GroupGiving.PayPal.Model
         }
 
         /// <remarks/>
-        [System.Xml.Serialization.XmlElementAttribute(Form = System.Xml.Schema.XmlSchemaForm.Unqualified)]
+        [XmlElement(Form = System.Xml.Schema.XmlSchemaForm.Unqualified)]
         public PayResponseResponseEnvelope responseEnvelope
         {
             get { return this.responseEnvelopeField; }

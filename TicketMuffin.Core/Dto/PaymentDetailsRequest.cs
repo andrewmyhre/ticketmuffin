@@ -1,4 +1,4 @@
-namespace GroupGiving.Core.Dto
+namespace TicketMuffin.Core.Dto
 {
     public class PaymentDetailsRequest
     {

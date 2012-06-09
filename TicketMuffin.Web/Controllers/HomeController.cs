@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Web.Mvc;
-using GroupGiving.Core.Domain;
-using GroupGiving.Web.Models;
 using Raven.Client;
 using Raven.Client.Linq;
+using TicketMuffin.Core.Domain;
+using TicketMuffin.Web.Models;
 
-namespace GroupGiving.Web.Controllers
+namespace TicketMuffin.Web.Controllers
 {
     public class HomeController : Controller
     {

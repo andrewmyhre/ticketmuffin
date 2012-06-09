@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Net.Mail;
 
-namespace GroupGiving.Core.Email
+namespace TicketMuffin.Core.Email
 {
     public class SimpleSmtpEmailRelayService : IEmailRelayService
     {

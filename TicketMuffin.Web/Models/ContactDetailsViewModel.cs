@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.Web.Mvc;
-using GroupGiving.Core.Domain;
-using Microsoft.Web.Mvc;
-using RavenDBMembership.Web.Models;
+using TicketMuffin.Core.Domain;
 
-namespace GroupGiving.Web.Models
+namespace TicketMuffin.Web.Models
 {
     public class ContactDetailsViewModel
     {

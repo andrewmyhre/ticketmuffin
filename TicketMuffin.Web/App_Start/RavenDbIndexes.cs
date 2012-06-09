@@ -4,7 +4,7 @@ using Lucene.Net.Analysis.Standard;
 using Raven.Abstractions.Indexing;
 using Raven.Client;
 
-namespace GroupGiving.Web.App_Start
+namespace TicketMuffin.Web.App_Start
 {
     public static class RavenDbIndexes
     {

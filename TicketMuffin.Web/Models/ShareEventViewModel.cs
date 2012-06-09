@@ -1,8 +1,10 @@
-﻿namespace GroupGiving.Web.Models
+﻿using TicketMuffin.Core.Domain;
+
+namespace TicketMuffin.Web.Models
 {
     public class ShareEventViewModel
     {
-        public GroupGiving.Core.Domain.GroupGivingEvent Event { get; set; }
+        public GroupGivingEvent Event { get; set; }
 
         public string ShareUrl { get; set; }
 

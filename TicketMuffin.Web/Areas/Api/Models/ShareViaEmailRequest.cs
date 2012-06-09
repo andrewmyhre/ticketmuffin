@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
+﻿using System.ComponentModel.DataAnnotations;
 using System.Runtime.Serialization;
-using System.Web;
-using GroupGiving.Web.Code;
+using TicketMuffin.Web.Code;
 
-namespace GroupGiving.Web.Areas.Api.Models
+namespace TicketMuffin.Web.Areas.Api.Models
 {
     [DataContract(Name="shareViaEmail", Namespace=PayPal.Api.Namespace)]
     public class ShareViaEmailRequest

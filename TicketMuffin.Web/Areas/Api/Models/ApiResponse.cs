@@ -1,11 +1,7 @@
 using System.Runtime.Serialization;
-using GroupGiving.Core.Domain;
-using GroupGiving.Core.Dto;
-using GroupGiving.PayPal.Model;
-using GroupGiving.Web.Areas.Api.Controllers;
-using GroupGiving.Web.Models;
+using TicketMuffin.PayPal.Model;
 
-namespace GroupGiving.Web.Areas.Api.Models
+namespace TicketMuffin.Web.Areas.Api.Models
 {
     [DataContract(Name = "response", Namespace = "http://schemas.ticketmuffin.com/2011")]
     public class ApiResponse<T>

@@ -1,12 +1,12 @@
 ﻿using System.Net;
 using System.Web.Mvc;
 using EmailProcessing;
-using GroupGiving.Core.Domain;
-using GroupGiving.Core.Services;
-using GroupGiving.Web.Areas.Api.Models;
-using GroupGiving.Web.Code;
+using TicketMuffin.Core.Domain;
+using TicketMuffin.Core.Services;
+using TicketMuffin.Web.Areas.Api.Models;
+using TicketMuffin.Web.Code;
 
-namespace GroupGiving.Web.Areas.Api.Controllers
+namespace TicketMuffin.Web.Areas.Api.Controllers
 {
     public class EventsController : ApiControllerBase
     {

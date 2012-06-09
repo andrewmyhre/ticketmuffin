@@ -7,7 +7,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace GroupGiving.Web.Mobile
+namespace TicketMuffin.Web.Mobile
 {
 
 

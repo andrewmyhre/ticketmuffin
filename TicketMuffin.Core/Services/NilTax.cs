@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace GroupGiving.Core.Services
+﻿namespace TicketMuffin.Core.Services
 {
     public class NilTax : ITaxAmountResolver
     {

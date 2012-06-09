@@ -1,7 +1,6 @@
-﻿using System;
-using GroupGiving.Core.Domain;
+﻿using TicketMuffin.Core.Domain;
 
-namespace GroupGiving.Core.Services
+namespace TicketMuffin.Core.Services
 {
     public class CreateEventResult
     {

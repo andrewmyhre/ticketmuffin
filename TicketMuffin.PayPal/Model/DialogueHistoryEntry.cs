@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Xml.Serialization;
 
-namespace GroupGiving.PayPal.Model
+namespace TicketMuffin.PayPal.Model
 {
     public class DialogueHistoryEntry
     {

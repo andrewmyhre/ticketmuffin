@@ -2,17 +2,14 @@
 using System.Security.Principal;
 using System.Web.Mvc;
 using System.Web.Security;
-using GroupGiving.Core.Domain;
-using GroupGiving.Core.Services;
-using GroupGiving.PayPal;
-using GroupGiving.PayPal.Clients;
-using GroupGiving.PayPal.Model;
-using GroupGiving.Web.Code;
-using GroupGiving.Web.Controllers;
 using Moq;
 using NUnit.Framework;
 using Raven.Client.Embedded;
-using RavenDBMembership.Web.Models;
+using TicketMuffin.Core.Domain;
+using TicketMuffin.Core.Services;
+using TicketMuffin.PayPal.Clients;
+using TicketMuffin.Web.Controllers;
+using TicketMuffin.Web.Models;
 
 namespace GroupGiving.Test.Unit
 {

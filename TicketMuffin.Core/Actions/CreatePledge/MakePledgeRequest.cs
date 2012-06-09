@@ -1,7 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
-namespace GroupGiving.Core.Actions.CreatePledge
+namespace TicketMuffin.Core.Actions.CreatePledge
 {
     public class MakePledgeRequest
     {

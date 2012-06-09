@@ -1,9 +1,9 @@
 ﻿using System.Linq;
 using System.Web.Mvc;
-using GroupGiving.Core.Domain;
 using Raven.Client;
+using TicketMuffin.Core.Domain;
 
-namespace GroupGiving.Web.Areas.Admin.Controllers
+namespace TicketMuffin.Web.Areas.Admin.Controllers
 {
     public class CharityManagementController : Controller
     {

@@ -2,18 +2,14 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using GroupGiving.Core.Actions.CreatePledge;
-using GroupGiving.Core.Actions.SettlePledge;
-using GroupGiving.Core.Domain;
-using GroupGiving.Core.Dto;
-using GroupGiving.Core.Email;
-using GroupGiving.Core.Services;
-using GroupGiving.PayPal;
-using GroupGiving.PayPal.Model;
 using Moq;
 using NUnit.Framework;
 using Raven.Client;
 using Raven.Client.Embedded;
+using TicketMuffin.Core.Actions.CreatePledge;
+using TicketMuffin.Core.Actions.SettlePledge;
+using TicketMuffin.Core.Domain;
+using TicketMuffin.PayPal.Model;
 
 namespace GroupGiving.Test.Unit.Pledging
 {

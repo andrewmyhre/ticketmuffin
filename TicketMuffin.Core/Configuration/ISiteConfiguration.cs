@@ -1,7 +1,6 @@
-using GroupGiving.Core.Domain;
-using GroupGiving.PayPal.Configuration;
+using TicketMuffin.PayPal.Configuration;
 
-namespace GroupGiving.Core.Configuration
+namespace TicketMuffin.Core.Configuration
 {
     public interface ISiteConfiguration
     {

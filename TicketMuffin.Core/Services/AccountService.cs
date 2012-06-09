@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Linq;
 using EmailProcessing;
-using GroupGiving.Core.Domain;
-using GroupGiving.Core.Email;
 using Raven.Client;
+using TicketMuffin.Core.Domain;
+using TicketMuffin.Core.Email;
 
-namespace GroupGiving.Core.Services
+namespace TicketMuffin.Core.Services
 {
     public class AccountService : IAccountService
     {

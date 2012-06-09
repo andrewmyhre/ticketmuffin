@@ -1,10 +1,10 @@
 ﻿using System.Linq;
 using EmailProcessing;
-using GroupGiving.Core.Domain;
-using GroupGiving.Core.Services;
 using Moq;
 using NUnit.Framework;
 using Raven.Client.Embedded;
+using TicketMuffin.Core.Domain;
+using TicketMuffin.Core.Services;
 
 namespace GroupGiving.Test.Unit
 {

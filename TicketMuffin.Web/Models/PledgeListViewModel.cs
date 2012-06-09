@@ -1,7 +1,7 @@
 using System.Collections.Generic;
-using GroupGiving.Core.Domain;
+using TicketMuffin.Core.Domain;
 
-namespace GroupGiving.Web.Models
+namespace TicketMuffin.Web.Models
 {
     public class PledgeListViewModel
     {

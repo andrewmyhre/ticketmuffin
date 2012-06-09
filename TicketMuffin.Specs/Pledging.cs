@@ -2,18 +2,18 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using GroupGiving.Core.Actions.CreatePledge;
-using GroupGiving.Core.Actions.SettlePledge;
-using GroupGiving.Core.Domain;
-using GroupGiving.Core.Email;
-using GroupGiving.Core.Services;
-using GroupGiving.PayPal;
-using GroupGiving.PayPal.Configuration;
 using Moq;
 using NUnit.Framework;
 using Raven.Client;
 using Raven.Client.Embedded;
 using TechTalk.SpecFlow;
+using TicketMuffin.Core.Actions.CreatePledge;
+using TicketMuffin.Core.Actions.SettlePledge;
+using TicketMuffin.Core.Domain;
+using TicketMuffin.Core.Email;
+using TicketMuffin.Core.Services;
+using TicketMuffin.PayPal;
+using TicketMuffin.PayPal.Configuration;
 
 namespace TicketMuffin.Specs
 {

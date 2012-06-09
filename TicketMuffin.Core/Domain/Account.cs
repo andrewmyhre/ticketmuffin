@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
 
-namespace GroupGiving.Core.Domain
+namespace TicketMuffin.Core.Domain
 {
     public class Account : IDomainObject
     {

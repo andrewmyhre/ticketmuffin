@@ -1,9 +1,9 @@
 using System.Collections.Generic;
-using GroupGiving.Core.Domain;
-using GroupGiving.Core.Services;
-using GroupGiving.PayPal;
-using GroupGiving.PayPal.Model;
 using Moq;
+using TicketMuffin.Core.Domain;
+using TicketMuffin.Core.Services;
+using TicketMuffin.PayPal;
+using TicketMuffin.PayPal.Model;
 
 namespace TicketMuffin.Specs
 {

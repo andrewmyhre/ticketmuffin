@@ -1,14 +1,14 @@
 ﻿using System;
-using GroupGiving.Core.Configuration;
-using GroupGiving.Core.Domain;
-using GroupGiving.Core.Email;
-using GroupGiving.Core.Services;
-using GroupGiving.PayPal;
-using GroupGiving.PayPal.Configuration;
-using GroupGiving.PayPal.Model;
 using Moq;
 using NUnit.Framework;
 using Raven.Client.Embedded;
+using TicketMuffin.Core.Configuration;
+using TicketMuffin.Core.Domain;
+using TicketMuffin.Core.Email;
+using TicketMuffin.Core.Services;
+using TicketMuffin.PayPal;
+using TicketMuffin.PayPal.Configuration;
+using TicketMuffin.PayPal.Model;
 
 namespace GroupGiving.Test.Unit
 {

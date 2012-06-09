@@ -1,7 +1,6 @@
-using GroupGiving.Core.Configuration;
-using GroupGiving.Core.Domain;
+using TicketMuffin.Core.Configuration;
 
-namespace GroupGiving.Core.Services
+namespace TicketMuffin.Core.Services
 {
     public interface ISiteConfigurationService
     {

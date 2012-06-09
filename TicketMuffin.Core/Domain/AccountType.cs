@@ -1,4 +1,4 @@
-﻿namespace GroupGiving.Core.Domain
+﻿namespace TicketMuffin.Core.Domain
 {
     public enum AccountType
     {

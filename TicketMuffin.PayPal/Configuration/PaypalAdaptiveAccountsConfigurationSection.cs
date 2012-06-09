@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Linq;
-using System.Text;
+﻿using System.Configuration;
 
-namespace GroupGiving.PayPal.Configuration
+namespace TicketMuffin.PayPal.Configuration
 {
     public class PaypalAdaptiveAccountsConfigurationSection : ConfigurationSection
     {

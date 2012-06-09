@@ -1,6 +1,6 @@
-using GroupGiving.Core.Domain;
+using TicketMuffin.Core.Domain;
 
-namespace GroupGiving.Web.Code
+namespace TicketMuffin.Web.Code
 {
     public interface IContentProvider
     {

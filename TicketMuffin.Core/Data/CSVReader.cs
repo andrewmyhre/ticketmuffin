@@ -39,7 +39,7 @@ using System.Data;
 using System.Text;
 using log4net;
 
-namespace Com.StellmanGreene.CSVReader
+namespace TicketMuffin.Core.Data
 {
     /// <summary>
     /// Read CSV-formatted data from a file or TextReader

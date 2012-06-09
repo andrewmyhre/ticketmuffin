@@ -1,13 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using System.Net;
-using System.Web;
 using System.Web.Mvc;
-using GroupGiving.Core.Domain;
 using Raven.Client;
+using TicketMuffin.Core.Domain;
 
-namespace GroupGiving.Web.Areas.Api.Controllers
+namespace TicketMuffin.Web.Areas.Api.Controllers
 {
     [ValidateInput(false)]
     public class ContentController : Controller

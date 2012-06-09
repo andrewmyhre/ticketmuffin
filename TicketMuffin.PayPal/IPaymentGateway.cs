@@ -1,6 +1,6 @@
-using GroupGiving.PayPal.Model;
+using TicketMuffin.PayPal.Model;
 
-namespace GroupGiving.PayPal
+namespace TicketMuffin.PayPal
 {
     public interface IPaymentGateway
     {

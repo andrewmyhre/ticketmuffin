@@ -1,8 +1,8 @@
 using System.Runtime.Serialization;
 using System.Xml.Serialization;
-using GroupGiving.PayPal.Configuration;
+using TicketMuffin.PayPal.Configuration;
 
-namespace GroupGiving.PayPal.Model
+namespace TicketMuffin.PayPal.Model
 {
     [DataContract(Name = "GetVerifiedStatusRequest", Namespace = "http://svcs.paypal.com/types/aa")]
     [XmlRoot(ElementName = "GetVerifiedStatusRequest", Namespace = "http://svcs.paypal.com/types/aa", IsNullable = false)]

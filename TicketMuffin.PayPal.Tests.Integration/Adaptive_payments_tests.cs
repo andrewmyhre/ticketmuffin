@@ -1,11 +1,10 @@
 ﻿using System;
-using GroupGiving.PayPal.Clients;
-using GroupGiving.PayPal.Configuration;
-using GroupGiving.PayPal.Model;
 using NUnit.Framework;
-using RefundRequest = GroupGiving.PayPal.Model.RefundRequest;
+using TicketMuffin.PayPal.Clients;
+using TicketMuffin.PayPal.Configuration;
+using TicketMuffin.PayPal.Model;
 
-namespace GroupGiving.PayPal.Tests.Integration
+namespace TicketMuffin.PayPal.Tests.Integration
 {
     [TestFixture]
     public class Adaptive_payments_tests

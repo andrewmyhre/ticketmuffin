@@ -1,7 +1,7 @@
 using System.Xml.Serialization;
-using GroupGiving.PayPal.Configuration;
+using TicketMuffin.PayPal.Configuration;
 
-namespace GroupGiving.PayPal.Model
+namespace TicketMuffin.PayPal.Model
 {
     [XmlRoot("RequestPermissions")]
     public class RequestPermissionsRequest : IPayPalRequest

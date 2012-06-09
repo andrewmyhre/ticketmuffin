@@ -1,14 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using GroupGiving.Core.Actions.ExecutePayment;
-using GroupGiving.Core.Domain;
-using GroupGiving.Core.Services;
-using GroupGiving.PayPal;
 using Raven.Client;
+using TicketMuffin.Core.Actions.ExecutePayment;
+using TicketMuffin.Core.Domain;
+using TicketMuffin.PayPal;
 
-namespace GroupGiving.Core.Actions.ActivateEvent
+namespace TicketMuffin.Core.Actions.ActivateEvent
 {
     public class ActivateEventAction
     {

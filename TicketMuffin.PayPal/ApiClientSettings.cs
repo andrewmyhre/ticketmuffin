@@ -1,6 +1,6 @@
-﻿using GroupGiving.PayPal.Configuration;
+﻿using TicketMuffin.PayPal.Configuration;
 
-namespace GroupGiving.PayPal
+namespace TicketMuffin.PayPal
 {
     public class ApiClientSettings
     {

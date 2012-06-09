@@ -1,6 +1,6 @@
-using GroupGiving.PayPal.Configuration;
+using TicketMuffin.PayPal.Configuration;
 
-namespace GroupGiving.PayPal.Model
+namespace TicketMuffin.PayPal.Model
 {
     public class PayRequestFactory : IPayRequestFactory
     {

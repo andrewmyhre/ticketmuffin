@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using GroupGiving.Web.Code;
 using NUnit.Framework;
+using TicketMuffin.Web.Code;
 
 namespace GroupGiving.Test.Unit
 {

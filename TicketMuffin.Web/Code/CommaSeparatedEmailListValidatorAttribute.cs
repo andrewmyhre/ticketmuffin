@@ -2,7 +2,7 @@ using System;
 using System.ComponentModel.DataAnnotations;
 using System.Net.Mail;
 
-namespace GroupGiving.Web.Code
+namespace TicketMuffin.Web.Code
 {
     public class CommaSeparatedEmailListValidatorAttribute : ValidationAttribute
     {

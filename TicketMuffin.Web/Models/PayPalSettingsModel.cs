@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-
-namespace GroupGiving.Web.Models
+﻿namespace TicketMuffin.Web.Models
 {
     public class PayPalSettingsModel
     {

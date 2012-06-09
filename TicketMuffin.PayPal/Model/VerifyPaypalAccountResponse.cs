@@ -1,6 +1,6 @@
 using System.Runtime.Serialization;
 
-namespace GroupGiving.PayPal.Model
+namespace TicketMuffin.PayPal.Model
 {
     [DataContract(Name="paypalAccountVerification", Namespace=Api.Namespace)]
     public class VerifyPaypalAccountResponse

@@ -1,8 +1,7 @@
-using System;
 using System.ComponentModel.DataAnnotations;
-using GroupGiving.Web.Code;
+using TicketMuffin.Web.Code;
 
-namespace GroupGiving.Web.Models
+namespace TicketMuffin.Web.Models
 {
     public class ShareViaEmailViewModel
     {

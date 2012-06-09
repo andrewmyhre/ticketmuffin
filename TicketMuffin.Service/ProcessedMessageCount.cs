@@ -1,4 +1,4 @@
-namespace GroupGiving.Service
+namespace TicketMuffin.Service
 {
     public class ProcessedMessageCount
     {

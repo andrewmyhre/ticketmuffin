@@ -1,9 +1,7 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Raven.Client;
 
-namespace GroupGiving.Core.Services
+namespace TicketMuffin.Core.Services
 {
     public interface ICountryService
     {

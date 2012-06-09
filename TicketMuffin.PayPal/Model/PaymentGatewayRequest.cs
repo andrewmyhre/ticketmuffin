@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace GroupGiving.PayPal.Model
+namespace TicketMuffin.PayPal.Model
 {
     public class PaymentGatewayRequest
     {

@@ -1,9 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using GroupGiving.Core.Domain;
-using GroupGiving.Core.Email;
+using TicketMuffin.Core.Domain;
+using TicketMuffin.Core.Email;
 
-namespace GroupGiving.Core.Services
+namespace TicketMuffin.Core.Services
 {
     [Obsolete("Use EmailProcessing", true)]
     public class EmailCreationService : IEmailCreationService

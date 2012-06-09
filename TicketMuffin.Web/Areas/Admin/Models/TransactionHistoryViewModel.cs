@@ -1,7 +1,7 @@
 using System.Collections.Generic;
-using GroupGiving.PayPal.Model;
+using TicketMuffin.PayPal.Model;
 
-namespace GroupGiving.Web.Areas.Admin.Models
+namespace TicketMuffin.Web.Areas.Admin.Models
 {
     public class TransactionHistoryViewModel
     {

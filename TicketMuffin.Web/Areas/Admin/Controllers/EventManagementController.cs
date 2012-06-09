@@ -1,24 +1,21 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Web;
 using System.Web.Mvc;
-using GroupGiving.Core;
-using GroupGiving.Core.Actions.ActivateEvent;
-using GroupGiving.Core.Actions.CancelEvent;
-using GroupGiving.Core.Actions.ExecutePayment;
-using GroupGiving.Core.Actions.RefundPledge;
-using GroupGiving.Core.Domain;
-using GroupGiving.Core.Services;
-using GroupGiving.PayPal;
-using GroupGiving.PayPal.Model;
-using GroupGiving.Web.Areas.Admin.Models;
-using GroupGiving.Web.Controllers;
-using GroupGiving.Web.Models;
 using Raven.Client;
 using Raven.Client.Linq;
+using TicketMuffin.Core.Actions.ActivateEvent;
+using TicketMuffin.Core.Actions.CancelEvent;
+using TicketMuffin.Core.Actions.ExecutePayment;
+using TicketMuffin.Core.Actions.RefundPledge;
+using TicketMuffin.Core.Domain;
+using TicketMuffin.PayPal;
+using TicketMuffin.PayPal.Model;
+using TicketMuffin.Web.Areas.Admin.Models;
+using TicketMuffin.Web.Controllers;
+using TicketMuffin.Web.Models;
 
-namespace GroupGiving.Web.Areas.Admin.Controllers
+namespace TicketMuffin.Web.Areas.Admin.Controllers
 {
     public class EventManagementController : Controller
     {
@@ -187,7 +184,7 @@ namespace GroupGiving.Web.Areas.Admin.Controllers
             RefundViewModel viewModel = new RefundViewModel();
             RefundPledgeAction action = new RefundPledgeAction(_paymentGateway);
 
-            PayPal.Model.RefundResponse refundResult = null;
+            RefundResponse refundResult = null;
             try
             {
                 refundResult = action.Execute(_documentSession, "groupgivingevents/" + id, orderNumber);

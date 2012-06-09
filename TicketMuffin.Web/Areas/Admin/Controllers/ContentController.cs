@@ -1,13 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
+﻿using System.Linq;
 using System.Web.Mvc;
-using GroupGiving.Core.Domain;
 using Raven.Client;
 using Raven.Client.Linq;
+using TicketMuffin.Core.Domain;
 
-namespace GroupGiving.Web.Areas.Admin.Controllers
+namespace TicketMuffin.Web.Areas.Admin.Controllers
 {
     [ValidateInput(false)]
     public class ContentController : Controller
@@ -25,7 +22,7 @@ namespace GroupGiving.Web.Areas.Admin.Controllers
         public ActionResult Index()
         {
             var viewModel = new PageListViewModel();
-            viewModel.Pages = _session.Query<GroupGiving.Core.Domain.PageContent>();
+            viewModel.Pages = _session.Query<PageContent>();
 
 
             return View(viewModel);

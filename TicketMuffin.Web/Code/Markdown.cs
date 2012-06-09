@@ -54,7 +54,7 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
 
-namespace anrControls
+namespace TicketMuffin.Web.Code
 {
 	public class Markdown
 	{

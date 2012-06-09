@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace GroupGiving.Web.Models
+namespace TicketMuffin.Web.Models
 {
     public class AttendeeListViewModel
     {

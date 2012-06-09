@@ -1,7 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 
-namespace GroupGiving.Web.Code
+namespace TicketMuffin.Web.Code
 {
     [Obsolete("Static classes are gay", true)]
     public class PageContentService

@@ -2,10 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Serialization;
-using System.Web;
-using GroupGiving.Core.Domain;
+using TicketMuffin.Core.Domain;
 
-namespace GroupGiving.Web.Areas.Api.Models
+namespace TicketMuffin.Web.Areas.Api.Models
 {
     [DataContract(Name="event", Namespace="http://schemas.ticketmuffin.com/2011")]
     public class EventModel

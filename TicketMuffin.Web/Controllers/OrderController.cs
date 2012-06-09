@@ -1,18 +1,17 @@
 ﻿using System.Linq;
 using System.Web.Mvc;
 using System.Web.Security;
-using GroupGiving.Core.Actions.SettlePledge;
-using GroupGiving.Core.Configuration;
-using GroupGiving.Core.Domain;
-using GroupGiving.Core.Email;
-using GroupGiving.Core.Services;
-using GroupGiving.PayPal;
-using GroupGiving.Web.Models;
 using Raven.Client;
 using RavenDBMembership.Provider;
-using RavenDBMembership.Web.Models;
+using TicketMuffin.Core.Actions.SettlePledge;
+using TicketMuffin.Core.Configuration;
+using TicketMuffin.Core.Domain;
+using TicketMuffin.Core.Email;
+using TicketMuffin.Core.Services;
+using TicketMuffin.PayPal;
+using TicketMuffin.Web.Models;
 
-namespace GroupGiving.Web.Controllers
+namespace TicketMuffin.Web.Controllers
 {
     public class OrderController : Controller
     {

@@ -1,14 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using GroupGiving.Core.Domain;
-using GroupGiving.Core.Services;
-using GroupGiving.PayPal;
-using GroupGiving.PayPal.Model;
 using Raven.Client;
+using TicketMuffin.Core.Domain;
+using TicketMuffin.PayPal;
+using TicketMuffin.PayPal.Model;
 
-namespace GroupGiving.Core.Actions.RefundPledge
+namespace TicketMuffin.Core.Actions.RefundPledge
 {
     public class RefundPledgeAction
     {

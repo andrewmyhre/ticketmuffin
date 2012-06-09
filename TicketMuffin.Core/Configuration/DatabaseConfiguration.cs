@@ -1,4 +1,4 @@
-namespace GroupGiving.Core.Configuration
+namespace TicketMuffin.Core.Configuration
 {
     public class DatabaseConfiguration
     {

@@ -10,19 +10,17 @@ using System.Text.RegularExpressions;
 using System.Web.Hosting;
 using System.Web.Mvc;
 using System.Web.Security;
-using GroupGiving.Core.Services;
-using GroupGiving.PayPal;
-using GroupGiving.PayPal.Clients;
-using GroupGiving.PayPal.Model;
-using GroupGiving.Web.Code;
 using JustGiving.Api.Sdk;
 using Raven.Client;
-using RavenDBMembership.Web.Models;
 using System.Web.Routing;
 using System.Web;
+using TicketMuffin.Core.Services;
+using TicketMuffin.PayPal.Clients;
+using TicketMuffin.PayPal.Model;
+using TicketMuffin.Web.Models;
 using log4net;
 
-namespace GroupGiving.Web.Controllers
+namespace TicketMuffin.Web.Controllers
 {
     public class CreateEventController : Controller
     {

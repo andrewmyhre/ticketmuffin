@@ -1,11 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using GroupGiving.Core.Domain;
-using GroupGiving.Web.Areas.Admin.Controllers;
-using GroupGiving.Web.Areas.Admin.Models;
-using Raven.Client.Linq;
+using TicketMuffin.Core.Domain;
+using TicketMuffin.Web.Areas.Admin.Models;
 
-namespace GroupGiving.Web.Models
+namespace TicketMuffin.Web.Models
 {
     public class EventViewModel
     {

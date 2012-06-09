@@ -1,4 +1,4 @@
-namespace GroupGiving.Web.Models
+namespace TicketMuffin.Web.Models
 {
     public class DiagnosticsDashboardViewModel
     {

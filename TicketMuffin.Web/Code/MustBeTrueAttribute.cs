@@ -1,10 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Web;
 
-namespace GroupGiving.Web.Code
+namespace TicketMuffin.Web.Code
 {
     /// <summary>
     /// Validation attribute that demands that a boolean value must be true.

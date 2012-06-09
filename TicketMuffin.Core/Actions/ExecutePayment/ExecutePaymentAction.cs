@@ -1,14 +1,12 @@
 using System;
 using System.Linq;
-using GroupGiving.Core.Domain;
-using GroupGiving.Core.Dto;
-using GroupGiving.Core.Services;
-using GroupGiving.PayPal;
-using GroupGiving.PayPal.Model;
 using Raven.Client;
+using TicketMuffin.Core.Domain;
+using TicketMuffin.PayPal;
+using TicketMuffin.PayPal.Model;
 using log4net;
 
-namespace GroupGiving.Core.Actions.ExecutePayment
+namespace TicketMuffin.Core.Actions.ExecutePayment
 {
     public class ExecutePaymentAction
     {

@@ -1,17 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Dynamic;
+﻿using System.Dynamic;
 using System.Linq;
-using System.Web;
 using System.Web.Mvc;
-using GroupGiving.Core.Domain;
-using GroupGiving.Web.App_Start;
-using GroupGiving.Web.Areas.Admin.Models;
-using GroupGiving.Web.Models;
 using Raven.Client;
-using Raven.Client.Linq;
+using TicketMuffin.Web.Models;
 
-namespace GroupGiving.Web.Areas.Admin.Controllers
+namespace TicketMuffin.Web.Areas.Admin.Controllers
 {
     public class PledgeController : Controller
     {

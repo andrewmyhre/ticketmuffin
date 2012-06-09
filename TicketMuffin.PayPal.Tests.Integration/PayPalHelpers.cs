@@ -1,6 +1,6 @@
-using GroupGiving.PayPal.Configuration;
+using TicketMuffin.PayPal.Configuration;
 
-namespace GroupGiving.PayPal.Tests.Integration
+namespace TicketMuffin.PayPal.Tests.Integration
 {
     public static class PayPalHelpers
     {

@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using Ninject;
+﻿using Ninject;
 
-namespace GroupGiving.Web.Code
+namespace TicketMuffin.Web.Code
 {
     public class ServiceLocator
     {

@@ -1,11 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using GroupGiving.Core.Dto;
-using GroupGiving.PayPal.Model;
+using TicketMuffin.PayPal.Model;
 
-namespace GroupGiving.Core.Domain
+namespace TicketMuffin.Core.Domain
 {
     public class EventPledge
     {

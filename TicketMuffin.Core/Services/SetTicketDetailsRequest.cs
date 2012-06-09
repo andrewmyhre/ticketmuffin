@@ -2,8 +2,9 @@
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Web.Mvc;
+using TicketMuffin.Core.Domain;
 
-namespace GroupGiving.Core.Services
+namespace TicketMuffin.Core.Services
 {
     public class SetTicketDetailsRequest
     {
@@ -17,7 +18,7 @@ namespace GroupGiving.Core.Services
 
         [Required]
         [DisplayName("Currency")]
-        public GroupGiving.Core.Domain.Currency Currency { get; set; }
+        public Currency Currency { get; set; }
 
         [Required]
         [DisplayName("Minimum Participants")]

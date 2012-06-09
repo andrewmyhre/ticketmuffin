@@ -1,8 +1,7 @@
 ﻿using System;
-using GroupGiving.Core.Dto;
-using GroupGiving.PayPal.Model;
+using TicketMuffin.PayPal.Model;
 
-namespace GroupGiving.Core.Actions.CreatePledge
+namespace TicketMuffin.Core.Actions.CreatePledge
 {
     public class CreatePledgeActionResult
     {

@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace GroupGiving.Web.Code
+﻿namespace TicketMuffin.Web.Code
 {
     public class MarkdownViewModel
     {

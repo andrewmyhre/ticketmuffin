@@ -1,16 +1,14 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using System.Transactions;
-using System.Web;
 using System.Web.Mvc;
 using System.Web.Security;
-using GroupGiving.Core.Domain;
-using GroupGiving.Core.Services;
-using GroupGiving.Web.Areas.Admin.Models;
 using Raven.Client;
 using RavenDBMembership.Provider;
+using TicketMuffin.Core.Domain;
+using TicketMuffin.Core.Services;
+using TicketMuffin.Web.Areas.Admin.Models;
 
-namespace GroupGiving.Web.Areas.Admin.Controllers
+namespace TicketMuffin.Web.Areas.Admin.Controllers
 {
     public class UserManagementController : Controller
     {

@@ -1,8 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using Microsoft.Web.Mvc;
-using RavenDBMembership.Web.Models;
 
-namespace GroupGiving.Web.Models
+namespace TicketMuffin.Web.Models
 {
     public class ResetPasswordViewModel
     {

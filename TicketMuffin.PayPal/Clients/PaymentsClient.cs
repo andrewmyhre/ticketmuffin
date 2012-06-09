@@ -1,6 +1,6 @@
-using GroupGiving.PayPal.Model;
+using TicketMuffin.PayPal.Model;
 
-namespace GroupGiving.PayPal.Clients
+namespace TicketMuffin.PayPal.Clients
 {
     public class PaymentsClient : IPaymentsApiClient
     {

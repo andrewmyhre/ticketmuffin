@@ -1,4 +1,4 @@
-namespace GroupGiving.PayPal
+namespace TicketMuffin.PayPal
 {
     public static class Api
     {

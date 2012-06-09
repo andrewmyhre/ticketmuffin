@@ -1,7 +1,7 @@
 using System;
-using GroupGiving.Core.Domain;
+using TicketMuffin.Core.Domain;
 
-namespace GroupGiving.Web.Areas.Admin.Models
+namespace TicketMuffin.Web.Areas.Admin.Models
 {
     public class TransactionHistoryEntry
     {

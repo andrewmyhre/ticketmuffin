@@ -9,25 +9,23 @@ using System.Security.Principal;
 using System.Web.Hosting;
 using System.Web.Security;
 using EmailProcessing;
-using GroupGiving.Core.Actions.ActivateEvent;
-using GroupGiving.Core.Actions.CancelEvent;
-using GroupGiving.Core.Actions.RefundPledge;
-using GroupGiving.Core.Configuration;
-using GroupGiving.Web.Code;
 using Raven.Client;
-using anrControls;
-using GroupGiving.Core.Actions.CreatePledge;
-using GroupGiving.Core.Domain;
-using GroupGiving.Core.Services;
-using GroupGiving.PayPal;
-using GroupGiving.Web.Models;
+using TicketMuffin.Core.Actions.ActivateEvent;
+using TicketMuffin.Core.Actions.CancelEvent;
+using TicketMuffin.Core.Actions.CreatePledge;
+using TicketMuffin.Core.Actions.RefundPledge;
+using TicketMuffin.Core.Configuration;
+using TicketMuffin.Core.Domain;
+using TicketMuffin.Core.Services;
 using System.Web.Mvc;
 using RavenDBMembership.Provider;
-using RavenDBMembership.Web.Models;
+using TicketMuffin.PayPal;
+using TicketMuffin.PayPal.Model;
+using TicketMuffin.Web.Code;
+using TicketMuffin.Web.Models;
 using log4net;
-using RefundResponse = GroupGiving.PayPal.Model.RefundResponse;
 
-namespace GroupGiving.Web.Controllers
+namespace TicketMuffin.Web.Controllers
 {
     public class EventController : Controller
     {
@@ -441,7 +439,7 @@ namespace GroupGiving.Web.Controllers
                 return View();
             }
 
-            var viewModel = new GroupGiving.Web.Models.RefundViewModel();
+            var viewModel = new RefundViewModel();
             viewModel.Event = @event;
             viewModel.PledgeToBeRefunded = pledge;
 

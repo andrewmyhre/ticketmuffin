@@ -1,8 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace GroupGiving.Core.Services
+﻿namespace TicketMuffin.Core.Services
 {
 
     public interface IWindowsService

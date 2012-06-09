@@ -1,7 +1,7 @@
 using System.Runtime.Serialization;
 using System.Xml.Serialization;
 
-namespace GroupGiving.PayPal.Model
+namespace TicketMuffin.PayPal.Model
 {
     [DataContract(Name = "requestEnvelope", Namespace = "http://svcs.paypal.com/types/ap")]
     [XmlRoot(ElementName = "requestEnvelope")]

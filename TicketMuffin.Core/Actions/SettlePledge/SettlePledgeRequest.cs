@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace GroupGiving.Core.Actions.SettlePledge
+﻿namespace TicketMuffin.Core.Actions.SettlePledge
 {
     public class SettlePledgeRequest
     {

@@ -1,6 +1,6 @@
-using GroupGiving.PayPal.Model;
+using TicketMuffin.PayPal.Model;
 
-namespace GroupGiving.Core.Dto
+namespace TicketMuffin.Core.Dto
 {
     public class PaymentDetails
     {

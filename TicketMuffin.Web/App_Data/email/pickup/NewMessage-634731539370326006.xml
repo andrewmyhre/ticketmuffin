@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-16"?>
+<emailPackage xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://www.tanash.net/email/package">
+  <from>noreply@ticketmuffin.com</from>
+  <subject>TicketMuffin - Someone sent you a message</subject>
+  <html><![CDATA[<p>Hi Andrew,</p>
+<p>Someone on TicketMuffin.com has sent you a message about your event test event.</p>
+<p>Message from andrew (andrew.myhre@gmail.com)</p>
+<pre>gfkfhgf</pre>
+<p>Regards,</p>
+<p>TicketMuffin</p>
+]]></html>
+  <text>
+        Hi Andrew,
+        Someone on TicketMuffin.com has sent you a message about your event test event.
+        
+        Message from andrew (andrew.myhre@gmail.com)
+
+        gfkfhgf
+
+
+        Regards,
+        TicketMuffin
+    </text>
+  <attachments />
+  <recipients>
+    <recipient>
+      <emailAddress>andrew.myhre@gmail.com</emailAddress>
+    </recipient>
+  </recipients>
+  <identifier>NewMessage-634731539370326006</identifier>
+</emailPackage>

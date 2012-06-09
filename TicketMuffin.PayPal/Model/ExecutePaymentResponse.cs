@@ -1,6 +1,6 @@
 using System.Xml.Serialization;
 
-namespace GroupGiving.PayPal.Model
+namespace TicketMuffin.PayPal.Model
 {
     [System.SerializableAttribute()]
     [XmlType(AnonymousType = true, Namespace = "http://svcs.paypal.com/types/ap")]

@@ -1,13 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using System.Web.Hosting;
-using GroupGiving.Core.Services;
-using Raven.Client;
+﻿using System.Web.Hosting;
+using TicketMuffin.Core.Services;
 
 // invoked from application start in global.asax
-namespace GroupGiving.Web.App_Start
+namespace TicketMuffin.Web.App_Start
 {
 
     public class ApplicationDataSetup

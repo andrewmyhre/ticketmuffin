@@ -1,6 +1,4 @@
-﻿using System.Net.Mail;
-
-namespace GroupGiving.Core.Email
+﻿namespace TicketMuffin.Core.Email
 {
     public interface IEmailTemplate
     {

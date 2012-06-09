@@ -1,4 +1,4 @@
-﻿namespace GroupGiving.Core.Email
+﻿namespace TicketMuffin.Core.Email
 {
     public interface IEmailRelayService
     {

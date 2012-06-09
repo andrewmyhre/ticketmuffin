@@ -1,7 +1,7 @@
-using GroupGiving.PayPal.Configuration;
-using GroupGiving.PayPal.Model;
+using TicketMuffin.PayPal.Configuration;
+using TicketMuffin.PayPal.Model;
 
-namespace GroupGiving.PayPal.Clients
+namespace TicketMuffin.PayPal.Clients
 {
     public interface IApiClient
     {

@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Web.Security;
-
-namespace RavenDBMembership.Web.Models
+﻿namespace TicketMuffin.Web.Models
 {
 	public class EditUserModel
 	{

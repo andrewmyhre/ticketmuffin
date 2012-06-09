@@ -1,10 +1,10 @@
 ﻿using System.Net;
 using System.Web.Mvc;
-using GroupGiving.PayPal.Clients;
-using GroupGiving.PayPal.Model;
-using GroupGiving.Web.Models;
+using TicketMuffin.PayPal.Clients;
+using TicketMuffin.PayPal.Model;
+using TicketMuffin.Web.Models;
 
-namespace GroupGiving.Web.Areas.Api.Controllers
+namespace TicketMuffin.Web.Areas.Api.Controllers
 {
     public class AccountsController : ApiControllerBase
     {

@@ -1,12 +1,10 @@
-﻿using System;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.Web.Mvc;
-using GroupGiving.Core.Domain;
-using GroupGiving.Web.Code;
 using Microsoft.Web.Mvc;
-using RavenDBMembership.Web.Models;
+using TicketMuffin.Core.Domain;
+using TicketMuffin.Web.Code;
 
-namespace GroupGiving.Web.Models
+namespace TicketMuffin.Web.Models
 {
     public class SignUpModel
     {

@@ -1,7 +1,6 @@
-﻿using System;
-using System.Net.Mail;
+﻿using System.Net.Mail;
 
-namespace GroupGiving.Core.Email
+namespace TicketMuffin.Core.Email
 {
     public class EmailTemplate
     {

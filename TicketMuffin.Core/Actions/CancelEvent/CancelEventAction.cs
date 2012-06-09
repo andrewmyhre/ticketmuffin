@@ -1,14 +1,12 @@
 using System;
 using System.Linq;
-using GroupGiving.Core.Actions.RefundPledge;
-using GroupGiving.Core.Domain;
-using GroupGiving.Core.Dto;
-using GroupGiving.Core.Services;
-using GroupGiving.PayPal;
 using Raven.Client;
-using RefundResponse = GroupGiving.PayPal.Model.RefundResponse;
+using TicketMuffin.Core.Actions.RefundPledge;
+using TicketMuffin.Core.Domain;
+using TicketMuffin.PayPal;
+using TicketMuffin.PayPal.Model;
 
-namespace GroupGiving.Core.Actions.CancelEvent
+namespace TicketMuffin.Core.Actions.CancelEvent
 {
     public class CancelEventAction
     {

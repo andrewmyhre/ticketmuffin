@@ -1,4 +1,4 @@
-﻿namespace GroupGiving.Service
+﻿namespace TicketMuffin.Service
 {
     partial class Service1
     {

@@ -1,10 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using System.Web;
 using System.Web.Routing;
 
-namespace GroupGiving.Web.Code
+namespace TicketMuffin.Web.Code
 {
     public class CultureConstraint : IRouteConstraint
     {

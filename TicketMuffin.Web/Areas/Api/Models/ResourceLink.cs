@@ -1,7 +1,7 @@
 using System.Linq;
 using System.Runtime.Serialization;
 
-namespace GroupGiving.Web.Areas.Api.Models
+namespace TicketMuffin.Web.Areas.Api.Models
 {
     [DataContract(Name = "link", Namespace = "http://schemas.ticketmuffin.com/2011")]
     public class ResourceLink<T>

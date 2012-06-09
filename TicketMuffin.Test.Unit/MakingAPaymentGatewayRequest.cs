@@ -2,18 +2,16 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using GroupGiving.Core.Domain;
-using GroupGiving.Core.Dto;
-using GroupGiving.PayPal;
-using GroupGiving.PayPal.Model;
 using NUnit.Framework;
+using TicketMuffin.PayPal;
+using TicketMuffin.PayPal.Model;
 
 namespace GroupGiving.Test.Unit
 {
     [TestFixture]
     public class MakingAPaymentGatewayRequest : PaymentGatewayTestsBase
     {
-        protected PayPal.PayPalPaymentGateway _gateway=null;
+        protected PayPalPaymentGateway _gateway=null;
         
         [SetUp]
         public void Setup()

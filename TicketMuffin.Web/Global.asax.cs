@@ -4,14 +4,14 @@ using System.Web;
 using System.Web.Mvc;
 using System.Web.Routing;
 using EmailProcessing;
-using GroupGiving.Core.Services;
-using GroupGiving.Web.App_Start;
-using GroupGiving.Web.Code;
 using Microsoft.Web.Mvc.Resources;
+using TicketMuffin.Core.Services;
+using TicketMuffin.Web.App_Start;
+using TicketMuffin.Web.Code;
 using log4net;
 using Ninject;
 
-namespace GroupGiving.Web
+namespace TicketMuffin.Web
 {
     // Note: For instructions on enabling IIS6 or IIS7 classic mode, 
     // visit http://go.microsoft.com/?LinkId=9394801

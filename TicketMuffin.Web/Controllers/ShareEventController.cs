@@ -1,9 +1,9 @@
 ﻿using System.Web.Mvc;
 using EmailProcessing;
-using GroupGiving.Core.Services;
-using GroupGiving.Web.Models;
+using TicketMuffin.Core.Services;
+using TicketMuffin.Web.Models;
 
-namespace GroupGiving.Web.Controllers
+namespace TicketMuffin.Web.Controllers
 {
     public class ShareEventController : Controller
     {

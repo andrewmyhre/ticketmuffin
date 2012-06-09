@@ -1,4 +1,4 @@
-namespace GroupGiving.Core.Actions.CancelEvent
+namespace TicketMuffin.Core.Actions.CancelEvent
 {
     public class CancelEventResponse
     {

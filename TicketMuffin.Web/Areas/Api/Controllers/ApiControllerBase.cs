@@ -5,7 +5,7 @@ using System.Web.Mvc;
 using System.Xml;
 using System.Linq;
 
-namespace GroupGiving.Web.Areas.Api.Controllers
+namespace TicketMuffin.Web.Areas.Api.Controllers
 {
     public class ApiControllerBase : Controller
     {

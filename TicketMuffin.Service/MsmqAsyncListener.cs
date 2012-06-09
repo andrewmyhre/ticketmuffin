@@ -3,7 +3,7 @@ using System.Messaging;
 using System.Threading;
 using log4net;
 
-namespace GroupGiving.Service
+namespace TicketMuffin.Service
 {
     public class MsmqAsyncListener<T> : IMsmqListener, IDisposable where T : class
     {

@@ -1,12 +1,8 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using System.Web.Mvc;
-using GroupGiving.Core.Dto;
-using GroupGiving.PayPal.Model;
-using GroupGiving.Web.Areas.Api.Models;
-using GroupGiving.Web.Models;
+using TicketMuffin.PayPal.Model;
 
-namespace GroupGiving.Web.Code
+namespace TicketMuffin.Web.Code
 {
     public static class ModelStateExtensions
     {

@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace GroupGiving.PayPal.Configuration
+namespace TicketMuffin.PayPal.Configuration
 {
     public class AdaptiveAccountsConfiguration
     {

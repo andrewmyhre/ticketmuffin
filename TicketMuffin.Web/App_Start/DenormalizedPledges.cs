@@ -1,9 +1,9 @@
 using System.Linq;
-using GroupGiving.Core.Domain;
-using GroupGiving.Web.Models;
 using Raven.Client.Indexes;
+using TicketMuffin.Core.Domain;
+using TicketMuffin.Web.Models;
 
-namespace GroupGiving.Web.App_Start
+namespace TicketMuffin.Web.App_Start
 {
     public class DenormalizedPledges : IndexDefinitionBuilder<GroupGivingEvent,TransactionHistoryItem>
     {

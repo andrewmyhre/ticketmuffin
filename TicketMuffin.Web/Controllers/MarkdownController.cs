@@ -1,11 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using System.Web.Mvc;
-using GroupGiving.Web.Code;
+﻿using System.Web.Mvc;
+using TicketMuffin.Web.Code;
 
-namespace GroupGiving.Web.Controllers
+namespace TicketMuffin.Web.Controllers
 {
     public class MarkdownController : Controller
     {
@@ -16,7 +12,7 @@ namespace GroupGiving.Web.Controllers
         {
             MarkdownViewModel viewModel = new MarkdownViewModel();
             viewModel.RawData = data;
-            viewModel.ParsedData = new anrControls.Markdown().Transform(data);
+            viewModel.ParsedData = new Markdown().Transform(data);
             return View(viewModel);
         }
 

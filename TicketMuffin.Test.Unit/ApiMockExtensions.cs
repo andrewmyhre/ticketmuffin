@@ -1,6 +1,6 @@
-using GroupGiving.PayPal.Clients;
-using GroupGiving.PayPal.Model;
 using Moq;
+using TicketMuffin.PayPal.Clients;
+using TicketMuffin.PayPal.Model;
 
 namespace GroupGiving.Test.Unit
 {

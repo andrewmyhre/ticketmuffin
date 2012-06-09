@@ -1,15 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using GroupGiving.Core.Configuration;
-using GroupGiving.Core.Domain;
-using GroupGiving.Core.Services;
-using GroupGiving.PayPal;
-using GroupGiving.PayPal.Configuration;
-using GroupGiving.PayPal.Model;
 using Raven.Client;
+using TicketMuffin.Core.Configuration;
+using TicketMuffin.Core.Domain;
+using TicketMuffin.Core.Services;
+using TicketMuffin.PayPal;
+using TicketMuffin.PayPal.Configuration;
+using TicketMuffin.PayPal.Model;
 
-namespace GroupGiving.Core.Actions.CreatePledge
+namespace TicketMuffin.Core.Actions.CreatePledge
 {
     public class MakePledgeAction
     {

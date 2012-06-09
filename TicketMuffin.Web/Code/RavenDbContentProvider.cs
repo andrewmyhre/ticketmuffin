@@ -1,12 +1,9 @@
 using System.Collections.Generic;
 using System.Linq;
-using System.Web;
-using GroupGiving.Core.Domain;
-using JustGiving.Api.Sdk.Model;
 using Raven.Client;
-using Raven.Client.Linq;
+using TicketMuffin.Core.Domain;
 
-namespace GroupGiving.Web.Code
+namespace TicketMuffin.Web.Code
 {
     public class RavenDbContentProvider : IContentProvider
     {

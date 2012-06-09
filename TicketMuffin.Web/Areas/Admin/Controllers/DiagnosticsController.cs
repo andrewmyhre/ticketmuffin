@@ -7,14 +7,14 @@ using System.Web.Mvc;
 using System.Xml;
 using System.Xml.Linq;
 using EmailProcessing;
-using GroupGiving.Core.Domain;
-using GroupGiving.Core.Services;
-using GroupGiving.PayPal.Clients;
-using GroupGiving.PayPal.Model;
-using GroupGiving.Web.Models;
 using Raven.Client;
+using TicketMuffin.Core.Domain;
+using TicketMuffin.Core.Services;
+using TicketMuffin.PayPal.Clients;
+using TicketMuffin.PayPal.Model;
+using TicketMuffin.Web.Models;
 
-namespace GroupGiving.Web.Areas.Admin.Controllers
+namespace TicketMuffin.Web.Areas.Admin.Controllers
 {
     public class DiagnosticsController : Controller
     {

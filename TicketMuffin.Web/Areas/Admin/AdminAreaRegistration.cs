@@ -1,6 +1,6 @@
 ﻿using System.Web.Mvc;
 
-namespace GroupGiving.Web.Areas.Admin
+namespace TicketMuffin.Web.Areas.Admin
 {
     public class AdminAreaRegistration : AreaRegistration
     {

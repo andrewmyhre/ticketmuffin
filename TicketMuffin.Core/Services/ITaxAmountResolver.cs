@@ -1,4 +1,4 @@
-﻿namespace GroupGiving.Core.Services
+﻿namespace TicketMuffin.Core.Services
 {
     public interface ITaxAmountResolver
     {

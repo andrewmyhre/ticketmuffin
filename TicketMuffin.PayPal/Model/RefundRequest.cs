@@ -1,6 +1,6 @@
 using System.Xml.Serialization;
 
-namespace GroupGiving.PayPal.Model
+namespace TicketMuffin.PayPal.Model
 {
     public class RefundRequest : IPayPalRequest
     {

@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using EmailProcessing;
-using GroupGiving.Core.Domain;
 using Raven.Client;
+using TicketMuffin.Core.Domain;
 
-namespace GroupGiving.Core.Services
+namespace TicketMuffin.Core.Services
 {
     public class EventService : IEventService
     {

@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.Runtime.Serialization;
 
-namespace GroupGiving.PayPal.Model
+namespace TicketMuffin.PayPal.Model
 {
     [CollectionDataContract(Name = "errors", ItemName = "error", Namespace = Api.Namespace)]
     public class ErrorResponse : List<Error>

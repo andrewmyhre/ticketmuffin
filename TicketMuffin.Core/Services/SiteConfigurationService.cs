@@ -1,14 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using GroupGiving.Core.Configuration;
-using GroupGiving.Core.Domain;
-using GroupGiving.PayPal.Configuration;
+﻿using System.Linq;
 using Raven.Client;
+using TicketMuffin.Core.Configuration;
+using TicketMuffin.PayPal.Configuration;
 using log4net;
 
-namespace GroupGiving.Core.Services
+namespace TicketMuffin.Core.Services
 {
     public class SiteConfigurationService : ISiteConfigurationService
     {

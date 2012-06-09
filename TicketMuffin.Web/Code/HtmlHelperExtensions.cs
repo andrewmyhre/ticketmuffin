@@ -5,10 +5,10 @@ using System.Web;
 using System.Web.Mvc;
 using System.Text;
 using System.Web.Routing;
-using GroupGiving.Core.Domain;
 using Ninject;
+using TicketMuffin.Core.Domain;
 
-namespace GroupGiving.Web.Code
+namespace TicketMuffin.Web.Code
 {
     public static class HtmlHelperExtensions
     {
@@ -182,7 +182,7 @@ namespace GroupGiving.Web.Code
             }
         }
 
-        public static CultureInfo CurrencyFormat(this HtmlHelper html, GroupGiving.Core.Domain.Currency currency)
+        public static CultureInfo CurrencyFormat(this HtmlHelper html, Currency currency)
         {
             return currency.AsCulture();
         }

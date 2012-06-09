@@ -3,7 +3,7 @@ using System.Net;
 using System.Timers;
 using log4net;
 
-namespace GroupGiving.Core.Services
+namespace TicketMuffin.Core.Services
 {
     public class SiteWarmupService : IWindowsService
     {

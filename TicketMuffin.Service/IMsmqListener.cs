@@ -1,6 +1,6 @@
 using System;
 
-namespace GroupGiving.Service
+namespace TicketMuffin.Service
 {
     public interface IMsmqListener
     {

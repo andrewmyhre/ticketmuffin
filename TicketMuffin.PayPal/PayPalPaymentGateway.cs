@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Linq;
-using GroupGiving.PayPal.Clients;
-using GroupGiving.PayPal.Configuration;
-using GroupGiving.PayPal.Model;
+using TicketMuffin.PayPal.Clients;
+using TicketMuffin.PayPal.Configuration;
+using TicketMuffin.PayPal.Model;
 
-namespace GroupGiving.PayPal
+namespace TicketMuffin.PayPal
 {
     public class PayPalPaymentGateway : IPaymentGateway
     {

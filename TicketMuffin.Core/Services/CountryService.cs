@@ -2,10 +2,10 @@ using System.Collections.Generic;
 using System.Data;
 using System.IO;
 using System.Linq;
-using Com.StellmanGreene.CSVReader;
 using Raven.Client;
+using TicketMuffin.Core.Data;
 
-namespace GroupGiving.Core.Services
+namespace TicketMuffin.Core.Services
 {
     public class CountryService : ICountryService
     {

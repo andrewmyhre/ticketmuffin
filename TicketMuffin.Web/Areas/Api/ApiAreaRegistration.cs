@@ -1,8 +1,8 @@
 ﻿using System.Web.Mvc;
 using System.Web.Routing;
-using GroupGiving.Web.Areas.Api.Code;
+using TicketMuffin.Web.Areas.Api.Code;
 
-namespace GroupGiving.Web.Areas.Api
+namespace TicketMuffin.Web.Areas.Api
 {
     public class ApiAreaRegistration : AreaRegistration
     {

@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace GroupGiving.Web.Areas.Admin.Models
+namespace TicketMuffin.Web.Areas.Admin.Models
 {
     public class UserListViewModel
     {

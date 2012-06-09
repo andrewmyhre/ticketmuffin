@@ -1,6 +1,6 @@
 using System;
 
-namespace GroupGiving.PayPal.Model
+namespace TicketMuffin.PayPal.Model
 {
     public class PaymentGatewayResponse : IPaymentGatewayResponse
     {

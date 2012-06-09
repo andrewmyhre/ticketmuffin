@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace GroupGiving.Service
+namespace TicketMuffin.Service
 {
     public static class MsmqAsyncListenerHelper
     {

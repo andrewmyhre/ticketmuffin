@@ -4,18 +4,17 @@ using System.Linq;
 using System.Transactions;
 using System.Web.Mvc;
 using System.Web.Security;
-using GroupGiving.Core.Domain;
-using GroupGiving.Core.Email;
-using GroupGiving.Core.Services;
-using GroupGiving.Web.Code;
-using GroupGiving.Web.Models;
 using Raven.Client;
+using TicketMuffin.Core.Domain;
+using TicketMuffin.Core.Email;
+using TicketMuffin.Core.Services;
+using TicketMuffin.Web.Code;
+using TicketMuffin.Web.Models;
 using log4net;
 using RavenDBMembership;
 using RavenDBMembership.Provider;
-using RavenDBMembership.Web.Models;
 
-namespace GroupGiving.Web.Controllers
+namespace TicketMuffin.Web.Controllers
 {
     public class AccountController : ContentTypeAwareController
     {

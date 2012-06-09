@@ -5,30 +5,29 @@ using System.Web;
 using System.Web.Security;
 using EmailProcessing;
 using EmailProcessing.Configuration;
-using GroupGiving.Core.Configuration;
-using GroupGiving.Core.Domain;
-using GroupGiving.Core.Email;
-using GroupGiving.Core.Services;
-using GroupGiving.PayPal;
-using GroupGiving.PayPal.Clients;
-using GroupGiving.PayPal.Configuration;
-using GroupGiving.PayPal.Model;
-using GroupGiving.Web.Code;
-using GroupGiving.Web.Controllers;
 using Ninject.Activation;
 using Raven.Client;
-using RavenDBMembership.Web.Models;
+using TicketMuffin.Core.Configuration;
+using TicketMuffin.Core.Email;
+using TicketMuffin.Core.Services;
+using TicketMuffin.PayPal;
+using TicketMuffin.PayPal.Clients;
+using TicketMuffin.PayPal.Configuration;
+using TicketMuffin.PayPal.Model;
+using TicketMuffin.Web.App_Start;
+using TicketMuffin.Web.Code;
+using TicketMuffin.Web.Controllers;
+using TicketMuffin.Web.Models;
 using log4net;
+using Microsoft.Web.Infrastructure.DynamicModuleHelper;
+using Ninject;
+using Ninject.Web.Mvc;
 
-[assembly: WebActivator.PreApplicationStartMethod(typeof(GroupGiving.Web.App_Start.NinjectMVC3), "Start")]
-[assembly: WebActivator.ApplicationShutdownMethodAttribute(typeof(GroupGiving.Web.App_Start.NinjectMVC3), "Stop")]
+[assembly: WebActivator.PreApplicationStartMethod(typeof(NinjectMVC3), "Start")]
+[assembly: WebActivator.ApplicationShutdownMethodAttribute(typeof(NinjectMVC3), "Stop")]
 
-namespace GroupGiving.Web.App_Start
+namespace TicketMuffin.Web.App_Start
 {
-    using Microsoft.Web.Infrastructure.DynamicModuleHelper;
-    using Ninject;
-    using Ninject.Web.Mvc;
-
     public static class NinjectMVC3 
     {
         private static readonly Bootstrapper bootstrapper = new Bootstrapper();

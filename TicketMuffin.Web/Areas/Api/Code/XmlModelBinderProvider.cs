@@ -1,14 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Runtime.Serialization;
 using System.Web;
 using System.Web.Mvc;
-using System.Xml;
-using System.Xml.Serialization;
 
-namespace GroupGiving.Web.Areas.Api.Code
+namespace TicketMuffin.Web.Areas.Api.Code
 {
     public class XmlModelBinderProvider : IModelBinderProvider
     {

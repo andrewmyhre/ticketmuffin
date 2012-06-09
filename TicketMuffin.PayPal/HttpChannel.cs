@@ -4,10 +4,10 @@ using System.Text;
 using System.Xml;
 using System.Xml.Linq;
 using System.Xml.Serialization;
-using GroupGiving.PayPal.Model;
+using TicketMuffin.PayPal.Model;
 using log4net;
 
-namespace GroupGiving.PayPal
+namespace TicketMuffin.PayPal
 {
     public class HttpChannel
     {

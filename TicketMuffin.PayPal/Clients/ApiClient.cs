@@ -1,7 +1,7 @@
-using GroupGiving.PayPal.Configuration;
+using TicketMuffin.PayPal.Configuration;
 using log4net;
 
-namespace GroupGiving.PayPal.Clients
+namespace TicketMuffin.PayPal.Clients
 {
     public class ApiClient : IApiClient
     {

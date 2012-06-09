@@ -1,7 +1,7 @@
 using System;
 using System.Xml.Serialization;
 
-namespace GroupGiving.PayPal.Model
+namespace TicketMuffin.PayPal.Model
 {
     [Serializable]
     public class ResponseBase

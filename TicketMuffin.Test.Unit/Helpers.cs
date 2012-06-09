@@ -1,5 +1,5 @@
 ﻿using System;
-using GroupGiving.Core.Services;
+using TicketMuffin.Core.Services;
 
 namespace GroupGiving.Test.Unit
 {

@@ -1,13 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
+﻿using System.IO;
 using System.Text;
 using System.Xml.Serialization;
-using GroupGiving.PayPal.Model;
 using NUnit.Framework;
+using TicketMuffin.PayPal.Model;
 
-namespace GroupGiving.PayPal.Tests.Unit
+namespace TicketMuffin.PayPal.Tests.Unit
 {
     [TestFixture]
     public class Serialization_Tests

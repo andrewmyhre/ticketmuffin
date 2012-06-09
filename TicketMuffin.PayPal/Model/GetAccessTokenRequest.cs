@@ -1,6 +1,6 @@
 using System.Xml.Serialization;
 
-namespace GroupGiving.PayPal.Model
+namespace TicketMuffin.PayPal.Model
 {
     [XmlRoot("GetAccessTokenRequest")]
     public class GetAccessTokenRequest : IPayPalRequest

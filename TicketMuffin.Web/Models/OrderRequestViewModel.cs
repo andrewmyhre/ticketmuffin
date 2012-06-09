@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using GroupGiving.Core.Dto;
-using GroupGiving.PayPal;
-using GroupGiving.PayPal.Model;
+﻿using TicketMuffin.PayPal.Model;
 
-namespace GroupGiving.Web.Models
+namespace TicketMuffin.Web.Models
 {
     public class OrderRequestViewModel
     {

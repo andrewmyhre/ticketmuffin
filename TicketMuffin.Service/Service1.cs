@@ -1,13 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Diagnostics;
-using System.Linq;
-using System.ServiceProcess;
-using System.Text;
+﻿using System.ServiceProcess;
 
-namespace GroupGiving.Service
+namespace TicketMuffin.Service
 {
     public partial class Service1 : ServiceBase
     {
