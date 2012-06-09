@@ -100,9 +100,6 @@
     <Compile Include="Helpers.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="packages.config" />
-  </ItemGroup>
-  <ItemGroup>
     <ProjectReference Include="..\EmailProcessing\EmailProcessing\EmailProcessing.csproj">
       <Project>{F511818D-59DF-4358-8946-10FB3933E5B2}</Project>
       <Name>EmailProcessing</Name>

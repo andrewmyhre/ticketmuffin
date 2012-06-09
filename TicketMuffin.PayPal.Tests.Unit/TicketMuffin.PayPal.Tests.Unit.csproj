@@ -70,9 +70,6 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="packages.config" />
-  </ItemGroup>
-  <ItemGroup>
     <ProjectReference Include="..\TicketMuffin.PayPal\TicketMuffin.PayPal.csproj">
       <Project>{69AC82E2-904E-4A5F-9A94-E5EDD91534AB}</Project>
       <Name>TicketMuffin.PayPal</Name>

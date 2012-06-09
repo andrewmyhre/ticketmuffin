@@ -114,7 +114,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
-    <None Include="packages.config" />
     <None Include="Pledging.feature">
       <Generator>SpecFlowSingleFileGenerator</Generator>
       <LastGenOutput>Pledging.feature.cs</LastGenOutput>
