@@ -36,12 +36,13 @@
     <td>@pledge.Total.ToString("c")</td>
     @if (pledge.Paid) {
         <text><td>Paid</td><td>@Html.ActionLink("Refund", "refund-pledge", new { shortUrl=Model.ShortUrl, orderNumber = pledge.OrderNumber }, null)</td></text>
-    } else if (pledge.PaymentStatus == GroupGiving.Core.Domain.PaymentStatus.Refunded)
+    }
+    else if (pledge.PaymentStatus == TicketMuffin.Core.Domain.PaymentStatus.Refunded)
     {
         <text><td>Refunded</td></text>
         <td>@pledge.DateRefunded.Value.ToString("dd-MM-yyyy hh:mm")</td>
     }
-    else if (pledge.PaymentStatus == GroupGiving.Core.Domain.PaymentStatus.Unpaid)
+    else if (pledge.PaymentStatus == TicketMuffin.Core.Domain.PaymentStatus.Unpaid)
     {
         <td>Unpaid</td>
     }
