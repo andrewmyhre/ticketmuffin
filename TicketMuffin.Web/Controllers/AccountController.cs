@@ -164,12 +164,27 @@ namespace TicketMuffin.Web.Controllers
             }
             else
             {
-                ModelState.AddModelError("signup", "There was a problem with the details you provided");
+                ModelState.AddModelError("signup", MessageFromMembershipCreateResult(createResult));
                 var model = new SignUpModel();
                 model.Countries = new SelectList(_countryService.RetrieveAllCountries(), "Name", "Name");
                 model.AccountTypes = new SelectList(Enum.GetNames(typeof(AccountType)));
                 return View(model);
             }
+        }
+
+        private string MessageFromMembershipCreateResult(MembershipCreateStatus createResult)
+        {
+            switch(createResult)
+            {
+                case MembershipCreateStatus.InvalidEmail:
+                    return "Please provide a valid email address";
+                    case MembershipCreateStatus.InvalidPassword:
+                    return "Please provide a valid password";
+                    case MembershipCreateStatus.DuplicateUserName:
+                    case MembershipCreateStatus.DuplicateEmail:
+                    return "That email address has already been registered";
+            }
+            return "There was a problem with the details you provided";
         }
 
         //

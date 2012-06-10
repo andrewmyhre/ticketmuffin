@@ -335,7 +335,7 @@ div#location {
 div#orderPage, div#confirmPage {
   padding: 30px 0;
 }
-div.grayBox {
+div.grayBox, .validation-summary-errors {
   background: #f3f3f3;
   border: solid 1px #e6e6e6;
   padding: 20px;

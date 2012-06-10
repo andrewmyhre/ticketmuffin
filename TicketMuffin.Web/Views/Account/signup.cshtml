@@ -12,7 +12,9 @@
 @using (Html.BeginForm("signup", "account"))
 {
         <h1>Sign up or @Html.ActionLink("Sign In", "SignIn", "Account", null, new {id="signInLink"})</h1>
-        
+ 
+        @Html.ValidationSummary("There were some problems with the information you provided:")
+           
         <div class="grayBox">
         <p>@Html.ActionLink("Forgot your password?", "ForgotPassword", "Account")</p>
           <div style="padding-bottom: 10px;">
