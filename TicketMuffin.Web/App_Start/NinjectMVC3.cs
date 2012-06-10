@@ -101,14 +101,7 @@ namespace TicketMuffin.Web.App_Start
                 .InRequestScope()
                 .OnDeactivation((ctx,session)=>
                                     {
-                                        var request = ctx.GetScope() as HttpRequestBase;
-                                        if (request != null)
-                                        {
-                                            if (request.RequestContext.HttpContext.Error == null)
-                                            {
-                                                session.SaveChanges();
-                                            }
-                                        }
+                                        session.SaveChanges();
                                     });
 
             kernel.Bind<IFormsAuthenticationService>().To<FormsAuthenticationService>();
@@ -126,7 +119,7 @@ namespace TicketMuffin.Web.App_Start
                                                                           configuration.TemplateLocation);
                                                                   templateManager.LoadTemplates();
                                                                   return templateManager;
-                                                              }).InSingletonScope();
+                                                              });
             kernel.Bind<EmailBuilderConfigurationSection>()
                 .ToMethod(ctx => ConfigurationManager.GetSection("emailBuilder") as EmailBuilderConfigurationSection);
             kernel.Bind<IEmailFacade>().ToMethod((request) =>
@@ -140,7 +133,7 @@ namespace TicketMuffin.Web.App_Start
 
                                                          return service;
                                                      }
-                ).InSingletonScope();
+                );
             kernel.Bind<IEmailPackageRelayer>()
                 .ToMethod(x => EmailSenderFactory.CreateRelayerFromConfiguration(ConfigurationManager.GetSection("emailBuilder") as EmailBuilderConfigurationSection));
             kernel.Bind<ICountryService>().To<CountryService>();
