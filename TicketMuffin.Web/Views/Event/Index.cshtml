@@ -15,7 +15,7 @@
         $(document).ready(function () {
             $('#countdown').countdown({  
                 until: new Date(
-                            @Model.SalesEndDateTime.Year,
+                    @Model.SalesEndDateTime.Year,
                             @Model.SalesEndDateTime.Month-1,
                             @Model.SalesEndDateTime.Day,
                             @Model.SalesEndDateTime.Hour,
@@ -42,72 +42,100 @@
         
         
     </script>
+    <script type="text/javascript">        var switchTo5x = true;</script>
+    <script type="text/javascript" src="http://w.sharethis.com/button/buttons.js"></script>
+    <script type="text/javascript" src="http://s.sharethis.com/loader.js"></script>
+    <style type="text/css">
+    .stpulldown-gradient
+    {
+    background: #E1E1E1;
+    background: -moz-linear-gradient(top, #E1E1E1 0%, #A7A7A7 100%); /* firefox */
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#E1E1E1), color-stop(100%,#A7A7A7)); /* webkit */
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#E1E1E1', endColorstr='#A7A7A7',GradientType=0 ); /* ie */
+    background: -o-linear-gradient(top, #E1E1E1 0%,#A7A7A7 100%); /* opera */
+    color: #636363;
+    }
+    #stpulldown .stpulldown-logo
+    {
+    height: 40px;
+    width: 300px;
+    margin-left: 20px;
+    margin-top: 5px;
+    background:url("http://www.ticketmuffin.com/content/img/logo.png") no-repeat;
+    }
+    </style>
 }
 
+
 <div id="eventPage">
-        <div id="eventHead">
-            @if (Model.State != EventState.Cancelled)
-             {
-                 <div id="eventDate">
-                     <div id="month">@Model.StartDate.ToString("MMMM", new CultureInfo(Html.CurrentCulture()))</div>
-                     <div id="day">@Model.StartDate.Day</div>
-                 </div>
-             }
+    <div id="eventHead">
+        @if (Model.State != EventState.Cancelled)
+        {
+            <div id="eventDate">
+                <div id="month">@Model.StartDate.ToString("MMMM", new CultureInfo(Html.CurrentCulture()))</div>
+                <div id="day">@Model.StartDate.Day</div>
+            </div>
+        }
                 
-          <div id="eventName"><h1>@Model.Title</h1></div>
+        <div id="eventName"><h1>@Model.Title</h1></div>
 
-          @if (Model.State != EventState.Cancelled)
-          {
-              <div id="eventDetails">@Model.StartDate.ToString(Html.Content("dddd, MMMM dd yyyy @ HH:mm tt").ToString(), Html.CultureDateTimeFormat())<br />
-                  @Model.Venue, @Model.AddressLine, @Model.City, @Model.Country
-              </div>
-          }
-          <div id="howItWorks"><a href="@Url.Action("HowItWorks", "Home")">@Html.Content("How it works")</a></div>
+        @if (Model.State != EventState.Cancelled)
+        {
+            <div id="eventDetails">@Model.StartDate.ToString(Html.Content("dddd, MMMM dd yyyy @ HH:mm tt").ToString(), Html.CultureDateTimeFormat())<br />
+                @Model.Venue, @Model.AddressLine, @Model.City, @Model.Country
+            </div>
+        }
+        <div id="howItWorks"><a href="@Url.Action("HowItWorks", "Home")">@Html.Content("How it works")</a></div>
 
-            @if (Model.UserIsEventOwner)
-            {
-                <div id="manageEvent">
-                    <a href="@Url.Action("edit-event", new { shortUrl = Model.ShortUrl })">@Html.Content("Edit this event")</a>
-                    <a href="@Url.Action("management-console", new {shortUrl = Model.ShortUrl})">@Html.Content("Go to the event management console")</a>
-                </div>
-            }
+        @if (Model.UserIsEventOwner)
+        {
+            <div id="manageEvent">
+                <a href="@Url.Action("edit-event", new { shortUrl = Model.ShortUrl })">@Html.Content("Edit this event")</a>
+                <a href="@Url.Action("management-console", new {shortUrl = Model.ShortUrl})">@Html.Content("Go to the event management console")</a>
+            </div>
+        }
 
+        @{ Html.RenderPartial("ShareButtons"); }
+    </div>
+    <div id="eventLeft">
+            
+
+        @{ Html.RenderPartial("PledgeWidget"); }
+        <h2>@Html.Content("Event details")</h2>
+
+        @if (Model.Charity != null)
+        {
+            <div class="eventBox">
+                @{Html.RenderPartial("CharityDetails", Model.Charity);}
+            </div>
+        }
+                
+        <div class="eventBox">
+            @{ Html.RenderPartial("EventDateDetails"); }
         </div>
-        <div id="eventLeft">
-                @{ Html.RenderPartial("PledgeWidget"); }
-                <div id="shareBox">
-                    <div>@Html.ActionLink(Html.Content("Share with your friends").ToString(), "Index", "ShareEvent", new {shortUrl=Model.ShortUrl}, null)</div>
-                </div>
-                <h2>@Html.Content("Event details")</h2>
+        <div class="eventBox">
+            @{ Html.RenderPartial("EventLocationDetails"); }
+        </div>
+        <div class="eventBox">
+            @{ Html.RenderPartial("EventOrganiserDetails"); }
+        </div>
+    </div>                                    
+    <div id="eventRight">
+        <div id="eventDesc">
+            <div class="imageContainer">
+                <img src="@Model.ImageUrl"/>
+            </div>
 
-                @if (Model.Charity != null)
-                 {
-                    <div class="eventBox">
-                     @{Html.RenderPartial("CharityDetails", Model.Charity);}
-                     </div>
-                 }
-                
-                <div class="eventBox">
-                    @{ Html.RenderPartial("EventDateDetails"); }
-                </div>
-                <div class="eventBox">
-                    @{ Html.RenderPartial("EventLocationDetails"); }
-                </div>
-                <div class="eventBox">
-                    @{ Html.RenderPartial("EventOrganiserDetails"); }
-                </div>
-        </div>                                    
-        <div id="eventRight">
-          <div id="eventDesc">
-                <div class="imageContainer">
-                    <img src="@Model.ImageUrl"/>
-                </div>
-
-                @Html.Raw(Model.DescriptionMarkedDown)
-                @Html.Raw(Model.AdditionalBenefitsMarkedDown)
+            @Html.Raw(Model.DescriptionMarkedDown)
+            @Html.Raw(Model.AdditionalBenefitsMarkedDown)
             <div id="fb-root"></div><script src="http://connect.facebook.net/en_US/all.js#xfbml=1"></script><fb:comments href="@Request.Url" num_posts="1" width="680"></fb:comments>            
-          </div>
         </div>
+    </div>
 
-        <div class="clearFix"></div>  
-      </div>
+    <div class="clearFix"></div>  
+</div>
+
+<script>
+    var options = { "publisher": "b71b30b7-320f-4d02-bb39-583207e1d30f", "scrollpx": 50, "ad": { "visible": false }, "chicklets": { "items": ["facebook", "twitter", "linkedin", "email"]} };
+    var st_pulldown_widget = new sharethis.widgets.pulldownbar(options);
+</script>
