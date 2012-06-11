@@ -237,6 +237,13 @@ namespace TicketMuffin.Web.Controllers
             var account = _accountService.RetrieveByEmailAddress(membershipUser.Email);
             var @event = _eventService.Retrieve(shortUrl);
 
+            if (@event == null)
+            {
+                _logger.Error("Couldn't find event "+ shortUrl);
+                return HttpNotFound();
+            }
+
+
             var viewModel = new SetTicketDetailsRequest();
             viewModel.SalesEndDateTime = @event.StartDate.AddDays(-1);
             viewModel.SalesEndTimeOptions = TimeOptions();
