@@ -4,7 +4,8 @@ obj/
 *.user
 *.suo
 *.resharper
-logs/
+logs/*.*
+!logs/Web.config
 App_Data/RavenDb
 *Publish.xml
 packages/Raven*/**/Data
