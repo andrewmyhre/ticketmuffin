@@ -14,6 +14,7 @@ using JustGiving.Api.Sdk;
 using Raven.Client;
 using System.Web.Routing;
 using System.Web;
+using TicketMuffin.Core.Domain;
 using TicketMuffin.Core.Services;
 using TicketMuffin.PayPal.Clients;
 using TicketMuffin.PayPal.Model;
@@ -243,6 +244,7 @@ namespace TicketMuffin.Web.Controllers
                 return HttpNotFound();
             }
 
+            SetPayPalDetailsIfMissing(account);
 
             var viewModel = new SetTicketDetailsRequest();
             viewModel.SalesEndDateTime = @event.StartDate.AddDays(-1);
@@ -251,6 +253,16 @@ namespace TicketMuffin.Web.Controllers
             viewModel.PayPalFirstName = account.PayPalFirstName;
             viewModel.PayPalLastName = account.PayPalLastName;
             return View(viewModel);
+        }
+
+        private void SetPayPalDetailsIfMissing(Account account)
+        {
+            if (string.IsNullOrWhiteSpace(account.PayPalEmail))
+                account.PayPalEmail = account.Email;
+            if (string.IsNullOrWhiteSpace(account.PayPalFirstName))
+                account.PayPalFirstName = account.FirstName;
+            if (string.IsNullOrWhiteSpace(account.PayPalLastName))
+                account.PayPalLastName = account.LastName;
         }
 
         [AcceptVerbs(HttpVerbs.Post)]
