@@ -534,6 +534,7 @@
     <Content Include="Areas\Admin\Views\Pledge\Search.cshtml" />
     <Content Include="Views\Event\Attendees.cshtml" />
     <Content Include="Views\Shared\ShareButtons.cshtml" />
+    <Content Include="logs\Web.config" />
     <None Include="_bin_deployableAssemblies\System.Web.Mvc.dll" />
     <None Include="_bin_deployableAssemblies\WebMatrix.WebData.xml" />
     <None Include="_bin_deployableAssemblies\WebMatrix.WebData.dll" />

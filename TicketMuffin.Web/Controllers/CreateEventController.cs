@@ -286,9 +286,10 @@ namespace TicketMuffin.Web.Controllers
                                                                       LastName=setTicketDetailsRequest.PayPalLastName
                                                                   };
                 accountVerification = _apiClient.Accounts.VerifyAccount(verifyAccountRequest);
-            } catch
+            } catch (Exception ex)
             {
                 // TODO: be more specific about the exception
+                _logger.Error(ex);
             }
 
             if (!accountVerification.Verified)
@@ -317,7 +318,7 @@ namespace TicketMuffin.Web.Controllers
 
             
 
-            return RedirectToRoute("Event_ShareYourEvent", new { shortUrl = @event.ShortUrl });
+            return RedirectToAction("Index", "Event", new { shortUrl = @event.ShortUrl });
         }
 
         private SelectList TimeOptions()

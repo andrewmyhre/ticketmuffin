@@ -36,7 +36,7 @@ namespace TicketMuffin.Web.Areas.Admin.Controllers
         public ActionResult Index(SiteConfiguration model)
         {
             bool newConfiguration = false;
-            var configuration = _documentSession.Query<SiteConfiguration>().FirstOrDefault();
+            var configuration = _documentSession.Query<SiteConfiguration>().SingleOrDefault();
             if (configuration == null)
             {
                 newConfiguration = true;

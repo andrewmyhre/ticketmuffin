@@ -3,11 +3,13 @@ using System.Web.Mvc;
 using TicketMuffin.PayPal.Clients;
 using TicketMuffin.PayPal.Model;
 using TicketMuffin.Web.Models;
+using log4net;
 
 namespace TicketMuffin.Web.Areas.Api.Controllers
 {
     public class AccountsController : ApiControllerBase
     {
+        private ILog logger = LogManager.GetLogger(typeof (AccountsController));
         private readonly IApiClient _apiClient;
         //
         // GET: /Api/Accounts/
@@ -41,7 +43,7 @@ namespace TicketMuffin.Web.Areas.Api.Controllers
             }
             catch (HttpChannelException exception)
             {
-                System.Diagnostics.Debug.WriteLine(exception.Message);
+                logger.Error(exception);
                 verifyResponse = new GetVerifiedStatusResponse(){Success = false};
             }
 
