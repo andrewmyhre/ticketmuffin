@@ -2,15 +2,15 @@
 @model TicketMuffin.Web.Models.ContactDetailsViewModel
 
 @{
-    ViewBag.Title = "ContactDetails";
+    ViewBag.Title = "Update your personal details - TicketMuffin";
 }
 
-<h2>ContactDetails</h2>
+<h2>Update your personal details</h2>
 
 @using (Html.BeginForm())
 {
     <div>
-    @Html.ValidationSummary(false, "There were some problems updating your details. Please check the values below and re-submit")
+    @Html.ValidationSummary()
     @if (Model.UpdatedSuccessfully)
     {
         <p>Your contact details were updated successfully</p>

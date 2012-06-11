@@ -14,12 +14,12 @@ namespace TicketMuffin.Web.Models
 
         [DataType(DataType.Text)]
         [Display(Name = "First Name")]
-        [Required]
+        [Required(ErrorMessage = "Please provide your first name")]
         public string FirstName { get; set; }
 
         [DataType(DataType.Text)]
         [Display(Name = "Last Name")]
-        [Required]
+        [Required(ErrorMessage = "Please provide your last name")]
         public string LastName { get; set; }
 
         [DataType(DataType.Text)]
