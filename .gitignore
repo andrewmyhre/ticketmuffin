@@ -4,8 +4,8 @@ obj/
 *.user
 *.suo
 *.resharper
-logs/*.*
-!logs/Web.config
+TicketMuffin.Web/logs/*
+!TicketMuffin.Web/logs/Web.config
 App_Data/RavenDb
 *Publish.xml
 packages/Raven*/**/Data
