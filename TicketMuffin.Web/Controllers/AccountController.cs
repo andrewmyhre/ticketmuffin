@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
 using System.Transactions;
 using System.Web.Mvc;
@@ -474,7 +475,7 @@ namespace TicketMuffin.Web.Controllers
         public ActionResult ChangeCulture(string lang, string returnUrl)
         {
             _cultureService.SetCurrentCulture(HttpContext, lang);
-            return Redirect("/" + returnUrl);
+            return Redirect(ConfigurationManager.AppSettings["SiteAbsolutePath"]+returnUrl);
         }
 
         #region Status Codes
