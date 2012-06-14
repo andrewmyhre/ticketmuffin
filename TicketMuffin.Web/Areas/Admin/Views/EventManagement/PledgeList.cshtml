@@ -14,8 +14,8 @@
         <td>@pledge.TransactionId</td>
         <td>@if (pledge.PaymentStatus == PaymentStatus.Reconciled)
             {
-            <text><span>Paid (sent)</span>
-            <span>@Html.ActionLink("Refund", "refund-pledge", new { id=Model.Id.Substring(Model.Id.IndexOf('/')), orderNumber = pledge.OrderNumber }, null)</span></text>
+                <text><span>Paid (sent)</span>
+                    <span>@Html.ActionLink("Refund", "refund-pledge", new { id=Model.Id.Substring(Model.Id.IndexOf('/')), orderNumber = pledge.OrderNumber }, null)</span></text>
             }
             else if (pledge.PaymentStatus == TicketMuffin.Core.Domain.PaymentStatus.Refunded)
             {
@@ -28,9 +28,14 @@
             }
             else if (pledge.PaymentStatus == PaymentStatus.PaidPendingReconciliation)
             {
-                    <text><span>Paid (unsent)</span>
+                <text><span>Paid (unsent)</span>
                     <span>@Html.ActionLink("Send payment", "execute-payment", new {id=Model.Id.Substring(Model.Id.IndexOf('/')), orderNumber = pledge.OrderNumber}, null)</span></text>
             } </td>
+            @if (pledge.PaymentStatus == PaymentStatus.PaidPendingReconciliation
+                || pledge.PaymentStatus == PaymentStatus.Reconciled)
+            {
+                <td>@Html.ActionLink("Send Tickets", "SendTickets", "Pledge", new {id=pledge.OrderNumber}, null)</td>
+            }
         <td>@Html.ActionLink("View messages", "TransactionHistory", 
                 new {id = pledge.OrderNumber})</td>
     </tr>

@@ -56,6 +56,7 @@ namespace TicketMuffin.Core.Actions.ActivateEvent
                     response.Errors = true;
                 }
 
+
             }
 
             @event.State = EventState.Activated;

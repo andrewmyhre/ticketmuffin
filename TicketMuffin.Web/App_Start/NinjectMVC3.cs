@@ -7,6 +7,7 @@ using EmailProcessing;
 using EmailProcessing.Configuration;
 using Ninject.Activation;
 using Raven.Client;
+using TicketMuffin.Core.Actions;
 using TicketMuffin.Core.Configuration;
 using TicketMuffin.Core.Email;
 using TicketMuffin.Core.Services;
@@ -176,6 +177,9 @@ namespace TicketMuffin.Web.App_Start
             kernel.Bind<IWindowsService>().To<SiteWarmupService>();
             kernel.Bind<ICultureService>().To<CultureService>().InRequestScope();
             kernel.Bind<ApplicationDataSetup>().ToSelf();
+            kernel.Bind<ITicketGenerator>().To<TicketGenerator>();
+            kernel.Bind<IPledgeTicketSender>().To<PledgeTicketSender>();
+            kernel.Bind<IEventCultureResolver>().To<EventCultureResolver>();
         }        
     }
 }

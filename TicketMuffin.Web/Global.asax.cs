@@ -47,6 +47,10 @@ namespace TicketMuffin.Web
 
             //MapCultureRoutes(routes);
 
+            routes.MapRoute("Ticket",
+                            "ticket/{id}",
+                            new {controller = "Ticket", action = "Index"});
+
             /*routes.MapRoute(
                 "CultureDefault", // Route name
                 "{culture}/{controller}/{action}/{id}", // URL with parameters

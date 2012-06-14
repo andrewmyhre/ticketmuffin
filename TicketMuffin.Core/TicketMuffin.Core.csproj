@@ -90,6 +90,8 @@
     <Compile Include="Actions\CreatePledge\MakePledgeRequest.cs" />
     <Compile Include="Actions\CreatePledge\MakePledgeAction.cs" />
     <Compile Include="Actions\ExecutePayment\ExecutePaymentAction.cs" />
+    <Compile Include="Actions\IPledgeTicketSender.cs" />
+    <Compile Include="Actions\PledgeTicketSender.cs" />
     <Compile Include="Actions\RefundPledge\RefundPledgeAction.cs" />
     <Compile Include="Actions\SettlePledge\ConfirmPledgePaymentAction.cs" />
     <Compile Include="Actions\SettlePledge\SettlePledgeRequest.cs" />
@@ -126,9 +128,11 @@
     <Compile Include="Services\CreateEventResult.cs" />
     <Compile Include="Services\CreateUserRequest.cs" />
     <Compile Include="Services\EmailCreationService.cs" />
+    <Compile Include="Services\EventCultureResolver.cs" />
     <Compile Include="Services\EventService.cs" />
     <Compile Include="Services\ICountryService.cs" />
     <Compile Include="Services\IEmailCreationService.cs" />
+    <Compile Include="Services\IEventCultureResolver.cs" />
     <Compile Include="Services\IEventService.cs" />
     <Compile Include="Services\IAccountService.cs" />
     <Compile Include="Services\IGetVerifiedStatusResponse.cs" />

@@ -29,5 +29,12 @@ namespace TicketMuffin.Core.Domain
         public List<GroupGivingEvent> Events { get; set; }
 
         public string PendingTransactionId { get; set; }
+
+        private string _culture;
+        public string Culture
+        {
+            get { return _culture ?? "en-GB"; }
+            set { _culture = value; }
+        }
     }
 }

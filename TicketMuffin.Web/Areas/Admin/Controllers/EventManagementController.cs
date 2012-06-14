@@ -4,6 +4,7 @@ using System.Linq;
 using System.Web.Mvc;
 using Raven.Client;
 using Raven.Client.Linq;
+using TicketMuffin.Core.Actions;
 using TicketMuffin.Core.Actions.ActivateEvent;
 using TicketMuffin.Core.Actions.CancelEvent;
 using TicketMuffin.Core.Actions.ExecutePayment;
@@ -22,11 +23,13 @@ namespace TicketMuffin.Web.Areas.Admin.Controllers
         private int pageSize = 100;
         private readonly IDocumentSession _documentSession;
         private readonly IPaymentGateway _paymentGateway;
+        private readonly IPledgeTicketSender _pledgeTicketSender;
 
-        public EventManagementController(IDocumentSession documentSession, IPaymentGateway paymentGateway)
+        public EventManagementController(IDocumentSession documentSession, IPaymentGateway paymentGateway, IPledgeTicketSender pledgeTicketSender)
         {
             _documentSession = documentSession;
             _paymentGateway = paymentGateway;
+            _pledgeTicketSender = pledgeTicketSender;
         }
 
         //
@@ -304,6 +307,21 @@ namespace TicketMuffin.Web.Areas.Admin.Controllers
             action.Execute("groupgivingevents/" + id, _documentSession);
 
             return RedirectToAction("ManageEvent", new {id = id});
+        }
+
+        public ActionResult SendTicketsToAttendees(int id)
+        {
+            var @event = _documentSession.Load<GroupGivingEvent>(id);
+            foreach(var pledge in @event.Pledges)
+            {
+                if (pledge.PaymentStatus == PaymentStatus.PaidPendingReconciliation
+                    || pledge.PaymentStatus == PaymentStatus.Reconciled)
+                {
+                    _pledgeTicketSender.SendTickets(@event, pledge);
+                }
+            }
+
+            return RedirectToAction("ManageEvent", "EventManagement", new {id = id});
         }
     }
 }

@@ -29,7 +29,8 @@
         <td>@pledge.AccountEmailAddress</td>
         <td>@pledge.PaymentStatus</td>
         <td>@pledge.TransactionId</td>
-        <td>@Html.ActionLink(pledge.OrderNumber, "TransactionHistory", "EventManagement",
+        <td>@Html.ActionLink("Attendees","Attendees","Pledge",new {id=pledge.OrderNumber}, null)</td>
+        <td>@Html.ActionLink("Transactions", "TransactionHistory", "EventManagement",
                        new
                            {
                                id = pledge.OrderNumber

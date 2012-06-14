@@ -28,6 +28,10 @@
     {
         <li>@Html.ActionLink("Activate event (send funds to secondary receivers)", "Activate", new { id = Model.Id.Substring(Model.Id.IndexOf('/')) })</li>
     }
+    @if (Model.State == EventState.Activated)
+    {
+        <li>@Html.ActionLink("Send tickets to paid attendees", "SendTicketsToAttendees", "EventManagement", new {id=Model.Id.Substring(Model.Id.IndexOf('/'))},null)</li>
+    }
 </ul>
 
-@{ Html.RenderPartial("EventList", Model); }
+@{ Html.RenderPartial("PledgeList", Model); }

@@ -475,6 +475,14 @@ namespace TicketMuffin.Web.Controllers
         public ActionResult ChangeCulture(string lang, string returnUrl)
         {
             _cultureService.SetCurrentCulture(HttpContext, lang);
+            if (User.Identity.IsAuthenticated)
+            {
+                var account = _documentSession.Query<Account>().SingleOrDefault(a => a.Email == User.Identity.Name);
+                if (account != null)
+                {
+                    account.Culture = lang;
+                }
+            }
             return Redirect(ConfigurationManager.AppSettings["SiteAbsolutePath"]+returnUrl);
         }
 
