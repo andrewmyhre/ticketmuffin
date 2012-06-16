@@ -13,7 +13,8 @@ else
             <label for="emailaddress">@Html.Content("Username", pageAddress: "global/header"): </label><input type="text" name="emailaddress" /><br />
             <label for="password">@Html.Content("Password", pageAddress: "global/header"): </label><input type="password" name="password" /><br />
             <input type="hidden" name="returnurl" value="@(Request.QueryString["returnUrl"] ?? Request.Url.PathAndQuery)" />
-            <span id="invalidCredentials" class="field-validation-error" style="display:none;">@Html.Content("We couldn't find an account matching those credentials", pageAddress: "global/header")</span>
+            <span id="invalidCredentials" class="field-validation-error" 
+            style="display:none;margin-left:0px">@Html.Content("We couldn't find an account matching those credentials", pageAddress: "global/header")</span>
             <a href="#" class="hide">@Html.Content("Cancel", pageAddress: "global/header")</a>
             <input type="submit" value="@Html.Content("Sign In", pageAddress: "global/header")" />
         </form>
