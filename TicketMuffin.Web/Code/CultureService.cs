@@ -20,7 +20,7 @@ namespace TicketMuffin.Web.Code
 
         public string DeterminePreferredCulture(string[] preferredLanguages)
         {
-            if (preferredLanguages.Length == 0)
+            if (preferredLanguages == null||preferredLanguages.Length == 0)
                 return "en-GB";
 
             if (preferredLanguages.Length == 1)

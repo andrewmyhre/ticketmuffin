@@ -6,6 +6,7 @@ using System.Web.Security;
 using EmailProcessing;
 using EmailProcessing.Configuration;
 using Ninject.Activation;
+using Ninject.Parameters;
 using Raven.Client;
 using TicketMuffin.Core.Actions;
 using TicketMuffin.Core.Configuration;
@@ -174,7 +175,8 @@ namespace TicketMuffin.Web.App_Start
             kernel.Bind<AdaptiveAccountsConfiguration>().ToMethod(r=>kernel.Get<ISiteConfiguration>().AdaptiveAccountsConfiguration);
             kernel.Bind<IPayRequestFactory>().To<PayRequestFactory>();
 
-            kernel.Bind<IWindowsService>().To<SiteWarmupService>();
+            kernel.Bind<IWindowsService>().To<SiteWarmupService>()
+                .WithParameter(new ConstructorArgument("remoteUrl", ConfigurationManager.AppSettings["warmupUrl"]));
             kernel.Bind<ICultureService>().To<CultureService>().InRequestScope();
             kernel.Bind<ApplicationDataSetup>().ToSelf();
             kernel.Bind<ITicketGenerator>().To<TicketGenerator>();

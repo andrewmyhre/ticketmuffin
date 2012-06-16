@@ -45,7 +45,10 @@ namespace TicketMuffin.Web.Code
     {
         public static bool UserAgentContains(this ControllerContext c, string agentToFind)
         {
-            return (c.HttpContext.Request.UserAgent.IndexOf(agentToFind, StringComparison.OrdinalIgnoreCase) > 0);
+            if (c.HttpContext.Request.UserAgent != null)
+                return (c.HttpContext.Request.UserAgent.IndexOf(agentToFind, StringComparison.OrdinalIgnoreCase) > 0);
+
+            return false;
         }
 
         public static bool IsMobileDevice(this ControllerContext c)
