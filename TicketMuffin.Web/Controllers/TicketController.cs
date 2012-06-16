@@ -23,17 +23,19 @@ namespace TicketMuffin.Web.Controllers
         //
         // GET: /Ticket/
 
-        public ActionResult Index(string id, string culture = "en-GB", int attendee=0)
+        public ActionResult Index(string id, string culture = "en-GB")
         {
+            // TODO: create an index to reduce these queries to one call
             var @event = _ravenDbSession.Query<GroupGivingEvent>()
-                .SingleOrDefault(e => e.Pledges.Any(p => p.OrderNumber == id));
+                .SingleOrDefault(e => e.Pledges.Any(p => p.Attendees.Any(a=>a.TicketNumber==id)));
             if(@event==null)
             {
                 throw new ArgumentException("Pledge not found");
             }
-            var pledge = @event.Pledges.SingleOrDefault(p => p.OrderNumber == id);
+            var pledge = @event.Pledges.SingleOrDefault(p => p.Attendees.Any(a=>a.TicketNumber==id));
+            var attendee = pledge.Attendees.Single(p => p.TicketNumber == id);
 
-            var ticketFileStream = _ticketGenerator.CreatePdf(@event, pledge, pledge.Attendees[attendee], culture);
+            var ticketFileStream = _ticketGenerator.LoadTicket(@event, pledge, attendee, culture);
             return new FileStreamResult(ticketFileStream, "application/pdf");
         }
 

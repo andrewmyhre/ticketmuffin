@@ -42,6 +42,8 @@ namespace TicketMuffin.Web.Controllers
         private readonly IEventService _eventService;
         private readonly IEmailFacade _emailService;
         private readonly ICultureService _cultureService;
+        private ITicketGenerator _ticketGenerator;
+        private IEventCultureResolver _cultureResolver;
 
         public EventController(IAccountService accountService,
                                IFormsAuthenticationService formsService, IMembershipService membershipService,
@@ -51,7 +53,7 @@ namespace TicketMuffin.Web.Controllers
             IIdentity userIdentity, 
             IEventService eventService,
             IEmailFacade emailService,
-            ICultureService cultureService)
+            ICultureService cultureService, ITicketGenerator ticketGenerator, IEventCultureResolver cultureResolver)
         {
             _accountService = accountService;
             _formsService = formsService;
@@ -66,6 +68,8 @@ namespace TicketMuffin.Web.Controllers
             _eventService = eventService;
             _emailService = emailService;
             _cultureService = cultureService;
+            _ticketGenerator = ticketGenerator;
+            _cultureResolver = cultureResolver;
         }
 
         //
@@ -568,7 +572,7 @@ namespace TicketMuffin.Web.Controllers
         public ActionResult Activate(string shortUrl, string confirm)
         {
             var @event = _eventService.Retrieve(shortUrl);
-            var action = new ActivateEventAction(_paymentGateway);
+            var action = new ActivateEventAction(_paymentGateway, _ticketGenerator, _cultureResolver);
             var response = action.Execute(@event.Id, _ravenSession);
             TempData["activate_response"] = response;
 

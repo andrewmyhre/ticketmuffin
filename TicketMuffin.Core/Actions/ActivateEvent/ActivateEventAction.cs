@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Raven.Client;
 using TicketMuffin.Core.Actions.ExecutePayment;
 using TicketMuffin.Core.Domain;
+using TicketMuffin.Core.Services;
 using TicketMuffin.PayPal;
 
 namespace TicketMuffin.Core.Actions.ActivateEvent
@@ -10,10 +11,14 @@ namespace TicketMuffin.Core.Actions.ActivateEvent
     public class ActivateEventAction
     {
         private readonly IPaymentGateway _paymentGateway;
+        private readonly ITicketGenerator _ticketGenerator;
+        private readonly IEventCultureResolver _cultureResolver;
 
-        public ActivateEventAction(IPaymentGateway paymentGateway)
+        public ActivateEventAction(IPaymentGateway paymentGateway, ITicketGenerator ticketGenerator, IEventCultureResolver cultureResolver)
         {
             _paymentGateway = paymentGateway;
+            _ticketGenerator = ticketGenerator;
+            _cultureResolver = cultureResolver;
         }
 
         public ActivateEventResponse Execute(string eventId, IDocumentSession session)
@@ -55,8 +60,14 @@ namespace TicketMuffin.Core.Actions.ActivateEvent
                 {
                     response.Errors = true;
                 }
-
-
+                else
+                {
+                    // create a ticket for each attendee
+                    foreach (var attendee in pledge.Attendees)
+                    {
+                        _ticketGenerator.CreateTicket(@event, pledge, attendee, _cultureResolver.ResolveCulture(@event));
+                    }
+                }
             }
 
             @event.State = EventState.Activated;

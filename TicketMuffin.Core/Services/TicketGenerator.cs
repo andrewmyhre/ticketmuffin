@@ -2,6 +2,7 @@ using System;
 using System.Globalization;
 using System.IO;
 using System.Text.RegularExpressions;
+using Raven.Client;
 using TicketMuffin.Core.Domain;
 using iTextSharp.text;
 using iTextSharp.text.pdf;
@@ -10,27 +11,35 @@ namespace TicketMuffin.Core.Services
 {
     public class TicketGenerator : ITicketGenerator
     {
-        public void CreatePdfFile(GroupGivingEvent @event, out string outputPath)
+        private readonly IDocumentSession _ravenSession;
+        static string ticketFolder = System.Web.Hosting.HostingEnvironment.MapPath("~/App_Data/tickets/");
+
+        public TicketGenerator(IDocumentSession ravenSession)
         {
-            throw new NotImplementedException();
+            _ravenSession = ravenSession;
         }
 
-        public Stream CreatePdf(GroupGivingEvent @event, EventPledge pledge, EventPledgeAttendee attendee, string culture)
+        public void CreateTicket(GroupGivingEvent @event, EventPledge pledge, EventPledgeAttendee attendee, string culture)
         {
-            byte[] data = null;
-            var mapPath = System.Web.Hosting.HostingEnvironment.MapPath("~/App_Data/tickets/"+pledge.OrderNumber+"-"+Strip(attendee.FullName)+".pdf");
-            if (!Directory.Exists(Path.GetDirectoryName(mapPath)))
-                Directory.CreateDirectory(Path.GetDirectoryName(mapPath));
+            string ticketFilename = "";
+            if (attendee.TicketNumber == null)
+            {
+                attendee.TicketNumber = Guid.NewGuid().ToString().Replace("{", "").Replace("}", "").Replace("-", "");
+                _ravenSession.SaveChanges();
+            }
+            ticketFilename = string.Format("{0}.pdf", attendee.TicketNumber);
+            var pdfPath = Path.Combine(ticketFolder, ticketFilename);
+            if (!Directory.Exists(Path.GetDirectoryName(pdfPath)))
+                Directory.CreateDirectory(Path.GetDirectoryName(pdfPath));
 
-            var cultureInfo= new CultureInfo(culture);
-            
+            var cultureInfo = new CultureInfo(culture);
 
-            using (var outputStream = new FileStream(mapPath, FileMode.Create, FileAccess.Write))
+            using (var outputStream = new FileStream(pdfPath, FileMode.Create, FileAccess.Write))
             {
                 PdfReader reader = new PdfReader(System.Web.Hosting.HostingEnvironment.MapPath("~/Content/tickets/ticket-pl.pdf"));
-                
 
-                Document document = new Document(new Rectangle(7.48f*72, 3.15f*72));
+
+                Document document = new Document(new Rectangle(7.48f * 72, 3.15f * 72));
                 var writer = PdfWriter.GetInstance(document, outputStream);
                 document.Open();
                 PdfContentByte cb = writer.DirectContent;
@@ -42,20 +51,27 @@ namespace TicketMuffin.Core.Services
                 AddTextToDocument(80, 130, 280, 30, @event.StartDate.ToString(cultureInfo), cb);
                 AddTextToDocument(80, 75, 280, 30, @event.Venue, cb);
                 AddTextToDocument(80, 15, 280, 30, @event.OrganiserName, cb);
-                AddTextToDocument(380, 140, 100,30, attendee.FullName, cb);
+                AddTextToDocument(380, 140, 100, 30, attendee.FullName, cb);
                 AddTextToDocument(380, 80, 100, 30, pledge.Total.ToString("c", cultureInfo), cb);
-                AddTextToDocument(380, 35,100, 30, pledge.AccountName, cb);
+                AddTextToDocument(380, 35, 100, 30, pledge.AccountName, cb);
 
                 cb.EndText();
                 document.Close();
             }
-            return new FileStream(mapPath, FileMode.Open, FileAccess.Read);
+            
         }
 
-        private string Strip(string fullName)
+        public Stream LoadTicket(GroupGivingEvent @event, EventPledge pledge, EventPledgeAttendee attendee, string culture)
         {
-            Regex r = new Regex("(?:[^a-z0-9 ]|(?<=['\"])s)", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant | RegexOptions.Compiled);
-            return r.Replace(fullName, String.Empty);
+            string ticketFilename = "";
+            
+            if (attendee.TicketNumber==null)
+            {
+                CreateTicket(@event,pledge,attendee,culture);
+            }
+            
+            ticketFilename = string.Format("{0}.pdf", attendee.TicketNumber);
+            return File.OpenRead(Path.Combine(ticketFolder, ticketFilename));
         }
 
         private static void AddTextToDocument(int left, int top, float width, float height, string text, PdfContentByte cb)

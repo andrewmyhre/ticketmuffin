@@ -8,7 +8,7 @@ namespace TicketMuffin.Core.Services
 {
     public interface ITicketGenerator
     {
-        void CreatePdfFile(GroupGivingEvent @event, out string outputPath);
-        Stream CreatePdf(GroupGivingEvent @event, EventPledge pledge, EventPledgeAttendee attendee, string culture);
+        void CreateTicket(GroupGivingEvent @event, EventPledge pledge, EventPledgeAttendee attendee, string culture);
+    Stream LoadTicket(GroupGivingEvent @event, EventPledge pledge, EventPledgeAttendee attendee, string culture);
     }
 }

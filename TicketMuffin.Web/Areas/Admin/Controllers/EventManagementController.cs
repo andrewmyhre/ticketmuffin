@@ -10,6 +10,7 @@ using TicketMuffin.Core.Actions.CancelEvent;
 using TicketMuffin.Core.Actions.ExecutePayment;
 using TicketMuffin.Core.Actions.RefundPledge;
 using TicketMuffin.Core.Domain;
+using TicketMuffin.Core.Services;
 using TicketMuffin.PayPal;
 using TicketMuffin.PayPal.Model;
 using TicketMuffin.Web.Areas.Admin.Models;
@@ -24,12 +25,16 @@ namespace TicketMuffin.Web.Areas.Admin.Controllers
         private readonly IDocumentSession _documentSession;
         private readonly IPaymentGateway _paymentGateway;
         private readonly IPledgeTicketSender _pledgeTicketSender;
+        private ITicketGenerator _ticketGenerator;
+        private IEventCultureResolver _cultureResolver;
 
-        public EventManagementController(IDocumentSession documentSession, IPaymentGateway paymentGateway, IPledgeTicketSender pledgeTicketSender)
+        public EventManagementController(IDocumentSession documentSession, IPaymentGateway paymentGateway, IPledgeTicketSender pledgeTicketSender, ITicketGenerator ticketGenerator, IEventCultureResolver cultureResolver)
         {
             _documentSession = documentSession;
             _paymentGateway = paymentGateway;
             _pledgeTicketSender = pledgeTicketSender;
+            _ticketGenerator = ticketGenerator;
+            _cultureResolver = cultureResolver;
         }
 
         //
@@ -303,7 +308,7 @@ namespace TicketMuffin.Web.Areas.Admin.Controllers
 
         public ActionResult Activate(int id)
         {
-            var action = new ActivateEventAction(_paymentGateway);
+            var action = new ActivateEventAction(_paymentGateway, _ticketGenerator, _cultureResolver);
             action.Execute("groupgivingevents/" + id, _documentSession);
 
             return RedirectToAction("ManageEvent", new {id = id});

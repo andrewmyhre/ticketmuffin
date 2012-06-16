@@ -10,5 +10,7 @@
         public EventPledgeAttendee(){}
 
         public string FullName { get; set; }
+
+        public string TicketNumber { get; set; }
     }
 }

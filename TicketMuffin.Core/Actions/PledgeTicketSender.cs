@@ -27,7 +27,7 @@ namespace TicketMuffin.Core.Actions
             message.IsBodyHtml = false;
             foreach (var attendee in pledge.Attendees)
             {
-                var ticket = _ticketGenerator.CreatePdf(@event, pledge, attendee, _eventCultureResolver.ResolveCulture(@event));
+                var ticket = _ticketGenerator.LoadTicket(@event, pledge, attendee, _eventCultureResolver.ResolveCulture(@event));
 
                 message.Attachments.Add(new Attachment(ticket, "ticket.pdf", "application/pdf"));
             }
