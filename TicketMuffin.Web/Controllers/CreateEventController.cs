@@ -202,6 +202,7 @@ namespace TicketMuffin.Web.Controllers
             
             if (result.Success)
             {
+                _ravenSession.SaveChanges();
                 return RedirectToRoute("CreateEvent_TicketDetails", new { shortUrl = result.Event.ShortUrl});
             }
 
