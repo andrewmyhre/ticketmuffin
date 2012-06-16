@@ -34,7 +34,7 @@ namespace TicketMuffin.Core.Services
                 }
                 catch (Exception ex)
                 {
-                    _logger.Error("Site warmup failed", ex);
+                    _logger.Error("Site warmup failed for "+RemoteUrl, ex);
                 }
             };
             _warmupTimer.Start();
