@@ -648,3 +648,12 @@ textarea.event-contact-message {
     width: 210px;
     height: 80px;
 }
+
+.sharing {
+    float: left;
+    clear: both;
+    display: block;
+    position: relative;
+    top: 118px;
+    left: 1px;
+}
