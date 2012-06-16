@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using EmailProcessing;
 using Raven.Client;
+using Raven.Client.Linq;
 using TicketMuffin.Core.Domain;
 
 namespace TicketMuffin.Core.Services
@@ -18,7 +19,7 @@ namespace TicketMuffin.Core.Services
 
         public IEnumerable<GroupGivingEvent> List(int pageSize=20, int pageIndex=0)
         {
-            return _ravenSession.Query<GroupGivingEvent>().Skip(pageIndex*pageSize).Take(pageSize);
+            return Queryable.Skip(_ravenSession.Query<GroupGivingEvent>(), pageIndex*pageSize).Take(pageSize);
         }
 
         public CreateEventResult CreateEvent(CreateEventRequest request)
@@ -129,7 +130,10 @@ namespace TicketMuffin.Core.Services
 
         public GroupGivingEvent Retrieve(string shortUrl)
         {
+            RavenQueryStatistics stats;
             var @event = _ravenSession.Query<GroupGivingEvent>()
+                .Statistics(out stats)
+                .Customize(a=>a.WaitForNonStaleResults(TimeSpan.FromSeconds(5)))
                 .SingleOrDefault(e => e.ShortUrl == shortUrl && e.State != EventState.Deleted);
             return @event;
         }
