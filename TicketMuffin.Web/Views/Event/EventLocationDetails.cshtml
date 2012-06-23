@@ -1,4 +1,5 @@
-﻿@using TicketMuffin.Web.Code
+﻿@using System.Globalization
+@using TicketMuffin.Web.Code
 @model TicketMuffin.Web.Models.EventViewModel
 
 <div class="eventBoxTop">@Html.Content("Location and address")</div>
@@ -11,7 +12,7 @@
 <script type="text/javascript"><!--
 var mapa;
 function inicjalizacja() {
-    var latlng = new google.maps.LatLng(@Model.VenueLatitude,@Model.VenueLongitude);	
+    var latlng = new google.maps.LatLng(@Model.VenueLatitude.ToString(new CultureInfo("en")),@Model.VenueLongitude.ToString(new CultureInfo("en")));	
     var mojeUstawienia = {
         zoom: 16, 									
         center: latlng, 
