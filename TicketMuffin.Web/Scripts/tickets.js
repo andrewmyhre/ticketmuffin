@@ -4,7 +4,7 @@
         { accept: 'application/json', dataType: 'json', contentType: 'application/json' }
     );
 
-    $("#salesEndDate").datepicker({ dateFormat: 'dd/mm/yy' });
+    $("#salesEndDate").datepicker({ dateFormat: dateFormat });
 
     $('#PayPalEmail').change(function () { VerifyPayPalAccount(null); });
     $('#PayPalFirstName').change(function () { VerifyPayPalAccount(null); });

@@ -1,4 +1,5 @@
-﻿var geocoder;
+﻿var culture = "en";
+var geocoder;
 var myLatlng;
 var myOptions;
 var map;
@@ -36,7 +37,7 @@ function lookupAddress() {
 
 
 
-    geocoder.geocode({ 'address': addressString }, function (results, status) {
+    geocoder.geocode({ 'address': addressString, 'language':culture }, function (results, status) {
         if (status == google.maps.GeocoderStatus.OK) {
             setPosition(
                 results[0].geometry.location,

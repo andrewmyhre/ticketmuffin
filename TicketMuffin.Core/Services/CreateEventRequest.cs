@@ -11,11 +11,11 @@ namespace TicketMuffin.Core.Services
         public HttpPostedFileBase ImageFile;
 
         [Required]
-        [Display(Name="Title")]
+        [Display(Name = "Title")]
         public string Title { get; set; }
 
         [Required]
-        [DataType(DataType.Date, ErrorMessage="Please provide a valid date")]
+        [DataType(DataType.Date, ErrorMessage = "Please provide a valid date")]
         public DateTime StartDateTime { get; set; }
 
         [Required]
@@ -39,6 +39,7 @@ namespace TicketMuffin.Core.Services
         public string Country { get; set; }
 
         public float Latitude { get; set; }
+
         public float Longitude { get; set; }
 
         [Required]
@@ -46,7 +47,7 @@ namespace TicketMuffin.Core.Services
         [DataType(DataType.MultilineText)]
         public string Description { get; set; }
 
-        [Required(ErrorMessage="Please provide a url for your event")]
+        [Required(ErrorMessage = "Please provide a url for your event")]
         [Display(Name = "http://www.ticketmuffin.com/")]
         public string ShortUrl { get; set; }
 
@@ -61,7 +62,10 @@ namespace TicketMuffin.Core.Services
         [Required]
         [DataType(DataType.PhoneNumber)]
         [Display(Name = "Contact phone number")]
-        [RegularExpression(@"[\+\(\)0-9x -]*", ErrorMessage="Please provide a valid phone number (numbers, plus symbol, dashes, parentheses and 'x' for extensions are okay)")]
+        [RegularExpression(@"[\+\(\)0-9x -]*",
+            ErrorMessage =
+                "Please provide a valid phone number (numbers, plus symbol, dashes, parentheses and 'x' for extensions are okay)"
+            )]
         public string PhoneNumber { get; set; }
 
         public string StartDate { get; set; }
@@ -70,8 +74,10 @@ namespace TicketMuffin.Core.Services
         public SelectList StartTimes { get; set; }
 
         public IEnumerable<SelectListItem> Countries { get; set; }
+
         [DataType(DataType.ImageUrl)]
         public string ImageFilename { get; set; }
+
         public string OrganiserAccountId { get; set; }
 
         public string OrganiserName { get; set; }

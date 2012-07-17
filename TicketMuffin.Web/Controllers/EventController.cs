@@ -541,7 +541,7 @@ namespace TicketMuffin.Web.Controllers
 
                     @event.ImageFilename = imagePath;
                     @event.ImageUrl =
-                        Url.Content(string.Format(ConfigurationManager.AppSettings["EventImagePathFormat"], shortUrl));
+                        Url.Content(string.Format(ConfigurationManager.AppSettings["EventImageUrlFormat"], shortUrl));
                     _ravenSession.SaveChanges();
                 }
                 catch (Exception exception)

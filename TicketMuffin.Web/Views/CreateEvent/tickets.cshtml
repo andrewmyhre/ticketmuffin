@@ -1,4 +1,5 @@
-﻿@model TicketMuffin.Core.Services.SetTicketDetailsRequest
+﻿@using TicketMuffin.Web.Code
+@model TicketMuffin.Core.Services.SetTicketDetailsRequest
 
 @{
     ViewBag.Title = "tickets";
@@ -9,6 +10,9 @@
 @section scripts {
     <script src="/Scripts/jquery-ui-1.8.11.min.js" type="text/javascript"></script>
     <script src="/Scripts/tickets.js" type="text/javascript"></script>
+    <script type="text/javascript">
+        var dateFormat = '@Html.CurrentCultureInfo().DateTimeFormat.ShortDatePattern.Replace("yyyy","yy").Replace("MM","mm")';
+    </script>
 }
 
 <div>

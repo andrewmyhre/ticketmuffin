@@ -56,9 +56,13 @@ namespace TicketMuffin.Web.Code
             return cultureWeight;
         }
 
-        public void SetCurrentCulture(HttpContextBase httpContext, string cultureString)
+        public void SetCurrentCulture(HttpContextBase httpContext, string cultureString, bool setCookie = false)
         {
-            httpContext.Response.Cookies.Add(new HttpCookie("culture", cultureString));
+            if (setCookie)
+            {
+                httpContext.Response.Cookies.Add(new HttpCookie("culture", cultureString));
+            }
+
             httpContext.Items["culture"] = cultureString;
         }
 
@@ -78,7 +82,7 @@ namespace TicketMuffin.Web.Code
     public interface ICultureService
     {
         string GetCultureOrDefault(HttpContextBase httpContext, string defaultCulture="en-GB");
-        void SetCurrentCulture(HttpContextBase httpContext, string cultureString);
+        void SetCurrentCulture(HttpContextBase httpContext, string cultureString, bool setCookie=false);
         bool HasCulture(HttpContextBase httpContext);
         string DeterminePreferredCulture(string[] preferredLanguages);
     }

@@ -124,6 +124,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\Country.cs" />
     <Compile Include="Services\CountryService.cs" />
+    <Compile Include="Services\NonEnglishNumbersModelBinder.cs" />
     <Compile Include="Services\CreateEventRequest.cs" />
     <Compile Include="Services\CreateEventResult.cs" />
     <Compile Include="Services\CreateUserRequest.cs" />

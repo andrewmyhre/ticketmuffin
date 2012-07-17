@@ -1,11 +1,12 @@
-﻿var geocoder;
+﻿var culture = "en";
+var geocoder;
 var myLatlng;
 var myOptions;
 var map;
 var marker;
 
 $(document).ready(function () {
-    $("#startDate").datepicker({ dateFormat: 'dd/mm/yy' });
+    $("#startDate").datepicker({ dateFormat: dateFormat });
 
     $('#AddressLine').change(lookupAddress);
     $('#City').change(lookupAddress);
@@ -157,8 +158,9 @@ function lookupAddress() {
             mapTypeId: google.maps.MapTypeId.ROADMAP,
             mapTypeControl: false,
             disableDoubleClickZoom: true,
-            streetViewControl: false
-        }
+            streetViewControl: false,
+            language: culture
+        };
         map = new google.maps.Map($('#map').get(0), myOptions);
         marker = new google.maps.Marker({
             position: myLatlng,
@@ -170,7 +172,7 @@ function lookupAddress() {
 
     var addressString = /*$('#Venue').val() + ', ' + */$('#AddressLine').val() + ', ' + $('#City').val() + ' ' + $('#Postcode').val() + ', ' + $('#Country').val();
 
-    geocoder.geocode({ 'address': addressString }, function (results, status) {
+    geocoder.geocode({ 'address': addressString, 'language':culture }, function (results, status) {
         if (status == google.maps.GeocoderStatus.OK) {
             setPosition(
                 results[0].geometry.location,

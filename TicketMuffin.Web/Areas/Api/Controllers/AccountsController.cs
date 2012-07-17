@@ -44,6 +44,8 @@ namespace TicketMuffin.Web.Areas.Api.Controllers
             catch (HttpChannelException exception)
             {
                 logger.Error(exception);
+                logger.Error(exception.FaultMessage.Raw.Request);
+                logger.Error(exception.FaultMessage.Raw.Response);
                 verifyResponse = new GetVerifiedStatusResponse(){Success = false};
             }
 
