@@ -182,26 +182,24 @@ input.smallButton, button.smallButton {
 }
 div#pledgeInfo {
  background: url("/content/img/pledgeInfo_bg.jpg") repeat-x scroll center top #86B8E9;
-    padding: 25px 20px 10px;
+    padding: 15px 20px 10px;
     position: relative;
 }
 div#pledgeInfo div#count {
     color: #FFFFFF;
     float: left;
     font-size: 40px;
+    line-height: 40px;
     font-weight: bold;
 }
 div#pledgeInfo div#countInfo {
     color: #292929;
-    float: left;
     font-size: 16px;
     font-weight: bold;
     line-height: 16px;
-    width:180px;
-    margin-left:10px;
-    position: absolute;
-    bottom:165px;
-    left:60px;
+    width:auto;
+    margin-left:70px;
+    margin-top: 3px;
 }
 div#pledgeInfo div#countInfo.cancelled
 {
@@ -214,7 +212,7 @@ div#countBar {
   -moz-border-radius: 3px;
   -webkit-border-radius: 3px;
   padding: 1px;
-  margin-top:35px;
+  margin-top:5px;
 }
 div#barProgress {
   height: 16px;
