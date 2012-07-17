@@ -192,14 +192,14 @@ namespace TicketMuffin.Web.Controllers
                 uploadedImage.Save(imagePath, ImageFormat.Jpeg);
                 request.ImageFilename = imagePath;
                 request.ImageUrl =
-                    Url.Content(string.Format(ConfigurationManager.AppSettings["EventImagePathFormat"], request.ShortUrl));
+                    Url.Content(string.Format(ConfigurationManager.AppSettings["EventImageUrlFormat"], request.ShortUrl));
             }
 
             var account = _accountService.RetrieveByEmailAddress(_userIdentity.Name);
             request.OrganiserAccountId = account.Id;
             request.OrganiserName = account.FirstName + " " + account.LastName;
             var result = _eventService.CreateEvent(request);
-            
+
             if (result.Success)
             {
                 _ravenSession.SaveChanges();
@@ -329,12 +329,9 @@ namespace TicketMuffin.Web.Controllers
 
             var membershipUser = _membershipService.GetUser(_userIdentity.Name);
             var account = _accountService.RetrieveByEmailAddress(membershipUser.Email);
-            if (string.IsNullOrWhiteSpace(account.PayPalEmail) && string.IsNullOrWhiteSpace(account.PayPalFirstName) && string.IsNullOrWhiteSpace(account.PayPalEmail))
-            {
-                account.PayPalEmail = setTicketDetailsRequest.PayPalEmail;
-                account.PayPalFirstName = setTicketDetailsRequest.PayPalFirstName;
-                account.PayPalLastName = setTicketDetailsRequest.PayPalLastName;
-            }
+            account.PayPalEmail = setTicketDetailsRequest.PayPalEmail;
+            account.PayPalFirstName = setTicketDetailsRequest.PayPalFirstName;
+            account.PayPalLastName = setTicketDetailsRequest.PayPalLastName;
 
             
 
