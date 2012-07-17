@@ -71,7 +71,7 @@
           <div style="padding-bottom: 10px;">
             <label style="display: inline-block; width: 200px;"></label>
             @Html.CheckBoxFor(m=>m.AgreeToTermsAndConditions)
-            <span class="wholeline">@Html.LabelFor(m => m.AgreeToTermsAndConditions, "I agree to the terms and conditions")</span>
+            <span class="wholeline">@Html.LabelFor(m => m.AgreeToTermsAndConditions, "I agree to the ") @Html.ActionLink("Terms and Conditions", "TermsAndConditions", "About")</span>
             @Html.ValidationMessageFor(m=>m.AgreeToTermsAndConditions)
           </div>
           <div style="padding-bottom: 10px;">
