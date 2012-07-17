@@ -655,3 +655,8 @@ textarea.event-contact-message {
     top: 118px;
     left: 1px;
 }
+
+.addthis_toolbox {
+    float: right;
+    margin-top: 30px;
+}
