@@ -8,6 +8,7 @@ using Microsoft.Web.Mvc.Resources;
 using TicketMuffin.Core.Services;
 using TicketMuffin.Web.App_Start;
 using TicketMuffin.Web.Code;
+using TicketMuffin.Web.Models;
 using log4net;
 using Ninject;
 
@@ -213,6 +214,9 @@ namespace TicketMuffin.Web
                 service.Start();
             }
 
+            ModelBinders.Binders[typeof(CreateEventRequest)] =new NonEnglishNumbersModelBinder();
+            ModelBinders.Binders[typeof(SetTicketDetailsRequest)] = new NonEnglishNumbersModelBinder();
+            ModelBinders.Binders[typeof(UpdateEventViewModel)] = new NonEnglishNumbersModelBinder();
         }
 
         protected void Application_BeginRequest(object sender, EventArgs e)

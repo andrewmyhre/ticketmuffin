@@ -474,7 +474,7 @@ namespace TicketMuffin.Web.Controllers
 
         public ActionResult ChangeCulture(string lang, string returnUrl)
         {
-            _cultureService.SetCurrentCulture(HttpContext, lang);
+            _cultureService.SetCurrentCulture(HttpContext, lang, true);
             if (User.Identity.IsAuthenticated)
             {
                 var account = _documentSession.Query<Account>().SingleOrDefault(a => a.Email == User.Identity.Name);
