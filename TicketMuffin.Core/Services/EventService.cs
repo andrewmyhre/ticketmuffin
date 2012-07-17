@@ -132,8 +132,7 @@ namespace TicketMuffin.Core.Services
         {
             RavenQueryStatistics stats;
             var @event = _ravenSession.Query<GroupGivingEvent>()
-                .Statistics(out stats)
-                .Customize(a=>a.WaitForNonStaleResults(TimeSpan.FromSeconds(5)))
+                .Customize(a=>a.WaitForNonStaleResults(TimeSpan.FromSeconds(15)))
                 .SingleOrDefault(e => e.ShortUrl == shortUrl && e.State != EventState.Deleted);
             return @event;
         }
