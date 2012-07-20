@@ -47,7 +47,7 @@
             }
             else
             {
-                @string.Format(Html.Content("The money will be refunded if the minimum amount of participants is not reached before {0:dddd dd MMMM}").ToString(), Model.SalesEndDateTime)
+                @string.Format(Html.CurrentCultureInfo(), Html.Content("The money will be refunded if the minimum amount of participants is not reached before {0:dddd dd MMMM}").ToString(), Model.SalesEndDateTime)
             }
         </strong>
         </div>
