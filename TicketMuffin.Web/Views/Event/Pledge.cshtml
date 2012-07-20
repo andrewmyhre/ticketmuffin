@@ -64,7 +64,7 @@
         </div>
         <div style="padding: 20px 0 20px 0;">
             <div>@Html.CheckBoxFor(m => m.OptInForOffers)<span class="wholeline">@Html.LabelFor(m => m.OptInForOffers, Html.Content("I want to hear about special offers from TicketMuffin").ToString())</span></div>
-            <div><input type="checkbox" name="acceptTerms" id="acceptTerms" value="true" /><label class="wholeline" for="acceptTerms">@Html.Content("I accept the <a href=\"/About/TermsAndConditions\">Terms & Conditions</a>")</label></div>
+            <div><input type="checkbox" name="acceptTerms" id="acceptTerms" value="true" /><label class="wholeline" for="acceptTerms">@Html.Content("I accept the <a href=\"/About/TermsAndConditions\" target=\"_blank\">Terms & Conditions</a>")</label></div>
         </div>
         <div>
         @Html.Hidden("ticketPrice", Model.TicketPrice)
