@@ -669,4 +669,4 @@ textarea.event-contact-message {
     margin-top: 30px;
 }
 
-#login-progress{ display: none;}
+#login-progress, #contactProgress{ display: none;}
