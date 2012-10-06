@@ -8,6 +8,7 @@ namespace TicketMuffin.Web.Code
     public class RavenDbContentProvider : IContentProvider
     {
         private readonly IDocumentSession _session;
+        private PageContent _page=null;
 
         public RavenDbContentProvider(IDocumentSession session)
         {
@@ -30,7 +31,10 @@ namespace TicketMuffin.Web.Code
 
         public PageContent GetPage(string address)
         {
-            return _session.Query<PageContent>().FirstOrDefault(pc => pc.Address == Sanitize(address));
+            if (_page == null)
+                _page = _session.Query<PageContent>().FirstOrDefault(pc => pc.Address == Sanitize(address));
+
+            return _page;
         }
 
         public PageContent AddContentPage(string pageAddress)
@@ -69,16 +73,15 @@ namespace TicketMuffin.Web.Code
         {
             pageAddress = Sanitize(pageAddress);
             label = Sanitize(label);
-            PageContent page = null/*_pages.FirstOrDefault(p => p.Address == pageAddress)*/;
-            if (page == null) {
-                page = _session.Query<PageContent>().FirstOrDefault(p => p.Address == pageAddress);
+            if (_page == null) {
+                _page = _session.Query<PageContent>().FirstOrDefault(p => p.Address == pageAddress);
             }
 
             ContentDefinition contentDefinition = null;
 
-            if (page != null)
+            if (_page != null)
             {
-                contentDefinition = page.Content.FirstOrDefault(cd => cd.Label == label);
+                contentDefinition = _page.Content.FirstOrDefault(cd => cd.Label == label);
                 if (contentDefinition == null)
                 {
                     contentDefinition = new ContentDefinition()
@@ -90,14 +93,14 @@ namespace TicketMuffin.Web.Code
                                                 Label = label
                                             };
 
-                    // if we're updating, make sure the page is attached to the db session
-                    if (!_session.Advanced.IsLoaded(page.Id))
+                    // if we're updating, make sure the _page is attached to the db session
+                    if (!_session.Advanced.IsLoaded(_page.Id))
                     {
-                        page = _session.Load<PageContent>(page.Id);
+                        _page = _session.Load<PageContent>(_page.Id);
                     }
-                    page.Content.Add(contentDefinition);
+                    _page.Content.Add(contentDefinition);
                     contentLabel = label;
-                    pageObject = page;
+                    pageObject = _page;
                     _session.SaveChanges();
                     if (_session.Advanced.NumberOfRequests >= _session.Advanced.MaxNumberOfRequestsPerSession - 1)
                     {
@@ -106,15 +109,15 @@ namespace TicketMuffin.Web.Code
                     return defaultContent;
                 }
                 contentLabel = contentDefinition.Label;
-                pageObject = page;
+                pageObject = _page;
 
                 if (!contentDefinition.ContentByCulture.Any(lc=>lc.Culture == culture))
                 {
-                    // if we're updating, make sure the page is attached to the db session
-                    if (!_session.Advanced.IsLoaded(page.Id))
+                    // if we're updating, make sure the _page is attached to the db session
+                    if (!_session.Advanced.IsLoaded(_page.Id))
                     {
-                        page = _session.Load<PageContent>(page.Id);
-                        contentDefinition = page.Content.FirstOrDefault(cd => cd.Label == label);
+                        _page = _session.Load<PageContent>(_page.Id);
+                        contentDefinition = _page.Content.FirstOrDefault(cd => cd.Label == label);
                     }
 
                     contentDefinition.ContentByCulture.Add(new LocalisedContent(){Culture = culture, Value = defaultContent});
@@ -127,10 +130,10 @@ namespace TicketMuffin.Web.Code
                 }
                 return contentDefinition.ContentByCulture.SingleOrDefault(lc=>lc.Culture == culture).Value;
             }
-            else // no page, make a whole new one
+            else // no _page, make a whole new one
             {
 
-                page = new PageContent()
+                _page = new PageContent()
                            {
                                Address = pageAddress,
                                Content = new List<ContentDefinition>()
@@ -145,13 +148,13 @@ namespace TicketMuffin.Web.Code
                                                 },
                                              }
                            };
-                _session.Store(page);
+                _session.Store(_page);
                 _session.SaveChanges();
                 if (_session.Advanced.NumberOfRequests >= _session.Advanced.MaxNumberOfRequestsPerSession-1)
                 {
                     _session.Advanced.MaxNumberOfRequestsPerSession *= 2;
                 }
-                pageObject = page;
+                pageObject = _page;
                 contentLabel = label;
                 return defaultContent;
             }
