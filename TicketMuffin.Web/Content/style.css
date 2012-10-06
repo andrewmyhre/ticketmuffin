@@ -333,6 +333,13 @@ div#location {
 div#orderPage, div#confirmPage {
   padding: 30px 0;
 }
+
+.field-validation-valid {
+    display: none;
+}
+.validation-summary-valid {
+    display: none;
+}
 div.grayBox, .validation-summary-errors {
   background: #f3f3f3;
   border: solid 1px #e6e6e6;
@@ -472,6 +479,7 @@ label, .wholeline label {
     position: absolute;
     right: 0;
     width: 333px;
+    z-index: 1000;
 }
 
 #popup-signIn input
@@ -660,3 +668,5 @@ textarea.event-contact-message {
     float: right;
     margin-top: 30px;
 }
+
+#login-progress{ display: none;}

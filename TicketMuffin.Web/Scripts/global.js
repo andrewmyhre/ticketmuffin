@@ -9,18 +9,22 @@
     .submit(function () {
         $.post('/account/signin',
             $('form#signin').serialize(),
-            function (data) {
-                if (data.Success)
-                    document.location.href = data.RedirectUrl;
-                else {
-                    $('#invalidCredentials').show();
-                    $('form#signin input[type=submit]').attr('disabled', '');
-                }
-            },
+            onLoginRequestComplete,
             'json');
         $('form#signin input[type=submit]').attr('disabled', 'true');
+        $('#login-progress').show();
         $('#invalidCredentials').hide();
         return false;
 
     });
+    
+    function onLoginRequestComplete(data) {
+        $('#login-progress').hide();
+        $('form#signin input[type=submit]').removeAttr('disabled');
+        if (data.Success)
+            document.location.href = data.RedirectUrl;
+        else {
+            $('#invalidCredentials').show();
+        }
+    }
 });
