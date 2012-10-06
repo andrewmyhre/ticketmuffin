@@ -1,5 +1,8 @@
-﻿@using TicketMuffin.Web.Code
+﻿@using System.Diagnostics
+@using System.Reflection
+@using TicketMuffin.Web.Code
 <!DOCTYPE HTML>
+
 <html>
   <head>
   <link type="text/css" href="/content/jquery-ui-1.8.16.custom.css" rel="stylesheet" />	
@@ -48,14 +51,15 @@
       
     </div>
     <div id="footerArea">
-      <div id="footerAreaInner">
-        <div class="left">@Html.Content("Copyright © 2011 <a href=\" / \">ticketmuffin</a>. All Rights Reserved.")</div>
-          <div class="right">
-              @Html.ActionLink(Html.Content("Contact Us", "Layout").ToString(), "Contact", "About")&nbsp;&nbsp;&bull;&nbsp;&nbsp;
-              @Html.ActionLink(Html.Content("Privacy Policy", "Layout").ToString(), "Privacy", "About")&nbsp;&nbsp;&bull;&nbsp;&nbsp;
-              @Html.ActionLink(Html.Content("Terms and Conditions", "Layout").ToString(), "TermsAndConditions", "About")
-          </div>
-      </div>
+        <div id="footerAreaInner">
+            <div class="left">@Html.Content("Copyright © 2011 <a href=\" / \">ticketmuffin</a>. All Rights Reserved.")</div>
+            <div class="right">
+                @Html.ActionLink(Html.Content("Contact Us", "Layout").ToString(), "Contact", "About")&nbsp;&nbsp;&bull;&nbsp;&nbsp;
+                @Html.ActionLink(Html.Content("Privacy Policy", "Layout").ToString(), "Privacy", "About")&nbsp;&nbsp;&bull;&nbsp;&nbsp;
+                @Html.ActionLink(Html.Content("Terms and Conditions", "Layout").ToString(), "TermsAndConditions", "About")
+            </div>
+        </div>
+        <br/>v@(FileVersionInfo.GetVersionInfo(Assembly.GetAssembly(typeof(TicketMuffin.Web.MvcApplication)).Location).FileVersion)
     </div>
 
   </body>
