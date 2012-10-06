@@ -1,6 +1,6 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 11.00
-# Visual Studio 2010
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2012
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TicketMuffin.Web", "TicketMuffin.Web\TicketMuffin.Web.csproj", "{B75BD700-F6ED-4B72-AB58-19875F157585}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TicketMuffin.PayPal", "TicketMuffin.PayPal\TicketMuffin.PayPal.csproj", "{69AC82E2-904E-4A5F-9A94-E5EDD91534AB}"
@@ -11,7 +11,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TicketMuffin.Test.Unit", "T
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LoadTest.Console", "LoadTest.Console\LoadTest.Console.csproj", "{262CCFC3-63FE-4D18-B9B9-394397CFD89E}"
 EndProject
-Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "eventmuffin html", "eventmuffin html\", "{5BFF87B6-9CAA-4B28-859A-ACAE90E9C261}"
+Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "eventmuffin html", "eventmuffin html", "{5BFF87B6-9CAA-4B28-859A-ACAE90E9C261}"
 	ProjectSection(WebsiteProperties) = preProject
 		TargetFrameworkMoniker = ".NETFramework,Version%3Dv4.0"
 		Debug.AspNetCompiler.VirtualPath = "/eventmuffin html"
