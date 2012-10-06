@@ -23,6 +23,10 @@
     <UpgradeBackupLocation>
     </UpgradeBackupLocation>
     <OldToolsVersion>4.0</OldToolsVersion>
+    <IISExpressSSLPort />
+    <IISExpressAnonymousAuthentication />
+    <IISExpressWindowsAuthentication />
+    <IISExpressUseClassicPipelineMode />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -309,6 +313,7 @@
     <Content Include="Content\images\ui-icons_f7a50d_256x240.png" />
     <Content Include="Content\images\ui-icons_fcd113_256x240.png" />
     <Content Include="Content\images\ui-icons_ffffff_256x240.png" />
+    <Content Include="Content\img\inprogress-green.gif" />
     <Content Include="Content\img\barProgress_inProg.png" />
     <Content Include="Content\img\dinner.jpg" />
     <Content Include="Content\img\fbconnect_big.jpg" />
