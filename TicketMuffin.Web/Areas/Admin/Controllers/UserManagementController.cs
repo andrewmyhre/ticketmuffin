@@ -46,7 +46,7 @@ namespace TicketMuffin.Web.Areas.Admin.Controllers
             var membershipUsers = _membershipProvider.GetAllUsers(0, 100, out totalRecords);
             foreach(MembershipUser membership in membershipUsers)
             {
-                var account = users.SingleOrDefault(a => a.Email == membership.UserName);
+                var account = users.FirstOrDefault(a => a.Email == membership.UserName);
                 if(account == null)
                 {
                     account = new Account()
