@@ -36,10 +36,17 @@ Account Type: @Html.EditorFor(m => m.AccountType)
 </div>
 
 <h3>PayPal</h3>
-<div>
-    Account Email: @Html.EditorFor(m => m.PayPalEmail)<br/>
-    Account Name: @Html.EditorFor(m => m.PayPalFirstName) @Html.EditorFor(m => m.PayPalLastName)
-</div>
+    <div>
+        Account Email: @Html.EditorFor(m => m.PayPalEmail)<br/>
+        Account Name: @Html.EditorFor(m => m.PayPalFirstName) @Html.EditorFor(m => m.PayPalLastName)
+    </div>
+    
+    <h3>Roles</h3>
+    <div>
+        Enter roles separated by commas:
+        @Html.EditorFor(m=>m.Roles)
+    </div>
+    
     <input type="submit" value="Save Changes" />
 }
 

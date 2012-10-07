@@ -1,4 +1,6 @@
-﻿using System.Linq;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Transactions;
 using System.Web.Mvc;
 using System.Web.Security;
@@ -14,11 +16,16 @@ namespace TicketMuffin.Web.Areas.Admin.Controllers
     {
         private readonly IDocumentSession _ravenSession;
         private readonly IAccountService _accountService;
+        private readonly MembershipProvider _membershipProvider;
+        private readonly RoleProvider _roleProvider;
 
-        public UserManagementController(IDocumentSession ravenSession, IAccountService accountService)
+        public UserManagementController(IDocumentSession ravenSession, IAccountService accountService, 
+            MembershipProvider membershipProvider, RoleProvider roleProvider)
         {
             _ravenSession = ravenSession;
             _accountService = accountService;
+            _membershipProvider = membershipProvider;
+            _roleProvider = roleProvider;
             AutoMapper.Mapper.CreateMap<Account, ManageAccountViewModel>();
         }
 
@@ -33,13 +40,26 @@ namespace TicketMuffin.Web.Areas.Admin.Controllers
             var userListViewModel = new UserListViewModel();
 
             var users = _ravenSession.Query<Account>().Take(1024).ToList();
-            userListViewModel.Users =
-                users.Select(u => AutoMapper.Mapper.Map<Account, ManageAccountViewModel>(u))
-                .ToList();
+            userListViewModel.Users = new List<ManageAccountViewModel>();
 
-            foreach(var account in userListViewModel.Users)
+            int totalRecords;
+            var membershipUsers = _membershipProvider.GetAllUsers(0, 100, out totalRecords);
+            foreach(MembershipUser membership in membershipUsers)
             {
-                account.MembershipUser = Membership.Provider.GetUser(account.Email, false);
+                var account = users.SingleOrDefault(a => a.Email == membership.UserName);
+                if(account == null)
+                {
+                    account = new Account()
+                        {
+                            Email=membership.UserName
+                        };
+                    _ravenSession.Store(account);
+                    _ravenSession.SaveChanges();
+                }
+                
+                var accountViewModel = AutoMapper.Mapper.Map<Account, ManageAccountViewModel>(account);
+                accountViewModel.MembershipUser = membership;
+                userListViewModel.Users.Add(accountViewModel);
             }
 
             return View(userListViewModel);
@@ -55,7 +75,8 @@ namespace TicketMuffin.Web.Areas.Admin.Controllers
 
             var account = _ravenSession.Load<Account>(id);
             manageAccountViewModel = AutoMapper.Mapper.Map<ManageAccountViewModel>(account);
-            manageAccountViewModel.MembershipUser = Membership.Provider.GetUser(account.Email, false);
+            manageAccountViewModel.MembershipUser = _membershipProvider.GetUser(account.Email, false);
+            manageAccountViewModel.Roles = string.Join(", ", _roleProvider.GetRolesForUser(account.Email));
 
             return View(manageAccountViewModel);
         }
@@ -101,8 +122,30 @@ namespace TicketMuffin.Web.Areas.Admin.Controllers
                     }
                 }
 
-
                 _ravenSession.SaveChanges();
+
+                if (!string.IsNullOrWhiteSpace(model.Roles))
+                {
+                    var membershipUser = _membershipProvider.GetUser(model.Email, false);
+
+
+                    var roles = model.Roles.Split(new[] { "," }, StringSplitOptions.RemoveEmptyEntries).Select(r=>r.Trim());
+                    foreach (var role in roles)
+                    {
+                        if (!_roleProvider.RoleExists(role))
+                        {
+                            _roleProvider.CreateRole(role);
+                        }
+                    }
+
+                    var currentRoles = _roleProvider.GetRolesForUser(membershipUser.UserName);
+                    var notInRoles = currentRoles.Where(cr => !roles.Contains(cr));
+                    _roleProvider.RemoveUsersFromRoles(new[] { model.Email }, notInRoles.ToArray());
+
+                    var newRoles = roles.Where(selectedRole => !currentRoles.Contains(selectedRole));
+                    _roleProvider.AddUsersToRoles(new[] { model.Email }, newRoles.ToArray());
+                }
+
                 transactionScope.Complete();
             }
 

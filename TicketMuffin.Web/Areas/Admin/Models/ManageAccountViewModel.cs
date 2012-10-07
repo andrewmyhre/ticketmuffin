@@ -17,6 +17,7 @@ namespace TicketMuffin.Web.Areas.Admin.Models
         public string PayPalEmail { get; set; }
         public string PayPalFirstName { get; set; }
         public string PayPalLastName { get; set; }
+        public string Roles { get; set; }
 
         public MembershipUser MembershipUser { get; set; }
     }
