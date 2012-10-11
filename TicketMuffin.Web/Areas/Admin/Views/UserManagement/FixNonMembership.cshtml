@@ -1,0 +1,16 @@
+﻿@model dynamic
+
+@{
+    ViewBag.Title = "title";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Fix account</h2>
+
+@using (@Html.BeginForm())
+{
+    <label for="newPassword">Provide a password for the account:</label>
+    <input type="text" name="newPassword" id="newPassword"/>
+    <input type="hidden" name="accountId" value="@Model.AccountId"/>
+    <input type="submit" value="Fix Account"/>
+}

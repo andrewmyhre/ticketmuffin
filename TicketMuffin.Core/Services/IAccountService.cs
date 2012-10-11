@@ -13,5 +13,6 @@ namespace TicketMuffin.Core.Services
         Account CreateIncompleteAccount(string emailAddress, IEmailRelayService emailRelayService);
         Account GetById(string accountId);
         Account RetrieveByEmailAddress(string emailAddress);
+        Account GetById(int accountId);
     }
 }

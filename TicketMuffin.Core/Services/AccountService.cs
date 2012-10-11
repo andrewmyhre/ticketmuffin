@@ -148,5 +148,9 @@ namespace TicketMuffin.Core.Services
         {
             return _documentSession.Load<Account>(accountId);
         }
+        public Account GetById(int accountId)
+        {
+            return _documentSession.Load<Account>(accountId);
+        }
     }
 }

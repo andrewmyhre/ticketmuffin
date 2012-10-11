@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Dynamic;
 using System.Linq;
 using System.Transactions;
 using System.Web.Mvc;
@@ -166,6 +167,36 @@ namespace TicketMuffin.Web.Areas.Admin.Controllers
             }
 
             return RedirectToAction("account", new {id});
+        }
+
+        public ActionResult FixNonMembership(int id)
+        {
+            var account = _accountService.GetById(id);
+            if (account == null)
+                return RedirectToAction("Index");
+
+            dynamic viewModel = new ExpandoObject();
+            viewModel.AccountId = id;
+            return View(viewModel);
+        }
+
+        [HttpPost]
+        public ActionResult FixNonMembership(int AccountId, string newPassword)
+        {
+            var account = _accountService.GetById(AccountId);
+            if (account == null)
+                return RedirectToAction("Index");
+
+            MembershipCreateStatus status;
+            _membershipProvider.CreateUser(account.Email, newPassword, account.Email, "", "", true, AccountId,
+                                           out status);
+
+            if (status == MembershipCreateStatus.Success)
+            {
+                return RedirectToAction("Index");
+            }
+
+            return new ContentResult(){Content = status.ToString(), ContentType = "text/xml"};
         }
     }
 }
