@@ -58,6 +58,7 @@ namespace TicketMuffin.Web.Areas.Admin.Controllers
                 }
                 
                 var accountViewModel = AutoMapper.Mapper.Map<Account, ManageAccountViewModel>(account);
+                accountViewModel.Roles = string.Join(", ",_roleProvider.GetRolesForUser(membership.UserName));
                 accountViewModel.MembershipUser = membership;
                 userListViewModel.Users.Add(accountViewModel);
             }
