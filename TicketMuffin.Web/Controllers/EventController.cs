@@ -6,6 +6,7 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Security.Principal;
+using System.Text;
 using System.Web.Hosting;
 using System.Web.Security;
 using EmailProcessing;
@@ -284,8 +285,18 @@ namespace TicketMuffin.Web.Controllers
         [AcceptVerbs(HttpVerbs.Get)]
         public ActionResult Edit(string shortUrl)
         {
-            var viewModel = new UpdateEventViewModel();
             var groupGivingEvent = _eventService.Retrieve(shortUrl);
+            Account userAccount = null;
+            if (_userIdentity.IsAuthenticated)
+            {
+                userAccount = _accountService.RetrieveByEmailAddress(_userIdentity.Name);
+                if (groupGivingEvent.OrganiserId != userAccount.Id)
+                {
+                    return RedirectToAction("Index", new {shortUrl});
+                }
+            }
+
+            var viewModel = new UpdateEventViewModel();
 
             AutoMapper.Mapper.CreateMap<GroupGivingEvent, UpdateEventViewModel>();
             viewModel = AutoMapper.Mapper.Map<GroupGivingEvent, UpdateEventViewModel>(groupGivingEvent);
@@ -302,6 +313,20 @@ namespace TicketMuffin.Web.Controllers
         {
             if (!ModelState.IsValid)
             {
+                StringBuilder debug=new StringBuilder();
+                foreach(var item in ModelState.Keys)
+                {
+                    var state = ModelState[item];
+                    debug.AppendFormat("<p>{0}: {1}, {2} errors", item, state.Value, state.Errors.Count);
+                    if (state.Errors.Count > 0)
+                    {
+                        foreach (var error in state.Errors)
+                            debug.AppendFormat("<br/>{0} - {1}", error.ErrorMessage, error.Exception.Message);
+                    }
+                    debug.AppendLine("</p>");
+                }
+                var result = new ContentResult(){Content = debug.ToString(), ContentType = "text/html"};
+                return result;
                 return View(viewModel);
             }
 
