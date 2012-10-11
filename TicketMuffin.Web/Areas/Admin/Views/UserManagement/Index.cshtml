@@ -9,15 +9,28 @@
 <h2>user management</h2>
 
 <table>
-@foreach (var account in Model.Users)
-{
-    <tr>
-        <td>@Html.ActionLink(account.Email??"(no email)", "account", new {Id=account.Id.Substring(account.Id.IndexOf('/')+1)})</td>
-        <td>@account.LastName</td>
-        <td>@account.FirstName</td>
-    </tr>
+    @foreach (var account in Model.Users)
+    {
+        <tr>
+            <td>@Html.ActionLink(account.Email??"(no email)", "account", new {Id=account.Id.Substring(account.Id.IndexOf('/')+1)})</td>
+            <td>@account.LastName</td>
+            <td>@account.FirstName</td>
+        </tr>
     
-}
+    }
 </table>
+
+<h3>Orphans</h3>
+<h4>Accounts without membership records</h4>
+@foreach(var accountOrphan in Model.AccountOrphans)
+{
+    <p>@accountOrphan.Email</p>
+}
+
+<h4>Membership records without accounts</h4>
+@foreach (var membershipUser in Model.MembershipOrphans)
+{
+    <p>@membershipUser.UserName</p>
+}
 
 <p>@Html.ActionLink("dashboard", "Index", "Dashboard")</p>

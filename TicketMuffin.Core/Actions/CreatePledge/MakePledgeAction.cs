@@ -17,16 +17,19 @@ namespace TicketMuffin.Core.Actions.CreatePledge
         private readonly IPaymentGateway _paymentGateway;
         private readonly AdaptiveAccountsConfiguration _paypalConfiguration;
         private readonly IDocumentSession _documentSession;
+        private readonly IOrderNumberGenerator _orderNumberGenerator;
 
         public MakePledgeAction(ITaxAmountResolver tax, 
             IPaymentGateway paymentGateway, 
             AdaptiveAccountsConfiguration paypalConfiguration,
-            IDocumentSession documentSession)
+            IDocumentSession documentSession,
+            IOrderNumberGenerator orderNumberGenerator)
         {
             _tax = tax;
             _paymentGateway = paymentGateway;
             _paypalConfiguration = paypalConfiguration;
             _documentSession = documentSession;
+            _orderNumberGenerator = orderNumberGenerator;
         }
 
         public CreatePledgeActionResult Attempt(string eventId, Account organiserAccount, MakePledgeRequest request)
@@ -72,7 +75,7 @@ namespace TicketMuffin.Core.Actions.CreatePledge
             pledge.Attendees =
                 (from a in request.AttendeeNames select new EventPledgeAttendee() {FullName = a}).ToList();
             pledge.AccountEmailAddress = request.PayPalEmailAddress;
-            pledge.OrderNumber = Guid.NewGuid().ToString().Replace("{", "").Replace("}", "").Replace("-", "");
+            pledge.OrderNumber = _orderNumberGenerator.Generate(@event);
 
             // calculate split
 

@@ -62,6 +62,21 @@ namespace TicketMuffin.Web.Areas.Admin.Controllers
                 userListViewModel.Users.Add(accountViewModel);
             }
 
+            userListViewModel.AccountOrphans = new List<ManageAccountViewModel>();
+            var membershipUserList = new List<MembershipUser>();
+            foreach(MembershipUser membershipUser in membershipUsers)
+                membershipUserList.Add(membershipUser);
+
+            userListViewModel.AccountOrphans = users
+                .Where(u => membershipUserList.All(mu => mu.UserName != u.Email))
+                .Select(AutoMapper.Mapper.Map<Account, ManageAccountViewModel>)
+                .ToList();
+
+            userListViewModel.MembershipOrphans =
+                membershipUserList.Where(mu => users.All(u => u.Email != mu.UserName))
+                    .ToList();
+
+
             return View(userListViewModel);
         }
 

@@ -44,6 +44,7 @@ namespace TicketMuffin.Web.Controllers
         private readonly ICultureService _cultureService;
         private ITicketGenerator _ticketGenerator;
         private IEventCultureResolver _cultureResolver;
+        private readonly IOrderNumberGenerator _orderNumberGenerator;
 
         public EventController(IAccountService accountService,
                                IFormsAuthenticationService formsService, IMembershipService membershipService,
@@ -53,7 +54,8 @@ namespace TicketMuffin.Web.Controllers
             IIdentity userIdentity, 
             IEventService eventService,
             IEmailFacade emailService,
-            ICultureService cultureService, ITicketGenerator ticketGenerator, IEventCultureResolver cultureResolver)
+            ICultureService cultureService, ITicketGenerator ticketGenerator, IEventCultureResolver cultureResolver,
+            IOrderNumberGenerator orderNumberGenerator)
         {
             _accountService = accountService;
             _formsService = formsService;
@@ -70,6 +72,7 @@ namespace TicketMuffin.Web.Controllers
             _cultureService = cultureService;
             _ticketGenerator = ticketGenerator;
             _cultureResolver = cultureResolver;
+            _orderNumberGenerator = orderNumberGenerator;
         }
 
         //
@@ -242,7 +245,7 @@ namespace TicketMuffin.Web.Controllers
                 return View(viewModel);
             }
 
-            var action = new MakePledgeAction(_taxResolver, _paymentGateway, _siteConfiguration.AdaptiveAccountsConfiguration, _ravenSession);
+            var action = new MakePledgeAction(_taxResolver, _paymentGateway, _siteConfiguration.AdaptiveAccountsConfiguration, _ravenSession, _orderNumberGenerator);
             var makePledgeRequest = new MakePledgeRequest()
                                         {
                                             AttendeeNames = request.AttendeeName,

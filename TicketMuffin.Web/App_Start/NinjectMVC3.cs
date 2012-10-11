@@ -179,9 +179,11 @@ namespace TicketMuffin.Web.App_Start
                 .WithParameter(new ConstructorArgument("remoteUrl", ConfigurationManager.AppSettings["warmupUrl"]));
             kernel.Bind<ICultureService>().To<CultureService>().InRequestScope();
             kernel.Bind<ApplicationDataSetup>().ToSelf();
-            kernel.Bind<ITicketGenerator>().To<TicketGenerator>();
+            kernel.Bind<ITicketGenerator>().To<TicketGenerator>()
+                .WithConstructorArgument("ticketTemplatePath", System.Web.Hosting.HostingEnvironment.MapPath("~/Content/tickets/ticket-pl.pdf"));
             kernel.Bind<IPledgeTicketSender>().To<PledgeTicketSender>();
             kernel.Bind<IEventCultureResolver>().To<EventCultureResolver>();
+            kernel.Bind<IOrderNumberGenerator>().To<OrderNumberGenerator>();
         }        
     }
 }

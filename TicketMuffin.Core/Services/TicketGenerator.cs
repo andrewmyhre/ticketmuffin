@@ -12,11 +12,13 @@ namespace TicketMuffin.Core.Services
     public class TicketGenerator : ITicketGenerator
     {
         private readonly IDocumentSession _ravenSession;
-        static string ticketFolder = System.Web.Hosting.HostingEnvironment.MapPath("~/App_Data/tickets/");
+        private readonly string _ticketTemplatePath;
+        static string ticketFolder = System.Web.Hosting.HostingEnvironment.MapPath("~/App_Data/tickets/") ?? "tickets";
 
-        public TicketGenerator(IDocumentSession ravenSession)
+        public TicketGenerator(IDocumentSession ravenSession, string ticketTemplatePath)
         {
             _ravenSession = ravenSession;
+            _ticketTemplatePath = ticketTemplatePath;
         }
 
         public void CreateTicket(GroupGivingEvent @event, EventPledge pledge, EventPledgeAttendee attendee, string culture)
@@ -36,7 +38,7 @@ namespace TicketMuffin.Core.Services
 
             using (var outputStream = new FileStream(pdfPath, FileMode.Create, FileAccess.Write))
             {
-                PdfReader reader = new PdfReader(System.Web.Hosting.HostingEnvironment.MapPath("~/Content/tickets/ticket-pl.pdf"));
+                PdfReader reader = new PdfReader(_ticketTemplatePath);
 
 
                 Document document = new Document(new Rectangle(7.48f * 72, 3.15f * 72));
@@ -49,11 +51,15 @@ namespace TicketMuffin.Core.Services
                 cb.BeginText();
                 AddTextToDocument(80, 190, 280, 30, @event.Title, cb);
                 AddTextToDocument(80, 130, 280, 30, @event.StartDate.ToString(cultureInfo), cb);
-                AddTextToDocument(80, 75, 280, 30, @event.Venue, cb);
+                //AddTextToDocument(80, 80, 280, 30, @event.Venue, cb);
+                AddTextToDocument(80, 80, 280, 30, string.Join(", ", @event.Venue, @event.AddressLine, @event.City + " " + @event.Postcode, @event.Country), cb);
                 AddTextToDocument(80, 15, 280, 30, @event.OrganiserName, cb);
                 AddTextToDocument(380, 140, 100, 30, attendee.FullName, cb);
+                AddTextToDocument(380, 126, 100, 30, attendee.TicketNumber, cb);
                 AddTextToDocument(380, 80, 100, 30, pledge.Total.ToString("c", cultureInfo), cb);
                 AddTextToDocument(380, 35, 100, 30, pledge.AccountName, cb);
+                AddTextToDocument(380, 21, 100, 30, pledge.AccountEmailAddress, cb);
+                AddTextToDocument(380, 7, 100, 30, pledge.OrderNumber, cb);
 
                 cb.EndText();
                 document.Close();

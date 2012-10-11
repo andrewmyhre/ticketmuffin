@@ -141,6 +141,7 @@
     <Compile Include="Services\ITaxAmountResolver.cs" />
     <Compile Include="Services\ITicketGenerator.cs" />
     <Compile Include="Services\IWindowsService.cs" />
+    <Compile Include="Services\OrderNumberGenerator.cs" />
     <Compile Include="Services\QueuedCommand.cs" />
     <Compile Include="Services\ResetPasswordResult.cs" />
     <Compile Include="Services\SendPasswordResetResult.cs" />
