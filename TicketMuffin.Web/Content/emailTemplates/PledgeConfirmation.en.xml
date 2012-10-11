@@ -5,7 +5,7 @@
     <from>andrew.myhre@gmail.com</from>
     <subject>TicketMuffin - Your pledge confirmation</subject>
     <html><![CDATA[<p>Hi there,</p>
-<p>Thanks for pledging to attend <a href="http://www.ticketmuffin.com/@Model.Event.ShortUrl">@Model.Event.Title</a>!</p>
+<p>Thanks for pledging to attend <a href="http://www.ticketmuffin.com/events/@Model.Event.ShortUrl">@Model.Event.Title</a>!</p>
 <p>Your order number is @Model.Pledge.OrderNumber. You can use this number if you ever need to contact us about your purchase.</p>
 <p>Whenever you want to update your personal information, change your password or review your activity, you can browse here:<br/>
 @Model.AccountPageUrl</p>
@@ -14,7 +14,7 @@
 ]]></html>
     <text>Hi @Model.Account.FirstName
 Thanks for pledging to attend @Model.Event.Title!
-You can review details of the event here: http://www.ticketmuffin.com/@Model.Event.ShortUrl
+You can review details of the event here: http://www.ticketmuffin.com/events/@Model.Event.ShortUrl
 
 Your order number is @Model.Pledge.OrderNumber. You can use this number if you ever need to contact us about your purchase.
 
