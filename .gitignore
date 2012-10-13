@@ -9,6 +9,7 @@ TicketMuffin.Web/logs/*
 App_Data/RavenDb
 *Publish.xml
 packages/Raven*/**/Data
+packages/Raven*/**/Logs
 packages/Raven*/**/*.log*
 packages/Raven*/Data
 packages/Raven*/*.log*
@@ -17,3 +18,5 @@ GroupGiving.Web/eventImages
 *.orig
 build
 precompiledweb
+TicketMuffin.Web/App_Data/email/pickup
+TicketMuffin.Web/App_Data/tickets
