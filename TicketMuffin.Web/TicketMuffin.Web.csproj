@@ -53,8 +53,9 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\AutoMapper.2.0.0\lib\AutoMapper.dll</HintPath>
     </Reference>
-    <Reference Include="FiftyOne.Foundation, Version=1.2.0.5, Culture=neutral, PublicKeyToken=e0b3a8da0bbce49c, processorArchitecture=MSIL">
-      <HintPath>..\packages\51Degrees.mobi.1.2.0.5\lib\NET40\FiftyOne.Foundation.dll</HintPath>
+    <Reference Include="FiftyOne.Foundation, Version=2.1.12.2, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\51Degrees.mobi.2.1.12.2\lib\NET40\FiftyOne.Foundation.dll</HintPath>
     </Reference>
     <Reference Include="JustGiving.Api.Sdk">
       <HintPath>..\packages\justgiving-sdk.1.5.1\lib\Net35\JustGiving.Api.Sdk.dll</HintPath>
@@ -75,7 +76,10 @@
     <Reference Include="Microsoft.Practices.ServiceLocation, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\CommonServiceLocator.1.0\lib\NET35\Microsoft.Practices.ServiceLocation.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.Web.Infrastructure, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
+    <Reference Include="Microsoft.Web.Infrastructure, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <Private>True</Private>
+      <HintPath>..\packages\Microsoft.Web.Infrastructure.1.0.0.0\lib\net40\Microsoft.Web.Infrastructure.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.Web.Mvc">
       <HintPath>..\packages\Microsoft.Web.Mvc.dll</HintPath>
     </Reference>
@@ -550,7 +554,9 @@
     <Content Include="Areas\Admin\Views\Pledge\Attendees.cshtml" />
     <Content Include="Areas\Admin\Web.config" />
     <Content Include="Areas\Admin\Views\UserManagement\FixNonMembership.cshtml" />
+    <Content Include="51Degrees.mobi.config" />
     <None Include="Content\tickets\ticket-pl.pdf" />
+    <Content Include="packages.config" />
     <None Include="_bin_deployableAssemblies\System.Web.Mvc.dll" />
     <None Include="_bin_deployableAssemblies\WebMatrix.WebData.xml" />
     <None Include="_bin_deployableAssemblies\WebMatrix.WebData.dll" />
