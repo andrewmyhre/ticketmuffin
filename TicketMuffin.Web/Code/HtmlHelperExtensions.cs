@@ -7,6 +7,7 @@ using System.Text;
 using System.Web.Routing;
 using Ninject;
 using TicketMuffin.Core.Domain;
+using TicketMuffin.Core.Services;
 
 namespace TicketMuffin.Web.Code
 {

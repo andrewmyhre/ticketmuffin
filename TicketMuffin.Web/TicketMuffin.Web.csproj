@@ -170,10 +170,8 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="App_Start\DenormalizedPledges.cs" />
     <Compile Include="App_Start\NinjectMVC3.cs" />
     <Compile Include="App_Start\ApplicationDataSetup.cs" />
-    <Compile Include="App_Start\RavenDbIndexes.cs" />
     <Compile Include="Areas\Admin\AdminAreaRegistration.cs" />
     <Compile Include="Areas\Admin\Controllers\CharityManagementController.cs" />
     <Compile Include="Areas\Admin\Controllers\ContentController.cs" />
@@ -206,7 +204,6 @@
     <Compile Include="Code\CultureService.cs" />
     <Compile Include="Code\CultureViewEngine.cs" />
     <Compile Include="Code\HtmlHelperExtensions.cs" />
-    <Compile Include="Code\IContentProvider.cs" />
     <Compile Include="Code\Markdown.cs" />
     <Compile Include="Code\MarkdownViewModel.cs" />
     <Compile Include="Code\MobileSupport.cs" />
@@ -214,7 +211,6 @@
     <Compile Include="Code\MultiCultureMvcRouteHandler.cs" />
     <Compile Include="Code\MustBeTrueAttribute.cs" />
     <Compile Include="Code\PageContentService.cs" />
-    <Compile Include="Code\RavenDbContentProvider.cs" />
     <Compile Include="Code\ServiceLocator.cs" />
     <Compile Include="Controllers\AboutController.cs" />
     <Compile Include="Controllers\AccountController.cs" />
@@ -259,7 +255,6 @@
     <Compile Include="Models\ShareViaEmailViewModel.cs" />
     <Compile Include="Models\SignInModel.cs" />
     <Compile Include="Models\SignUpModel.cs" />
-    <Compile Include="Models\TransactionHistoryItem.cs" />
     <Compile Include="Models\UpdateEventViewModel.cs" />
     <Compile Include="Models\VerifyPaypalAccountRequest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

@@ -1,8 +1,10 @@
 ﻿using System.Linq;
+using System.Text;
 using System.Web.Mvc;
 using Raven.Client;
 using Raven.Client.Linq;
 using TicketMuffin.Core.Domain;
+using TicketMuffin.Core.Services;
 
 namespace TicketMuffin.Web.Areas.Admin.Controllers
 {
@@ -28,27 +30,56 @@ namespace TicketMuffin.Web.Areas.Admin.Controllers
             return View(viewModel);
         }
 
-        public ActionResult ViewPageContent(int id)
+        public ActionResult Migrate()
+        {
+            _session.Advanced.MaxNumberOfRequestsPerSession = 1000;
+            StringBuilder log = new StringBuilder();
+
+            int tryint;
+            var allPages = _session.Query<PageContent>().ToList()
+                .Where(p => int.TryParse(p.Id.Substring("pagecontents/".Length), out tryint));
+            foreach(var page in allPages)
+            {
+                var contentProvider = new RavenDbContentProvider(_session);
+                foreach(var content in page.Content)
+                {
+                    foreach(var culture in content.ContentByCulture)
+                    {
+                        PageContent pageContent;
+                        string contentLabel;
+                        contentProvider.GetContent(page.Address, content.Label, culture.Value, culture.Culture,
+                                                    out pageContent, out contentLabel);
+
+                        log.AppendFormat("<p>migrated {0}->{1}<br/>{2}.{3}.{4}</p>", page.Id, pageContent.Id, page.Address, content.Label, culture.Culture);
+                    }
+                }
+                _session.Delete(page);
+            }
+
+            return new ContentResult(){Content=log.ToString(), ContentType = "text/html"};
+        }
+
+        public ActionResult ViewPageContent(string id)
         {
             var viewModel = new PageViewModel();
-            viewModel.Page = _session.Load<PageContent>(id);
+            viewModel.Page = _session.Load<PageContent>("PageContents/"+id);
             return View(viewModel);
         }
 
-        public ActionResult ViewTranslations(int id, string contentLabel)
+        public ActionResult ViewTranslations(string id, string contentLabel)
         {
             var viewModel = new ContentTranslationViewModel();
-            viewModel.Page = _session.Load<PageContent>(id);
-            viewModel.Content = viewModel.Page.Content.Where(c => c.Label == contentLabel).SingleOrDefault();
+            viewModel.Page = _session.Load<PageContent>("PageContents/" + id);
+            viewModel.Content = viewModel.Page.Content.SingleOrDefault(c => c.Label == contentLabel);
 
             return View(viewModel);
         }
 
         [HttpPost]
         [ValidateInput(false)]
-        public ActionResult UpdateTranslations(int pageId, string contentLabel)
+        public ActionResult UpdateTranslations(string pageId, string contentLabel)
         {
-            var page = _session.Load<PageContent>(pageId);
+            var page = _session.Load<PageContent>("PageContents/" + pageId);
             var content = page.Content.SingleOrDefault(c => c.Label == contentLabel);
 
             foreach(var localContent in content.ContentByCulture)
@@ -63,9 +94,9 @@ namespace TicketMuffin.Web.Areas.Admin.Controllers
 
         [HttpPost]
         [ValidateInput(false)]
-        public ActionResult AddTranslation(int pageId, string contentLabel, string cultureKey, string content)
+        public ActionResult AddTranslation(string pageId, string contentLabel, string cultureKey, string content)
         {
-            var page = _session.Load<PageContent>(pageId);
+            var page = _session.Load<PageContent>("PageContents/" + pageId);
             var pageContent = page.Content.SingleOrDefault(c => c.Label == contentLabel);
             var localContent = pageContent.ContentByCulture.SingleOrDefault(lc => lc.Culture == cultureKey);
             if (localContent != null)

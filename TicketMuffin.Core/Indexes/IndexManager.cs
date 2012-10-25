@@ -1,14 +1,14 @@
-﻿using System.Configuration;
+using System.Configuration;
 using Lucene.Net.Analysis;
 using Lucene.Net.Analysis.Standard;
 using Raven.Abstractions.Indexing;
 using Raven.Client;
 
-namespace TicketMuffin.Web.App_Start
+namespace TicketMuffin.Core.Indexes
 {
-    public static class RavenDbIndexes
+    public class IndexManager
     {
-        public static void Initialise(IDocumentStore documentStore)
+        public void Initialise(IDocumentStore documentStore)
         {
             // only recreate indexes if appSettings say we can
             if (ConfigurationManager.AppSettings["buildRavenIndexesOnStartup"] == null
@@ -19,26 +19,26 @@ namespace TicketMuffin.Web.App_Start
 
             documentStore.DatabaseCommands.PutIndex("contentSearch",
                                                     new IndexDefinition()
-                                                        {
-                                                            Map =
-                                                                @"from c in docs.PageContents 
+                                                    {
+                                                        Map =
+                                                            @"from c in docs.PageContents 
 from contentDefinition in Hierarchy(c, ""Content"")
 from contentByCulture in Hierarchy(contentDefinition, ""ContentByCulture"")
 select new {c.Id, c.Address, contentDefinition.Label, contentByCulture.Key, contentByCulture.Value}",
-                                                            Analyzers =
+                                                        Analyzers =
                                                                 {
                                                                     {"Label", typeof (StopAnalyzer).FullName},
                                                                     {"Value", typeof (StopAnalyzer).FullName},
                                                                 }
-                                                        }, true);
+                                                    }, true);
 
             documentStore.DatabaseCommands.PutIndex("eventSearch",
                                                     new IndexDefinition()
-                                                        {
-                                                            Map =
-                                                                @"from e in docs.GroupGivingEvents 
+                                                    {
+                                                        Map =
+                                                            @"from e in docs.GroupGivingEvents 
 select new {e.Id, e.Title, e.State, Location=e.City +"", "" + e.Country, e.City, e.Country, e.SalesEndDateTime, e.StartDate, PledgeCount=e.Pledges.Count}",
-                                                            Analyzers =
+                                                        Analyzers =
                                                                 {
                                                                     {"Title", typeof (StopAnalyzer).FullName},
                                                                     {"State", typeof (StopAnalyzer).FullName},
@@ -49,21 +49,20 @@ select new {e.Id, e.Title, e.State, Location=e.City +"", "" + e.Country, e.City,
                                                                     {"SalesEndDateTime", typeof (WhitespaceAnalyzer).FullName},
                                                                     {"PledgeCount", typeof (StandardAnalyzer).FullName}
                                                                 }
-                                                        }, true);
+                                                    }, true);
 
             documentStore.DatabaseCommands.PutIndex("transactionHistory",
                                                     new IndexDefinition()
-                                                        {
-                                                            Map =
-                                                                @"from e in docs.GroupGivingEvents
+                                                    {
+                                                        Map =
+                                                            @"from e in docs.GroupGivingEvents
 from pledge in Hierarchy(e, ""Pledges"")
 from history in Hierarchy(pledge, ""PaymentGatewayHistory"")
 select new {e.Id, pledge.OrderNumber, pledge.TransactionId, pledge.PaymentStatus, pledge.AccountEmailAddress, history.TimeStamp, history.Request, history.Response}"
 
-                                                        }, true);
+                                                    }, true);
 
             documentStore.DatabaseCommands.PutIndex("pledges", new DenormalizedPledges(), true);
         }
-
-}
+    }
 }

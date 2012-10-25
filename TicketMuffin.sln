@@ -11,7 +11,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TicketMuffin.Test.Unit", "T
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LoadTest.Console", "LoadTest.Console\LoadTest.Console.csproj", "{262CCFC3-63FE-4D18-B9B9-394397CFD89E}"
 EndProject
-Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "eventmuffin html", "eventmuffin html", "{5BFF87B6-9CAA-4B28-859A-ACAE90E9C261}"
+Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "eventmuffin html", "eventmuffin html\", "{5BFF87B6-9CAA-4B28-859A-ACAE90E9C261}"
 	ProjectSection(WebsiteProperties) = preProject
 		TargetFrameworkMoniker = ".NETFramework,Version%3Dv4.0"
 		Debug.AspNetCompiler.VirtualPath = "/eventmuffin html"
@@ -48,6 +48,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RavenDBMembership", "RavenDBMembership\src\RavenDBMembership\RavenDBMembership.csproj", "{07CCE5B6-9111-46DC-AAEC-00D80E19FE4A}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TicketMuffin.Specs", "TicketMuffin.Specs\TicketMuffin.Specs.csproj", "{38FB28D2-16E8-4F2A-9900-A99428FAF08D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TicketMuffin.Core.Test.Integration", "TicketMuffin.Core.Test.Integration\TicketMuffin.Core.Test.Integration.csproj", "{9A1AD467-D383-4D81-AF22-262E3457ABF0}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -206,6 +208,16 @@ Global
 		{38FB28D2-16E8-4F2A-9900-A99428FAF08D}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{38FB28D2-16E8-4F2A-9900-A99428FAF08D}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{38FB28D2-16E8-4F2A-9900-A99428FAF08D}.Release|x86.ActiveCfg = Release|Any CPU
+		{9A1AD467-D383-4D81-AF22-262E3457ABF0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9A1AD467-D383-4D81-AF22-262E3457ABF0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9A1AD467-D383-4D81-AF22-262E3457ABF0}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{9A1AD467-D383-4D81-AF22-262E3457ABF0}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{9A1AD467-D383-4D81-AF22-262E3457ABF0}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{9A1AD467-D383-4D81-AF22-262E3457ABF0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9A1AD467-D383-4D81-AF22-262E3457ABF0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9A1AD467-D383-4D81-AF22-262E3457ABF0}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{9A1AD467-D383-4D81-AF22-262E3457ABF0}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{9A1AD467-D383-4D81-AF22-262E3457ABF0}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

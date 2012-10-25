@@ -1,4 +1,4 @@
-namespace TicketMuffin.Web.Models
+namespace TicketMuffin.Core.Domain
 {
     public class TransactionHistoryItem
     {

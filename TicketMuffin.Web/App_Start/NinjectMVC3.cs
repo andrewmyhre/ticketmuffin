@@ -10,6 +10,7 @@ using Ninject.Parameters;
 using Raven.Client;
 using TicketMuffin.Core.Actions;
 using TicketMuffin.Core.Configuration;
+using TicketMuffin.Core.Conventions;
 using TicketMuffin.Core.Email;
 using TicketMuffin.Core.Services;
 using TicketMuffin.PayPal;
@@ -70,6 +71,8 @@ namespace TicketMuffin.Web.App_Start
         /// <param name="kernel">The kernel.</param>
         private static void RegisterServices(IKernel kernel)
         {
+            IoCConfiguration.BindAll(kernel);
+
             kernel.Bind<IContentProvider>()
                 .To<RavenDbContentProvider>()
                 .InRequestScope();
@@ -85,26 +88,6 @@ namespace TicketMuffin.Web.App_Start
             kernel.Bind<IAccountService>().To<AccountService>();
             kernel.Bind<IEventService>().To<EventService>();
 
-            kernel.Bind<IDocumentStore>()
-                .ToMethod(ctx =>
-                              {
-                                  var documentStore = new Raven.Client.Document.DocumentStore()
-                                                          {
-                                                              Url = "http://localhost:8080"
-                                                          };
-                                  documentStore.Initialize();
-                                  RavenDbIndexes.Initialise(documentStore);
-                                  return documentStore;
-                              })
-                .InSingletonScope();
-
-            kernel.Bind<IDocumentSession>()
-                .ToMethod(ctx=>kernel.Get<IDocumentStore>().OpenSession())
-                .InRequestScope()
-                .OnDeactivation((ctx,session)=>
-                                    {
-                                        session.SaveChanges();
-                                    });
 
             kernel.Bind<IFormsAuthenticationService>().To<FormsAuthenticationService>();
             kernel.Bind<IMembershipService>().To<AccountMembershipService>();
