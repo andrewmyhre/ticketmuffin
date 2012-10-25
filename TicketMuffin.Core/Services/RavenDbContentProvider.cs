@@ -60,6 +60,8 @@ namespace TicketMuffin.Core.Services
             pageAddress = Sanitize(pageAddress).ToLowerInvariant();
             label = Sanitize(label).ToLowerInvariant();
             culture = culture.ToLowerInvariant();
+            if (culture.Contains("-"))
+                culture = culture.Substring(0, culture.IndexOf("-", System.StringComparison.Ordinal));
 
             if (_page == null) {
                 _page = _session
