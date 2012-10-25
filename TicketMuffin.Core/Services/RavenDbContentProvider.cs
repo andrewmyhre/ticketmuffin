@@ -71,7 +71,7 @@ namespace TicketMuffin.Core.Services
                 _page = CreatePage(pageAddress, label, defaultContent, culture);
             }
 
-            ContentDefinition contentDefinition = contentDefinition = _page.Content.SingleOrDefault(cd => cd.Label == label);
+            ContentDefinition contentDefinition = _page.Content.SingleOrDefault(cd => cd.Label == label);
             var defaultLocalisedContent = new LocalisedContent() {Culture = culture, Value = defaultContent};
             
             if (contentDefinition == null)
