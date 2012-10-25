@@ -57,8 +57,9 @@ namespace TicketMuffin.Core.Services
 
         public string GetContent(string pageAddress, string label, string defaultContent, string culture, out PageContent pageObject, out string contentLabel)
         {
-            pageAddress = Sanitize(pageAddress);
-            label = Sanitize(label);
+            pageAddress = Sanitize(pageAddress).ToLowerInvariant();
+            label = Sanitize(label).ToLowerInvariant();
+            culture = culture.ToLowerInvariant();
 
             if (_page == null) {
                 _page = _session
