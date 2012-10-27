@@ -57,8 +57,11 @@ namespace TicketMuffin.Core.Services
 
         public string GetContent(string pageAddress, string label, string defaultContent, string culture, out PageContent pageObject, out string contentLabel)
         {
-            pageAddress = Sanitize(pageAddress);
-            label = Sanitize(label);
+            pageAddress = Sanitize(pageAddress).ToLowerInvariant();
+            label = Sanitize(label).ToLowerInvariant();
+            culture = culture.ToLowerInvariant();
+            if (culture.Contains("-"))
+                culture = culture.Substring(0, culture.IndexOf("-", System.StringComparison.Ordinal));
 
             if (_page == null) {
                 _page = _session
@@ -70,7 +73,7 @@ namespace TicketMuffin.Core.Services
                 _page = CreatePage(pageAddress, label, defaultContent, culture);
             }
 
-            ContentDefinition contentDefinition = contentDefinition = _page.Content.SingleOrDefault(cd => cd.Label == label);
+            ContentDefinition contentDefinition = _page.Content.SingleOrDefault(cd => cd.Label == label);
             var defaultLocalisedContent = new LocalisedContent() {Culture = culture, Value = defaultContent};
             
             if (contentDefinition == null)
