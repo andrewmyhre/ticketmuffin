@@ -53,7 +53,7 @@
         @if (Model.State != EventState.Cancelled)
         {
             <div id="eventDate">
-                <div id="month">@Model.StartDate.ToString("MMMM", new CultureInfo(Html.CurrentCulture()))</div>
+                <div id="month">@Model.StartDate.ToString("MMMM", Html.CurrentCultureInfo())</div>
                 <div id="day">@Model.StartDate.Day</div>
             </div>
         }

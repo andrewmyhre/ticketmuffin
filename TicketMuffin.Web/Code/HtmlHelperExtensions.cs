@@ -138,7 +138,27 @@ namespace TicketMuffin.Web.Code
         public static CultureInfo CurrentCultureInfo(this HtmlHelper html)
         {
             string cultureString = CurrentCulture(html);
-            return new CultureInfo(cultureString);
+
+            CultureInfo culture = null;
+
+            try
+            {
+                culture = new CultureInfo(cultureString);
+            } catch
+            {
+                // try just the first part
+                if (cultureString.Contains("-"))
+                {
+                    try
+                    {
+                        culture = new CultureInfo(cultureString.Substring(0,2));
+                    } catch
+                    {
+                        culture = new CultureInfo("en");
+                    }
+                }
+            }
+            return culture;
         }
 
         public static DateTimeFormatInfo CultureDateTimeFormat(this HtmlHelper html)
