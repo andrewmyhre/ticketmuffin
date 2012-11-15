@@ -17,7 +17,11 @@ namespace TicketMuffin.Core.Services
             if (!string.IsNullOrWhiteSpace(@event.OrganiserId))
             {
                 var organiserAccount = _ravenSession.Load<Account>(@event.OrganiserId);
-                return organiserAccount.Culture;
+
+                if (organiserAccount != null)
+                {
+                    return organiserAccount.Culture;
+                }
             }
 
             return "en-GB";
