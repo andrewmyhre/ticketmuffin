@@ -13,7 +13,7 @@ namespace TicketMuffin.Core.Services
     {
         private readonly IDocumentSession _ravenSession;
         private readonly string _ticketTemplatePath;
-        static string ticketFolder = System.Web.Hosting.HostingEnvironment.MapPath("~/App_Data/tickets/") ?? "tickets";
+        static string ticketFolder = "c:\\TicketMuffinTickets";
 
         public TicketGenerator(IDocumentSession ravenSession, string ticketTemplatePath)
         {
@@ -77,6 +77,12 @@ namespace TicketMuffin.Core.Services
             }
             
             ticketFilename = string.Format("{0}.pdf", attendee.TicketNumber);
+
+            if (!File.Exists(Path.Combine(ticketFolder, ticketFilename)))
+            {
+                CreateTicket(@event, pledge, attendee, culture);
+            }
+
             return File.OpenRead(Path.Combine(ticketFolder, ticketFilename));
         }
 
