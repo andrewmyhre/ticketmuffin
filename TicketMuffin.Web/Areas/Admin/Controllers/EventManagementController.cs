@@ -141,7 +141,10 @@ namespace TicketMuffin.Web.Areas.Admin.Controllers
             if (@event.OrganiserId != null)
             {
                 var eventOrganiser = _documentSession.Load<Account>(@event.OrganiserId);
-                eventViewModel.EventOrganiser = eventOrganiser.Email;
+                if (eventOrganiser != null)
+                {
+                    eventViewModel.EventOrganiser = eventOrganiser.Email;
+                }
             }
 
             return View(eventViewModel);
