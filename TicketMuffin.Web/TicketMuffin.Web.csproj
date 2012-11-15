@@ -551,7 +551,7 @@
     <Content Include="Areas\Admin\Views\UserManagement\FixNonMembership.cshtml" />
     <Content Include="51Degrees.mobi.config" />
     <None Include="Content\tickets\ticket-pl.pdf">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <Content Include="packages.config" />
     <None Include="_bin_deployableAssemblies\System.Web.Mvc.dll" />
