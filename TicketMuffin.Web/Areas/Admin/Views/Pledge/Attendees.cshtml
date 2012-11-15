@@ -20,6 +20,7 @@
         @if (!string.IsNullOrWhiteSpace(attendee.TicketNumber))
         {
             <a href="/ticket/@attendee.TicketNumber">Ticket</a>
+            @Html.ActionLink("Recreate Ticket", "CreateTickets", "Pledge", new {id=Model.Pledge.OrderNumber},null)
         } else
         {
             @Html.ActionLink("Create Ticket", "CreateTickets", "Pledge", new {id=Model.Pledge.OrderNumber},null)

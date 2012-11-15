@@ -13,7 +13,7 @@ namespace TicketMuffin.Core.Services
         {
 
             int nextAvailable = groupGivingEvent.AttendeeCount + 1;
-            return nextAvailable.ToString().PadLeft(5,'0');
+            return nextAvailable.ToString("00000");
         }
     }
 

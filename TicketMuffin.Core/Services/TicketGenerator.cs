@@ -57,9 +57,30 @@ namespace TicketMuffin.Core.Services
                 AddTextToDocument(380, 140, 100, 30, attendee.FullName, cb);
                 AddTextToDocument(380, 126, 100, 30, attendee.TicketNumber, cb);
                 AddTextToDocument(380, 80, 100, 30, pledge.Total.ToString("c", cultureInfo), cb);
-                AddTextToDocument(380, 35, 100, 30, pledge.AccountName, cb);
-                AddTextToDocument(380, 21, 100, 30, pledge.AccountEmailAddress, cb);
-                AddTextToDocument(380, 7, 100, 30, pledge.OrderNumber, cb);
+
+                string orderInfo = "";
+                if (!string.IsNullOrWhiteSpace(pledge.AccountName))
+                {
+                    orderInfo += pledge.AccountName;
+                }
+                if (!string.IsNullOrWhiteSpace(pledge.AccountEmailAddress))
+                {
+                    if (!string.IsNullOrWhiteSpace(orderInfo))
+                    {
+                        orderInfo += "\r\n";
+                    }
+                    orderInfo += pledge.AccountEmailAddress;
+                }
+                if (!string.IsNullOrWhiteSpace(pledge.OrderNumber))
+                {
+                    if (!string.IsNullOrWhiteSpace(orderInfo))
+                    {
+                        orderInfo += "\r\n";
+                    }
+                    orderInfo += pledge.OrderNumber;
+                }
+
+                AddTextToDocument(380, 35, 100, 30, orderInfo, cb);
 
                 cb.EndText();
                 document.Close();
