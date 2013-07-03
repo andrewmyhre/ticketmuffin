@@ -6,6 +6,7 @@ using NUnit.Framework;
 using NUnit.Mocks;
 using Raven.Client;
 using TicketMuffin.Core.Domain;
+using TicketMuffin.Core.Payments;
 using TicketMuffin.Core.Services;
 
 namespace GroupGiving.Test.Unit.Pledging
@@ -36,7 +37,7 @@ namespace GroupGiving.Test.Unit.Pledging
                                             new EventPledgeAttendee("john"){TicketNumber="00003"}
                                         },
                                         OrderNumber = "12345",
-                                        Paid = true,
+                                        Payments = new List<Payment>(new[]{new Payment(){PaymentStatus=PaymentStatus.Settled,TransactionId="1234"}, }),
 
                                 },
                         },

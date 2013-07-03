@@ -44,10 +44,9 @@ namespace TicketMuffin.Specs
         {
             paymentGateway
                 .Setup(x => x.RetrievePaymentDetails(It.IsAny<string>()))
-                .Returns(new PaymentDetailsResponse()
+                .Returns(new TicketMuffin.Core.Payments.PaymentDetailsResponse()
                              {
-                                 Raw = new DialogueHistoryEntry("request","response"),
-                                 status = "CREATED"
+                                 PaymentStatus = PaymentStatus.Created
                              });
         }
     }

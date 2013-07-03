@@ -78,7 +78,7 @@ namespace TicketMuffin.Web.Controllers
                     = new ConfirmPledgePaymentAction(_paymentGateway, _accountService, _emailRelayService);
 
                 var paymentConfirmationResult = action.ConfirmPayment(@event,
-                                                                      new SettlePledgeRequest() {PayPalPayKey = payKey});
+                                                                      new SettlePledgeRequest() {TransactionId = payKey});
 
                 // send a purchase confirmation email
                 MvcApplication.EmailFacade.Send(pledge.AccountEmailAddress,

@@ -105,7 +105,7 @@ namespace TicketMuffin.Core.Test.Integration
                 @event = CreateAnEventAndOrganiserAccount(session);
                 pledger = CreateAnAccount(session);
                 var pledge = AddAPledgeToEvent(@event, pledger);
-                var payment = AddAPaymentToPledge(pledge, PaymentStatus.Unpaid, transactionId);
+                var payment = AddAPaymentToPledge(pledge, PaymentStatus.Created, transactionId);
 
                 paymentGateway.Setup(x => x.RetrievePaymentDetails(transactionId))
                     .Returns(new PaymentDetailsResponse() { Successful = true, PaymentStatus = PaymentStatus.Unsettled, SenderId = expectedPayPalEmail });

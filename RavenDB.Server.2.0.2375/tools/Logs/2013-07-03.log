@@ -153,3 +153,7 @@ select new { IsFeatured = doc.IsFeatured, StartDate = doc.StartDate, State = doc
 2013-07-03 16:54:53.0383,Raven.Database.Server.HttpServer,Debug,,Request #  20: GET     -     0 ms - <system>   - 404 - /docs/PageContents/layout,
 2013-07-03 16:54:53.0383,Raven.Storage.Esent.StorageActions.DocumentStorageActions,Debug,<system>,Document with key 'PageContents/layout' was not found,
 2013-07-03 16:54:53.0383,Raven.Database.Server.HttpServer,Debug,,Request #  21: GET     -     0 ms - <system>   - 404 - /docs/PageContents/layout,
+2013-07-03 17:20:09.8719,Raven.Database.Indexing.IndexStorage,Debug,,Deleting index Temp/GroupGivingEvents/ByIsFeaturedAndStartDateAndStateSortByStartDate,
+2013-07-03 17:20:09.9069,Raven.Database.Indexing.WorkContext,Debug,,Incremented work counter to 2 because: DELETE INDEX Temp/GroupGivingEvents/ByIsFeaturedAndStartDateAndStateSortByStartDate,
+2013-07-03 17:20:09.9069,Raven.Database.Indexing.WorkContext,Debug,<system>,"No work was found, workerWorkCounter: 2, for: IndexingExecuter, will wait for additional work",
+2013-07-03 17:20:09.9069,Raven.Database.Indexing.WorkContext,Debug,<system>,"No work was found, workerWorkCounter: 2, for: ReducingExecuter, will wait for additional work",

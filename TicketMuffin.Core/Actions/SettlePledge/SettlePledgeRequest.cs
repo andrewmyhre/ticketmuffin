@@ -2,6 +2,6 @@
 {
     public class SettlePledgeRequest
     {
-        public string PayPalPayKey { get; set; }
+        public string TransactionId { get; set; }
     }
 }

@@ -29,8 +29,8 @@ namespace TicketMuffin.Core.Actions.SettlePledge
             if (@event==null)
                 throw new ArgumentException("No such event found");
 
-            var pledge = @event.Pledges.SingleOrDefault(p => p.Payments.Any(x=>x.TransactionId == request.PayPalPayKey));
-            var payment = pledge.Payments.SingleOrDefault(x => x.TransactionId == request.PayPalPayKey);
+            var pledge = @event.Pledges.SingleOrDefault(p => p.Payments.Any(x=>x.TransactionId == request.TransactionId));
+            var payment = pledge.Payments.SingleOrDefault(x => x.TransactionId == request.TransactionId);
             if (pledge == null)
                 throw new ArgumentException("No such pledge found");
             if (payment == null)
@@ -45,7 +45,7 @@ namespace TicketMuffin.Core.Actions.SettlePledge
                 pledge.PaymentGatewayHistory = new List<DialogueHistoryEntry>();
             pledge.PaymentGatewayHistory.Add(new DialogueHistoryEntry(paymentDetails.Diagnostics.RequestContent, paymentDetails.Diagnostics.RequestContent));
 
-            if (paymentDetails.PaymentStatus == PaymentStatus.Unsettled) // delayed payment will be incomplete until execute payment is called
+            if (paymentDetails.PaymentStatus != PaymentStatus.Unauthorised) // delayed payment will be incomplete until execute payment is called
             {
                 payment.PaymentStatus = PaymentStatus.Unsettled;
                 pledge.DatePledged = 

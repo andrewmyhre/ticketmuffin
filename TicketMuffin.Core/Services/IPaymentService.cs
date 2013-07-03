@@ -46,7 +46,7 @@ namespace TicketMuffin.Core.Services
             var response = _paymentGateway.CreatePayment(memo, currencyCode, successUrl, failureUrl, receivers);
 
             // create a payment record
-            pledge.Payments.Add(new Payment() { TransactionId = response.TransactionId, PaymentGatewayName = _paymentGateway.Name, PaymentStatus = PaymentStatus.Unpaid });
+            pledge.Payments.Add(new Payment() { TransactionId = response.TransactionId, PaymentGatewayName = _paymentGateway.Name, PaymentStatus = PaymentStatus.Created });
             _session.SaveChanges();
 
             return response.PaymentUrl;

@@ -41,7 +41,8 @@ namespace TicketMuffin.Core.Payments
     }
     public enum PaymentStatus
     {
-        Unpaid,
+        Created,
+        Unauthorised,
         Unsettled,
         Settled,
         Refunded

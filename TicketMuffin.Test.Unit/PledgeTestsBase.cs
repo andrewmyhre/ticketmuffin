@@ -54,18 +54,17 @@ namespace GroupGiving.Test.Unit
         protected void PaymentRequestIsSuccessful(string paypalPayKey)
         {
             PaymentGateway
-                .Setup(m => m.CreatePayment(It.IsAny<PaymentGatewayRequest>()))
-                .Returns(new PaymentGatewayResponse() { payKey = paypalPayKey, PaymentExecStatus = "CREATED"});
+                .Setup(m => m.CreatePayment(It.IsAny<string>(),It.IsAny<string>(),It.IsAny<string>(),It.IsAny<string>(),It.IsAny<TicketMuffin.Core.Payments.Receiver[]>()))
+                .Returns(new TicketMuffin.Core.Payments.PaymentCreationResponse() { TransactionId = paypalPayKey});
         }
 
         protected void PaypalGatewayReturnsAnErrorWhenMakingPaymentRequest()
         {
             PaymentGateway
-                .Setup(m => m.CreatePayment(It.IsAny<PaymentGatewayRequest>()))
-                .Throws(new HttpChannelException(new FaultMessage() {Error = new PayPalError(){Message="failed"},
-                Raw = new DialogueHistoryEntry("request", "response")}));
+                .Setup(m => m.CreatePayment(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<TicketMuffin.Core.Payments.Receiver[]>()))
+                .Throws(new Exception("Something bad happened"));
         }
-        protected void PaypalGatewayReturnsAnErrorWhenMakingDelayedPaymentRequest()
+        protected void PaymentGatewayReturnsAnErrorWhenMakingDelayedPaymentRequest()
         {
             PaymentGateway
                 .Setup(m => m.CreateDelayedPayment(It.IsAny<PaymentGatewayRequest>()))
@@ -76,17 +75,19 @@ namespace GroupGiving.Test.Unit
         protected void PayPalGatewayReturnsTransactionIdWithVerification()
         {
             PaymentGateway
-                .Setup(m => m.CreatePayment(It.IsAny<PaymentGatewayRequest>()))
-                .Returns(new PaymentGatewayResponse() { payKey = PaypalPayKey, PaymentExecStatus = "CREATED", 
-                    DialogueEntry = new DialogueHistoryEntry("request","response")})
+                .Setup(m => m.CreatePayment(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<TicketMuffin.Core.Payments.Receiver[]>()))
+                .Returns(new PaymentCreationResponse()
+                {
+                    TransactionId = PaypalPayKey
+                })
                 .Verifiable();
         }
 
-        protected void PayPalGatewayReturnsPaymentDetailsForTransactionId(string paymentStatus)
+        protected void PaymentGatewayReturnsPaymentDetailsForTransactionId(PaymentStatus paymentStatus)
         {
             PaymentGateway
                 .Setup(m => m.RetrievePaymentDetails(It.IsAny<string>()))
-                .Returns(new PaymentDetailsResponse() {status = paymentStatus, Raw = new DialogueHistoryEntry("request","response")});
+                .Returns(new TicketMuffin.Core.Payments.PaymentDetailsResponse() {PaymentStatus = paymentStatus});
         }
 
         protected void PayPalGatewayCanCreateDelayedPayment(string paypalPayKey="12345")

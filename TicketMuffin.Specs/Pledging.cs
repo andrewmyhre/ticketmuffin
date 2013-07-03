@@ -85,7 +85,7 @@ namespace TicketMuffin.Specs
         public void WhenIPledgeToAttend()
         {
             var createPledge = 
-                new MakePledgeAction(taxResolver.Object, paymentGateway.Object, paypalConfiguration.Object, documentSession, new OrderNumberGenerator());
+                new MakePledgeAction(taxResolver.Object, paymentGateway.Object, documentSession, new OrderNumberGenerator());
 
             MakePledgeRequest pledgeRequest =new MakePledgeRequest()
             {
@@ -122,10 +122,8 @@ namespace TicketMuffin.Specs
                               {
                                   Attendees =
                                       new List<EventPledgeAttendee>(Helpers.Attendees(10)),
-                                      Paid=true,
-                                      PaymentStatus = PaymentStatus.Settled,
+                                      Payments = new List<Payment>(new[]{new Payment(){PaymentStatus=PaymentStatus.Settled,TransactionId = "98765"}, }),
                                       OrderNumber=Guid.NewGuid().ToString(),
-                                      TransactionId = "98765"
                               }
                       };
 
@@ -150,11 +148,9 @@ namespace TicketMuffin.Specs
                               {
                                   Attendees =
                                       new List<EventPledgeAttendee>(Helpers.Attendees(9)),
-                                      PaymentStatus = PaymentStatus.Unsettled,
-                                      TransactionId = "12345",
+                                      Payments = new List<Payment>(new[]{new Payment(){PaymentStatus = PaymentStatus.Unsettled,TransactionId="12345"} }),
                                       DatePledged = DateTime.Now,
                                       OrderNumber = Guid.NewGuid().ToString(),
-                                      Paid=true
                               }
                       };
             documentSession.SaveChanges();
@@ -164,20 +160,21 @@ namespace TicketMuffin.Specs
         [When(@"I complete the payment through paypal")]
         public void WhenICompleteThePaymentThroughPaypal()
         {
-            ConfirmPledgePaymentAction confirmPledge
+            var confirmPledge
                 =new ConfirmPledgePaymentAction(paymentGateway.Object, accountService.Object, emailRelayService.Object);
 
-            SettlePledgeRequest request=new SettlePledgeRequest()
+            var request=new SettlePledgeRequest()
                                             {
-                                                PayPalPayKey=pledgeResult.GatewayResponse.payKey
+                                                TransactionId=pledgeResult.TransactionId
                                             };
             confirmPledge.ConfirmPayment(_event, request);
 
             // check that the pledge took
-            var pledge = _event.Pledges.SingleOrDefault(p => p.TransactionId == pledgeResult.GatewayResponse.payKey);
+            var pledge = _event.Pledges.SingleOrDefault(p => p.Payments.Any(pmt=>pmt.TransactionId==pledgeResult.TransactionId));
             Assert.That(pledge, Is.Not.Null);
             Assert.That(pledge.Paid, Is.True);
-            Assert.That(pledge.PaymentStatus, Is.EqualTo(PaymentStatus.Settled));
+            var payment = pledge.Payments.SingleOrDefault(p => p.TransactionId == pledgeResult.TransactionId);
+            Assert.That(payment.PaymentStatus, Is.EqualTo(PaymentStatus.Settled));
         }
 
 
@@ -207,7 +204,10 @@ namespace TicketMuffin.Specs
             _event.MaximumParticipants = 10;
             _event.Pledges=new List<EventPledge>()
             {
-                new EventPledge(){Attendees = Helpers.Attendees(8).ToList(), Paid=true, PaymentStatus= PaymentStatus.Settled},
+                new EventPledge(){
+                    Attendees = Helpers.Attendees(8).ToList(), 
+                    Payments = new List<Payment>(new[]{new Payment(){PaymentStatus = PaymentStatus.Settled}, })
+                },
             };
             documentSession.SaveChanges();
         }
