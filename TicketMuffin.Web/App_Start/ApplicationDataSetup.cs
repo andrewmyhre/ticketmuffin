@@ -1,27 +1,29 @@
 ﻿using System.Web.Hosting;
+using Microsoft.Practices.ServiceLocation;
+using Raven.Client;
 using TicketMuffin.Core.Services;
 using TicketMuffin.Web.Services;
 
-// invoked from application start in global.asax
 namespace TicketMuffin.Web.App_Start
 {
-
-    public class ApplicationDataSetup
+    // invoke from the ninject start
+    public static class ApplicationDataSetup
     {
-        private readonly ICountryService _countryService;
-        private readonly ISiteConfigurationService _siteConfigurationService;
+        private static ICountryService CountryService;
+        private static ISiteConfigurationService SiteConfigurationService;
 
-        public ApplicationDataSetup(ICountryService countryService,
-            ISiteConfigurationService siteConfigurationService)
+        public static void Start()
         {
-            _countryService = countryService;
-            _siteConfigurationService = siteConfigurationService;
-        }
+            var store = ServiceLocator.Current.GetInstance<IDocumentStore>();
 
-        public void Start()
-        {
-            _countryService.EnsureCountryData(HostingEnvironment.MapPath("~/App_Data/countrylist.csv"));
-            _siteConfigurationService.EnsureConfigurationData();
+            using (var session = store.OpenSession())
+            {
+                CountryService = new CountryService(session);
+                SiteConfigurationService = new SiteConfigurationService(session);
+
+                CountryService.EnsureCountryData(HostingEnvironment.MapPath("~/App_Data/countrylist.csv"));
+                SiteConfigurationService.EnsureConfigurationData();
+            }
         }
     }
 }
