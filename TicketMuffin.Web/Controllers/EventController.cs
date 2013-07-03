@@ -363,7 +363,7 @@ namespace TicketMuffin.Web.Controllers
 
             AutoMapper.Mapper.CreateMap<GroupGivingEvent, UpdateEventViewModel>();
             var viewModel = new PledgeListViewModel();
-            viewModel.Pledges = groupGivingEvent.Pledges.Where(p => p.PaymentStatus != PaymentStatus.Unpaid);
+            viewModel.Pledges = groupGivingEvent.Pledges.Where(p => !p.Paid);
             viewModel.EventName = groupGivingEvent.Title;
             viewModel.ShortUrl = groupGivingEvent.ShortUrl;
 
@@ -514,7 +514,7 @@ namespace TicketMuffin.Web.Controllers
             }
             catch (Exception exception)
             {
-                logger.Fatal("Could not refund pledge with transaction id " + pledge.TransactionId, exception);
+                logger.Fatal("Could not refund pledge with order number " + pledge.OrderNumber, exception);
                 return RedirectToAction("event-pledges", new {shortUrl = shortUrl});
             }
 

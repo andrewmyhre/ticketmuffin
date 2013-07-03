@@ -5,6 +5,7 @@ using System.Web;
 using System.Web.Mvc;
 using System.Text;
 using System.Web.Routing;
+using Microsoft.Practices.ServiceLocation;
 using Ninject;
 using TicketMuffin.Core.Domain;
 using TicketMuffin.Core.Services;
@@ -77,7 +78,7 @@ namespace TicketMuffin.Web.Code
 
         public static MvcHtmlString Content(this HtmlHelper html, string defaultContent = "", string pageAddress = "", string label = "")
         {
-            var cultureService = ServiceLocator.Instance.Get<ICultureService>();
+            var cultureService = ServiceLocator.Current.GetInstance<ICultureService>();
             string culture = cultureService.GetCultureOrDefault(html.ViewContext.HttpContext);
 
             if (string.IsNullOrWhiteSpace(label))
@@ -102,7 +103,7 @@ namespace TicketMuffin.Web.Code
                 }
             }
 
-            var contentProvider = ServiceLocator.Instance.Get<IContentProvider>();
+            var contentProvider = ServiceLocator.Current.GetInstance<IContentProvider>();
             PageContent pageContent = null;
             string contentLabel = "";
             string content = contentProvider.GetContent(pageAddress, label, defaultContent, culture, out pageContent, out contentLabel);
@@ -131,7 +132,7 @@ namespace TicketMuffin.Web.Code
 
         public static string CurrentCulture(this HtmlHelper html)
         {
-            var cultureService = ServiceLocator.Instance.Get<ICultureService>();
+            var cultureService = ServiceLocator.Current.GetInstance<ICultureService>();
             return cultureService.GetCultureOrDefault(html.ViewContext.HttpContext);
         }
 

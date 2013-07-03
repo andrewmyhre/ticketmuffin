@@ -2,6 +2,7 @@
 using Ninject.Modules;
 using Raven.Client;
 using Raven.Client.Embedded;
+using TicketMuffin.Core.Services;
 
 namespace TicketMuffin.Core.Test.Integration
 {

@@ -4,6 +4,7 @@ using TicketMuffin.Core.Payments;
 using TicketMuffin.PayPal.Clients;
 using TicketMuffin.PayPal.Configuration;
 using TicketMuffin.PayPal.Model;
+using Receiver = TicketMuffin.Core.Payments.Receiver;
 
 namespace TicketMuffin.PayPal
 {
@@ -50,7 +51,7 @@ namespace TicketMuffin.PayPal
                                             CurrencyCode = request.CurrencyCode,
                                             Receivers = (from r in request.Recipients
                                                          orderby r.AmountToReceive descending
-                                                         select new Receiver(r.AmountToReceive.ToString("#.00"), 
+                                                         select new TicketMuffin.PayPal.Model.Receiver(r.AmountToReceive.ToString("#.00"), 
                                                              r.EmailAddress,
                                                              r.Primary))
                                                 .ToArray()
@@ -72,17 +73,12 @@ namespace TicketMuffin.PayPal
             return SendPaymentRequest(request, "PAY_PRIMARY");
         }
 
-        public object CreatePayment(object request)
-        {
-            throw new NotImplementedException();
-        }
-
         public object CreateDelayedPayment(object request)
         {
             throw new NotImplementedException();
         }
 
-        IPaymentDetailsResponse IPaymentGateway.RetrievePaymentDetails(string transactionId)
+        TicketMuffin.Core.Payments.PaymentDetailsResponse IPaymentGateway.RetrievePaymentDetails(string transactionId)
         {
             throw new NotImplementedException();
         }
@@ -103,17 +99,30 @@ namespace TicketMuffin.PayPal
             throw new NotImplementedException();
         }
 
-        public PaymentDetailsResponse RetrievePaymentDetails(string transactionId)
+        public PaymentCreationResponse CreatePayment(string memo, string iso4217Alpha3Code, string successUrl, string failureUrl,
+                                                     Receiver[] receivers)
         {
-            var result = _apiClient.Payments.SendPaymentDetailsRequest(
+            throw new NotImplementedException();
+        }
+
+        public string Name { get { return "PayPal"; } }
+
+        public TicketMuffin.Core.Payments.PaymentDetailsResponse RetrievePaymentDetails(string transactionId)
+        {
+            var paypalPayment = _apiClient.Payments.SendPaymentDetailsRequest(
                 new PaymentDetailsRequest(transactionId));
 
-            return new PaymentDetailsResponse()
-                       {
-                           status = result.status,
-                           senderEmail= result.senderEmail,
-                           Raw = result.Raw
-                       };
+            var response = new TicketMuffin.Core.Payments.PaymentDetailsResponse();
+
+            switch (paypalPayment.status)
+            {
+                case "INCOMPLETE":
+                    response.PaymentStatus = TicketMuffin.Core.Payments.PaymentStatus.Unsettled;
+                    break;
+            }
+            response.SenderId = paypalPayment.senderEmail;
+            response.Successful = true;
+            return response;
         }
 
         public RefundResponse Refund(RefundRequest request)
@@ -129,7 +138,7 @@ namespace TicketMuffin.PayPal
                                                 {
                                                     Receivers = new ReceiverList(
                                                         request.Receivers.Select(r=>
-                                                            new Receiver(r.Amount.ToString("#.00"), 
+                                                            new TicketMuffin.PayPal.Model.Receiver(r.Amount.ToString("#.00"), 
                                                                 r.Email, r.Primary)))
                                                  });
         }

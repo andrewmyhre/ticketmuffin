@@ -7,6 +7,7 @@ using EmailProcessing;
 using EmailProcessing.Configuration;
 using Ninject.Activation;
 using Ninject.Parameters;
+using Ninject.Web.Common;
 using Raven.Client;
 using TicketMuffin.Core.Actions;
 using TicketMuffin.Core.Configuration;

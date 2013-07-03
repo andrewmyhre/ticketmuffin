@@ -81,7 +81,7 @@ namespace TicketMuffin.Core.Actions.CreatePledge
             {
                 var paymentMemo = "Tickets for " + @event.Title;
                 var currencyCode = Enum.GetName(typeof (Currency), @event.Currency);
-                gatewayResponse = _paymentGateway.AuthoriseCharge(pledge.Total, currencyCode, paymentMemo, organiserAccount.PayPalEmail);
+                gatewayResponse = _paymentGateway.AuthoriseCharge(pledge.Total, currencyCode, paymentMemo, organiserAccount.PaymentGatewayId);
                 if (pledge.PaymentGatewayHistory==null)
                     pledge.PaymentGatewayHistory = new List<DialogueHistoryEntry>();
                 pledge.PaymentGatewayHistory.Add(new DialogueHistoryEntry(gatewayResponse.Diagnostics.RequestContent, gatewayResponse.Diagnostics.ResponseContent));
@@ -104,10 +104,8 @@ namespace TicketMuffin.Core.Actions.CreatePledge
             if (gatewayResponse.Status == PaymentStatus.Unsettled)
             {
                 result.Succeeded = true;
-                result.TransactionId = pledge.TransactionId = gatewayResponse.TransactionId;
+                result.TransactionId = gatewayResponse.TransactionId;
 
-                pledge.Paid = false;
-                pledge.PaymentStatus = PaymentStatus.Unpaid;
                 @event.Pledges.Add(pledge);
 
                 _documentSession.SaveChanges();

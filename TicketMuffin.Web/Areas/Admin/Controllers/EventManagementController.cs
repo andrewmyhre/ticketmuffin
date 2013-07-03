@@ -57,9 +57,9 @@ namespace TicketMuffin.Web.Areas.Admin.Controllers
             {
                 //query = query.Where(e=>e.Title.StartsWith(searchQuery, StringComparison.OrdinalIgnoreCase));
                 query = query.OpenSubclause()
-                    .WhereContains("Title", searchQuery)
-                    .OrElse().WhereContains("City", searchQuery)
-                    .OrElse().WhereContains("Country", searchQuery)
+                    .WhereStartsWith("Title", searchQuery)
+                    .OrElse().WhereStartsWith("City", searchQuery)
+                    .OrElse().WhereStartsWith("Country", searchQuery)
                     .CloseSubclause();
             }
             if (state != null)
@@ -324,8 +324,7 @@ namespace TicketMuffin.Web.Areas.Admin.Controllers
             var @event = _documentSession.Load<GroupGivingEvent>(id);
             foreach(var pledge in @event.Pledges)
             {
-                if (pledge.PaymentStatus == PaymentStatus.Unsettled
-                    || pledge.PaymentStatus == PaymentStatus.Settled)
+                if (pledge.Paid)
                 {
                     _pledgeTicketSender.SendTickets(@event, pledge);
                 }

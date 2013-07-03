@@ -42,8 +42,9 @@
     <Reference Include="ICSharpCode.NRefactory">
       <HintPath>..\packages\RavenDB.Database.1.0.888\lib\net40\ICSharpCode.NRefactory.dll</HintPath>
     </Reference>
-    <Reference Include="log4net, Version=1.2.10.0, Culture=neutral, PublicKeyToken=1b44e1d426115821, processorArchitecture=MSIL">
-      <HintPath>..\packages\log4net.1.2.10\lib\2.0\log4net.dll</HintPath>
+    <Reference Include="log4net, Version=1.2.11.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\log4net.2.0.0\lib\net40-full\log4net.dll</HintPath>
     </Reference>
     <Reference Include="Lucene.Net">
       <HintPath>..\packages\RavenDB.Database.1.0.888\lib\net40\Lucene.Net.dll</HintPath>
@@ -98,6 +99,10 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\TicketMuffin.Core\TicketMuffin.Core.csproj">
+      <Project>{665762CC-21C5-4DF4-A0AD-AB23C449DDF9}</Project>
+      <Name>TicketMuffin.Core</Name>
+    </ProjectReference>
     <ProjectReference Include="..\TicketMuffin.PayPal\TicketMuffin.PayPal.csproj">
       <Project>{69AC82E2-904E-4A5F-9A94-E5EDD91534AB}</Project>
       <Name>TicketMuffin.PayPal</Name>
@@ -105,6 +110,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Readme.txt" />

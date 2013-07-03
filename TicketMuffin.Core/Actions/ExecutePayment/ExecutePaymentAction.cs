@@ -28,8 +28,8 @@ namespace TicketMuffin.Core.Actions.ExecutePayment
             if (pledge == null)
                 throw new ArgumentException("Pledge not found", "orderNumber");
 
-            if (pledge.PaymentStatus != PaymentStatus.Unsettled)
-                throw new InvalidOperationException("Pledge must be in PaidPendingReconciliation status to be executed");
+            if (pledge.Paid)
+                throw new InvalidOperationException("Pledge has already been paid for");
         }
 
         public ExecutePaymentResponse Execute(IDocumentSession session, string eventId, string orderNumber)
@@ -43,16 +43,18 @@ namespace TicketMuffin.Core.Actions.ExecutePayment
             if (pledge == null)
                 throw new ArgumentException("Pledge not found", "orderNumber");
 
-            if (pledge.PaymentStatus != PaymentStatus.Unsettled)
-                throw new InvalidOperationException("Pledge must be in PaidPendingReconciliation status to be executed");
+            var payment = pledge.Payments.SingleOrDefault(x => x.PaymentStatus == PaymentStatus.Unsettled);
+
+            if (payment == null)
+                throw new InvalidOperationException("Payment to be executed does not exist");
 
             // send a 'execute payment' request to paypal
             try
             {
-                var response = _paymentGateway.CapturePayment(pledge.TransactionId);
+                var response = _paymentGateway.CapturePayment(payment.TransactionId);
 
                 // if successful mark the pledge as fully paid
-                pledge.PaymentStatus = PaymentStatus.Settled;
+                payment.PaymentStatus = PaymentStatus.Settled;
 
                 var dialogueHistoryEntry = new DialogueHistoryEntry(response.Diagnostics.RequestContent, response.Diagnostics.ResponseContent);
                 pledge.PaymentGatewayHistory.Add(dialogueHistoryEntry);

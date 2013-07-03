@@ -8,6 +8,7 @@ TicketMuffin.Web/logs/*
 !TicketMuffin.Web/logs/Web.config
 App_Data/RavenDb
 *Publish.xml
+Raven*/**/Database
 packages/Raven*/**/Data
 packages/Raven*/**/Logs
 packages/Raven*/**/*.log*

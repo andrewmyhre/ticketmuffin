@@ -57,18 +57,22 @@ namespace TicketMuffin.Web.Controllers
             GroupGivingEvent @event = null;
             EventPledge pledge = null;
             Account account = null;
+            
             @event =
                 _documentSession.Query<GroupGivingEvent>()
-                    .SingleOrDefault(e => e.Pledges.Any(p => p.TransactionId == payKey));
+                    .SingleOrDefault(e => e.Pledges.Any(p => p.Payments.Any(pmt=>pmt.TransactionId == payKey)));
+
             if (@event == null)
                 return new HttpNotFoundResult();
-            pledge = @event.Pledges.Where(p => p.TransactionId == payKey).FirstOrDefault();
+            
+            pledge = @event.Pledges.SingleOrDefault(p => p.Payments.Any(pmt=>pmt.TransactionId == payKey));
 
             if (pledge == null)
                 return new HttpNotFoundResult();
 
+            var payment = pledge.Payments.SingleOrDefault(p => p.TransactionId == payKey);
             // user may just be reloading the page - fine, don't do any updates and present the view
-            if (!pledge.Paid && pledge.PaymentStatus == PaymentStatus.Unpaid)
+            if (!pledge.Paid)
             {
                 ConfirmPledgePaymentAction action
                     = new ConfirmPledgePaymentAction(_paymentGateway, _accountService, _emailRelayService);
@@ -103,8 +107,6 @@ namespace TicketMuffin.Web.Controllers
                 _documentSession.SaveChanges();
             }
 
-            @event = _documentSession.Load<GroupGivingEvent>(@event.Id);
-            pledge = @event.Pledges.Where(p => p.TransactionId == payKey).FirstOrDefault();
             var viewModel = new OrderConfirmationViewModel();
             viewModel.Event = @event;
             viewModel.PledgesRequired = viewModel.Event.MinimumParticipants -

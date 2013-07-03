@@ -11,6 +11,7 @@ namespace TicketMuffin.Core.Conventions
         public override void Load()
         {
             Bind<IPledgeService>().To<PledgeService>();
+            Bind<IPaymentService>().To<PaymentService>();
         }
     }
 }

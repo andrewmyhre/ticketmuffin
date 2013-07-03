@@ -22,7 +22,7 @@ namespace TicketMuffin.Core.Domain
         public AccountType AccountType { get; set; }
         public bool OptInForOffers { get; set; }
 
-        public string PayPalEmail { get; set; }
+        public string PaymentGatewayId { get; set; }
         public string PayPalFirstName { get; set; }
         public string PayPalLastName { get; set; }
 

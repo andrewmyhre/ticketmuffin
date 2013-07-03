@@ -62,23 +62,12 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\log4net.2.0.0\lib\net40-full\log4net.dll</HintPath>
     </Reference>
-    <Reference Include="log4net.Raven">
-      <HintPath>..\packages\log4net.Raven.0.888\lib\net40\log4net.Raven.dll</HintPath>
-    </Reference>
-    <Reference Include="Newtonsoft.Json, Version=4.0.8.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\Newtonsoft.Json.4.0.8\lib\net40\Newtonsoft.Json.dll</HintPath>
-    </Reference>
     <Reference Include="Ninject, Version=3.0.0.0, Culture=neutral, PublicKeyToken=c7192dc5380945e7, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\Ninject.3.0.1.10\lib\net40\Ninject.dll</HintPath>
     </Reference>
     <Reference Include="Ninject.Extensions.Conventions">
       <HintPath>..\packages\Ninject.Extensions.Conventions.3.0.0.11\lib\net40\Ninject.Extensions.Conventions.dll</HintPath>
-    </Reference>
-    <Reference Include="NLog, Version=2.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\NLog.2.0.0.2000\lib\net40\NLog.dll</HintPath>
     </Reference>
     <Reference Include="Raven.Abstractions">
       <HintPath>..\packages\RavenDB.Database.2.0.2375\lib\net40\Raven.Abstractions.dll</HintPath>
@@ -136,6 +125,7 @@
     <Compile Include="Domain\GroupGivingEvent.cs" />
     <Compile Include="Domain\IDomainObject.cs" />
     <Compile Include="Domain\PageContent.cs" />
+    <Compile Include="Domain\Payment.cs" />
     <Compile Include="Domain\PaymentStatus.cs" />
     <Compile Include="Domain\TransactionHistoryItem.cs" />
     <Compile Include="Dto\PaymentDetailsRequest.cs" />
@@ -155,6 +145,7 @@
     <Compile Include="Services\Country.cs" />
     <Compile Include="Services\CountryService.cs" />
     <Compile Include="Services\IContentProvider.cs" />
+    <Compile Include="Services\IPaymentService.cs" />
     <Compile Include="Services\NonEnglishNumbersModelBinder.cs" />
     <Compile Include="Services\CreateEventRequest.cs" />
     <Compile Include="Services\CreateEventResult.cs" />
@@ -215,9 +206,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="Readme.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(SolutionDir)\.nuget\nuget.targets" />

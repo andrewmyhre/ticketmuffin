@@ -34,10 +34,10 @@ namespace TicketMuffin.Core.Actions.ActivateEvent
                 throw new InvalidOperationException("Event is not ready to activate");
             }
 
-            ActivateEventResponse response = new ActivateEventResponse();
+            var response = new ActivateEventResponse();
             foreach (var pledge in @event.Pledges)
             {
-                if (pledge.PaymentStatus != PaymentStatus.Unsettled)
+                if (pledge.Paid)
                 {
                     continue;
                 }

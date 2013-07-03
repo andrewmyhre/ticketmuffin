@@ -36,11 +36,7 @@ namespace TicketMuffin.Core.Actions.CancelEvent
             }
 
             var action = new RefundPledgeAction(_paymentGateway);
-            var pledges =
-                @event.Pledges.Where(
-                    p =>
-                    p.PaymentStatus == PaymentStatus.Settled ||
-                    p.PaymentStatus == PaymentStatus.Unsettled);
+            var pledges = @event.Pledges.Where(p => p.Paid);
 
             bool noProblems = true;
             foreach (var pledge in pledges)
@@ -58,6 +54,7 @@ namespace TicketMuffin.Core.Actions.CancelEvent
                 catch (Exception exception)
                 {
                     noProblems = false;
+                    
                     break;
                 }
             }

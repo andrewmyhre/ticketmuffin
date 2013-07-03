@@ -454,7 +454,7 @@ namespace TicketMuffin.Web.Controllers
             var viewModel = new PayPalSettingsModel();
             var membershipUser = Membership.GetUser(true);
             var account = _accountService.RetrieveByEmailAddress(membershipUser.Email);
-            viewModel.PayPalEmail = account.PayPalEmail;
+            viewModel.PayPalEmail = account.PaymentGatewayId;
             viewModel.PayPalFirstName = account.PayPalFirstName;
             viewModel.PayPalLastName = account.PayPalLastName;
             return View(viewModel);
@@ -465,7 +465,7 @@ namespace TicketMuffin.Web.Controllers
         {
             var membershipUser = Membership.GetUser(true);
             var account = _accountService.RetrieveByEmailAddress(membershipUser.Email);
-            account.PayPalEmail = model.PayPalEmail;
+            account.PaymentGatewayId = model.PayPalEmail;
             account.PayPalFirstName = model.PayPalFirstName;
             account.PayPalLastName = model.PayPalLastName;
 

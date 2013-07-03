@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
+using Moq;
 using NUnit.Framework;
 using Ninject;
 using Raven.Client;
 using TicketMuffin.Core.Domain;
+using TicketMuffin.Core.Payments;
 using TicketMuffin.Core.Services;
 
 namespace TicketMuffin.Core.Test.Integration
@@ -28,17 +29,17 @@ namespace TicketMuffin.Core.Test.Integration
             GroupGivingEvent @event = null;
             Account pledger = null;
             var documentStore = _kernel.Get<IDocumentStore>();
+            var paymentService = _kernel.Get<IPaymentService>();
+
             using (var session = documentStore.OpenSession())
             {
                 @event = CreateAnEventAndOrganiserAccount(session);
                 pledger = CreateAnAccount(session);
 
-                var pledgeService = new PledgeService(session);
+                var pledgeService = new PledgeService(session, paymentService);
                 var pledge = pledgeService.CreatePledge(@event, pledger);
                 Assert.That(pledge, Is.Not.Null);
             }
-
-            
 
             using (var session = documentStore.OpenSession())
             {
@@ -47,68 +48,79 @@ namespace TicketMuffin.Core.Test.Integration
                 Assert.That(actualPledge, Is.Not.Null);
             }
         }
-    }
 
-    public class TicketMuffinTestsBase
-    {
-        private static Random _random = new Random();
-
-        protected static string RandomString(int length=10)
+        [Test]
+        public void CanGetAPaymentUrlToBuyTickets()
         {
-            var sb = new StringBuilder();
-            while (length-- > 0)
+            GroupGivingEvent @event = null;
+            Account pledger = null;
+
+            string expectedPaymentPageUrl = RandomString();
+            string expectedTransactionId = RandomString();
+
+            var paymentGateway = new Mock<IPaymentGateway>();
+            paymentGateway.SetupGet(x => x.Name).Returns("MockPaymentGateway");
+            paymentGateway
+                .Setup(x=>x.CreatePayment(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<Receiver[]>()))
+                .Returns(new PaymentCreationResponse() { PaymentUrl = expectedPaymentPageUrl, TransactionId = expectedTransactionId })
+                .Verifiable();
+
+            var documentStore = _kernel.Get<IDocumentStore>();
+            _kernel.Unbind<IPaymentGateway>();
+            _kernel.Bind<IPaymentGateway>().ToMethod(x => paymentGateway.Object);
+
+            using (var session = documentStore.OpenSession())
             {
-                sb.Append((char) _random.Next((int) 'A', (int) 'Z'));
+                @event = CreateAnEventAndOrganiserAccount(session);
+                var organiser = session.Load<Account>(@event.OrganiserId);
+                pledger = CreateAnAccount(session);
+                var pledge = AddAPledgeToEvent(@event, pledger);
+
+                var paymentService = _kernel.Get<IPaymentService>();
+                var paymentUrl = paymentService.GetPaymentUrlForPledge(@event,organiser, pledge);
+
+                paymentGateway.VerifyAll();
+                Assert.That(paymentUrl, Is.EqualTo(expectedPaymentPageUrl));
+                Assert.That(pledge.Payments, Has.Count.EqualTo(1));
+                Assert.That(pledge.Payments.SingleOrDefault(x=>x.TransactionId==expectedTransactionId), Is.Not.Null);
             }
-            return sb.ToString();
         }
 
-        protected static GroupGivingEvent CreateAnEventAndOrganiserAccount(IDocumentSession session)
+        [Test]
+        public void GivenPayingForAPledge_WhenPaymentIsSuccessful_ThePledgeIsMarkedPaid()
         {
-            var creatorEmail = string.Concat(RandomString(), "@integrationtest.com");
-            var eventCreator = new Account()
-                {
-                    FirstName = RandomString(),
-                    LastName = RandomString(),
-                    AccountType = AccountType.Individual,
-                    Culture = "en-GB",
-                    PayPalEmail = creatorEmail,
-                    PayPalFirstName = RandomString(),
-                    PayPalLastName = RandomString(),
-                    Email = creatorEmail
-                };
-            session.Store(eventCreator);
+            GroupGivingEvent @event = null;
+            Account pledger = null;
 
+            string transactionId = "transactionId";
+            string expectedPayPalEmail = RandomString();
+            var paymentGateway = new Mock<IPaymentGateway>();
 
-            var @event = new GroupGivingEvent()
-                {
-                    Title = string.Concat("Test event ", RandomString()),
-                    CreatorId = eventCreator.Id
-                };
-            session.Store(@event);
-            session.SaveChanges();
+            var documentStore = _kernel.Get<IDocumentStore>();
+            _kernel.Unbind<IPaymentGateway>();
+            _kernel.Bind<IPaymentGateway>().ToMethod(x => paymentGateway.Object);
 
-            return @event;
-        }
+            using (var session = documentStore.OpenSession())
+            {
+                @event = CreateAnEventAndOrganiserAccount(session);
+                pledger = CreateAnAccount(session);
+                var pledge = AddAPledgeToEvent(@event, pledger);
+                var payment = AddAPaymentToPledge(pledge, PaymentStatus.Unpaid, transactionId);
 
-        protected Account CreateAnAccount(IDocumentSession session)
-        {
-            var creatorEmail = string.Concat(RandomString(), "@integrationtest.com");
-            var account = new Account()
-                {
-                    FirstName = RandomString(),
-                    LastName = RandomString(),
-                    AccountType = AccountType.Individual,
-                    Culture = "en-GB",
-                    PayPalEmail = creatorEmail,
-                    PayPalFirstName = RandomString(),
-                    PayPalLastName = RandomString(),
-                    Email = creatorEmail
-                };
-            session.Store(account);
-            session.SaveChanges();
+                paymentGateway.Setup(x => x.RetrievePaymentDetails(transactionId))
+                    .Returns(new PaymentDetailsResponse() { Successful = true, PaymentStatus = PaymentStatus.Unsettled, SenderId = expectedPayPalEmail });
 
-            return account;
+                var pledgeService = _kernel.Get<IPledgeService>();
+
+                pledgeService.ConfirmPaidPledge(@event, pledge, pledger, transactionId);
+
+                Assert.That(pledge.Payments, Has.Count.EqualTo(1));
+                var actualPayment = pledge.Payments.First();
+
+                Assert.That(pledger.PaymentGatewayId, Is.EqualTo(expectedPayPalEmail), "pledge service should have updated payer's paypal email address");
+                Assert.That(actualPayment.PaymentStatus, Is.EqualTo(PaymentStatus.Unsettled));
+                Assert.That(pledge.Paid, Is.True);
+            }
         }
     }
 }

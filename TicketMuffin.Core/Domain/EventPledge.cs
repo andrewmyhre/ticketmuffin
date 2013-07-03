@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using TicketMuffin.Core.Payments;
 
 namespace TicketMuffin.Core.Domain
@@ -10,10 +11,9 @@ namespace TicketMuffin.Core.Domain
         public string AccountName { get; set; }
         public DateTime DatePledged { get; set; }
         public DateTime? DateRefunded { get; set; }
-        public bool Paid { get; set;}
+        public bool Paid { get { return Payments.Any(x => x.PaymentStatus == PaymentStatus.Settled || x.PaymentStatus == PaymentStatus.Unsettled); } }
         public bool Refunded { get; set; }
         public string AccountEmailAddress { get; set; }
-        public string TransactionId { get; set; }
         public string OrderNumber { get; set; }
         public List<EventPledgeAttendee> Attendees { get; set; }
 
@@ -21,8 +21,6 @@ namespace TicketMuffin.Core.Domain
         public decimal Total { get; set; }
         public decimal SubTotal { get; set; }
         public decimal TaxRateApplied { get; set; }
-
-        public PaymentStatus PaymentStatus { get; set; }
 
         public decimal ServiceChargeRateApplied { get; set; }
 
@@ -32,9 +30,13 @@ namespace TicketMuffin.Core.Domain
 
         public string Notes { get; set; }
 
+        public List<Payment> Payments { get; set; }
+
         public EventPledge()
         {
             Attendees = new List<EventPledgeAttendee>();
+            Payments = new List<Payment>();
+            PaymentGatewayHistory = new List<DialogueHistoryEntry>();
         }
     }
 }

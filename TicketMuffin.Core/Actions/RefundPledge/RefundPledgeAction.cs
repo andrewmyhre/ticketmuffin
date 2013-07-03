@@ -32,10 +32,18 @@ namespace TicketMuffin.Core.Actions.RefundPledge
                     throw new ArgumentException("No pledge could be found matching that order number");
                 }
 
+            var payment =
+                pledge.Payments.SingleOrDefault(
+                    x => x.PaymentStatus == PaymentStatus.Settled || x.PaymentStatus == PaymentStatus.Unsettled);
+            if (payment == null)
+            {
+                throw new ArgumentException("Payment does not exist");
+            }
+
                 IPaymentRefundResponse refundResponse = null;
                 try
                 {
-                    refundResponse = _paymentGateway.Refund(pledge.TransactionId, pledge.Total, pledge.AccountEmailAddress);
+                    refundResponse = _paymentGateway.Refund(payment.TransactionId, pledge.Total, pledge.AccountEmailAddress);
                 }
                 catch (Exception exception)
                 {
@@ -53,8 +61,7 @@ namespace TicketMuffin.Core.Actions.RefundPledge
                 if (refundResponse.Successful)
                 {
                     pledge.DateRefunded = DateTime.Now;
-                    pledge.PaymentStatus = PaymentStatus.Refunded;
-                    pledge.Paid = false;
+                    payment.PaymentStatus = PaymentStatus.Refunded;
                 }
 
                 session.SaveChanges();

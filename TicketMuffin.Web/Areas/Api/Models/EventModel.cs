@@ -69,9 +69,7 @@ namespace TicketMuffin.Web.Areas.Api.Models
         {
             get
             {
-                return Pledges.Where(p => p.Paid
-                    && (p.PaymentStatus == PaymentStatus.Unsettled
-                    || p.PaymentStatus == PaymentStatus.Settled)).Sum(p => p.Attendees.Count());
+                return Pledges.Where(p => p.Paid).Sum(p => p.Attendees.Count());
             }
         }
         [DataMember(Name = "spacesLeft")]

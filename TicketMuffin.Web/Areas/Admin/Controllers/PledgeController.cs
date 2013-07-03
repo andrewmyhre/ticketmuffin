@@ -35,10 +35,10 @@ namespace TicketMuffin.Web.Areas.Admin.Controllers
                     query = query.OpenSubclause()
                         .WhereStartsWith("TransactionId", q)
                         .OrElse().WhereStartsWith("OrderNumber", q)
-                        .OrElse().WhereContains("AccountEmailAddress", q).Fuzzy(0.5m)
-                        .OrElse().WhereContains("AttendeeName", q).Fuzzy(0.8m)
-                        .OrElse().WhereContains("EventName", q).Fuzzy(0.8m)
-                        .OrElse().WhereContains("EventOrganiser", q).Fuzzy(0.8m)
+                        .OrElse().WhereStartsWith("AccountEmailAddress", q).Fuzzy(0.5m)
+                        .OrElse().WhereStartsWith("AttendeeName", q).Fuzzy(0.8m)
+                        .OrElse().WhereStartsWith("EventName", q).Fuzzy(0.8m)
+                        .OrElse().WhereStartsWith("EventOrganiser", q).Fuzzy(0.8m)
                         .CloseSubclause();
                 }
 

@@ -40,7 +40,7 @@ namespace GroupGiving.Test.Unit
         {
             return new Account()
                        {
-                           PayPalEmail = "testuser@gmail.com"
+                           PaymentGatewayId = "testuser@gmail.com"
                        };
         }
 

@@ -1,15 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Newtonsoft.Json;
-using TicketMuffin.Core.Payments;
+using Raven.Imports.Newtonsoft.Json;
 
 namespace TicketMuffin.Core.Domain
 {
     public class GroupGivingEvent : IDomainObject
     {
         public string Id { get; set; }
-        public string CreatorId { get; set; }
         public string Title { get; set; }
         public string City { get; set; }
         public string Country { get; set; }
@@ -53,9 +51,7 @@ namespace TicketMuffin.Core.Domain
         [JsonIgnore]
         public int PaidAttendeeCount { 
             get { 
-                return Pledges.Where(p=>p.Paid
-                    &&(p.PaymentStatus==PaymentStatus.Unsettled
-                    ||p.PaymentStatus==PaymentStatus.Settled)).Sum(p => p.Attendees.Count()); 
+                return Pledges.Where(p=>p.Paid).Sum(p => p.Attendees.Count()); 
             } 
         }
         [JsonIgnore]
@@ -63,9 +59,7 @@ namespace TicketMuffin.Core.Domain
         {
             get
             {
-                return Pledges.Where(p => p.Paid
-                    && (p.PaymentStatus == PaymentStatus.Unsettled
-                    || p.PaymentStatus == PaymentStatus.Settled)).Count();
+                return Pledges.Count(p => p.Paid);
             }
         }
         [JsonIgnore]
@@ -119,6 +113,8 @@ namespace TicketMuffin.Core.Domain
         {
             get { return SalesEndDateTime < DateTime.Now; }
         }
+
+        public string Iso4217Alpha3Code { get; set; }
 
         public GroupGivingEvent()
         {

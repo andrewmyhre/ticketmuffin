@@ -1,0 +1,155 @@
+time,logger,level,database,message,exception
+2013-07-03 16:30:07.8411,Raven.Database.Impl.DocumentCacher,Info,<system>,"MemoryCache Settings:
+  PhysicalMemoryLimit = 99
+  CacheMemoryLimit    = 3159359488
+  PollingInterval     = 00:02:00",
+2013-07-03 16:30:07.9011,Raven.Storage.Esent.TransactionalStorage,Info,<system>,"Esent Settings:
+  MaxVerPages      = 16384
+  CacheSizeMax     = 262144
+  DatabasePageSize = 4096",
+2013-07-03 16:30:09.7948,Raven.Storage.Esent.StorageActions.DocumentStorageActions,Debug,<system>,Document with key 'Raven/Backup/Status' was not found,
+2013-07-03 16:30:09.8548,Raven.Database.Indexing.WorkContext,Debug,<system>,"No work was found, workerWorkCounter: 0, for: ReducingExecuter, will wait for additional work",
+2013-07-03 16:30:09.8618,Raven.Database.Indexing.WorkContext,Debug,<system>,"No work was found, workerWorkCounter: 0, for: IndexingExecuter, will wait for additional work",
+2013-07-03 16:30:09.8618,Raven.Storage.Esent.StorageActions.DocumentStorageActions,Debug,,Document with key 'Raven/Authorization/WindowsSettings' was not found,
+2013-07-03 16:54:20.5646,Raven.Storage.Esent.StorageActions.DocumentStorageActions,Debug,<system>,Document with key 'Raven/Replication/Destinations' was not found,
+2013-07-03 16:54:20.5786,Raven.Database.Server.HttpServer,Debug,,Request #   1: GET     -   262 ms - <system>   - 404 - /docs/Raven/Replication/Destinations,
+2013-07-03 16:54:45.0043,Raven.Storage.Esent.StorageActions.DocumentStorageActions,Debug,<system>,Document with key 'Raven/Replication/Destinations' was not found,
+2013-07-03 16:54:45.0043,Raven.Database.Server.HttpServer,Debug,,Request #   2: GET     -     6 ms - <system>   - 404 - /docs/Raven/Replication/Destinations,
+2013-07-03 16:54:48.0157,Raven.Storage.Esent.StorageActions.DocumentStorageActions,Debug,<system>,Document with key 'PageContents/views-home-index-cshtml' was not found,
+2013-07-03 16:54:48.0157,Raven.Database.Server.HttpServer,Debug,,Request #   3: GET     -     0 ms - <system>   - 404 - /docs/PageContents/views-home-index-cshtml,
+2013-07-03 16:54:48.0377,Raven.Storage.Esent.StorageActions.DocumentStorageActions,Debug,<system>,Document with key 'PageContents/views-home-index-cshtml' was not found,
+2013-07-03 16:54:48.0377,Raven.Database.Server.HttpServer,Debug,,Request #   4: GET     -     0 ms - <system>   - 404 - /docs/PageContents/views-home-index-cshtml,
+2013-07-03 16:54:48.0377,Raven.Storage.Esent.StorageActions.DocumentStorageActions,Debug,<system>,Document with key 'PageContents/views-home-index-cshtml' was not found,
+2013-07-03 16:54:48.0377,Raven.Database.Server.HttpServer,Debug,,Request #   5: GET     -     0 ms - <system>   - 404 - /docs/PageContents/views-home-index-cshtml,
+2013-07-03 16:54:48.0447,Raven.Storage.Esent.StorageActions.DocumentStorageActions,Debug,<system>,Document with key 'PageContents/views-home-index-cshtml' was not found,
+2013-07-03 16:54:48.0447,Raven.Database.Server.HttpServer,Debug,,Request #   6: GET     -     0 ms - <system>   - 404 - /docs/PageContents/views-home-index-cshtml,
+2013-07-03 16:54:50.2259,Raven.Database.Storage.IndexDefinitionStorage,Info,<system>,"New index Temp%2fGroupGivingEvents%2fByIsFeaturedAndStartDateAndStateSortByStartDate:
+using Raven.Abstractions;
+using Raven.Database.Linq;
+using System.Linq;
+using System.Collections.Generic;
+using System.Collections;
+using System;
+using Raven.Database.Linq.PrivateExtensions;
+using Lucene.Net.Documents;
+using System.Globalization;
+using System.Text.RegularExpressions;
+using Raven.Database.Indexing;
+
+
+public class Index_Temp_2fGroupGivingEvents_2fByIsFeaturedAndStartDateAndStateSortByStartDate : Raven.Database.Linq.AbstractViewGenerator
+{
+	public Index_Temp_2fGroupGivingEvents_2fByIsFeaturedAndStartDateAndStateSortByStartDate()
+	{
+		this.ViewText = @""from doc in docs.GroupGivingEvents
+select new { IsFeatured = doc.IsFeatured, StartDate = doc.StartDate, State = doc.State }"";
+		this.ForEntityNames.Add(""GroupGivingEvents"");
+		this.AddMapDefinition(docs => 
+			from doc in docs
+			where string.Equals(doc[""@metadata""][""Raven-Entity-Name""], ""GroupGivingEvents"", System.StringComparison.InvariantCultureIgnoreCase)
+			select new {
+				IsFeatured = doc.IsFeatured,
+				StartDate = doc.StartDate,
+				State = doc.State,
+				__document_id = doc.__document_id
+			});
+		this.AddField(""IsFeatured"");
+		this.AddField(""StartDate"");
+		this.AddField(""State"");
+		this.AddField(""__document_id"");
+		this.AddQueryParameterForMap(""IsFeatured"");
+		this.AddQueryParameterForMap(""StartDate"");
+		this.AddQueryParameterForMap(""State"");
+		this.AddQueryParameterForMap(""__document_id"");
+		this.AddQueryParameterForReduce(""IsFeatured"");
+		this.AddQueryParameterForReduce(""StartDate"");
+		this.AddQueryParameterForReduce(""State"");
+		this.AddQueryParameterForReduce(""__document_id"");
+	}
+}
+
+Compiled to:
+using Raven.Abstractions;
+using Raven.Database.Linq;
+using System.Linq;
+using System.Collections.Generic;
+using System.Collections;
+using System;
+using Raven.Database.Linq.PrivateExtensions;
+using Lucene.Net.Documents;
+using System.Globalization;
+using System.Text.RegularExpressions;
+using Raven.Database.Indexing;
+
+
+public class Index_Temp_2fGroupGivingEvents_2fByIsFeaturedAndStartDateAndStateSortByStartDate : Raven.Database.Linq.AbstractViewGenerator
+{
+	public Index_Temp_2fGroupGivingEvents_2fByIsFeaturedAndStartDateAndStateSortByStartDate()
+	{
+		this.ViewText = @""from doc in docs.GroupGivingEvents
+select new { IsFeatured = doc.IsFeatured, StartDate = doc.StartDate, State = doc.State }"";
+		this.ForEntityNames.Add(""GroupGivingEvents"");
+		this.AddMapDefinition(docs => 
+			from doc in docs
+			where string.Equals(doc[""@metadata""][""Raven-Entity-Name""], ""GroupGivingEvents"", System.StringComparison.InvariantCultureIgnoreCase)
+			select new {
+				IsFeatured = doc.IsFeatured,
+				StartDate = doc.StartDate,
+				State = doc.State,
+				__document_id = doc.__document_id
+			});
+		this.AddField(""IsFeatured"");
+		this.AddField(""StartDate"");
+		this.AddField(""State"");
+		this.AddField(""__document_id"");
+		this.AddQueryParameterForMap(""IsFeatured"");
+		this.AddQueryParameterForMap(""StartDate"");
+		this.AddQueryParameterForMap(""State"");
+		this.AddQueryParameterForMap(""__document_id"");
+		this.AddQueryParameterForReduce(""IsFeatured"");
+		this.AddQueryParameterForReduce(""StartDate"");
+		this.AddQueryParameterForReduce(""State"");
+		this.AddQueryParameterForReduce(""__document_id"");
+	}
+}
+",
+2013-07-03 16:54:50.4800,Raven.Database.Indexing.IndexStorage,Debug,<system>,Creating index Temp/GroupGivingEvents/ByIsFeaturedAndStartDateAndStateSortByStartDate with encoded name Temp/GroupGivingEvents/ByIsFeaturedAndStartDateAndStateSortByStartDate,
+2013-07-03 16:54:50.6770,Raven.Database.Indexing.Index.Indexing,Debug,<system>,Creating index for Temp/GroupGivingEvents/ByIsFeaturedAndStartDateAndStateSortByStartDate,
+2013-07-03 16:54:50.7060,Raven.Database.Indexing.WorkContext,Debug,<system>,Incremented work counter to 1 because: PUT INDEX Temp/GroupGivingEvents/ByIsFeaturedAndStartDateAndStateSortByStartDate,
+2013-07-03 16:54:50.7190,Raven.Database.Indexing.WorkContext,Debug,<system>,"No work was found, workerWorkCounter: 1, for: ReducingExecuter, will wait for additional work",
+2013-07-03 16:54:50.7190,Raven.Database.Indexing.WorkContext,Debug,<system>,"No work was found, workerWorkCounter: 1, for: IndexingExecuter, will wait for additional work",
+2013-07-03 16:54:50.7940,Raven.Database.Indexing.Index.Querying,Debug,<system>,Issuing query on index Temp/GroupGivingEvents/ByIsFeaturedAndStartDateAndStateSortByStartDate for: ( StartDate:{2013-07-03T16:54:48.0747196 TO NULL} AND IsFeatured:true) AND (State:SalesReady OR State:Activated),
+2013-07-03 16:54:50.8920,Raven.Database.Server.HttpServer,Debug,,"Request #   7: GET     - 2,723 ms - <system>   - 200 - /indexes/dynamic/GroupGivingEvents?query=(%2520StartDate%253A%257B2013-07-03T16%253A54%253A48.0747196%2520TO%2520NULL%257D%2520AND%2520IsFeatured%253Atrue)%2520AND%2520(State%253ASalesReady%2520OR%2520State%253AActivated)&pageSize=128&operationHeadersHash=-1634301117",
+2013-07-03 16:54:50.8920,Raven.Database.Server.HttpServer,Debug,,"	Query: ( StartDate:{2013-07-03T16:54:48.0747196 TO NULL} AND IsFeatured:true) AND (State:SalesReady OR State:Activated)
+	Time: 2,635 ms
+	Index: Temp/GroupGivingEvents/ByIsFeaturedAndStartDateAndStateSortByStartDate
+	Results: 0 returned out of 0 total.
+",
+2013-07-03 16:54:50.9970,Raven.Storage.Esent.StorageActions.DocumentStorageActions,Debug,<system>,Document with key 'PageContents/views-home-index-cshtml' was not found,
+2013-07-03 16:54:50.9970,Raven.Database.Server.HttpServer,Debug,,Request #   8: GET     -     0 ms - <system>   - 404 - /docs/PageContents/views-home-index-cshtml,
+2013-07-03 16:54:50.9970,Raven.Storage.Esent.StorageActions.DocumentStorageActions,Debug,<system>,Document with key 'PageContents/views-home-index-cshtml' was not found,
+2013-07-03 16:54:50.9970,Raven.Database.Server.HttpServer,Debug,,Request #   9: GET     -     0 ms - <system>   - 404 - /docs/PageContents/views-home-index-cshtml,
+2013-07-03 16:54:50.9970,Raven.Storage.Esent.StorageActions.DocumentStorageActions,Debug,<system>,Document with key 'PageContents/views-home-index-cshtml' was not found,
+2013-07-03 16:54:50.9970,Raven.Database.Server.HttpServer,Debug,,Request #  10: GET     -     0 ms - <system>   - 404 - /docs/PageContents/views-home-index-cshtml,
+2013-07-03 16:54:52.5362,Raven.Storage.Esent.StorageActions.DocumentStorageActions,Debug,<system>,Document with key 'PageContents/global-header' was not found,
+2013-07-03 16:54:52.5362,Raven.Database.Server.HttpServer,Debug,,Request #  11: GET     -     0 ms - <system>   - 404 - /docs/PageContents/global-header,
+2013-07-03 16:54:52.5372,Raven.Storage.Esent.StorageActions.DocumentStorageActions,Debug,<system>,Document with key 'PageContents/global-header' was not found,
+2013-07-03 16:54:52.5372,Raven.Database.Server.HttpServer,Debug,,Request #  12: GET     -     0 ms - <system>   - 404 - /docs/PageContents/global-header,
+2013-07-03 16:54:52.5372,Raven.Storage.Esent.StorageActions.DocumentStorageActions,Debug,<system>,Document with key 'PageContents/global-header' was not found,
+2013-07-03 16:54:52.5372,Raven.Database.Server.HttpServer,Debug,,Request #  13: GET     -     0 ms - <system>   - 404 - /docs/PageContents/global-header,
+2013-07-03 16:54:52.5372,Raven.Storage.Esent.StorageActions.DocumentStorageActions,Debug,<system>,Document with key 'PageContents/global-header' was not found,
+2013-07-03 16:54:52.5372,Raven.Storage.Esent.StorageActions.DocumentStorageActions,Debug,<system>,Document with key 'PageContents/global-header' was not found,
+2013-07-03 16:54:52.5372,Raven.Database.Server.HttpServer,Debug,,Request #  14: GET     -     0 ms - <system>   - 404 - /docs/PageContents/global-header,
+2013-07-03 16:54:52.5372,Raven.Storage.Esent.StorageActions.DocumentStorageActions,Debug,<system>,Document with key 'PageContents/global-header' was not found,
+2013-07-03 16:54:52.5372,Raven.Storage.Esent.StorageActions.DocumentStorageActions,Debug,<system>,Document with key 'PageContents/global-header' was not found,
+2013-07-03 16:54:52.5372,Raven.Database.Server.HttpServer,Debug,,Request #  15: GET     -     0 ms - <system>   - 404 - /docs/PageContents/global-header,
+2013-07-03 16:54:52.5372,Raven.Database.Server.HttpServer,Debug,,Request #  16: GET     -     0 ms - <system>   - 404 - /docs/PageContents/global-header,
+2013-07-03 16:54:52.5372,Raven.Database.Server.HttpServer,Debug,,Request #  17: GET     -     0 ms - <system>   - 404 - /docs/PageContents/global-header,
+2013-07-03 16:54:53.0383,Raven.Storage.Esent.StorageActions.DocumentStorageActions,Debug,<system>,Document with key 'PageContents/views-home-index-cshtml' was not found,
+2013-07-03 16:54:53.0383,Raven.Database.Server.HttpServer,Debug,,Request #  18: GET     -     0 ms - <system>   - 404 - /docs/PageContents/views-home-index-cshtml,
+2013-07-03 16:54:53.0383,Raven.Storage.Esent.StorageActions.DocumentStorageActions,Debug,<system>,Document with key 'PageContents/layout' was not found,
+2013-07-03 16:54:53.0383,Raven.Database.Server.HttpServer,Debug,,Request #  19: GET     -     0 ms - <system>   - 404 - /docs/PageContents/layout,
+2013-07-03 16:54:53.0383,Raven.Storage.Esent.StorageActions.DocumentStorageActions,Debug,<system>,Document with key 'PageContents/layout' was not found,
+2013-07-03 16:54:53.0383,Raven.Database.Server.HttpServer,Debug,,Request #  20: GET     -     0 ms - <system>   - 404 - /docs/PageContents/layout,
+2013-07-03 16:54:53.0383,Raven.Storage.Esent.StorageActions.DocumentStorageActions,Debug,<system>,Document with key 'PageContents/layout' was not found,
+2013-07-03 16:54:53.0383,Raven.Database.Server.HttpServer,Debug,,Request #  21: GET     -     0 ms - <system>   - 404 - /docs/PageContents/layout,

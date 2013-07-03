@@ -17,9 +17,7 @@ namespace TicketMuffin.Core.Indexes
                                  EventName=e.Title,
                                  EventOrganiser=e.OrganiserName,
                                  OrderNumber = pledge.OrderNumber,
-                                 TransactionId = pledge.TransactionId,
                                  AccountEmailAddress = pledge.AccountEmailAddress,
-                                 PaymentStatus = pledge.PaymentStatus,
                                  AttendeeName = attendee.FullName
                              };
 

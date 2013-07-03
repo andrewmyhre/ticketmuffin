@@ -29,30 +29,31 @@ namespace TicketMuffin.Core.Actions.SettlePledge
             if (@event==null)
                 throw new ArgumentException("No such event found");
 
-            var pledge = @event.Pledges.SingleOrDefault(p => p.TransactionId == request.PayPalPayKey);
+            var pledge = @event.Pledges.SingleOrDefault(p => p.Payments.Any(x=>x.TransactionId == request.PayPalPayKey));
+            var payment = pledge.Payments.SingleOrDefault(x => x.TransactionId == request.PayPalPayKey);
             if (pledge == null)
                 throw new ArgumentException("No such pledge found");
+            if (payment == null)
+                throw new ArgumentException("No such payment found");
 
-            if (pledge.PaymentStatus != PaymentStatus.Unpaid)
+            if (pledge.Paid)
                 throw new InvalidOperationException("Pledge is not pending payment");
 
             // get the payment details from payment gateway
-            var paymentDetails =
-                _paymentGateway.RetrievePaymentDetails(pledge.TransactionId);
+            var paymentDetails = _paymentGateway.RetrievePaymentDetails(payment.TransactionId);
             if (pledge.PaymentGatewayHistory == null)
                 pledge.PaymentGatewayHistory = new List<DialogueHistoryEntry>();
             pledge.PaymentGatewayHistory.Add(new DialogueHistoryEntry(paymentDetails.Diagnostics.RequestContent, paymentDetails.Diagnostics.RequestContent));
 
-            if (paymentDetails.Status == PaymentStatus.Unsettled) // delayed payment will be incomplete until execute payment is called
+            if (paymentDetails.PaymentStatus == PaymentStatus.Unsettled) // delayed payment will be incomplete until execute payment is called
             {
-                pledge.PaymentStatus = PaymentStatus.Unsettled;
-                pledge.Paid = true;
-                pledge.DatePledged = DateTime.Now;
+                payment.PaymentStatus = PaymentStatus.Unsettled;
+                pledge.DatePledged = 
+                    DateTime.Now;
             }
-            else if (paymentDetails.Status == PaymentStatus.Settled)
+            else if (paymentDetails.PaymentStatus == PaymentStatus.Settled)
             {
-                pledge.PaymentStatus = PaymentStatus.Settled;
-                pledge.Paid = true;
+                payment.PaymentStatus = PaymentStatus.Settled;
                 pledge.DatePledged = DateTime.Now;
             }
             if (!string.IsNullOrWhiteSpace(paymentDetails.SenderId))

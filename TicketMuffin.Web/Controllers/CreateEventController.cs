@@ -250,7 +250,7 @@ namespace TicketMuffin.Web.Controllers
             var viewModel = new SetTicketDetailsRequest();
             viewModel.SalesEndDateTime = @event.StartDate.AddDays(-1);
             viewModel.SalesEndTimeOptions = TimeOptions();
-            viewModel.PayPalEmail = account.PayPalEmail;
+            viewModel.PayPalEmail = account.PaymentGatewayId;
             viewModel.PayPalFirstName = account.PayPalFirstName;
             viewModel.PayPalLastName = account.PayPalLastName;
             return View(viewModel);
@@ -258,8 +258,8 @@ namespace TicketMuffin.Web.Controllers
 
         private void SetPayPalDetailsIfMissing(Account account)
         {
-            if (string.IsNullOrWhiteSpace(account.PayPalEmail))
-                account.PayPalEmail = account.Email;
+            if (string.IsNullOrWhiteSpace(account.PaymentGatewayId))
+                account.PaymentGatewayId = account.Email;
             if (string.IsNullOrWhiteSpace(account.PayPalFirstName))
                 account.PayPalFirstName = account.FirstName;
             if (string.IsNullOrWhiteSpace(account.PayPalLastName))
@@ -329,7 +329,7 @@ namespace TicketMuffin.Web.Controllers
 
             var membershipUser = _membershipService.GetUser(_userIdentity.Name);
             var account = _accountService.RetrieveByEmailAddress(membershipUser.Email);
-            account.PayPalEmail = setTicketDetailsRequest.PayPalEmail;
+            account.PaymentGatewayId = setTicketDetailsRequest.PayPalEmail;
             account.PayPalFirstName = setTicketDetailsRequest.PayPalFirstName;
             account.PayPalLastName = setTicketDetailsRequest.PayPalLastName;
 

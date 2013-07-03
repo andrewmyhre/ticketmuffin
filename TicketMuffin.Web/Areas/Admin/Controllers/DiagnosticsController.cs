@@ -116,11 +116,9 @@ namespace TicketMuffin.Web.Areas.Admin.Controllers
                                          Attendees = new List<EventPledgeAttendee>(){ new EventPledgeAttendee("Joe"), new EventPledgeAttendee("Billy")},
                                          DatePledged = DateTime.Now.AddDays(-1),
                                          OrderNumber="NOT-A-REAL-PLEDGE",
-                                         Paid=true,
-                                         PaymentStatus = PaymentStatus.Unsettled,
+                                         Payments = new List<Payment>(new[]{new Payment(){PaymentStatus = PaymentStatus.Unsettled, TransactionId = "FAKETRANSACTION"}}),
                                          SubTotal = 10,
                                          Total = 10,
-                                         TransactionId = "FAKETRANSACTION"
                                      }
                        };
         }
@@ -155,9 +153,9 @@ namespace TicketMuffin.Web.Areas.Admin.Controllers
 
             try
             {
-                var receivers = new Receiver[]
+                var receivers = new TicketMuffin.PayPal.Model.Receiver[]
                                                 {
-                                                    new Receiver("5", "andrew.myhre@gmail.com", false)
+                                                    new TicketMuffin.PayPal.Model.Receiver("5", "andrew.myhre@gmail.com", false)
                                                 };
                 var payRequest = _payRequestFactory.RegularPayment("GBP", receivers, "diagnostics " + DateTime.Now.ToString());
                 

@@ -114,7 +114,7 @@ namespace TicketMuffin.Web.Areas.Admin.Controllers
                 account.City = model.City;
                 account.PostCode = model.PostCode;
                 account.Country = model.Country;
-                account.PayPalEmail = model.PayPalEmail;
+                account.PaymentGatewayId = model.PayPalEmail;
                 account.PayPalFirstName = model.PayPalFirstName;
                 account.PayPalLastName = model.PayPalLastName;
 

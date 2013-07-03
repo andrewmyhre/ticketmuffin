@@ -4,6 +4,7 @@ using System.Web;
 using System.Web.Mvc;
 using System.Web.Routing;
 using EmailProcessing;
+using Microsoft.Practices.ServiceLocation;
 using Microsoft.Web.Mvc.Resources;
 using TicketMuffin.Core.Services;
 using TicketMuffin.Web.App_Start;
@@ -188,8 +189,6 @@ namespace TicketMuffin.Web
 
         protected void Application_Start()
         {
-            Microsoft.Practices.ServiceLocation.ServiceLocator
-                .SetLocatorProvider(() => new NinjectAdapter.NinjectServiceLocator(ServiceLocator.Instance));
 
             log4net.Config.XmlConfigurator.Configure();
             AreaRegistration.RegisterAllAreas();
@@ -205,10 +204,9 @@ namespace TicketMuffin.Web
 
             ModelBinders.Binders.DefaultBinder = new ResourceModelBinder();
 
-            EmailFacade = ServiceLocator.Instance.Get<IEmailFacade>();
+            EmailFacade = Microsoft.Practices.ServiceLocation.ServiceLocator.Current.GetInstance<IEmailFacade>();
 
-            ServiceLocator.Instance.Get<ApplicationDataSetup>().Start();
-            Services = ServiceLocator.Instance.GetAll<IWindowsService>();
+            Services = ServiceLocator.Current.GetAllInstances<IWindowsService>();
             foreach(var service in Services)
             {
                 service.Start();
@@ -221,7 +219,7 @@ namespace TicketMuffin.Web
 
         protected void Application_BeginRequest(object sender, EventArgs e)
         {
-            var cultureService = ServiceLocator.Instance.Get<ICultureService>();
+            var cultureService = ServiceLocator.Current.GetInstance<ICultureService>();
             var context = new HttpContextWrapper(HttpContext.Current);
             if (!cultureService.HasCulture(context))
             {

@@ -34,9 +34,9 @@ namespace TicketMuffin.Web.Controllers
             {
                 // load items from index
                 viewModel.Pages = _session.Advanced.LuceneQuery<PageContent>("contentSearch")
-                    .WhereContains("Content", q)
-                    .OrElse().WhereContains("Label", q)
-                    .OrElse().WhereContains("Address", q);
+                    .WhereStartsWith("Content", q)
+                    .OrElse().WhereStartsWith("Label", q)
+                    .OrElse().WhereStartsWith("Address", q);
                     
             } else
             {
