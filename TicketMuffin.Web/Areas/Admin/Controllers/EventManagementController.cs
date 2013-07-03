@@ -4,12 +4,14 @@ using System.Linq;
 using System.Web.Mvc;
 using Raven.Client;
 using Raven.Client.Linq;
+using TicketMuffin.Core;
 using TicketMuffin.Core.Actions;
 using TicketMuffin.Core.Actions.ActivateEvent;
 using TicketMuffin.Core.Actions.CancelEvent;
 using TicketMuffin.Core.Actions.ExecutePayment;
 using TicketMuffin.Core.Actions.RefundPledge;
 using TicketMuffin.Core.Domain;
+using TicketMuffin.Core.Payments;
 using TicketMuffin.Core.Services;
 using TicketMuffin.PayPal;
 using TicketMuffin.PayPal.Model;
@@ -195,7 +197,7 @@ namespace TicketMuffin.Web.Areas.Admin.Controllers
             RefundViewModel viewModel = new RefundViewModel();
             RefundPledgeAction action = new RefundPledgeAction(_paymentGateway);
 
-            RefundResponse refundResult = null;
+            IPaymentRefundResponse refundResult = null;
             try
             {
                 refundResult = action.Execute(_documentSession, "groupgivingevents/" + id, orderNumber);
@@ -322,8 +324,8 @@ namespace TicketMuffin.Web.Areas.Admin.Controllers
             var @event = _documentSession.Load<GroupGivingEvent>(id);
             foreach(var pledge in @event.Pledges)
             {
-                if (pledge.PaymentStatus == PaymentStatus.PaidPendingReconciliation
-                    || pledge.PaymentStatus == PaymentStatus.Reconciled)
+                if (pledge.PaymentStatus == PaymentStatus.Unsettled
+                    || pledge.PaymentStatus == PaymentStatus.Settled)
                 {
                     _pledgeTicketSender.SendTickets(@event, pledge);
                 }

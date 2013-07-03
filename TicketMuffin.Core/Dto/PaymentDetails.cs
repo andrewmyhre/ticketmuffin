@@ -1,4 +1,3 @@
-using TicketMuffin.PayPal.Model;
 
 namespace TicketMuffin.Core.Dto
 {

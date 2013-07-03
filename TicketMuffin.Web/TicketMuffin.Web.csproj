@@ -212,6 +212,8 @@
     <Compile Include="Code\MustBeTrueAttribute.cs" />
     <Compile Include="Code\PageContentService.cs" />
     <Compile Include="Code\ServiceLocator.cs" />
+    <Compile Include="Configuration\ISiteConfiguration.cs" />
+    <Compile Include="Configuration\SiteConfiguration.cs" />
     <Compile Include="Controllers\AboutController.cs" />
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\ContentManagerController.cs" />
@@ -258,6 +260,8 @@
     <Compile Include="Models\UpdateEventViewModel.cs" />
     <Compile Include="Models\VerifyPaypalAccountRequest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Services\ISiteConfigurationService.cs" />
+    <Compile Include="Services\SiteConfigurationService.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="App_Data\web_browsers_patch.xml" />

@@ -1,8 +1,10 @@
 using System.Configuration;
-using Lucene.Net.Analysis;
-using Lucene.Net.Analysis.Standard;
 using Raven.Abstractions.Indexing;
 using Raven.Client;
+using Raven.Client.Indexes;
+using System.Linq;
+using Raven.Database.Linq.PrivateExtensions;
+using TicketMuffin.Core.Domain;
 
 namespace TicketMuffin.Core.Indexes
 {
@@ -18,48 +20,20 @@ namespace TicketMuffin.Core.Indexes
             }
 
             documentStore.DatabaseCommands.PutIndex("contentSearch",
-                                                    new IndexDefinition()
-                                                    {
-                                                        Map =
-                                                            @"from c in docs.PageContents 
-from contentDefinition in Hierarchy(c, ""Content"")
-from contentByCulture in Hierarchy(contentDefinition, ""ContentByCulture"")
-select new {c.Id, c.Address, contentDefinition.Label, contentByCulture.Key, contentByCulture.Value}",
-                                                        Analyzers =
-                                                                {
-                                                                    {"Label", typeof (StopAnalyzer).FullName},
-                                                                    {"Value", typeof (StopAnalyzer).FullName},
-                                                                }
-                                                    }, true);
+                                                    new IndexDefinitionBuilder<LocalisedContent>
+                                                        {
+                                                            Map = pages => from p in pages 
+                                                                           select new {p.Id, p.Culture, p.Address, p.Value},
+                                                                           Analyzers = {
+                                                                                { x=>x.Value, "SimpleAnalyzer"}
+                                                                            }
+                                                        }, true);
 
             documentStore.DatabaseCommands.PutIndex("eventSearch",
-                                                    new IndexDefinition()
+                                                    new IndexDefinitionBuilder<GroupGivingEvent>()
                                                     {
-                                                        Map =
-                                                            @"from e in docs.GroupGivingEvents 
-select new {e.Id, e.Title, e.State, Location=e.City +"", "" + e.Country, e.City, e.Country, e.SalesEndDateTime, e.StartDate, PledgeCount=e.Pledges.Count}",
-                                                        Analyzers =
-                                                                {
-                                                                    {"Title", typeof (StopAnalyzer).FullName},
-                                                                    {"State", typeof (StopAnalyzer).FullName},
-                                                                    {"Location", typeof (StopAnalyzer).FullName},
-                                                                    {"City", typeof (StopAnalyzer).FullName},
-                                                                    {"Country", typeof (StopAnalyzer).FullName},
-                                                                    {"StartDate", typeof (WhitespaceAnalyzer).FullName},
-                                                                    {"SalesEndDateTime", typeof (WhitespaceAnalyzer).FullName},
-                                                                    {"PledgeCount", typeof (StandardAnalyzer).FullName}
-                                                                }
-                                                    }, true);
-
-            documentStore.DatabaseCommands.PutIndex("transactionHistory",
-                                                    new IndexDefinition()
-                                                    {
-                                                        Map =
-                                                            @"from e in docs.GroupGivingEvents
-from pledge in Hierarchy(e, ""Pledges"")
-from history in Hierarchy(pledge, ""PaymentGatewayHistory"")
-select new {e.Id, pledge.OrderNumber, pledge.TransactionId, pledge.PaymentStatus, pledge.AccountEmailAddress, history.TimeStamp, history.Request, history.Response}"
-
+                                                        Map = events => from e in events
+                                                                        select new {e.Id, e.Title, e.State, Location=e.City +", " + e.Country, e.City, e.Country, e.SalesEndDateTime, e.StartDate, PledgeCount=e.Pledges.Count}
                                                     }, true);
 
             documentStore.DatabaseCommands.PutIndex("pledges", new DenormalizedPledges(), true);

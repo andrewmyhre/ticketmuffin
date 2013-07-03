@@ -66,11 +66,6 @@ namespace TicketMuffin.Service
 
                 if (_useThreadPool)
                 {
-                    // Increases the throughput of messages
-                    // however, needs to be throttled by having less listeners in the 
-                    // config or Quantiv will die. 
-                    // ie: reduce EmailServiceListenerCount="..." and PaymentServiceListenerCount="..."
-                    // sections in App.config  
                     ThreadPool.QueueUserWorkItem(ExecuteCommand, item);
                 }
                 else

@@ -11,6 +11,7 @@ using TicketMuffin.Core.Actions.CreatePledge;
 using TicketMuffin.Core.Actions.SettlePledge;
 using TicketMuffin.Core.Domain;
 using TicketMuffin.Core.Email;
+using TicketMuffin.Core.Payments;
 using TicketMuffin.Core.Services;
 using TicketMuffin.PayPal;
 using TicketMuffin.PayPal.Configuration;
@@ -122,7 +123,7 @@ namespace TicketMuffin.Specs
                                   Attendees =
                                       new List<EventPledgeAttendee>(Helpers.Attendees(10)),
                                       Paid=true,
-                                      PaymentStatus = PaymentStatus.Reconciled,
+                                      PaymentStatus = PaymentStatus.Settled,
                                       OrderNumber=Guid.NewGuid().ToString(),
                                       TransactionId = "98765"
                               }
@@ -149,7 +150,7 @@ namespace TicketMuffin.Specs
                               {
                                   Attendees =
                                       new List<EventPledgeAttendee>(Helpers.Attendees(9)),
-                                      PaymentStatus = PaymentStatus.PaidPendingReconciliation,
+                                      PaymentStatus = PaymentStatus.Unsettled,
                                       TransactionId = "12345",
                                       DatePledged = DateTime.Now,
                                       OrderNumber = Guid.NewGuid().ToString(),
@@ -176,7 +177,7 @@ namespace TicketMuffin.Specs
             var pledge = _event.Pledges.SingleOrDefault(p => p.TransactionId == pledgeResult.GatewayResponse.payKey);
             Assert.That(pledge, Is.Not.Null);
             Assert.That(pledge.Paid, Is.True);
-            Assert.That(pledge.PaymentStatus, Is.EqualTo(PaymentStatus.Reconciled));
+            Assert.That(pledge.PaymentStatus, Is.EqualTo(PaymentStatus.Settled));
         }
 
 
@@ -206,7 +207,7 @@ namespace TicketMuffin.Specs
             _event.MaximumParticipants = 10;
             _event.Pledges=new List<EventPledge>()
             {
-                new EventPledge(){Attendees = Helpers.Attendees(8).ToList(), Paid=true, PaymentStatus= PaymentStatus.Reconciled},
+                new EventPledge(){Attendees = Helpers.Attendees(8).ToList(), Paid=true, PaymentStatus= PaymentStatus.Settled},
             };
             documentSession.SaveChanges();
         }

@@ -9,6 +9,7 @@ using System.Xml.Linq;
 using EmailProcessing;
 using Raven.Client;
 using TicketMuffin.Core.Domain;
+using TicketMuffin.Core.Payments;
 using TicketMuffin.Core.Services;
 using TicketMuffin.PayPal.Clients;
 using TicketMuffin.PayPal.Model;
@@ -116,7 +117,7 @@ namespace TicketMuffin.Web.Areas.Admin.Controllers
                                          DatePledged = DateTime.Now.AddDays(-1),
                                          OrderNumber="NOT-A-REAL-PLEDGE",
                                          Paid=true,
-                                         PaymentStatus = PaymentStatus.PaidPendingReconciliation,
+                                         PaymentStatus = PaymentStatus.Unsettled,
                                          SubTotal = 10,
                                          Total = 10,
                                          TransactionId = "FAKETRANSACTION"

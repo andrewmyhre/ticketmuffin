@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using TicketMuffin.Core;
 using TicketMuffin.PayPal.Model;
 
 namespace TicketMuffin.Web.Areas.Admin.Models

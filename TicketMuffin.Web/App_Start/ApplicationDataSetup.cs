@@ -1,5 +1,6 @@
 ﻿using System.Web.Hosting;
 using TicketMuffin.Core.Services;
+using TicketMuffin.Web.Services;
 
 // invoked from application start in global.asax
 namespace TicketMuffin.Web.App_Start

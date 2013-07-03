@@ -4,10 +4,8 @@ using System.Linq;
 using Raven.Client;
 using TicketMuffin.Core.Configuration;
 using TicketMuffin.Core.Domain;
+using TicketMuffin.Core.Payments;
 using TicketMuffin.Core.Services;
-using TicketMuffin.PayPal;
-using TicketMuffin.PayPal.Configuration;
-using TicketMuffin.PayPal.Model;
 
 namespace TicketMuffin.Core.Actions.CreatePledge
 {
@@ -15,19 +13,16 @@ namespace TicketMuffin.Core.Actions.CreatePledge
     {
         private readonly ITaxAmountResolver _tax;
         private readonly IPaymentGateway _paymentGateway;
-        private readonly AdaptiveAccountsConfiguration _paypalConfiguration;
         private readonly IDocumentSession _documentSession;
         private readonly IOrderNumberGenerator _orderNumberGenerator;
 
         public MakePledgeAction(ITaxAmountResolver tax, 
             IPaymentGateway paymentGateway, 
-            AdaptiveAccountsConfiguration paypalConfiguration,
             IDocumentSession documentSession,
             IOrderNumberGenerator orderNumberGenerator)
         {
             _tax = tax;
             _paymentGateway = paymentGateway;
-            _paypalConfiguration = paypalConfiguration;
             _documentSession = documentSession;
             _orderNumberGenerator = orderNumberGenerator;
         }
@@ -80,60 +75,36 @@ namespace TicketMuffin.Core.Actions.CreatePledge
             // calculate split
 
             // make request to payment gateway
-            var paymentGatewayRequest = new PaymentGatewayRequest()
-                                            {
-                                                Amount = pledge.Total,
-                                                OrderMemo = "Tickets for " + @event.Title,
-                                                SuccessCallbackUrl = _paypalConfiguration.SuccessCallbackUrl,
-                                                FailureCallbackUrl = _paypalConfiguration.FailureCallbackUrl,
-                                                Recipients = new List<PaymentRecipient>()
-                                                                    {
-                                                                        // TicketMuffin.com
-                                                                        new PaymentRecipient(
-                                                                            _paypalConfiguration.PayPalAccountEmail,
-                                                                            pledge.Total, true),
-                                                                    // event organiser
-                                                                        new PaymentRecipient(
-                                                                            organiserAccount.PayPalEmail,
-                                                                            pledge.Total - pledge.ServiceCharge, false)
-                                                                    },
-                                                                    CurrencyCode = Enum.GetName(typeof(Currency), @event.Currency)
-                                            };
-
-            PaymentGatewayResponse gatewayResponse = null;
+            
+            IPaymentAuthoriseResponse gatewayResponse = null;
             try
             {
-                gatewayResponse = _paymentGateway.CreateDelayedPayment(paymentGatewayRequest);
+                var paymentMemo = "Tickets for " + @event.Title;
+                var currencyCode = Enum.GetName(typeof (Currency), @event.Currency);
+                gatewayResponse = _paymentGateway.AuthoriseCharge(pledge.Total, currencyCode, paymentMemo, organiserAccount.PayPalEmail);
                 if (pledge.PaymentGatewayHistory==null)
                     pledge.PaymentGatewayHistory = new List<DialogueHistoryEntry>();
-                pledge.PaymentGatewayHistory.Add(gatewayResponse.DialogueEntry);
+                pledge.PaymentGatewayHistory.Add(new DialogueHistoryEntry(gatewayResponse.Diagnostics.RequestContent, gatewayResponse.Diagnostics.ResponseContent));
             }
-            catch (HttpChannelException exception)
+            catch (Exception exception)
             {
                 if (pledge.PaymentGatewayHistory == null)
                     pledge.PaymentGatewayHistory = new List<DialogueHistoryEntry>();
-                pledge.PaymentGatewayHistory.Add(exception.FaultMessage.Raw);
+                pledge.PaymentGatewayHistory.Add(new DialogueHistoryEntry(exception));
                 @event.Pledges.Add(pledge);
                 _documentSession.SaveChanges();
                 return new CreatePledgeActionResult()
                             {
                                 Succeeded = false,
                                 Exception = exception,
-                                GatewayResponse = new PaymentGatewayResponse()
-                                                        {
-                                                            Error = new ResponseError()
-                                                                        {
-                                                                            Message = exception.Message
-                                                                        }
-                                                        }
                             };
             }
 
-            result.GatewayResponse = gatewayResponse;
-            if (gatewayResponse.PaymentExecStatus == "CREATED")
+            result.Succeeded = true;
+            if (gatewayResponse.Status == PaymentStatus.Unsettled)
             {
                 result.Succeeded = true;
-                result.TransactionId = pledge.TransactionId = gatewayResponse.payKey;
+                result.TransactionId = pledge.TransactionId = gatewayResponse.TransactionId;
 
                 pledge.Paid = false;
                 pledge.PaymentStatus = PaymentStatus.Unpaid;

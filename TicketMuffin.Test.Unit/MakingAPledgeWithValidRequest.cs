@@ -6,6 +6,7 @@ using Moq;
 using NUnit.Framework;
 using Raven.Client;
 using Raven.Client.Embedded;
+using TicketMuffin.Core;
 using TicketMuffin.Core.Actions.CreatePledge;
 using TicketMuffin.Core.Actions.SettlePledge;
 using TicketMuffin.Core.Domain;

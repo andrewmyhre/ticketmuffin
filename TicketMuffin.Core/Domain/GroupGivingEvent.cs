@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Newtonsoft.Json;
+using TicketMuffin.Core.Payments;
 
 namespace TicketMuffin.Core.Domain
 {
@@ -53,8 +54,8 @@ namespace TicketMuffin.Core.Domain
         public int PaidAttendeeCount { 
             get { 
                 return Pledges.Where(p=>p.Paid
-                    &&(p.PaymentStatus==PaymentStatus.PaidPendingReconciliation
-                    ||p.PaymentStatus==PaymentStatus.Reconciled)).Sum(p => p.Attendees.Count()); 
+                    &&(p.PaymentStatus==PaymentStatus.Unsettled
+                    ||p.PaymentStatus==PaymentStatus.Settled)).Sum(p => p.Attendees.Count()); 
             } 
         }
         [JsonIgnore]
@@ -63,8 +64,8 @@ namespace TicketMuffin.Core.Domain
             get
             {
                 return Pledges.Where(p => p.Paid
-                    && (p.PaymentStatus == PaymentStatus.PaidPendingReconciliation
-                    || p.PaymentStatus == PaymentStatus.Reconciled)).Count();
+                    && (p.PaymentStatus == PaymentStatus.Unsettled
+                    || p.PaymentStatus == PaymentStatus.Settled)).Count();
             }
         }
         [JsonIgnore]

@@ -2,13 +2,15 @@
 using Moq;
 using NUnit.Framework;
 using Raven.Client.Embedded;
+using TicketMuffin.Core;
 using TicketMuffin.Core.Configuration;
 using TicketMuffin.Core.Domain;
 using TicketMuffin.Core.Email;
+using TicketMuffin.Core.Payments;
 using TicketMuffin.Core.Services;
-using TicketMuffin.PayPal;
 using TicketMuffin.PayPal.Configuration;
 using TicketMuffin.PayPal.Model;
+using TicketMuffin.Web.Configuration;
 
 namespace GroupGiving.Test.Unit
 {

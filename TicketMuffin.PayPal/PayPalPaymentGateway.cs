@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using TicketMuffin.Core.Payments;
 using TicketMuffin.PayPal.Clients;
 using TicketMuffin.PayPal.Configuration;
 using TicketMuffin.PayPal.Model;
@@ -69,6 +70,37 @@ namespace TicketMuffin.PayPal
         public PaymentGatewayResponse CreateDelayedPayment(PaymentGatewayRequest request)
         {
             return SendPaymentRequest(request, "PAY_PRIMARY");
+        }
+
+        public object CreatePayment(object request)
+        {
+            throw new NotImplementedException();
+        }
+
+        public object CreateDelayedPayment(object request)
+        {
+            throw new NotImplementedException();
+        }
+
+        IPaymentDetailsResponse IPaymentGateway.RetrievePaymentDetails(string transactionId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IPaymentRefundResponse Refund(string transactionId, decimal amount, string receiverId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IPaymentCaptureResponse CapturePayment(string transactionId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IPaymentAuthoriseResponse AuthoriseCharge(decimal amount, string currencyCode, string paymentMemo, string recipientId,
+                                                         bool capture = false)
+        {
+            throw new NotImplementedException();
         }
 
         public PaymentDetailsResponse RetrievePaymentDetails(string transactionId)

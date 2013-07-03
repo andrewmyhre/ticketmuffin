@@ -1,23 +1,16 @@
 using Ninject;
+using Ninject.Modules;
 using Raven.Client;
+using Raven.Client.Document;
+using TicketMuffin.Core.Services;
 
 namespace TicketMuffin.Core.Conventions
 {
-    public class IoCConfiguration
+    public class IoCConfiguration : NinjectModule
     {
-        public static void BindAll(IKernel kernel)
+        public override void Load()
         {
-            kernel.Bind<IDocumentStore>()
-                .ToMethod(ctx =>
-                {
-                    return RavenStore.CreateDocumentStore();
-                })
-                .InSingletonScope();
-
-            kernel.Bind<IDocumentSession>()
-                .ToMethod(ctx => kernel.Get<IDocumentStore>().OpenSession())
-                .InRequestScope()
-                .OnDeactivation((ctx, session) => session.SaveChanges());
+            Bind<IPledgeService>().To<PledgeService>();
         }
     }
 }

@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using TicketMuffin.Core.Domain;
 using TicketMuffin.Core.Email;
+using TicketMuffin.Core.Payments;
 using TicketMuffin.Core.Services;
-using TicketMuffin.PayPal;
-using TicketMuffin.PayPal.Model;
+using PaymentStatus = TicketMuffin.Core.Payments.PaymentStatus;
 
 namespace TicketMuffin.Core.Actions.SettlePledge
 {
@@ -41,29 +41,29 @@ namespace TicketMuffin.Core.Actions.SettlePledge
                 _paymentGateway.RetrievePaymentDetails(pledge.TransactionId);
             if (pledge.PaymentGatewayHistory == null)
                 pledge.PaymentGatewayHistory = new List<DialogueHistoryEntry>();
-            pledge.PaymentGatewayHistory.Add(new DialogueHistoryEntry(paymentDetails.Raw.Request, paymentDetails.Raw.Response));
+            pledge.PaymentGatewayHistory.Add(new DialogueHistoryEntry(paymentDetails.Diagnostics.RequestContent, paymentDetails.Diagnostics.RequestContent));
 
-            if (paymentDetails.status == "INCOMPLETE") // delayed payment will be incomplete until execute payment is called
+            if (paymentDetails.Status == PaymentStatus.Unsettled) // delayed payment will be incomplete until execute payment is called
             {
-                pledge.PaymentStatus = PaymentStatus.PaidPendingReconciliation;
+                pledge.PaymentStatus = PaymentStatus.Unsettled;
                 pledge.Paid = true;
                 pledge.DatePledged = DateTime.Now;
             }
-            else if (paymentDetails.status == "CREATED")
+            else if (paymentDetails.Status == PaymentStatus.Settled)
             {
-                pledge.PaymentStatus = PaymentStatus.Reconciled;
+                pledge.PaymentStatus = PaymentStatus.Settled;
                 pledge.Paid = true;
                 pledge.DatePledged = DateTime.Now;
             }
-            if (!string.IsNullOrWhiteSpace(paymentDetails.senderEmail))
+            if (!string.IsNullOrWhiteSpace(paymentDetails.SenderId))
             {
-                pledge.AccountEmailAddress = paymentDetails.senderEmail;
+                pledge.AccountEmailAddress = paymentDetails.SenderId;
 
                 // if the pledger does not have an account then we need to create one
-                var account = _accountService.RetrieveByEmailAddress(paymentDetails.senderEmail);
+                var account = _accountService.RetrieveByEmailAddress(paymentDetails.SenderId);
                 if (account == null)
                 {
-                    account = _accountService.CreateIncompleteAccount(paymentDetails.senderEmail, _emailRelayService);
+                    account = _accountService.CreateIncompleteAccount(paymentDetails.SenderId, _emailRelayService);
                     pledge.AccountId = account.Id;
                     pledge.AccountEmailAddress = account.Email;
                 }

@@ -3,8 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Raven.Client;
 using TicketMuffin.Core.Domain;
-using TicketMuffin.PayPal;
-using TicketMuffin.PayPal.Model;
+using TicketMuffin.Core.Payments;
 
 namespace TicketMuffin.Core.Actions.RefundPledge
 {
@@ -17,7 +16,7 @@ namespace TicketMuffin.Core.Actions.RefundPledge
             _paymentGateway = paymentGateway;
         }
 
-        public RefundResponse Execute(IDocumentSession session, string eventId, string pledgeOrderNumber)
+        public IPaymentRefundResponse Execute(IDocumentSession session, string eventId, string pledgeOrderNumber)
         {
                 var @event = session.Load<GroupGivingEvent>(eventId);
                 if (@event == null)
@@ -33,32 +32,23 @@ namespace TicketMuffin.Core.Actions.RefundPledge
                     throw new ArgumentException("No pledge could be found matching that order number");
                 }
 
-                RefundResponse refundResponse = null;
+                IPaymentRefundResponse refundResponse = null;
                 try
                 {
-                    refundResponse = _paymentGateway.Refund(new RefundRequest()
-                                                              {
-                                                                  PayKey = pledge.TransactionId,
-                                                                  Receivers = new ReceiverList()
-                                                                                  {
-                                                                                      new Receiver(pledge.Total,
-                                                                                          pledge.AccountEmailAddress,
-                                                                                          true)
-                                                                                  }
-                                                              });
+                    refundResponse = _paymentGateway.Refund(pledge.TransactionId, pledge.Total, pledge.AccountEmailAddress);
                 }
-                catch (HttpChannelException exception)
+                catch (Exception exception)
                 {
                     if (pledge.PaymentGatewayHistory == null)
                         pledge.PaymentGatewayHistory = new List<DialogueHistoryEntry>();
-                    pledge.PaymentGatewayHistory.Add(((ResponseBase) exception.FaultMessage).Raw);
+                    pledge.PaymentGatewayHistory.Add(new DialogueHistoryEntry(exception));
                     session.SaveChanges();
                     throw;
                 }
 
                 if (pledge.PaymentGatewayHistory == null)
                     pledge.PaymentGatewayHistory = new List<DialogueHistoryEntry>();
-                pledge.PaymentGatewayHistory.Add(new DialogueHistoryEntry(refundResponse.Raw.Request, refundResponse.Raw.Response));
+                pledge.PaymentGatewayHistory.Add(new DialogueHistoryEntry(refundResponse.Diagnostics.RequestContent, refundResponse.Diagnostics.ResponseContent));
 
                 if (refundResponse.Successful)
                 {

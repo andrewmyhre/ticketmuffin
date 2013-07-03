@@ -1,5 +1,6 @@
 using System;
 using TicketMuffin.Core.Domain;
+using TicketMuffin.Core.Payments;
 
 namespace TicketMuffin.Web.Areas.Admin.Models
 {

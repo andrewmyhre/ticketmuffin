@@ -17,12 +17,14 @@ using TicketMuffin.Core.Actions.CreatePledge;
 using TicketMuffin.Core.Actions.RefundPledge;
 using TicketMuffin.Core.Configuration;
 using TicketMuffin.Core.Domain;
+using TicketMuffin.Core.Payments;
 using TicketMuffin.Core.Services;
 using System.Web.Mvc;
 using RavenDBMembership.Provider;
 using TicketMuffin.PayPal;
 using TicketMuffin.PayPal.Model;
 using TicketMuffin.Web.Code;
+using TicketMuffin.Web.Configuration;
 using TicketMuffin.Web.Models;
 using log4net;
 
@@ -246,7 +248,7 @@ namespace TicketMuffin.Web.Controllers
                 return View(viewModel);
             }
 
-            var action = new MakePledgeAction(_taxResolver, _paymentGateway, _siteConfiguration.AdaptiveAccountsConfiguration, _ravenSession, _orderNumberGenerator);
+            var action = new MakePledgeAction(_taxResolver, _paymentGateway, _ravenSession, _orderNumberGenerator);
             var makePledgeRequest = new MakePledgeRequest()
                                         {
                                             AttendeeNames = request.AttendeeName,
@@ -269,8 +271,6 @@ namespace TicketMuffin.Web.Controllers
                 return View(viewModel);
             }
 
-            var response = result.GatewayResponse;
-
             if (!result.Succeeded)
             {
                 viewModel = BuildEventPageViewModel(eventDetails, request);
@@ -278,7 +278,7 @@ namespace TicketMuffin.Web.Controllers
                 return View(viewModel);
             }
 
-            return Redirect(string.Format(response.PaymentPageUrl, response.payKey));
+            return Redirect(string.Format(result.PaymentPageUrl, result.TransactionId));
         }
 
         [ActionName("edit-event")]
@@ -505,7 +505,7 @@ namespace TicketMuffin.Web.Controllers
                 return View(viewModel);
             }
 
-            RefundResponse refundResult = null;
+            IPaymentRefundResponse refundResult = null;
             RefundPledgeAction action = new RefundPledgeAction(_paymentGateway);
             try
             {

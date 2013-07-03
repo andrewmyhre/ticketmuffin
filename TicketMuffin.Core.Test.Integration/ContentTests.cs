@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using NUnit.Framework;
+using Raven.Client;
 using TicketMuffin.Core.Conventions;
 using TicketMuffin.Core.Domain;
 using TicketMuffin.Core.Services;

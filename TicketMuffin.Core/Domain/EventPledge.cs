@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using TicketMuffin.PayPal.Model;
+using TicketMuffin.Core.Payments;
 
 namespace TicketMuffin.Core.Domain
 {

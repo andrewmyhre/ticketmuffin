@@ -1,4 +1,5 @@
 using System;
+using TicketMuffin.Core;
 
 namespace TicketMuffin.PayPal.Model
 {

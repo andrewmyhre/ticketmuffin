@@ -3,6 +3,7 @@ using System.Web.Mvc;
 using Raven.Client;
 using TicketMuffin.Core.Configuration;
 using TicketMuffin.PayPal.Configuration;
+using TicketMuffin.Web.Configuration;
 
 namespace TicketMuffin.Web.Areas.Admin.Controllers
 {

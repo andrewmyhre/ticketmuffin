@@ -10,6 +10,8 @@ namespace TicketMuffin.Core.Domain
 
     public class LocalisedContent
     {
+        public string Id { get; set; }
+        public string Address { get; set; }
         public string Culture { get; set; }
         public string Value { get; set; }
     }

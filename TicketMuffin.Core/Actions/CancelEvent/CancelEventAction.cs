@@ -3,8 +3,7 @@ using System.Linq;
 using Raven.Client;
 using TicketMuffin.Core.Actions.RefundPledge;
 using TicketMuffin.Core.Domain;
-using TicketMuffin.PayPal;
-using TicketMuffin.PayPal.Model;
+using TicketMuffin.Core.Payments;
 
 namespace TicketMuffin.Core.Actions.CancelEvent
 {
@@ -40,13 +39,13 @@ namespace TicketMuffin.Core.Actions.CancelEvent
             var pledges =
                 @event.Pledges.Where(
                     p =>
-                    p.PaymentStatus == PaymentStatus.Reconciled ||
-                    p.PaymentStatus == PaymentStatus.PaidPendingReconciliation);
+                    p.PaymentStatus == PaymentStatus.Settled ||
+                    p.PaymentStatus == PaymentStatus.Unsettled);
 
             bool noProblems = true;
             foreach (var pledge in pledges)
             {
-                RefundResponse refundResponse = null;
+                IPaymentRefundResponse refundResponse = null;
                 try
                 {
                     refundResponse = action.Execute(session, @event.Id, pledge.OrderNumber);

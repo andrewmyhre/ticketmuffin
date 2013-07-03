@@ -1,6 +1,7 @@
 using TicketMuffin.Core.Configuration;
 using TicketMuffin.PayPal.Configuration;
 using TicketMuffin.PayPal.Model;
+using TicketMuffin.Web.Configuration;
 
 namespace GroupGiving.Test.Unit
 {

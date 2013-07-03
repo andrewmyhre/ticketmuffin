@@ -2,8 +2,7 @@ using System;
 using System.Linq;
 using Raven.Client;
 using TicketMuffin.Core.Domain;
-using TicketMuffin.PayPal;
-using TicketMuffin.PayPal.Model;
+using TicketMuffin.Core.Payments;
 using log4net;
 
 namespace TicketMuffin.Core.Actions.ExecutePayment
@@ -29,7 +28,7 @@ namespace TicketMuffin.Core.Actions.ExecutePayment
             if (pledge == null)
                 throw new ArgumentException("Pledge not found", "orderNumber");
 
-            if (pledge.PaymentStatus != PaymentStatus.PaidPendingReconciliation)
+            if (pledge.PaymentStatus != PaymentStatus.Unsettled)
                 throw new InvalidOperationException("Pledge must be in PaidPendingReconciliation status to be executed");
         }
 
@@ -44,32 +43,25 @@ namespace TicketMuffin.Core.Actions.ExecutePayment
             if (pledge == null)
                 throw new ArgumentException("Pledge not found", "orderNumber");
 
-            if (pledge.PaymentStatus != PaymentStatus.PaidPendingReconciliation)
+            if (pledge.PaymentStatus != PaymentStatus.Unsettled)
                 throw new InvalidOperationException("Pledge must be in PaidPendingReconciliation status to be executed");
-
-            var request = new ExecutePaymentRequest()
-                              {
-                                  PayKey = pledge.TransactionId
-                              };
 
             // send a 'execute payment' request to paypal
             try
             {
-                var response = _paymentGateway.ExecutePayment(request);
+                var response = _paymentGateway.CapturePayment(pledge.TransactionId);
 
                 // if successful mark the pledge as fully paid
-                pledge.PaymentStatus = PaymentStatus.Reconciled;
+                pledge.PaymentStatus = PaymentStatus.Settled;
 
-                pledge.PaymentGatewayHistory.Add(response.Raw);
+                var dialogueHistoryEntry = new DialogueHistoryEntry(response.Diagnostics.RequestContent, response.Diagnostics.ResponseContent);
+                pledge.PaymentGatewayHistory.Add(dialogueHistoryEntry);
                 session.SaveChanges();
-                return new ExecutePaymentResponse()
-                           {
-                               DialogueEntry = new DialogueHistoryEntry(response.Raw.Request, response.Raw.Response),
-                           };
-            } catch (HttpChannelException fault)
+                return new ExecutePaymentResponse{DialogueEntry = dialogueHistoryEntry};
+
+            } catch (Exception fault)
             {
-                _logger.Warn("paypal error", fault);
-                _logger.Warn(fault + "\r\n" + fault.Message + "\r\n" + fault.FaultMessage.Raw.Request + "\r\n" + fault.FaultMessage.Raw.Response);
+                _logger.Error("Payment gateway error", fault);
 
                 throw;
             }

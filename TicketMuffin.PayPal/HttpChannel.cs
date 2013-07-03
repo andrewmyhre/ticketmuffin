@@ -4,6 +4,7 @@ using System.Text;
 using System.Xml;
 using System.Xml.Linq;
 using System.Xml.Serialization;
+using TicketMuffin.Core;
 using TicketMuffin.PayPal.Model;
 using log4net;
 

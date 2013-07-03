@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Serialization;
 using TicketMuffin.Core.Domain;
+using TicketMuffin.Core.Payments;
 
 namespace TicketMuffin.Web.Areas.Api.Models
 {
@@ -69,8 +70,8 @@ namespace TicketMuffin.Web.Areas.Api.Models
             get
             {
                 return Pledges.Where(p => p.Paid
-                    && (p.PaymentStatus == PaymentStatus.PaidPendingReconciliation
-                    || p.PaymentStatus == PaymentStatus.Reconciled)).Sum(p => p.Attendees.Count());
+                    && (p.PaymentStatus == PaymentStatus.Unsettled
+                    || p.PaymentStatus == PaymentStatus.Settled)).Sum(p => p.Attendees.Count());
             }
         }
         [DataMember(Name = "spacesLeft")]

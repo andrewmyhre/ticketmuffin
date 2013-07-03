@@ -1,6 +1,8 @@
 using System.Collections.Generic;
 using Moq;
+using TicketMuffin.Core;
 using TicketMuffin.Core.Domain;
+using TicketMuffin.Core.Payments;
 using TicketMuffin.Core.Services;
 using TicketMuffin.PayPal;
 using TicketMuffin.PayPal.Model;

@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using Raven.Client;
 using TicketMuffin.Core.Actions.ExecutePayment;
 using TicketMuffin.Core.Domain;
+using TicketMuffin.Core.Payments;
 using TicketMuffin.Core.Services;
-using TicketMuffin.PayPal;
 
 namespace TicketMuffin.Core.Actions.ActivateEvent
 {
@@ -37,7 +37,7 @@ namespace TicketMuffin.Core.Actions.ActivateEvent
             ActivateEventResponse response = new ActivateEventResponse();
             foreach (var pledge in @event.Pledges)
             {
-                if (pledge.PaymentStatus != PaymentStatus.PaidPendingReconciliation)
+                if (pledge.PaymentStatus != PaymentStatus.Unsettled)
                 {
                     continue;
                 }
