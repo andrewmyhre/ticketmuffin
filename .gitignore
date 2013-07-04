@@ -4,6 +4,7 @@ obj/
 *.user
 *.suo
 *.resharper
+[Ll]ogs
 TicketMuffin.Web/logs/*
 !TicketMuffin.Web/logs/Web.config
 App_Data/RavenDb
