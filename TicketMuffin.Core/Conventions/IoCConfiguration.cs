@@ -12,6 +12,10 @@ namespace TicketMuffin.Core.Conventions
         {
             Bind<IPledgeService>().To<PledgeService>();
             Bind<IPaymentService>().To<PaymentService>();
+            Bind<IAuthenticationService>().To<AuthenticationService>();
+            Bind<IAccountService>().To<AccountService>();
+            Bind<IEventService>().To<EventService>();
+            Bind<ICountryService>().To<CountryService>();
         }
     }
 }

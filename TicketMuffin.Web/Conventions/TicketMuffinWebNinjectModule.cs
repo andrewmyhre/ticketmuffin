@@ -60,14 +60,10 @@ namespace TicketMuffin.Web.Conventions
             BindEmailRelatedThings();
 
             Bind<ICultureService>().To<CultureService>();
-            Bind<IContentProvider>().To<RavenDbContentProvider>().InRequestScope();
-            Bind<IAccountService>().To<AccountService>();
-            Bind<IAuthenticationService>().To<AuthenticationService>();
             Bind<IIdentity>().ToMethod(x => HttpContext.Current.User.Identity);
             Bind<IPayPalApiClient>().To<PayPalApiClient>();
-            Bind<IEventService>().To<EventService>();
-            Bind<ICountryService>().To<CountryService>();
             Bind<IFormsAuthenticationService>().To<FormsAuthenticationService>();
+            Bind<IContentProvider>().To<RavenDbContentProvider>().InRequestScope();
         }
 
         private void BindEmailRelatedThings()
