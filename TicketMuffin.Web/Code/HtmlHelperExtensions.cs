@@ -106,7 +106,8 @@ namespace TicketMuffin.Web.Code
             var contentProvider = ServiceLocator.Current.GetInstance<IContentProvider>();
             PageContent pageContent = null;
             string contentLabel = "";
-            string content = contentProvider.GetContent(pageAddress, label, defaultContent, culture, out pageContent, out contentLabel);
+            var contentRecord = contentProvider.GetContent(pageAddress, label, defaultContent, culture);
+            string content = contentRecord != null ? contentRecord.Value : defaultContent;
 
             // editing options
             var editmode = html.ViewContext.RequestContext.HttpContext.Request.QueryString["editmode"];

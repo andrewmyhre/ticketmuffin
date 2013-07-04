@@ -5,6 +5,6 @@ namespace TicketMuffin.Web.Services
     public interface ISiteConfigurationService
     {
         ISiteConfiguration GetConfiguration();
-        void EnsureConfigurationData();
+        void EnsureConfigurationDataExists();
     }
 }

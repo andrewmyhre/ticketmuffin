@@ -24,8 +24,7 @@ namespace GroupGiving.Test.Unit
                        {
                            AdaptiveAccountsConfiguration= new AdaptiveAccountsConfiguration()
                                                               {
-                                                                  LivePayFlowProPaymentPage = "http://somedomain.com/pay",
-                                                                  SandboxMode = false,
+                                                                  PayFlowProPaymentPage = "http://somedomain.com/pay",
                                                                   ApiUsername = "12345",
                                                                   ApiPassword = "12345",
                                                                   ApiSignature = "12345"

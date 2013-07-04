@@ -14,5 +14,6 @@ namespace TicketMuffin.Core.Domain
         public string Address { get; set; }
         public string Culture { get; set; }
         public string Value { get; set; }
+        public string Label { get; set; }
     }
 }

@@ -4,28 +4,52 @@ using EmailProcessing;
 using EmailProcessing.Configuration;
 using Ninject;
 using Ninject.Modules;
+using Ninject.Web.Common;
 using Raven.Client;
 using Raven.Client.Document;
+using TicketMuffin.Core.Domain;
 using TicketMuffin.Core.Email;
 using TicketMuffin.Core.Services;
 using TicketMuffin.Web.Code;
+using Raven.Client.Extensions;
+using log4net;
 
 namespace TicketMuffin.Web.Conventions
 {
     internal class TicketMuffinWebNinjectModule : NinjectModule
     {
+        private const string DATABASE_NAME = "TicketMuffin";
+        private ILog _logger = LogManager.GetLogger(typeof (TicketMuffinWebNinjectModule));
         public override void Load()
         {
-            Bind<IDocumentStore>().ToMethod(x => { var store = new DocumentStore() {Url = "http://localhost:8080"};
-                                                     store.Initialize();
-                                                     return store;
+            Bind<IDocumentStore>().ToMethod(x => { 
+                var store = new DocumentStore() {Url = "http://localhost:8080"};
+                store.Initialize();
+                store.DatabaseCommands.EnsureDatabaseExists(DATABASE_NAME);
+
+                store.Conventions.RegisterIdConvention<LocalisedContent>((dbname, commands, content) => string.Join("/","content", content.Culture, content.Address, content.Label));
+
+                return store;
             }).InSingletonScope();
-            Bind<IDocumentSession>().ToMethod(x => Kernel.Get<IDocumentStore>().OpenSession()).OnDeactivation(x => x.Dispose());
+            Bind<IDocumentSession>()
+                .ToMethod(x => Kernel.Get<IDocumentStore>().OpenSession(DATABASE_NAME))
+                .InRequestScope()
+                .OnActivation((context,session)=>_logger.Debug("Activating a doc session for " + context.GetScope()))
+                .OnDeactivation((context,session) =>
+                    {
+                        if (session.Advanced.HasChanges)
+                        {
+                            _logger.Debug("session has unsaved changes");
+                        }
+
+                        session.Dispose();
+                        _logger.Debug("Deactivating a document session for " + context.GetScope());
+                    });
             
             BindEmailRelatedThings();
 
             Bind<ICultureService>().To<CultureService>();
-            Bind<IContentProvider>().To<RavenDbContentProvider>();
+            Bind<IContentProvider>().To<RavenDbContentProvider>().InRequestScope();
         }
 
         private void BindEmailRelatedThings()

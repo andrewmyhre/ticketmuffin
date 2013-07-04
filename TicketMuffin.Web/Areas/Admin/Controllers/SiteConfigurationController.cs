@@ -49,10 +49,8 @@ namespace TicketMuffin.Web.Areas.Admin.Controllers
 
             if (TryUpdateModel(configuration, "", null, new[] {"Id"}))
             {
-                configuration.AdaptiveAccountsConfiguration.SandboxApiBaseUrl =
-                    configuration.AdaptiveAccountsConfiguration.SandboxApiBaseUrl.TrimEnd('/');
-                configuration.AdaptiveAccountsConfiguration.LiveApiBaseUrl
-                    = configuration.AdaptiveAccountsConfiguration.LiveApiBaseUrl.TrimEnd('/');
+                configuration.AdaptiveAccountsConfiguration.ApiBaseUrl
+                    = configuration.AdaptiveAccountsConfiguration.ApiBaseUrl.TrimEnd('/');
 
                 if (newConfiguration)
                 {

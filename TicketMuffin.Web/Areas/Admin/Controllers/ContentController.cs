@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Linq;
 using System.Web.Mvc;
 using Raven.Client;
 using Raven.Client.Linq;
 using TicketMuffin.Core.Domain;
-using TicketMuffin.Core.Services;
 
 namespace TicketMuffin.Web.Areas.Admin.Controllers
 {
@@ -30,100 +26,6 @@ namespace TicketMuffin.Web.Areas.Admin.Controllers
 
 
             return View(viewModel);
-        }
-
-        public ActionResult Clean()
-        {
-            _session.Advanced.MaxNumberOfRequestsPerSession = 1000;
-            StringBuilder log = new StringBuilder();
-
-            int tryint;
-            var allPages = _session.Query<PageContent>().ToList()
-                .Where(p => int.TryParse(p.Id.Substring("pagecontents/".Length), out tryint));
-            foreach(var page in allPages)
-            {
-                var contentProvider = new RavenDbContentProvider(_session);
-                foreach(var content in page.Content)
-                {
-                    foreach(var culture in content.ContentByCulture)
-                    {
-                        PageContent pageContent;
-                        string contentLabel;
-                        contentProvider.GetContent(page.Address, content.Label, culture.Value, culture.Culture,
-                                                    out pageContent, out contentLabel);
-
-                        log.AppendFormat("<p>migrated {0}->{1}<br/>{2}.{3}.{4}</p>", page.Id, pageContent.Id, page.Address, content.Label, culture.Culture);
-                    }
-                }
-                _session.Delete(page);
-            }
-
-            var pages = _session.Query<PageContent>().ToList();
-
-            log.Append("<p><strong>cleaning translations</strong></p>");
-            foreach(var page in pages)
-            {
-                foreach(var content in page.Content)
-                {
-                    log.AppendFormat("<p>{0}.{1}</p>", page.Id, content.Label);
-                    Dictionary<string,LocalisedContent> translationsToKeep = new Dictionary<string,LocalisedContent>();
-                    var englishVersion = content.ContentByCulture.SingleOrDefault(lc=>lc.Culture.Equals("en", StringComparison.InvariantCultureIgnoreCase));
-
-                    if (englishVersion==null)
-                    {
-                        englishVersion = content.ContentByCulture.SingleOrDefault(lc=>lc.Culture.Equals("en-GB", StringComparison.InvariantCultureIgnoreCase));
-                        if (englishVersion != null)
-                        {
-                            englishVersion.Culture = "en";
-                        } else
-                        {
-                            englishVersion = content.ContentByCulture.SingleOrDefault(lc=>lc.Culture.Equals("en-US", StringComparison.InvariantCultureIgnoreCase));
-                            if (englishVersion != null)
-                            {
-                                englishVersion.Culture = "en";
-                            }
-                        }
-                    }
-
-                    if (englishVersion != null)
-                    {
-                        translationsToKeep.Add(englishVersion.Culture, englishVersion);
-                    }
-
-                    foreach(var localised in content.ContentByCulture)
-                    {
-                        if (localised.Culture.StartsWith("en"))
-                            continue;
-
-                        string culture = localised.Culture;
-                        if (culture.Contains("-"))
-                            culture = culture.Substring(0, culture.IndexOf("-"));
-                        culture = culture.ToLowerInvariant();
-
-                        localised.Culture = culture;
-
-                        if (!translationsToKeep.ContainsKey(culture))
-                        {
-                            translationsToKeep.Add(culture, localised);
-                        } else
-                        {
-                            if (englishVersion != null && localised.Value != englishVersion.Value)
-                            {
-                                translationsToKeep[culture] = localised;
-                            }
-                        }
-                    }
-
-                    content.ContentByCulture.Clear();
-                    foreach(var keep in translationsToKeep)
-                    {
-                        log.AppendFormat("<p>{0}</p>", keep.Value.Culture);
-                        content.ContentByCulture.Add(keep.Value);
-                    }
-                }
-            }
-
-            return new ContentResult(){Content=log.ToString(), ContentType = "text/html"};
         }
 
         public ActionResult ViewPageContent(string id)

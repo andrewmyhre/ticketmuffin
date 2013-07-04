@@ -108,7 +108,6 @@ namespace GroupGiving.Test.Unit
                        {
                            AdaptiveAccountsConfiguration = new AdaptiveAccountsConfiguration()
                                                                {
-                                                                   SandboxMode = true,
                                                                    SandboxApiBaseUrl = "https://svcs.sandbox.paypal.com/",
                                                                    SandboxApplicationId = "APP-80W284485P519543T",
                                                                    DeviceIpAddress = "127.0.0.1",

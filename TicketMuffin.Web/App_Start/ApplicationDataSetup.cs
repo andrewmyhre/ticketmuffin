@@ -14,15 +14,13 @@ namespace TicketMuffin.Web.App_Start
 
         public static void Start()
         {
-            var store = ServiceLocator.Current.GetInstance<IDocumentStore>();
-
-            using (var session = store.OpenSession())
+            using (var session = ServiceLocator.Current.GetInstance<IDocumentSession>())
             {
                 CountryService = new CountryService(session);
                 SiteConfigurationService = new SiteConfigurationService(session);
 
                 CountryService.EnsureCountryData(HostingEnvironment.MapPath("~/App_Data/countrylist.csv"));
-                SiteConfigurationService.EnsureConfigurationData();
+                SiteConfigurationService.EnsureConfigurationDataExists();
             }
         }
     }

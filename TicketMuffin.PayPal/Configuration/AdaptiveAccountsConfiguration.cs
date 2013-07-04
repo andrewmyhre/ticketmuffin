@@ -7,9 +7,6 @@ namespace TicketMuffin.PayPal.Configuration
         [Display(Name="PayPal merchant account email")]
         public string PayPalAccountEmail { get; set; }
 
-        [Display(Name = "Sandbox mode")]
-        public bool SandboxMode { get; set; }
-
         [Display(Prompt="api password")]
         [Required]
         public string ApiPassword { get; set; }
@@ -28,7 +25,7 @@ namespace TicketMuffin.PayPal.Configuration
 
         [Display(Prompt = "live application id")]
         [Required]
-        public string LiveApplicationId { get; set; }
+        public string ApplicationId { get; set; }
 
         [Required]
         [Display(Prompt = "device ip address e.g: 127.0.0.1")]
@@ -40,29 +37,7 @@ namespace TicketMuffin.PayPal.Configuration
 
         [Required]
         [Display(Prompt = "live api base url e.g: https://svcs.paypal.com/")]
-        public string LiveApiBaseUrl { get; set; }
-
-        public string ApplicationId
-        {
-            get
-            {
-                if (SandboxMode)
-                    return SandboxApplicationId;
-
-                return LiveApplicationId;
-            }
-        }
-
-        public string ApiBaseUrl
-        {
-            get
-            {
-                if (SandboxMode)
-                    return SandboxApiBaseUrl;
-
-                return LiveApiBaseUrl;
-            }
-        }
+        public string ApiBaseUrl { get; set; }
 
         [Required]
         [Display(Prompt = "SOAP11")]
@@ -84,17 +59,7 @@ namespace TicketMuffin.PayPal.Configuration
         public string SandboxPayFlowProPaymentPage { get; set; }
         [Required]
         [Display(Prompt = "https://www.paypal.com/webscr?cmd=_ap-payment&amp;paykey={0}")]
-        public string LivePayFlowProPaymentPage { get; set; }
-        public string PayFlowProPaymentPage
-        {
-            get
-            {
-                if (SandboxMode)
-                    return SandboxPayFlowProPaymentPage;
-
-                return LivePayFlowProPaymentPage;
-            }
-        }
+        public string PayFlowProPaymentPage { get; set; }
 
         [Required]
         [Display(Prompt = "1.1.0")]

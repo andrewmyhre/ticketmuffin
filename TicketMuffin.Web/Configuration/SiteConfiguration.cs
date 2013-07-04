@@ -12,5 +12,7 @@ namespace TicketMuffin.Web.Configuration
         public DatabaseConfiguration DatabaseConfiguration { get; set; }
         public JustGivingApiConfiguration JustGivingApiConfiguration { get; set; }
         public AdaptiveAccountsConfiguration AdaptiveAccountsConfiguration { get; set; }
-   }
+
+        public string Mode { get; set; }
+    }
 }

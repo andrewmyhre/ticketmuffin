@@ -26,16 +26,26 @@ namespace TicketMuffin.Web.Services
             return configuration;
         }
 
-        public void EnsureConfigurationData()
+        public void EnsureConfigurationDataExists()
         {
-            var configuration = _session.Query<SiteConfiguration>().FirstOrDefault();
+            var configuration = _session.Query<SiteConfiguration>().SingleOrDefault(c=>c.Mode=="Live");
             if (configuration == null)
             {
-                _log.Info("No site configuration found, creating");
+                _log.Info("No live configuration found, creating");
                 configuration = CreateDefaultConfiguration();
                 _session.Store(configuration);
                 _session.SaveChanges();
-                _log.Info("Created default configuration");
+                _log.Info("Created live configuration");
+            }
+
+            configuration = _session.Query<SiteConfiguration>().SingleOrDefault(c => c.Mode == "Sandbox");
+            if (configuration == null)
+            {
+                _log.Info("No sandbox configuration found, creating");
+                configuration = CreateSandboxConfiguration();
+                _session.Store(configuration);
+                _session.SaveChanges();
+                _log.Info("Created sandbox configuration");
             }
         }
 
@@ -43,6 +53,7 @@ namespace TicketMuffin.Web.Services
         {
             return new SiteConfiguration()
             {
+                Mode = "Live",
                 EventImagePathFormat = "~/eventImages/{0}/eventImage.jpg",
                 LoginUrl = "~/signin",
                 AdaptiveAccountsConfiguration = new AdaptiveAccountsConfiguration()
@@ -50,19 +61,54 @@ namespace TicketMuffin.Web.Services
                     ApiPassword = "1321277160",
                     ApiUsername = "Muffin_1321277131_biz_api1.gmail.com",
                     ApiSignature = "AFcWxV21C7fd0v3bYYYRCpSSRl31ANDzgYINyuYs1FQZcsN1DSKkJexD",
-                    SandboxApplicationId = "APP-80W284485P519543T",
-                    LiveApplicationId = "APP-8YG236387E473230W",
+                    ApplicationId = "APP-8YG236387E473230W",
                     DeviceIpAddress = "127.0.0.1",
-                    SandboxApiBaseUrl = "https://svcs.sandbox.paypal.com/",
-                    LiveApiBaseUrl = "https://svcs.paypal.com/",
+                    ApiBaseUrl = "https://svcs.paypal.com/",
                     RequestDataFormat = "SOAP11",
                     ResponseDataFormat = "SOAP11",
                     SandboxMailAddress = "nothing",
-                    SandboxMode = true,
                     SuccessCallbackUrl = "/Order/Success?payKey=${payKey}",
                     FailureCallbackUrl = "/Order/Cancel?payKey=${payKey}",
-                    SandboxPayFlowProPaymentPage = "https://www.sandbox.paypal.com/webscr?cmd=_ap-payment&paykey={0}",
-                    LivePayFlowProPaymentPage = "https://www.paypal.com/webscr?cmd=_ap-payment&paykey={0}",
+                    PayFlowProPaymentPage = "https://www.paypal.com/webscr?cmd=_ap-payment&paykey={0}",
+                    ApiVersion = "1.1.0",
+                    RequestDataBinding = "XML",
+                    ResponseDataBinding = "XML"
+
+                },
+                DatabaseConfiguration = new DatabaseConfiguration()
+                {
+                    StorageLocation = "http://localhost:8080"
+                },
+                JustGivingApiConfiguration = new JustGivingApiConfiguration()
+                {
+                    JustGivingApiKey = "d0032bfe",
+                    JustGivingApiDomainBase = "https://api.staging.justgiving.com/",
+                    JustGivingApiVersion = "1"
+                },
+            };
+        }
+
+        private SiteConfiguration CreateSandboxConfiguration()
+        {
+            return new SiteConfiguration()
+            {
+                Mode="Sandbox",
+                EventImagePathFormat = "~/eventImages/{0}/eventImage.jpg",
+                LoginUrl = "~/signin",
+                AdaptiveAccountsConfiguration = new AdaptiveAccountsConfiguration()
+                {
+                    ApiPassword = "1321277160",
+                    ApiUsername = "Muffin_1321277131_biz_api1.gmail.com",
+                    ApiSignature = "AFcWxV21C7fd0v3bYYYRCpSSRl31ANDzgYINyuYs1FQZcsN1DSKkJexD",
+                    ApplicationId = "APP-80W284485P519543T",
+                    DeviceIpAddress = "127.0.0.1",
+                    ApiBaseUrl = "https://svcs.sandbox.paypal.com/",
+                    RequestDataFormat = "SOAP11",
+                    ResponseDataFormat = "SOAP11",
+                    SandboxMailAddress = "nothing",
+                    SuccessCallbackUrl = "/Order/Success?payKey=${payKey}",
+                    FailureCallbackUrl = "/Order/Cancel?payKey=${payKey}",
+                    PayFlowProPaymentPage = "https://www.sandbox.paypal.com/webscr?cmd=_ap-payment&paykey={0}",
                     ApiVersion = "1.1.0",
                     RequestDataBinding = "XML",
                     ResponseDataBinding = "XML"

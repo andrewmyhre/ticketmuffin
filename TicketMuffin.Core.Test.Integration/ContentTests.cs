@@ -25,7 +25,7 @@ namespace TicketMuffin.Core.Test.Integration
                 string pageAddress = Guid.NewGuid().ToString();
                 PageContent content = null;
                 string label = "";
-                cp.GetContent(pageAddress, "main text", "default content", "en-GB", out content, out label);
+                cp.GetContent(pageAddress, "main text", "default content", "en-GB");
             }
         }
         [Test]
@@ -38,12 +38,12 @@ namespace TicketMuffin.Core.Test.Integration
                 string pageAddress = Guid.NewGuid().ToString();
                 PageContent content = null;
                 string label = "";
-                cp.GetContent(pageAddress, "text1", "default content", "en-GB", out content, out label);
-                cp.GetContent(pageAddress, "text2", "default content", "en-GB", out content, out label);
-                cp.GetContent(pageAddress, "text3", "default content", "en-GB", out content, out label);
-                cp.GetContent(pageAddress, "text4", "default content", "en-GB", out content, out label);
-                cp.GetContent(pageAddress, "text5", "default content", "en-GB", out content, out label);
-                cp.GetContent(pageAddress, "text6", "default content", "en-GB", out content, out label);
+                cp.GetContent(pageAddress, "text1", "default content", "en-GB");
+                cp.GetContent(pageAddress, "text2", "default content", "en-GB");
+                cp.GetContent(pageAddress, "text3", "default content", "en-GB");
+                cp.GetContent(pageAddress, "text4", "default content", "en-GB");
+                cp.GetContent(pageAddress, "text5", "default content", "en-GB");
+                cp.GetContent(pageAddress, "text6", "default content", "en-GB");
                 session.SaveChanges();
 
                 var cs = session.Query<PageContent>().Where(pc => pc.Address == pageAddress).Customize(x=>x.WaitForNonStaleResults(TimeSpan.FromSeconds(5)));
@@ -72,9 +72,9 @@ namespace TicketMuffin.Core.Test.Integration
                             IContentProvider cp = new RavenDbContentProvider(session);
                             PageContent content = null;
                             string label = "";
-                            cp.GetContent(pageAddress, "main text", "default content", "en-GB", out content, out label);
-                            cp.GetContent(pageAddress, "text2", "default content", "en-GB", out content, out label);
-                            cp.GetContent(pageAddress, "text3", "default content", "en-GB", out content, out label);
+                            cp.GetContent(pageAddress, "main text", "default content", "en-GB");
+                            cp.GetContent(pageAddress, "text2", "default content", "en-GB");
+                            cp.GetContent(pageAddress, "text3", "default content", "en-GB");
                             session.SaveChanges();
                             System.Diagnostics.Debug.WriteLine("got content " + pageAddress);
                         }
@@ -88,9 +88,9 @@ namespace TicketMuffin.Core.Test.Integration
                             IContentProvider cp = new RavenDbContentProvider(session);
                             PageContent content = null;
                             string label = "";
-                            cp.GetContent(pageAddress, "main text", "default content", "en-GB", out content, out label);
-                            cp.GetContent(pageAddress, "text2", "default content", "en-GB", out content, out label);
-                            cp.GetContent(pageAddress, "text3", "default content", "en-GB", out content, out label);
+                            cp.GetContent(pageAddress, "main text", "default content", "en-GB");
+                            cp.GetContent(pageAddress, "text2", "default content", "en-GB");
+                            cp.GetContent(pageAddress, "text3", "default content", "en-GB");
                             session.SaveChanges();
                             System.Diagnostics.Debug.WriteLine("got content " + pageAddress);
                         }
