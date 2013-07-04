@@ -24,17 +24,17 @@ namespace TicketMuffin.Web.Areas.Admin.Controllers
         IEmailFacade _emailFacade = null;
         private readonly IDocumentSession _documentSession;
         private readonly ICountryService _countryService;
-        private readonly IApiClient _apiClient;
+        private readonly IPayPalApiClient _payPalApiClient;
         private readonly IPayRequestFactory _payRequestFactory;
 
         public DiagnosticsController(IEmailFacade emailFacade, IDocumentSession documentSession, ICountryService countryService,
-            IApiClient apiClient,
+            IPayPalApiClient payPalApiClient,
             IPayRequestFactory payRequestFactory)
         {
             _emailFacade = emailFacade;
             _documentSession = documentSession;
             _countryService = countryService;
-            _apiClient = apiClient;
+            _payPalApiClient = payPalApiClient;
             _payRequestFactory = payRequestFactory;
             _emailFacade.LoadTemplates();
         }
@@ -159,7 +159,7 @@ namespace TicketMuffin.Web.Areas.Admin.Controllers
                                                 };
                 var payRequest = _payRequestFactory.RegularPayment("GBP", receivers, "diagnostics " + DateTime.Now.ToString());
                 
-                response = _apiClient.Payments.SendPayRequest(payRequest);
+                response = _payPalApiClient.Payments.SendPayRequest(payRequest);
             }
             catch (HttpChannelException exception)
             {

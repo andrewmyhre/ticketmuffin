@@ -20,7 +20,6 @@ namespace TicketMuffin.Web.Controllers
         //
         // GET: /Order/
         private readonly IFormsAuthenticationService _formsService;
-        private readonly IMembershipService _membershipService;
         private readonly IAccountService _accountService;
         private readonly IPaymentGateway _paymentGateway;
         private readonly ITaxAmountResolver _taxResolver;
@@ -28,12 +27,11 @@ namespace TicketMuffin.Web.Controllers
         private readonly IDocumentSession _documentSession;
         private IEmailRelayService _emailRelayService;
 
-        public OrderController(IFormsAuthenticationService formsService, IMembershipService membershipService, 
+        public OrderController(IFormsAuthenticationService formsService, 
             IAccountService accountService, IPaymentGateway paymentGateway, ITaxAmountResolver taxResolver, 
             ISiteConfiguration siteConfiguration, IDocumentSession documentSession, IEmailRelayService emailRelayService)
         {
             _formsService = formsService;
-            _membershipService = membershipService;
             _accountService = accountService;
             _paymentGateway = paymentGateway;
             _taxResolver = taxResolver;

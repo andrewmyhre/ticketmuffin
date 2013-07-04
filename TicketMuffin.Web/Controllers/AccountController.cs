@@ -21,7 +21,7 @@ namespace TicketMuffin.Web.Controllers
     {
         private ILog _log = LogManager.GetLogger("AccountController");
         private readonly IFormsAuthenticationService _formsService;
-        private readonly IMembershipService _membershipService;
+        private readonly IAuthenticationService _authenticationService;
         private readonly IAccountService _accountService;
         private ICountryService _countryService;
         private readonly IDocumentSession _documentSession;
@@ -30,7 +30,7 @@ namespace TicketMuffin.Web.Controllers
 
         public AccountController(IAccountService accountService, 
             IFormsAuthenticationService formsService, 
-            IMembershipService accountMembershipService, 
+            IAuthenticationService authenticationService,
             ICountryService countryService, 
             IDocumentSession documentSession, 
             IEmailRelayService emailRelayService,
@@ -38,7 +38,7 @@ namespace TicketMuffin.Web.Controllers
         {
             _accountService = accountService;
             _formsService = formsService;
-            _membershipService = accountMembershipService;
+            _authenticationService = authenticationService;
             _countryService = countryService;
             _documentSession = documentSession;
             _emailRelayService = emailRelayService;
@@ -102,7 +102,7 @@ namespace TicketMuffin.Web.Controllers
                 return View(model);
             }
 
-            if (_membershipService.ValidateUser(request.EmailAddress, request.Password))
+            if (_authenticationService.CredentialsValid(request.EmailAddress, request.Password))
             {
                 _formsService.SignIn(request.EmailAddress, request.RememberMe);
 
@@ -143,10 +143,8 @@ namespace TicketMuffin.Web.Controllers
                 return View(request);
             }
 
-            var createResult = _membershipService.CreateUser(request.Email, request.NewPassword, request.Email);
-
-            if (createResult == MembershipCreateStatus.Success)
-            {
+try {
+            _authenticationService.CreateCredentials(request.Email, request.NewPassword, request.ConfirmPassword);
                 var createAccountRequest = new CreateUserRequest()
                 {
                     FirstName = request.FirstName,
@@ -163,9 +161,9 @@ namespace TicketMuffin.Web.Controllers
                 _formsService.SignIn(request.Email, false);
                 return RedirectToRoute("CreateEvent_EventDetails");
             }
-            else
+            catch (Exception ex)
             {
-                ModelState.AddModelError("signup", MessageFromMembershipCreateResult(createResult));
+                ModelState.AddModelError("signup", ex.Message);
                 var model = new SignUpModel();
                 model.Countries = new SelectList(_countryService.RetrieveAllCountries(), "Name", "Name");
                 model.AccountTypes = new SelectList(Enum.GetNames(typeof(AccountType)));
@@ -225,43 +223,32 @@ namespace TicketMuffin.Web.Controllers
                 {
                     try
                     {
-                        var createStatus = _membershipService.CreateUser(model.Email, model.Password, model.Email);
+                        _authenticationService.CreateCredentials(model.Email, model.Password, model.ConfirmPassword);
 
-                        if (createStatus == MembershipCreateStatus.Success)
-                        {
-                            // create a full user account record
-                            var createUserRequest = new CreateUserRequest();
-                            createUserRequest.FirstName = model.FirstName;
-                            createUserRequest.LastName = model.LastName;
-                            createUserRequest.Email = model.Email;
-                            createUserRequest.AddressLine1 = model.AddressLine;
-                            createUserRequest.City = model.Town;
-                            createUserRequest.PostCode = model.PostCode;
-                            createUserRequest.Country = model.Country;
-                            _accountService.CreateUser(createUserRequest);
-                            transaction.Complete();
+                        // create a full user account record
+                        var createUserRequest = new CreateUserRequest();
+                        createUserRequest.FirstName = model.FirstName;
+                        createUserRequest.LastName = model.LastName;
+                        createUserRequest.Email = model.Email;
+                        createUserRequest.AddressLine1 = model.AddressLine;
+                        createUserRequest.City = model.Town;
+                        createUserRequest.PostCode = model.PostCode;
+                        createUserRequest.Country = model.Country;
+                        _accountService.CreateUser(createUserRequest);
+                        transaction.Complete();
 
-                            _formsService.SignIn(model.Email, false /* createPersistentCookie */);
-                            if (!string.IsNullOrWhiteSpace(model.RedirectUrl))
-                                return Redirect(model.RedirectUrl);
-                            else
-                                return RedirectToAction("Index", "Home");
-                        }
+                        _formsService.SignIn(model.Email, false /* createPersistentCookie */);
+                        if (!string.IsNullOrWhiteSpace(model.RedirectUrl))
+                            return Redirect(model.RedirectUrl);
                         else
-                        {
-                            ModelState.AddModelError("", AccountValidation.ErrorCodeToString(createStatus));
-                        }
-                    } catch (Exception ex)
+                            return RedirectToAction("Index", "Home");
+                    }
+                    catch (Exception ex)
                     {
-                        // there was a problem creating the user
-                        _log.Fatal(ex);
-                        ModelState.AddModelError("", "Could not create your account at this time");
+                        ModelState.AddModelError("", ex.Message);
                     }
                 }
             }
-
-            // If we got this far, something failed, redisplay form
-            ViewBag.PasswordLength = _membershipService.MinPasswordLength;
 
             model.Countries = new SelectList(new SelectList(_countryService.RetrieveAllCountries()));
             model.AccountTypes = new SelectList(Enum.GetNames(typeof(AccountType)));

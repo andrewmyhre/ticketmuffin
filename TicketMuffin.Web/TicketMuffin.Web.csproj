@@ -247,6 +247,7 @@
     <Compile Include="Mobile\Default.aspx.designer.cs">
       <DependentUpon>Default.aspx</DependentUpon>
     </Compile>
+    <Compile Include="Models\AccountMembershipService.cs" />
     <Compile Include="Models\AccountModels.cs" />
     <Compile Include="Models\ActivateEventViewModel.cs" />
     <Compile Include="Models\AttendeeListViewModel.cs" />
@@ -256,7 +257,10 @@
     <Compile Include="Models\EventCancelledViewModel.cs" />
     <Compile Include="Models\EventPledgeViewModel.cs" />
     <Compile Include="Models\EventViewModel.cs" />
+    <Compile Include="Models\FormsAuthenticationService.cs" />
     <Compile Include="Models\HomePageViewModel.cs" />
+    <Compile Include="Models\IFormsAuthenticationService.cs" />
+    <Compile Include="Models\IMembershipService.cs" />
     <Compile Include="Models\LogOnResultViewModel.cs" />
     <Compile Include="Models\OrderConfirmationViewModel.cs" />
     <Compile Include="Models\OrderRequestViewModel.cs" />

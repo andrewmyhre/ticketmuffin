@@ -10,12 +10,12 @@ namespace TicketMuffin.Web.Areas.Api.Controllers
     public class AccountsController : ApiControllerBase
     {
         private ILog logger = LogManager.GetLogger(typeof (AccountsController));
-        private readonly IApiClient _apiClient;
+        private readonly IPayPalApiClient _payPalApiClient;
         //
         // GET: /Api/Accounts/
-        public AccountsController(IApiClient apiClient)
+        public AccountsController(IPayPalApiClient payPalApiClient)
         {
-            _apiClient = apiClient;
+            _payPalApiClient = payPalApiClient;
         }
 
         [HttpPost]
@@ -32,13 +32,13 @@ namespace TicketMuffin.Web.Areas.Api.Controllers
             GetVerifiedStatusResponse verifyResponse = null;
             try
             {
-                var getVerifiedStatusRequest = new GetVerifiedStatusRequest(_apiClient.Configuration)
+                var getVerifiedStatusRequest = new GetVerifiedStatusRequest(_payPalApiClient.Configuration)
                                                    {
                                                        EmailAddress=request.Email,
                                                        FirstName=request.FirstName,
                                                        LastName=request.LastName
                                                    };
-                verifyResponse = _apiClient.Accounts.VerifyAccount(getVerifiedStatusRequest);
+                verifyResponse = _payPalApiClient.Accounts.VerifyAccount(getVerifiedStatusRequest);
                 verifyResponse.Success = true;
             }
             catch (HttpChannelException exception)

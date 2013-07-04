@@ -3,9 +3,9 @@ using log4net;
 
 namespace TicketMuffin.PayPal.Clients
 {
-    public class ApiClient : IApiClient
+    public class PayPalApiClient : IPayPalApiClient
     {
-        private ILog _log = LogManager.GetLogger(typeof(ApiClient));
+        private ILog _log = LogManager.GetLogger(typeof(PayPalApiClient));
         private readonly ApiClientSettings _clientSettings;
         public IAccountsApiClient Accounts { get; set; }
         public IPaymentsApiClient Payments { get; set; }
@@ -15,7 +15,7 @@ namespace TicketMuffin.PayPal.Clients
             get { return _clientSettings.Configuration; }
         }
 
-        public ApiClient(ApiClientSettings clientSettings)
+        public PayPalApiClient(ApiClientSettings clientSettings)
         {
             _clientSettings = clientSettings;
             Accounts = new AccountsClient(clientSettings);

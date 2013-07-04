@@ -1,5 +1,7 @@
 using System;
 using System.Configuration;
+using System.Security.Principal;
+using System.Web;
 using EmailProcessing;
 using EmailProcessing.Configuration;
 using Ninject;
@@ -10,8 +12,10 @@ using Raven.Client.Document;
 using TicketMuffin.Core.Domain;
 using TicketMuffin.Core.Email;
 using TicketMuffin.Core.Services;
+using TicketMuffin.PayPal.Clients;
 using TicketMuffin.Web.Code;
 using Raven.Client.Extensions;
+using TicketMuffin.Web.Models;
 using log4net;
 
 namespace TicketMuffin.Web.Conventions
@@ -50,6 +54,13 @@ namespace TicketMuffin.Web.Conventions
 
             Bind<ICultureService>().To<CultureService>();
             Bind<IContentProvider>().To<RavenDbContentProvider>().InRequestScope();
+            Bind<IAccountService>().To<AccountService>();
+            Bind<IAuthenticationService>().To<AuthenticationService>();
+            Bind<IIdentity>().ToMethod(x => HttpContext.Current.User.Identity);
+            Bind<IPayPalApiClient>().To<PayPalApiClient>();
+            Bind<IEventService>().To<EventService>();
+            Bind<ICountryService>().To<CountryService>();
+            Bind<IFormsAuthenticationService>().To<FormsAuthenticationService>();
         }
 
         private void BindEmailRelatedThings()

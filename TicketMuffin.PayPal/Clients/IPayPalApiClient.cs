@@ -3,7 +3,7 @@ using TicketMuffin.PayPal.Model;
 
 namespace TicketMuffin.PayPal.Clients
 {
-    public interface IApiClient
+    public interface IPayPalApiClient
     {
         IPaymentsApiClient Payments { get; set; }
         IAccountsApiClient Accounts { get; set; }

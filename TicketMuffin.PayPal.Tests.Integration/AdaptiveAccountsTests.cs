@@ -12,14 +12,14 @@ namespace TicketMuffin.PayPal.Tests.Integration
     {
         private ApiClientSettings _apiSettings;
         private AdaptiveAccountsConfiguration _paypalConfiguration;
-        private IApiClient _apiClient;
+        private IPayPalApiClient _payPalApiClient;
 
         [Test]
         public void CanVerifyAPaypalAccount()
         {
             _paypalConfiguration = PayPalHelpers.SandboxConfiguration();
             _apiSettings = new ApiClientSettings(_paypalConfiguration);
-            _apiClient = new ApiClient(_apiSettings );
+            _payPalApiClient = new PayPalApiClient(_apiSettings );
 
             GetVerifiedStatusRequest request=new GetVerifiedStatusRequest(_paypalConfiguration)
             {
@@ -29,7 +29,7 @@ namespace TicketMuffin.PayPal.Tests.Integration
             };
             try
             {
-                var response = _apiClient.Accounts.VerifyAccount(request);
+                var response = _payPalApiClient.Accounts.VerifyAccount(request);
                 Assert.That(response, Is.Not.Null);
                 Assert.That(response.AccountStatus, Is.StringContaining("VERIFIED"));
             } catch (WebException ex)
@@ -47,7 +47,7 @@ namespace TicketMuffin.PayPal.Tests.Integration
         {
             _paypalConfiguration = PayPalHelpers.SandboxConfiguration();
             _apiSettings = new ApiClientSettings(_paypalConfiguration);
-            _apiClient = new ApiClient(_apiSettings);
+            _payPalApiClient = new PayPalApiClient(_apiSettings);
 
             RequestPermissionsRequest request = new RequestPermissionsRequest(_paypalConfiguration)
             {
@@ -55,7 +55,7 @@ namespace TicketMuffin.PayPal.Tests.Integration
                 Callback = "http://localhost/PayPal/Permissions"
             };
 
-            var response = _apiClient.Accounts.RequestPermissions(request);
+            var response = _payPalApiClient.Accounts.RequestPermissions(request);
             Assert.That(response.Token, Is.Not.Null);
             Assert.That(response.Token, Has.Length.GreaterThan(0));
             System.Diagnostics.Debug.WriteLine(string.Format("sandbox: https://www.sandbox.paypal.com/cgi-bin/webscr?cmd=_grant-permission&request_token={0}", response.Token));
@@ -69,14 +69,14 @@ namespace TicketMuffin.PayPal.Tests.Integration
         {
             _paypalConfiguration = PayPalHelpers.SandboxConfiguration();
             _apiSettings = new ApiClientSettings(_paypalConfiguration);
-            _apiClient = new ApiClient(_apiSettings );
+            _payPalApiClient = new PayPalApiClient(_apiSettings );
 
             var getACcessTokenRequest = new GetAccessTokenRequest()
             {
                 Verifier = "EF8MjKKO35.aOsjvl.9myg",
                 Token = "AAAAAAAVsJJs368CZSYT"
             };
-            var getACcessTOkenResponse = _apiClient.Accounts.GetAccessToken(getACcessTokenRequest);
+            var getACcessTOkenResponse = _payPalApiClient.Accounts.GetAccessToken(getACcessTokenRequest);
 
             Assert.That(getACcessTOkenResponse.Token, Is.Not.Null);
             Assert.That(getACcessTOkenResponse.TokenSecret, Is.Not.Null);

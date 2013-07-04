@@ -11,7 +11,7 @@ namespace TicketMuffin.PayPal.Tests.Integration
     {
         private ApiClientSettings _apiSettings;
         private AdaptiveAccountsConfiguration _paypalConfiguration;
-        private ApiClient _apiClient;
+        private PayPalApiClient _payPalApiClient;
         private PayPalPaymentGateway _gateway;
         private IPayRequestFactory _payRequestFactory;
         private Receiver[] _receivers;
@@ -26,8 +26,8 @@ namespace TicketMuffin.PayPal.Tests.Integration
 
             _payRequestFactory = new PayRequestFactory(_paypalConfiguration);
 
-            _apiClient = new ApiClient(_apiSettings);
-            _gateway = new PayPalPaymentGateway(_apiClient, _paypalConfiguration);
+            _payPalApiClient = new PayPalApiClient(_apiSettings);
+            _gateway = new PayPalPaymentGateway(_payPalApiClient, _paypalConfiguration);
 
             _receivers = new[]
                              {
@@ -39,7 +39,7 @@ namespace TicketMuffin.PayPal.Tests.Integration
         [Test]
         public void Can_create_a_chained_payment()
         {
-            var response = _apiClient.Payments.SendPayRequest(
+            var response = _payPalApiClient.Payments.SendPayRequest(
                 _payRequestFactory.ChainedPayment("GBP", _receivers,
                                     "test payment " + Guid.NewGuid().ToString()
                     ));
@@ -52,10 +52,10 @@ namespace TicketMuffin.PayPal.Tests.Integration
         public void Can_check_the_details_of_a_payment()
         {
             string memoField = "test payment " + Guid.NewGuid().ToString();
-            var response = _apiClient.Payments.SendPayRequest(
+            var response = _payPalApiClient.Payments.SendPayRequest(
                 _payRequestFactory.RegularPayment("GBP", _receivers, memoField));
 
-            var detailsResponse = _apiClient.Payments.SendPaymentDetailsRequest(new PaymentDetailsRequest(response.payKey));
+            var detailsResponse = _payPalApiClient.Payments.SendPaymentDetailsRequest(new PaymentDetailsRequest(response.payKey));
 
 
             Assert.That(detailsResponse, Is.Not.Null);
@@ -67,7 +67,7 @@ namespace TicketMuffin.PayPal.Tests.Integration
         public void Can_refund_a_payment()
         {
             string memoField = "test payment " + Guid.NewGuid().ToString();
-            var response = _apiClient.Payments.SendPayRequest(
+            var response = _payPalApiClient.Payments.SendPayRequest(
                 new PayRequest(_paypalConfiguration)
                 {
                     Memo = memoField,
@@ -82,7 +82,7 @@ namespace TicketMuffin.PayPal.Tests.Integration
             System.Diagnostics.Debug.Write(response.payKey, "paykey");
             System.Diagnostics.Debug.WriteLine(string.Format("https://www.sandbox.paypal.com/webscr?cmd=_ap-payment&amp;paykey={0}", response.payKey), "authorization url");
 
-            var refundResponse = _apiClient.Payments.Refund(new RefundRequest(response.payKey));
+            var refundResponse = _payPalApiClient.Payments.Refund(new RefundRequest(response.payKey));
 
             System.Diagnostics.Debug.WriteLine(refundResponse.ResponseEnvelope.ack, "ack");
 
@@ -96,7 +96,7 @@ namespace TicketMuffin.PayPal.Tests.Integration
         [Ignore("We don't have delayed payments yet")]
         public void Can_create_a_delayed_payment()
         {
-            var response = _apiClient.Payments.SendPayRequest(
+            var response = _payPalApiClient.Payments.SendPayRequest(
                 new PayRequest(_paypalConfiguration)
                     {
                         ActionType = "PAY_PRIMARY",
@@ -114,7 +114,7 @@ namespace TicketMuffin.PayPal.Tests.Integration
             
             System.Diagnostics.Debug.Write(response.payKey, "paykey");
 
-            var paymentDetails = _apiClient.Payments.SendPaymentDetailsRequest(new PaymentDetailsRequest(response.payKey));
+            var paymentDetails = _payPalApiClient.Payments.SendPaymentDetailsRequest(new PaymentDetailsRequest(response.payKey));
 
             Assert.That(paymentDetails.status, Is.StringMatching("INCOMPLETE"));
         }
@@ -123,7 +123,7 @@ namespace TicketMuffin.PayPal.Tests.Integration
         [Ignore("We don't have delayed payments yet")]
         public void Can_complete_a_delayed_payment()
         {
-            var response = _apiClient.Payments.SendPayRequest(
+            var response = _payPalApiClient.Payments.SendPayRequest(
                 new PayRequest(_paypalConfiguration)
                 {
                     ActionType = "PAY_PRIMARY",
@@ -142,9 +142,9 @@ namespace TicketMuffin.PayPal.Tests.Integration
             System.Diagnostics.Debug.WriteLine(response.payKey, "paykey");
             System.Diagnostics.Debug.WriteLine(string.Format("https://www.sandbox.paypal.com/webscr?cmd=_ap-payment&amp;paykey={0}", response.payKey), "authorization url");
 
-            var paymentDetails = _apiClient.Payments.SendPaymentDetailsRequest(new PaymentDetailsRequest(response.payKey));
+            var paymentDetails = _payPalApiClient.Payments.SendPaymentDetailsRequest(new PaymentDetailsRequest(response.payKey));
 
-            var executePaymentResponse = _apiClient.Payments.SendExecutePaymentRequest(new ExecutePaymentRequest(response.payKey));
+            var executePaymentResponse = _payPalApiClient.Payments.SendExecutePaymentRequest(new ExecutePaymentRequest(response.payKey));
         }
     }
 }

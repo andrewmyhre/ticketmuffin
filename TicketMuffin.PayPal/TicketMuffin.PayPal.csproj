@@ -68,8 +68,8 @@
     <Compile Include="Api.cs" />
     <Compile Include="ApiClientSettings.cs" />
     <Compile Include="Clients\AccountsClient.cs" />
-    <Compile Include="Clients\ApiClient.cs" />
-    <Compile Include="Clients\IApiClient.cs" />
+    <Compile Include="Clients\PayPalApiClient.cs" />
+    <Compile Include="Clients\IPayPalApiClient.cs" />
     <Compile Include="Clients\PaymentsClient.cs" />
     <Compile Include="Configuration\AdaptiveAccountsConfiguration.cs" />
     <Compile Include="Configuration\PaypalAdaptiveAccountsConfigurationSection.cs" />

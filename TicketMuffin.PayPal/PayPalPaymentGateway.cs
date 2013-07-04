@@ -10,13 +10,13 @@ namespace TicketMuffin.PayPal
 {
     public class PayPalPaymentGateway : IPaymentGateway
     {
-        private readonly IApiClient _apiClient;
+        private readonly IPayPalApiClient _payPalApiClient;
         private readonly AdaptiveAccountsConfiguration _paypalConiguration;
 
-        public PayPalPaymentGateway(IApiClient apiClient, 
+        public PayPalPaymentGateway(IPayPalApiClient payPalApiClient, 
             AdaptiveAccountsConfiguration paypalConiguration)
         {
-            _apiClient = apiClient;
+            _payPalApiClient = payPalApiClient;
             _paypalConiguration = paypalConiguration;
         }
 
@@ -57,7 +57,7 @@ namespace TicketMuffin.PayPal
                                                 .ToArray()
                                         };
 
-            var response = _apiClient.Payments.SendPayRequest(payRequest);
+            var response = _payPalApiClient.Payments.SendPayRequest(payRequest);
 
             return new PaymentGatewayResponse()
                        {
@@ -109,7 +109,7 @@ namespace TicketMuffin.PayPal
 
         public TicketMuffin.Core.Payments.PaymentDetailsResponse RetrievePaymentDetails(string transactionId)
         {
-            var paypalPayment = _apiClient.Payments.SendPaymentDetailsRequest(
+            var paypalPayment = _payPalApiClient.Payments.SendPaymentDetailsRequest(
                 new PaymentDetailsRequest(transactionId));
 
             var response = new TicketMuffin.Core.Payments.PaymentDetailsResponse();
@@ -134,7 +134,7 @@ namespace TicketMuffin.PayPal
 
             RefundResponse response = null;
 
-            return _apiClient.Payments.Refund(new RefundRequest(request.PayKey)
+            return _payPalApiClient.Payments.Refund(new RefundRequest(request.PayKey)
                                                 {
                                                     Receivers = new ReceiverList(
                                                         request.Receivers.Select(r=>
@@ -150,7 +150,7 @@ namespace TicketMuffin.PayPal
                 throw new ArgumentException("transactionid must be provided", "request.transactionid");
             }
 
-            return _apiClient.Payments.SendExecutePaymentRequest(new ExecutePaymentRequest(request.PayKey));
+            return _payPalApiClient.Payments.SendExecutePaymentRequest(new ExecutePaymentRequest(request.PayKey));
         }
     }
 }

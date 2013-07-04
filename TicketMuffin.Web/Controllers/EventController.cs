@@ -34,7 +34,6 @@ namespace TicketMuffin.Web.Controllers
     {
         private readonly ILog logger = LogManager.GetLogger(typeof (EventController));
         private readonly IFormsAuthenticationService _formsService;
-        private readonly IMembershipService _membershipService;
         private readonly IAccountService _accountService;
         private readonly IPaymentGateway _paymentGateway;
         private readonly ITaxAmountResolver _taxResolver;
@@ -50,7 +49,7 @@ namespace TicketMuffin.Web.Controllers
         private readonly IOrderNumberGenerator _orderNumberGenerator;
 
         public EventController(IAccountService accountService,
-                               IFormsAuthenticationService formsService, IMembershipService membershipService,
+                               IFormsAuthenticationService formsService,
                                IPaymentGateway paymentGateway,
                                ITaxAmountResolver taxResolver, ISiteConfiguration siteConfiguration,
                                IDocumentSession ravenSession, 
@@ -62,7 +61,6 @@ namespace TicketMuffin.Web.Controllers
         {
             _accountService = accountService;
             _formsService = formsService;
-            _membershipService = membershipService;
             _paymentGateway = paymentGateway;
             _taxResolver = taxResolver;
             _siteConfiguration = siteConfiguration;

@@ -17,16 +17,14 @@ namespace GroupGiving.Test.Unit
     public class CreateEventControllerTests : PaymentGatewayTestsBase
     {
         Mock<IAccountService> accountService = null;
-        Mock<IMembershipService> membershipService = null;
         Mock<IFormsAuthenticationService> formsAuthenticationService = null;
         private Mock<IEventService> eventService = null;
-        private Mock<MembershipProvider> _membershipProvider = new Mock<MembershipProvider>();
         private Mock<ICountryService> _countryService = new Mock<ICountryService>();
         private IIdentity _userIdentity = new System.Security.Principal.GenericIdentity("testuser@test.com");
-        private Mock<IApiClient> _apiClient = new Mock<IApiClient>();
+        private Mock<IPayPalApiClient> _apiClient = new Mock<IPayPalApiClient>();
         private Mock<IAccountsApiClient> _accountsApi = new Mock<IAccountsApiClient>();
         private EmbeddableDocumentStore _documentStore;
-        private Mock<MembershipProvider> _membershipProviderLocator = new Mock<MembershipProvider>();
+        private Mock<IAuthenticationService> _authenticationService;
 
         [SetUp]
         public void SetUp()
@@ -34,9 +32,9 @@ namespace GroupGiving.Test.Unit
             _documentStore = InMemoryStore();
 
             accountService = new Mock<IAccountService>();
-            membershipService = new Mock<IMembershipService>();
             formsAuthenticationService = new Mock<IFormsAuthenticationService>();
             eventService = new Mock<IEventService>();
+            _authenticationService = new Mock<IAuthenticationService>();
 
             _countryService
                 .Setup(m=>m.RetrieveAllCountries())
@@ -76,10 +74,8 @@ namespace GroupGiving.Test.Unit
                 _accountsApi.AllAccountsVerified();
 
                 var controller = new CreateEventController(accountService.Object, _countryService.Object,
-                                                           membershipService.Object,
-                                                           formsAuthenticationService.Object, eventService.Object,
-                                                           _userIdentity, _membershipProviderLocator.Object,
-                                                           _apiClient.Object, session);
+                    _authenticationService.Object, formsAuthenticationService.Object, eventService.Object,
+                                                           _userIdentity, _apiClient.Object, session);
 
                 var createEventRequest = new CreateEventRequest() {ShortUrl = "test-event"};
                 createEventRequest.StartDate = DateTime.Now.AddDays(10).ToString("dd/MM/yyyy");
@@ -121,10 +117,8 @@ namespace GroupGiving.Test.Unit
                 _accountsApi.AllAccountsVerified();
 
                 var controller = new CreateEventController(accountService.Object, _countryService.Object,
-                                                           membershipService.Object,
-                                                           formsAuthenticationService.Object, eventService.Object,
-                                                           _userIdentity, _membershipProviderLocator.Object,
-                                                           _apiClient.Object, session);
+                                                           _authenticationService.Object, formsAuthenticationService.Object, eventService.Object,
+                                                           _userIdentity, _apiClient.Object, session);
                 controller.ModelState.AddModelError("*", "invalid model state");
 
                 var result = controller.EventDetails(new CreateEventRequest()) as ViewResult;
@@ -152,9 +146,9 @@ namespace GroupGiving.Test.Unit
                 _accountsApi.AllAccountsVerified();
 
                 var controller = new CreateEventController(accountService.Object, _countryService.Object,
-                                                           membershipService.Object, formsAuthenticationService.Object,
+                                                           _authenticationService.Object, formsAuthenticationService.Object,
                                                            eventService.Object, _userIdentity,
-                                                           _membershipProviderLocator.Object, _apiClient.Object, session);
+                                                           _apiClient.Object, session);
 
                 var setTicketDetailsRequest = new SetTicketDetailsRequest() {ShortUrl = "test-event"};
                 setTicketDetailsRequest.SalesEndDate = DateTime.Now.AddDays(10).ToString("dd/MM/yyyy");
@@ -175,9 +169,8 @@ namespace GroupGiving.Test.Unit
                 _accountsApi.AllAccountsVerified();
 
                 var controller = new CreateEventController(accountService.Object, _countryService.Object,
-                                                           membershipService.Object, formsAuthenticationService.Object,
-                                                           eventService.Object, _userIdentity,
-                                                           _membershipProviderLocator.Object, _apiClient.Object, session);
+                                                           _authenticationService.Object, formsAuthenticationService.Object,
+                                                           eventService.Object, _userIdentity, _apiClient.Object, session);
                 controller.ModelState.AddModelError("*", "Invalid model state");
                 eventService
                     .Setup(m => m.Retrieve(It.IsAny<string>()))

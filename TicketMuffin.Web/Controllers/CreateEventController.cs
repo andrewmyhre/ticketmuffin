@@ -26,31 +26,30 @@ namespace TicketMuffin.Web.Controllers
     public class CreateEventController : Controller
     {
         private readonly IAccountService _accountService;
-        private readonly IMembershipService _membershipService;
         private readonly IFormsAuthenticationService _formsAuthenticationService;
         private readonly IEventService _eventService;
         private readonly ICountryService _countryService;
+        private readonly IAuthenticationService _authenticationService;
         private readonly IIdentity _userIdentity;
-        private readonly MembershipProvider _membershipProvider;
-        private readonly IApiClient _apiClient;
+        private readonly IPayPalApiClient _payPalApiClient;
         private readonly IDocumentSession _ravenSession;
         Regex mustContainAlphaCharacters = new Regex(@".*\w.*");
         private readonly ILog _logger = LogManager.GetLogger(typeof (CreateEventController));
 
-        public CreateEventController(IAccountService accountService, ICountryService countryService, IMembershipService membershipService, 
+        public CreateEventController(IAccountService accountService, ICountryService countryService, IAuthenticationService authenticationService, 
             IFormsAuthenticationService formsAuthenticationService, IEventService eventService, IIdentity userIdentity, 
-            MembershipProvider membershipProvider, IApiClient apiClient,
+            IPayPalApiClient payPalApiClient,
             IDocumentSession ravenSession)
         {
             _accountService = accountService;
             _countryService = countryService;
-            _membershipService = membershipService;
+            _authenticationService = authenticationService;
+
             _formsAuthenticationService = formsAuthenticationService;
             _eventService = eventService;
             _userIdentity = userIdentity;
-            _membershipProvider = membershipProvider;
 
-            _apiClient = apiClient;
+            _payPalApiClient = payPalApiClient;
             _ravenSession = ravenSession;
         }
 
@@ -235,8 +234,7 @@ namespace TicketMuffin.Web.Controllers
         [Authorize]
         public ActionResult TicketDetails(string shortUrl)
         {
-            var membershipUser = _membershipService.GetUser(_userIdentity.Name);
-            var account = _accountService.RetrieveByEmailAddress(membershipUser.Email);
+            var account = _accountService.RetrieveByEmailAddress(_userIdentity.Name);
             var @event = _eventService.Retrieve(shortUrl);
 
             if (@event == null)
@@ -299,13 +297,13 @@ namespace TicketMuffin.Web.Controllers
             GetVerifiedStatusResponse accountVerification = new GetVerifiedStatusResponse();
             try
             {
-                GetVerifiedStatusRequest verifyAccountRequest=new GetVerifiedStatusRequest(_apiClient.Configuration)
+                GetVerifiedStatusRequest verifyAccountRequest=new GetVerifiedStatusRequest(_payPalApiClient.Configuration)
                                                                   {
                                                                       EmailAddress=setTicketDetailsRequest.PayPalEmail,
                                                                       FirstName=setTicketDetailsRequest.PayPalFirstName,
                                                                       LastName=setTicketDetailsRequest.PayPalLastName
                                                                   };
-                accountVerification = _apiClient.Accounts.VerifyAccount(verifyAccountRequest);
+                accountVerification = _payPalApiClient.Accounts.VerifyAccount(verifyAccountRequest);
             } catch (Exception ex)
             {
                 // TODO: be more specific about the exception
@@ -327,8 +325,7 @@ namespace TicketMuffin.Web.Controllers
 
             _eventService.SetTicketDetails(setTicketDetailsRequest);
 
-            var membershipUser = _membershipService.GetUser(_userIdentity.Name);
-            var account = _accountService.RetrieveByEmailAddress(membershipUser.Email);
+            var account = _accountService.RetrieveByEmailAddress(_userIdentity.Name);
             account.PaymentGatewayId = setTicketDetailsRequest.PayPalEmail;
             account.PayPalFirstName = setTicketDetailsRequest.PayPalFirstName;
             account.PayPalLastName = setTicketDetailsRequest.PayPalLastName;
