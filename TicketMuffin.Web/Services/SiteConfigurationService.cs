@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using Raven.Client;
 using TicketMuffin.Core.Configuration;
 using TicketMuffin.Core.Services;
@@ -18,10 +19,14 @@ namespace TicketMuffin.Web.Services
             _session = session;
         }
 
-        public ISiteConfiguration GetConfiguration()
+        public ISiteConfiguration GetConfiguration(string mode="Sandbox")
         {
             _log.Debug("loading site configuration");
-            ISiteConfiguration configuration = _session.Query<SiteConfiguration>().FirstOrDefault();
+            ISiteConfiguration configuration = _session.Query<SiteConfiguration>().SingleOrDefault(c=>c.Mode==mode);
+            if (configuration == null)
+            {
+                throw new Exception(string.Format("Couldn't find configuration for mode '{0}'", mode));
+            }
             configuration = EnsureValidConfigurationObject(configuration, _session);
             return configuration;
         }

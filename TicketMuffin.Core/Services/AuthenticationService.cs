@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Text;
 using Raven.Client;
 using TicketMuffin.Core.Domain;
@@ -30,7 +31,10 @@ namespace TicketMuffin.Core.Services
 
         public bool CredentialsValid(string emailAddress, string passwordAttempt)
         {
-            throw new System.NotImplementedException();
+            var credentials = _session.Query<Credentials>().SingleOrDefault(c=>c.Username==emailAddress);
+            if (credentials != null)
+                return BCrypt.CheckPassword(passwordAttempt, Encoding.UTF8.GetString(credentials.SaltedHashedPassword));
+            return false;
         }
     }
 }

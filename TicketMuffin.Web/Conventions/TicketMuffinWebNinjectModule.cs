@@ -16,9 +16,11 @@ using TicketMuffin.Core.Domain;
 using TicketMuffin.Core.Email;
 using TicketMuffin.Core.Services;
 using TicketMuffin.PayPal.Clients;
+using TicketMuffin.PayPal.Configuration;
 using TicketMuffin.Web.Code;
 using Raven.Client.Extensions;
 using TicketMuffin.Web.Models;
+using TicketMuffin.Web.Services;
 using log4net;
 
 namespace TicketMuffin.Web.Conventions
@@ -64,6 +66,13 @@ namespace TicketMuffin.Web.Conventions
             Bind<IPayPalApiClient>().To<PayPalApiClient>();
             Bind<IFormsAuthenticationService>().To<FormsAuthenticationService>();
             Bind<IContentProvider>().To<RavenDbContentProvider>().InRequestScope();
+            Bind<ISiteConfigurationService>().To<SiteConfigurationService>();
+            Bind<AdaptiveAccountsConfiguration>()
+                .ToMethod(x =>
+                    {
+                        var siteConfig = Kernel.Get<ISiteConfigurationService>();
+                        return siteConfig.GetConfiguration("Sandbox").AdaptiveAccountsConfiguration;
+                    });
         }
 
         private void BindEmailRelatedThings()

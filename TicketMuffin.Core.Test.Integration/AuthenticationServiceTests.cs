@@ -57,5 +57,25 @@ namespace TicketMuffin.Core.Test.Integration
             var exception = Assert.Throws<Exception>(() => authService.CreateCredentials(username, password, confirmPassword));
             Assert.That(exception.Message, Is.StringMatching("The passwords do not match"));
         }
+
+        [Test]
+        public void CanValidateCredentials()
+        {
+            var documentStore = _kernel.Get<IDocumentStore>();
+            var authService = _kernel.Get<IAuthenticationService>();
+
+            string username = RandomString();
+            string password = RandomString();
+
+            authService.CreateCredentials(username, password, password);
+
+            using (var session = documentStore.OpenSession())
+            {
+                var credentials = session.Query<Credentials>().SingleOrDefault(c => c.Username == username);
+                Assert.That(credentials, Is.Not.Null);
+                Assert.That(authService.CredentialsValid(username, password), Is.True);
+            }
+            
+        }
     }
 }
