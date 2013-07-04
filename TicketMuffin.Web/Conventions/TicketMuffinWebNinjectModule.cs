@@ -1,5 +1,7 @@
 using System;
+using System.ComponentModel.Composition.Hosting;
 using System.Configuration;
+using System.Reflection;
 using System.Security.Principal;
 using System.Web;
 using EmailProcessing;
@@ -9,6 +11,7 @@ using Ninject.Modules;
 using Ninject.Web.Common;
 using Raven.Client;
 using Raven.Client.Document;
+using Raven.Client.Indexes;
 using TicketMuffin.Core.Domain;
 using TicketMuffin.Core.Email;
 using TicketMuffin.Core.Services;
@@ -32,6 +35,10 @@ namespace TicketMuffin.Web.Conventions
                 store.DatabaseCommands.EnsureDatabaseExists(DATABASE_NAME);
 
                 store.Conventions.RegisterIdConvention<LocalisedContent>((dbname, commands, content) => string.Join("/","content", content.Culture, content.Address, content.Label));
+
+                var catalog = new CompositionContainer(new AssemblyCatalog(Assembly.GetExecutingAssembly()));
+                var databaseCommands = store.DatabaseCommands.ForDatabase(DATABASE_NAME);
+                IndexCreation.CreateIndexes(catalog, databaseCommands, store.Conventions);
 
                 return store;
             }).InSingletonScope();

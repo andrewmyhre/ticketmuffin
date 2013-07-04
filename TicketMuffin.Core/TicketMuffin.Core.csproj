@@ -134,6 +134,7 @@
     <Compile Include="Email\IEmailRelayService.cs" />
     <Compile Include="Email\IEmailTemplate.cs" />
     <Compile Include="Email\SimpleSmtpEmailRelayService.cs" />
+    <Compile Include="Indexes\ContentByCultureAndAddress.cs" />
     <Compile Include="Indexes\DenormalizedPledges.cs" />
     <Compile Include="Indexes\IndexManager.cs" />
     <Compile Include="Payments\IChargeResponse.cs" />
