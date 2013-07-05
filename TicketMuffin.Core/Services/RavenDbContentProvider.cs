@@ -146,7 +146,13 @@ namespace TicketMuffin.Core.Services
             {
                 int count = _createdContent.Count;
                 _logger.DebugFormat("Saving {0} content items", count);
-                _session.SaveChanges();
+                try
+                {
+                    _session.SaveChanges();
+                } catch
+                {
+                    _session.Advanced.Clear();
+                }
                 _createdContent.Clear();
             }
         }
