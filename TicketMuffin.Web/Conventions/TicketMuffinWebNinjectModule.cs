@@ -14,6 +14,7 @@ using Raven.Client.Document;
 using Raven.Client.Indexes;
 using TicketMuffin.Core.Domain;
 using TicketMuffin.Core.Email;
+using TicketMuffin.Core.Payments;
 using TicketMuffin.Core.Services;
 using TicketMuffin.PayPal.Clients;
 using TicketMuffin.PayPal.Configuration;
@@ -73,6 +74,12 @@ namespace TicketMuffin.Web.Conventions
                         var siteConfig = Kernel.Get<ISiteConfigurationService>();
                         return siteConfig.GetConfiguration("Sandbox").AdaptiveAccountsConfiguration;
                     });
+            Bind<IPaymentGateway>().To<FakePaymentGateway>();
+            Bind<ITaxAmountResolver>().To<NilTax>();
+            Bind<ITicketGenerator>().To<TicketGenerator>()
+                .WithConstructorArgument("ticketTemplatePath", System.Web.Hosting.HostingEnvironment.MapPath("~/Content/tickets/ticket-pl.pdf"));
+            Bind<IEventCultureResolver>().To<EventCultureResolver>();
+            Bind<IOrderNumberGenerator>().To<OrderNumberGenerator>();
         }
 
         private void BindEmailRelatedThings()

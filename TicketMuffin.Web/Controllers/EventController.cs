@@ -24,7 +24,6 @@ using RavenDBMembership.Provider;
 using TicketMuffin.PayPal;
 using TicketMuffin.PayPal.Model;
 using TicketMuffin.Web.Code;
-using TicketMuffin.Web.Configuration;
 using TicketMuffin.Web.Models;
 using log4net;
 
@@ -33,11 +32,9 @@ namespace TicketMuffin.Web.Controllers
     public class EventController : Controller
     {
         private readonly ILog logger = LogManager.GetLogger(typeof (EventController));
-        private readonly IFormsAuthenticationService _formsService;
         private readonly IAccountService _accountService;
         private readonly IPaymentGateway _paymentGateway;
         private readonly ITaxAmountResolver _taxResolver;
-        private ISiteConfiguration _siteConfiguration;
         private readonly IDocumentSession _ravenSession;
         private static Markdown _markdown = new Markdown();
         private readonly IIdentity _userIdentity;
@@ -49,9 +46,8 @@ namespace TicketMuffin.Web.Controllers
         private readonly IOrderNumberGenerator _orderNumberGenerator;
 
         public EventController(IAccountService accountService,
-                               IFormsAuthenticationService formsService,
                                IPaymentGateway paymentGateway,
-                               ITaxAmountResolver taxResolver, ISiteConfiguration siteConfiguration,
+                               ITaxAmountResolver taxResolver,
                                IDocumentSession ravenSession, 
             IIdentity userIdentity, 
             IEventService eventService,
@@ -60,10 +56,8 @@ namespace TicketMuffin.Web.Controllers
             IOrderNumberGenerator orderNumberGenerator)
         {
             _accountService = accountService;
-            _formsService = formsService;
             _paymentGateway = paymentGateway;
             _taxResolver = taxResolver;
-            _siteConfiguration = siteConfiguration;
             _ravenSession = ravenSession;
             ((RavenDBMembershipProvider) Membership.Provider).DocumentStore
                 = _ravenSession.Advanced.DocumentStore;

@@ -308,11 +308,12 @@ namespace TicketMuffin.Web.Controllers
             {
                 // TODO: be more specific about the exception
                 _logger.Error(ex);
+                //ModelState.AddModelError("PayPalEmail", ex.Message);
             }
 
             if (!accountVerification.Verified)
             {
-                ModelState.AddModelError("PayPalEmail", "A PayPal account matching the credentials your provided could not be found");
+                //ModelState.AddModelError("PayPalEmail", "A PayPal account matching the credentials your provided could not be found");
             } 
             
 

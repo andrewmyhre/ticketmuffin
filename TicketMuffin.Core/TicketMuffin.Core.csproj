@@ -138,6 +138,7 @@
     <Compile Include="Indexes\ContentByCultureAndAddress.cs" />
     <Compile Include="Indexes\DenormalizedPledges.cs" />
     <Compile Include="Indexes\IndexManager.cs" />
+    <Compile Include="Payments\FakePaymentGateway.cs" />
     <Compile Include="Payments\IChargeResponse.cs" />
     <Compile Include="Payments\IPaymentCaptureResponse.cs" />
     <Compile Include="Payments\IPaymentGateway.cs" />

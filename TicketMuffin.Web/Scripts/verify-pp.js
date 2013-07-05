@@ -1,4 +1,4 @@
-﻿var paypalVerified = false;
+﻿var verificationAttempted = false;
 $(document).ready(function () {
     $.ajaxSetup(
         { accept: 'application/json', dataType: 'json', contentType: 'application/json' }
@@ -9,7 +9,7 @@ $(document).ready(function () {
     $('#PayPalLastName').change(function () { VerifyPayPalAccount(null); });
     $('.verify-paypal').click(function() { VerifyPayPalAccount(null); });
     $('#paypal-form').submit(function () {
-        if (!paypalVerified) {
+        if (!verificationAttempted) {
             VerifyPayPalAccount(function () { $('#paypal-form').submit(); });
             return false;
         }
@@ -51,7 +51,7 @@ function VerifyPayPalAccount(onVerified) {
                         $('#pp-verify-result').removeClass('pp-unverified pp-verified pp-checking');
                         $('#pp-verify-result').addClass('pp-notfound');
                     }
-                    paypalVerified = true;
+                    verificationAttempted = true;
                     $('#paypal-form input[type="submit"]').attr('disabled', false);
                     if (onVerified) {
                         onVerified();
