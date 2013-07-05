@@ -191,6 +191,12 @@ namespace TicketMuffin.Web
         {
 
             log4net.Config.XmlConfigurator.Configure();
+            _logger.Info("");
+            _logger.Info("");
+            _logger.Info("******************************");
+            _logger.Info("TicketMuffin Application Start");
+            _logger.Info("******************************");
+
             AreaRegistration.RegisterAllAreas();
 
             RegisterGlobalFilters(GlobalFilters.Filters);

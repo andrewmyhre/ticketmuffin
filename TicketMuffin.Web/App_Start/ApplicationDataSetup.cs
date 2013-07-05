@@ -3,6 +3,7 @@ using Microsoft.Practices.ServiceLocation;
 using Raven.Client;
 using TicketMuffin.Core.Services;
 using TicketMuffin.Web.Services;
+using log4net;
 
 namespace TicketMuffin.Web.App_Start
 {
@@ -11,6 +12,7 @@ namespace TicketMuffin.Web.App_Start
     {
         private static ICountryService CountryService;
         private static ISiteConfigurationService SiteConfigurationService;
+        private static ILog Logger = LogManager.GetLogger(typeof (ApplicationDataSetup));
 
         public static void Start()
         {
