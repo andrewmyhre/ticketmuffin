@@ -18,7 +18,7 @@ namespace TicketMuffin.Core.Actions
         public void SendTickets(GroupGivingEvent @event, EventPledge pledge)
         {
             MailMessage message = new MailMessage("sales@ticketmuffin.com",
-                                                  pledge.AccountEmailAddress);
+                                                  pledge.PayPalEmailAddress);
             message.Subject = "Your tickets for " + @event.Title;
             message.Body = @"Hi " + pledge.AccountName + "," +
                            "Your tickets for " + @event.Title + " are attached." +

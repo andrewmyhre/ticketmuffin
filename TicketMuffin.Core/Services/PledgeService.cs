@@ -29,7 +29,7 @@ namespace TicketMuffin.Core.Services
             var pledge = new EventPledge()
                 {
                     AccountId = pledger.Id,
-                    AccountEmailAddress = pledger.Email,
+                    PayPalEmailAddress = pledger.Email,
                     AccountName = string.Concat(" ", pledger.FirstName, pledger.LastName),
                     DatePledged = DateTime.Now
                 };
@@ -47,7 +47,7 @@ namespace TicketMuffin.Core.Services
             }
 
             var gatewayDetails = _paymentService.GetPaymentDetails(payment);
-            if (gatewayDetails.PaymentStatus == PaymentStatus.Unsettled
+            if (gatewayDetails.PaymentStatus == PaymentStatus.AuthorisedUnsettled
                 || payment.PaymentStatus == PaymentStatus.Settled)
             {
                 payment.PaymentStatus = gatewayDetails.PaymentStatus;

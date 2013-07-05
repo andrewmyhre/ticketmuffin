@@ -93,7 +93,7 @@ namespace TicketMuffin.PayPal
             throw new NotImplementedException();
         }
 
-        public IPaymentAuthoriseResponse AuthoriseCharge(decimal amount, string currencyCode, string paymentMemo, string recipientId,
+        public PaymentAuthoriseResponse AuthoriseCharge(decimal amount, string currencyCode, string paymentMemo, string recipientId,
                                                          bool capture = false)
         {
             throw new NotImplementedException();
@@ -117,7 +117,7 @@ namespace TicketMuffin.PayPal
             switch (paypalPayment.status)
             {
                 case "INCOMPLETE":
-                    response.PaymentStatus = TicketMuffin.Core.Payments.PaymentStatus.Unsettled;
+                    response.PaymentStatus = TicketMuffin.Core.Payments.PaymentStatus.AuthorisedUnsettled;
                     break;
             }
             response.SenderId = paypalPayment.senderEmail;

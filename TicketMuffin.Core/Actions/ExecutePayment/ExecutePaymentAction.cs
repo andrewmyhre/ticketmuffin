@@ -43,7 +43,7 @@ namespace TicketMuffin.Core.Actions.ExecutePayment
             if (pledge == null)
                 throw new ArgumentException("Pledge not found", "orderNumber");
 
-            var payment = pledge.Payments.SingleOrDefault(x => x.PaymentStatus == PaymentStatus.Unsettled);
+            var payment = pledge.Payments.SingleOrDefault(x => x.PaymentStatus == PaymentStatus.AuthorisedUnsettled);
 
             if (payment == null)
                 throw new InvalidOperationException("Payment to be executed does not exist");

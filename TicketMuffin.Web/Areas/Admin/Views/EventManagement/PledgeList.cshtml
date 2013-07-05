@@ -7,7 +7,7 @@
 @foreach (var pledge in Model.Pledges)
 {
     <tr>
-        <td>@pledge.AccountEmailAddress</td>
+        <td>@pledge.PayPalEmailAddress</td>
         <td>@pledge.DatePledged</td>
         <td>@pledge.Attendees.Count attendees</td>
         <td>@pledge.PaymentStatus</td>

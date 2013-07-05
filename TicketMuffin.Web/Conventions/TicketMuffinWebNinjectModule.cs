@@ -12,6 +12,7 @@ using Ninject.Web.Common;
 using Raven.Client;
 using Raven.Client.Document;
 using Raven.Client.Indexes;
+using TicketMuffin.Core.Actions;
 using TicketMuffin.Core.Domain;
 using TicketMuffin.Core.Email;
 using TicketMuffin.Core.Payments;
@@ -39,7 +40,7 @@ namespace TicketMuffin.Web.Conventions
 
                 store.Conventions.RegisterIdConvention<LocalisedContent>((dbname, commands, content) => string.Join("/","content", content.Culture, content.Address, content.Label));
 
-                var catalog = new CompositionContainer(new AssemblyCatalog(Assembly.GetExecutingAssembly()));
+                var catalog = new CompositionContainer(new AssemblyCatalog(Assembly.GetAssembly(typeof(TicketMuffin.Core.Indexes.ContentByCultureAndAddress))));
                 var databaseCommands = store.DatabaseCommands.ForDatabase(DATABASE_NAME);
                 IndexCreation.CreateIndexes(catalog, databaseCommands, store.Conventions);
 
@@ -80,6 +81,7 @@ namespace TicketMuffin.Web.Conventions
                 .WithConstructorArgument("ticketTemplatePath", System.Web.Hosting.HostingEnvironment.MapPath("~/Content/tickets/ticket-pl.pdf"));
             Bind<IEventCultureResolver>().To<EventCultureResolver>();
             Bind<IOrderNumberGenerator>().To<OrderNumberGenerator>();
+            Bind<IPledgeTicketSender>().To<PledgeTicketSender>();
         }
 
         private void BindEmailRelatedThings()

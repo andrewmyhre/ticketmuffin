@@ -108,7 +108,7 @@ namespace TicketMuffin.Core.Test.Integration
                 var payment = AddAPaymentToPledge(pledge, PaymentStatus.Created, transactionId);
 
                 paymentGateway.Setup(x => x.RetrievePaymentDetails(transactionId))
-                    .Returns(new PaymentDetailsResponse() { Successful = true, PaymentStatus = PaymentStatus.Unsettled, SenderId = expectedPayPalEmail });
+                    .Returns(new PaymentDetailsResponse() { Successful = true, PaymentStatus = PaymentStatus.AuthorisedUnsettled, SenderId = expectedPayPalEmail });
 
                 var pledgeService = _kernel.Get<IPledgeService>();
 
@@ -118,7 +118,7 @@ namespace TicketMuffin.Core.Test.Integration
                 var actualPayment = pledge.Payments.First();
 
                 Assert.That(pledger.PaymentGatewayId, Is.EqualTo(expectedPayPalEmail), "pledge service should have updated payer's paypal email address");
-                Assert.That(actualPayment.PaymentStatus, Is.EqualTo(PaymentStatus.Unsettled));
+                Assert.That(actualPayment.PaymentStatus, Is.EqualTo(PaymentStatus.AuthorisedUnsettled));
                 Assert.That(pledge.Paid, Is.True);
             }
         }

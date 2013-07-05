@@ -33,10 +33,16 @@ namespace TicketMuffin.Core.Payments
             throw new System.NotImplementedException();
         }
 
-        public IPaymentAuthoriseResponse AuthoriseCharge(decimal amount, string currencyCode, string paymentMemo, string recipientId,
+        public PaymentAuthoriseResponse AuthoriseCharge(decimal amount, string currencyCode, string paymentMemo, string recipientId,
                                                          bool capture = false)
         {
-            throw new System.NotImplementedException();
+            return new PaymentAuthoriseResponse()
+                {
+                    Successful=true,
+                    TransactionId = Guid.NewGuid().ToString(),
+                    Status = PaymentStatus.AuthorisedUnsettled, // immediately authorised
+                    RedirectUrl=string.Empty
+                };
         }
 
         public PaymentCreationResponse CreatePayment(string memo, string iso4217Alpha3Code, string successUrl, string failureUrl,
@@ -46,7 +52,7 @@ namespace TicketMuffin.Core.Payments
                 {
                     TransactionId = Guid.NewGuid().ToString(),
                     PaymentGatewayName = Name,
-                    PaymentStatus = PaymentStatus.Unsettled
+                    PaymentStatus = PaymentStatus.AuthorisedUnsettled
                 };
             _session.Store(payment);
             _session.SaveChanges();

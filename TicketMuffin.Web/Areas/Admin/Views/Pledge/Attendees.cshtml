@@ -5,7 +5,7 @@
     Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
 }
 
-<h2>@Model.Event.Title, pledge by @Model.Pledge.AccountEmailAddress Attendees</h2>
+<h2>@Model.Event.Title, pledge by @Model.Pledge.PayPalEmailAddress Attendees</h2>
 
 @Html.ActionLink("Send tickets", "SendTickets", "Pledge", new {id=Model.Pledge.OrderNumber}, null)
 

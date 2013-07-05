@@ -47,7 +47,7 @@ namespace TicketMuffin.Core.Actions.SettlePledge
 
             if (paymentDetails.PaymentStatus != PaymentStatus.Unauthorised) // delayed payment will be incomplete until execute payment is called
             {
-                payment.PaymentStatus = PaymentStatus.Unsettled;
+                payment.PaymentStatus = PaymentStatus.AuthorisedUnsettled;
                 pledge.DatePledged = 
                     DateTime.Now;
             }
@@ -58,7 +58,7 @@ namespace TicketMuffin.Core.Actions.SettlePledge
             }
             if (!string.IsNullOrWhiteSpace(paymentDetails.SenderId))
             {
-                pledge.AccountEmailAddress = paymentDetails.SenderId;
+                pledge.PayPalEmailAddress = paymentDetails.SenderId;
 
                 // if the pledger does not have an account then we need to create one
                 var account = _accountService.RetrieveByEmailAddress(paymentDetails.SenderId);
@@ -66,7 +66,7 @@ namespace TicketMuffin.Core.Actions.SettlePledge
                 {
                     account = _accountService.CreateIncompleteAccount(paymentDetails.SenderId, _emailRelayService);
                     pledge.AccountId = account.Id;
-                    pledge.AccountEmailAddress = account.Email;
+                    pledge.PayPalEmailAddress = account.Email;
                 }
             }
             

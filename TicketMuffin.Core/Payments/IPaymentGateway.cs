@@ -6,7 +6,7 @@ namespace TicketMuffin.Core.Payments
         PaymentDetailsResponse RetrievePaymentDetails(string transactionId);
         IPaymentRefundResponse Refund(string transactionId, decimal amount, string receiverId);
         IPaymentCaptureResponse CapturePayment(string transactionId);
-        IPaymentAuthoriseResponse AuthoriseCharge(decimal amount, string currencyCode, string paymentMemo, string recipientId, bool capture=false);
+        PaymentAuthoriseResponse AuthoriseCharge(decimal amount, string currencyCode, string paymentMemo, string recipientId, bool capture = false);
         PaymentCreationResponse CreatePayment(string memo, string iso4217Alpha3Code, string successUrl, string failureUrl, Receiver[] receivers);
         string Name { get; }
     }
@@ -26,10 +26,18 @@ namespace TicketMuffin.Core.Payments
         public bool Successful { get; set; }
     }
 
-    public interface IPaymentAuthoriseResponse : IPaymentAction
+    public class PaymentAuthoriseResponse : IPaymentAction
     {
-        PaymentStatus Status { get; set; }
-        string TransactionId { get; set; }
+        public PaymentAuthoriseResponse()
+        {
+            Diagnostics = new TransactionDiagnostics();
+        }
+        public PaymentStatus Status { get; set; }
+        public string TransactionId { get; set; }
+        public TransactionDiagnostics Diagnostics { get; set; }
+        public bool Successful { get; set; }
+
+        public string RedirectUrl { get; set; }
     }
 
     public class PaymentDetailsResponse : IPaymentAction
@@ -43,7 +51,7 @@ namespace TicketMuffin.Core.Payments
     {
         Created,
         Unauthorised,
-        Unsettled,
+        AuthorisedUnsettled,
         Settled,
         Refunded
     }

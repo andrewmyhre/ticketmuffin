@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Principal;
 using Raven.Client;
 using TicketMuffin.Core.Configuration;
 using TicketMuffin.Core.Domain;
@@ -15,16 +16,22 @@ namespace TicketMuffin.Core.Actions.CreatePledge
         private readonly IPaymentGateway _paymentGateway;
         private readonly IDocumentSession _documentSession;
         private readonly IOrderNumberGenerator _orderNumberGenerator;
+        private readonly IIdentity _userIdentity;
+        private readonly IAccountService _accountService;
 
         public MakePledgeAction(ITaxAmountResolver tax, 
             IPaymentGateway paymentGateway, 
             IDocumentSession documentSession,
-            IOrderNumberGenerator orderNumberGenerator)
+            IOrderNumberGenerator orderNumberGenerator,
+            IIdentity userIdentity,
+            IAccountService accountService)
         {
             _tax = tax;
             _paymentGateway = paymentGateway;
             _documentSession = documentSession;
             _orderNumberGenerator = orderNumberGenerator;
+            _userIdentity = userIdentity;
+            _accountService = accountService;
         }
 
         public CreatePledgeActionResult Attempt(string eventId, Account organiserAccount, MakePledgeRequest request)
@@ -69,14 +76,28 @@ namespace TicketMuffin.Core.Actions.CreatePledge
             pledge.Total = pledge.SubTotal;
             pledge.Attendees =
                 (from a in request.AttendeeNames select new EventPledgeAttendee() {FullName = a}).ToList();
-            pledge.AccountEmailAddress = request.PayPalEmailAddress;
+            pledge.PayPalEmailAddress = request.PayPalEmailAddress;
+            
+            if (_userIdentity.IsAuthenticated)
+            {
+                var account = _accountService.RetrieveByEmailAddress(_userIdentity.Name);
+                if (account == null)
+                    throw new InvalidOperationException("The account record for the logged in user could not be found");
+                pledge.AccountId = account.Id;
+                pledge.AccountEmailAddress = account.Email;
+                pledge.AccountName = string.Join(" ", account.FirstName, account.LastName);
+            }
+            else
+            {
+                pledge.AccountEmailAddress = request.PayPalEmailAddress;
+            }
             pledge.OrderNumber = _orderNumberGenerator.Generate(@event);
 
             // calculate split
 
             // make request to payment gateway
             
-            IPaymentAuthoriseResponse gatewayResponse = null;
+            PaymentAuthoriseResponse gatewayResponse = null;
             try
             {
                 var paymentMemo = "Tickets for " + @event.Title;
@@ -85,6 +106,22 @@ namespace TicketMuffin.Core.Actions.CreatePledge
                 if (pledge.PaymentGatewayHistory==null)
                     pledge.PaymentGatewayHistory = new List<DialogueHistoryEntry>();
                 pledge.PaymentGatewayHistory.Add(new DialogueHistoryEntry(gatewayResponse.Diagnostics.RequestContent, gatewayResponse.Diagnostics.ResponseContent));
+
+                if (gatewayResponse.Successful)
+                {
+                    // create a new payment
+                    var payment = new Payment();
+                    payment.TransactionId = gatewayResponse.TransactionId;
+                    payment.PaymentStatus = gatewayResponse.Status;
+                    pledge.Payments.Add(payment);
+
+                    result.Succeeded = true;
+                    result.TransactionId = gatewayResponse.TransactionId;
+                    result.PaymentPageUrl = gatewayResponse.RedirectUrl;
+                    @event.Pledges.Add(pledge);
+                    _documentSession.SaveChanges();
+                }
+
             }
             catch (Exception exception)
             {
@@ -100,16 +137,11 @@ namespace TicketMuffin.Core.Actions.CreatePledge
                             };
             }
 
-            result.Succeeded = true;
-            if (gatewayResponse.Status == PaymentStatus.Unsettled)
+            if (gatewayResponse.Status == PaymentStatus.Unauthorised)
             {
-                result.Succeeded = true;
-                result.TransactionId = gatewayResponse.TransactionId;
-
-                @event.Pledges.Add(pledge);
-
-                _documentSession.SaveChanges();
+                result.AuthorisationRequired = true;
             }
+            result.OrderNumber = pledge.OrderNumber;
 
             return result;
         }

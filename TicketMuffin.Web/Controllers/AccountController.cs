@@ -223,19 +223,20 @@ try {
                 {
                     try
                     {
-                        _authenticationService.CreateCredentials(model.Email, model.Password, model.ConfirmPassword);
-
-                        // create a full user account record
-                        var createUserRequest = new CreateUserRequest();
-                        createUserRequest.FirstName = model.FirstName;
-                        createUserRequest.LastName = model.LastName;
-                        createUserRequest.Email = model.Email;
-                        createUserRequest.AddressLine1 = model.AddressLine;
-                        createUserRequest.City = model.Town;
-                        createUserRequest.PostCode = model.PostCode;
-                        createUserRequest.Country = model.Country;
-                        _accountService.CreateUser(createUserRequest);
-                        transaction.Complete();
+                        if (_authenticationService.CreateCredentials(model.Email, model.Password, model.ConfirmPassword))
+                        {
+                            // create a full user account record
+                            var createUserRequest = new CreateUserRequest();
+                            createUserRequest.FirstName = model.FirstName;
+                            createUserRequest.LastName = model.LastName;
+                            createUserRequest.Email = model.Email;
+                            createUserRequest.AddressLine1 = model.AddressLine;
+                            createUserRequest.City = model.Town;
+                            createUserRequest.PostCode = model.PostCode;
+                            createUserRequest.Country = model.Country;
+                            _accountService.CreateUser(createUserRequest);
+                            transaction.Complete();
+                        }
 
                         _formsService.SignIn(model.Email, false /* createPersistentCookie */);
                         if (!string.IsNullOrWhiteSpace(model.RedirectUrl))

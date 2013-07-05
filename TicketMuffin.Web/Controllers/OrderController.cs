@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using System.Security.Principal;
 using System.Web.Mvc;
 using System.Web.Security;
 using Raven.Client;
@@ -10,7 +11,6 @@ using TicketMuffin.Core.Email;
 using TicketMuffin.Core.Payments;
 using TicketMuffin.Core.Services;
 using TicketMuffin.PayPal;
-using TicketMuffin.Web.Configuration;
 using TicketMuffin.Web.Models;
 
 namespace TicketMuffin.Web.Controllers
@@ -19,27 +19,22 @@ namespace TicketMuffin.Web.Controllers
     {
         //
         // GET: /Order/
-        private readonly IFormsAuthenticationService _formsService;
         private readonly IAccountService _accountService;
         private readonly IPaymentGateway _paymentGateway;
-        private readonly ITaxAmountResolver _taxResolver;
-        private readonly ISiteConfiguration _siteConfiguration;
         private readonly IDocumentSession _documentSession;
         private IEmailRelayService _emailRelayService;
+        private readonly IIdentity _userIdentity;
 
-        public OrderController(IFormsAuthenticationService formsService, 
-            IAccountService accountService, IPaymentGateway paymentGateway, ITaxAmountResolver taxResolver, 
-            ISiteConfiguration siteConfiguration, IDocumentSession documentSession, IEmailRelayService emailRelayService)
+        public OrderController(IAccountService accountService, IPaymentGateway paymentGateway, IDocumentSession documentSession, IEmailRelayService emailRelayService,
+            IIdentity userIdentity)
         {
-            _formsService = formsService;
             _accountService = accountService;
             _paymentGateway = paymentGateway;
-            _taxResolver = taxResolver;
-            _siteConfiguration = siteConfiguration;
             _documentSession = documentSession;
             ((RavenDBMembershipProvider)Membership.Provider).DocumentStore
                 = documentSession.Advanced.DocumentStore;
             _emailRelayService = emailRelayService;
+            _userIdentity = userIdentity;
         }
 
         public ActionResult PaymentRequest()
@@ -49,26 +44,33 @@ namespace TicketMuffin.Web.Controllers
 
 
 
-        public ActionResult Success(string payKey)
+        public ActionResult Success(string tid)
         {
             // update the pledge
             GroupGivingEvent @event = null;
             EventPledge pledge = null;
-            Account account = null;
             
             @event =
                 _documentSession.Query<GroupGivingEvent>()
-                    .SingleOrDefault(e => e.Pledges.Any(p => p.Payments.Any(pmt=>pmt.TransactionId == payKey)));
+                    .SingleOrDefault(e => e.Pledges.Any(p => p.Payments.Any(pmt=>pmt.TransactionId == tid)));
 
             if (@event == null)
                 return new HttpNotFoundResult();
             
-            pledge = @event.Pledges.SingleOrDefault(p => p.Payments.Any(pmt=>pmt.TransactionId == payKey));
+            pledge = @event.Pledges.SingleOrDefault(p => p.Payments.Any(pmt=>pmt.TransactionId == tid));
 
             if (pledge == null)
                 return new HttpNotFoundResult();
 
-            var payment = pledge.Payments.SingleOrDefault(p => p.TransactionId == payKey);
+            var payment = pledge.Payments.SingleOrDefault(p => p.TransactionId == tid);
+
+
+            var account = _accountService.RetrieveByEmailAddress(_userIdentity.Name);
+            if (account != null && account.Id != pledge.AccountId)
+            {
+                return base.HttpNotFound();
+            }
+
             // user may just be reloading the page - fine, don't do any updates and present the view
             if (!pledge.Paid)
             {
@@ -76,7 +78,7 @@ namespace TicketMuffin.Web.Controllers
                     = new ConfirmPledgePaymentAction(_paymentGateway, _accountService, _emailRelayService);
 
                 var paymentConfirmationResult = action.ConfirmPayment(@event,
-                                                                      new SettlePledgeRequest() {TransactionId = payKey});
+                                                                      new SettlePledgeRequest() {TransactionId = tid});
 
                 // send a purchase confirmation email
                 MvcApplication.EmailFacade.Send(pledge.AccountEmailAddress,

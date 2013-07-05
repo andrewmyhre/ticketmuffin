@@ -240,7 +240,7 @@ namespace TicketMuffin.Web.Controllers
                 return View(viewModel);
             }
 
-            var action = new MakePledgeAction(_taxResolver, _paymentGateway, _ravenSession, _orderNumberGenerator);
+            var action = new MakePledgeAction(_taxResolver, _paymentGateway, _ravenSession, _orderNumberGenerator, _userIdentity, _accountService);
             var makePledgeRequest = new MakePledgeRequest()
                                         {
                                             AttendeeNames = request.AttendeeName,
@@ -270,7 +270,12 @@ namespace TicketMuffin.Web.Controllers
                 return View(viewModel);
             }
 
-            return Redirect(string.Format(result.PaymentPageUrl, result.TransactionId));
+            if (result.AuthorisationRequired)
+            {
+                return Redirect(string.Format(result.PaymentPageUrl, result.TransactionId));
+            }
+
+            return RedirectToAction("success", "Order", new {tid = result.TransactionId});
         }
 
         [ActionName("edit-event")]

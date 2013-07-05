@@ -127,7 +127,7 @@ namespace TicketMuffin.Web.Areas.Admin.Controllers
                 // update pledges from this user
                 var eventsWithPledgesByThisUser =
                     _ravenSession.Query<GroupGivingEvent>()
-                        .Where(e => e.Pledges.Any(p => p.AccountEmailAddress == previousEmailAddress));
+                        .Where(e => e.Pledges.Any(p => p.PayPalEmailAddress == previousEmailAddress));
 
                 foreach (var @event in eventsWithPledgesByThisUser)
                 {

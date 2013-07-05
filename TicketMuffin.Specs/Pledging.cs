@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Principal;
 using System.Text;
 using Moq;
 using NUnit.Framework;
@@ -32,6 +33,7 @@ namespace TicketMuffin.Specs
         private Exception _exception;
         private Mock<IAccountService> accountService=new Mock<IAccountService>();
         private Mock<IEmailRelayService> emailRelayService=new Mock<IEmailRelayService>();
+        private Mock<IIdentity> _userIdentity  = new Mock<IIdentity>();
 
         [BeforeScenario]
         public void SetUp()
@@ -85,7 +87,7 @@ namespace TicketMuffin.Specs
         public void WhenIPledgeToAttend()
         {
             var createPledge = 
-                new MakePledgeAction(taxResolver.Object, paymentGateway.Object, documentSession, new OrderNumberGenerator());
+                new MakePledgeAction(taxResolver.Object, paymentGateway.Object, documentSession, new OrderNumberGenerator(), _userIdentity.Object);
 
             MakePledgeRequest pledgeRequest =new MakePledgeRequest()
             {
@@ -148,7 +150,7 @@ namespace TicketMuffin.Specs
                               {
                                   Attendees =
                                       new List<EventPledgeAttendee>(Helpers.Attendees(9)),
-                                      Payments = new List<Payment>(new[]{new Payment(){PaymentStatus = PaymentStatus.Unsettled,TransactionId="12345"} }),
+                                      Payments = new List<Payment>(new[]{new Payment(){PaymentStatus = PaymentStatus.AuthorisedUnsettled,TransactionId="12345"} }),
                                       DatePledged = DateTime.Now,
                                       OrderNumber = Guid.NewGuid().ToString(),
                               }

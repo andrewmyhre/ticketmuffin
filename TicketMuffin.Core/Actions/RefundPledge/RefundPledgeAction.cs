@@ -34,7 +34,7 @@ namespace TicketMuffin.Core.Actions.RefundPledge
 
             var payment =
                 pledge.Payments.SingleOrDefault(
-                    x => x.PaymentStatus == PaymentStatus.Settled || x.PaymentStatus == PaymentStatus.Unsettled);
+                    x => x.PaymentStatus == PaymentStatus.Settled || x.PaymentStatus == PaymentStatus.AuthorisedUnsettled);
             if (payment == null)
             {
                 throw new ArgumentException("Payment does not exist");
@@ -43,7 +43,7 @@ namespace TicketMuffin.Core.Actions.RefundPledge
                 IPaymentRefundResponse refundResponse = null;
                 try
                 {
-                    refundResponse = _paymentGateway.Refund(payment.TransactionId, pledge.Total, pledge.AccountEmailAddress);
+                    refundResponse = _paymentGateway.Refund(payment.TransactionId, pledge.Total, pledge.PayPalEmailAddress);
                 }
                 catch (Exception exception)
                 {

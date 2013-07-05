@@ -52,7 +52,7 @@ namespace TicketMuffin.Core.Test.Integration
         {
             var pledge = new EventPledge()
             {
-                AccountEmailAddress = pledger.Email,
+                PayPalEmailAddress = pledger.Email,
                 AccountId = pledger.Id,
                 AccountName = pledger.FirstName,
                 DatePledged = DateTime.Now,

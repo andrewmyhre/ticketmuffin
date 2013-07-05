@@ -63,13 +63,13 @@ namespace TicketMuffin.Core.Services
                 {
                     orderInfo += pledge.AccountName;
                 }
-                if (!string.IsNullOrWhiteSpace(pledge.AccountEmailAddress))
+                if (!string.IsNullOrWhiteSpace(pledge.PayPalEmailAddress))
                 {
                     if (!string.IsNullOrWhiteSpace(orderInfo))
                     {
                         orderInfo += "\r\n";
                     }
-                    orderInfo += pledge.AccountEmailAddress;
+                    orderInfo += pledge.PayPalEmailAddress;
                 }
                 if (!string.IsNullOrWhiteSpace(pledge.OrderNumber))
                 {

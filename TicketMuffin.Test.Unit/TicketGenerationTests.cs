@@ -28,7 +28,7 @@ namespace GroupGiving.Test.Unit.Pledging
                         {
                             new EventPledge()
                                 {
-                                    AccountEmailAddress = "test@test.com",
+                                    PayPalEmailAddress = "test@test.com",
                                     AccountName = "test account user",
                                     Attendees = new List<EventPledgeAttendee>()
                                         {

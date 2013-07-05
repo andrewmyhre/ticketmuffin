@@ -110,13 +110,13 @@ namespace TicketMuffin.Web.Areas.Admin.Controllers
                        {
                            new EventPledge()
                                      {
-                                         AccountEmailAddress = "fake-email-address@ticketmuffin.com",
+                                         PayPalEmailAddress = "fake-email-address@ticketmuffin.com",
                                          AccountId="0",
                                          AccountName="Not a real account",
                                          Attendees = new List<EventPledgeAttendee>(){ new EventPledgeAttendee("Joe"), new EventPledgeAttendee("Billy")},
                                          DatePledged = DateTime.Now.AddDays(-1),
                                          OrderNumber="NOT-A-REAL-PLEDGE",
-                                         Payments = new List<Payment>(new[]{new Payment(){PaymentStatus = PaymentStatus.Unsettled, TransactionId = "FAKETRANSACTION"}}),
+                                         Payments = new List<Payment>(new[]{new Payment(){PaymentStatus = PaymentStatus.AuthorisedUnsettled, TransactionId = "FAKETRANSACTION"}}),
                                          SubTotal = 10,
                                          Total = 10,
                                      }

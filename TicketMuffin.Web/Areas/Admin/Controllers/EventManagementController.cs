@@ -52,7 +52,7 @@ namespace TicketMuffin.Web.Areas.Admin.Controllers
             descending = descending.HasValue && descending.Value;
             var eventListViewModel = new EventListViewModel();
             if (!page.HasValue || page.Value < 1) page = 1;
-            var query = _documentSession.Advanced.LuceneQuery<GroupGivingEvent>("eventSearch");
+            var query = _documentSession.Advanced.LuceneQuery<GroupGivingEvent>();
             if (!string.IsNullOrWhiteSpace(searchQuery))
             {
                 //query = query.Where(e=>e.Title.StartsWith(searchQuery, StringComparison.OrdinalIgnoreCase));

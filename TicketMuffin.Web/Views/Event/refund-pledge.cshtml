@@ -9,7 +9,7 @@
 <p>Pledge to be refunded:</p>
 <p>Order Number: @Model.PledgeToBeRefunded.OrderNumber</p>
 <p>Account Name: @Model.PledgeToBeRefunded.AccountName</p>
-<p>Account Email: @Model.PledgeToBeRefunded.AccountEmailAddress</p>
+<p>Account Email: @Model.PledgeToBeRefunded.PayPalEmailAddress</p>
 <p>Attendees: @string.Join(", ", Model.PledgeToBeRefunded.Attendees.Select(a=>a.FullName).ToArray())</p>
 <p>Subtotal: @Model.PledgeToBeRefunded.SubTotal.ToString("c")</p>
 <p>Tax: @Model.PledgeToBeRefunded.Tax.ToString("c")</p>
