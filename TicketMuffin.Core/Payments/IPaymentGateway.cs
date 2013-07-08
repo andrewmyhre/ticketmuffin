@@ -42,6 +42,10 @@ namespace TicketMuffin.Core.Payments
 
     public class PaymentDetailsResponse : IPaymentAction
     {
+        public PaymentDetailsResponse()
+        {
+            Diagnostics = new TransactionDiagnostics();
+        }
         public PaymentStatus PaymentStatus { get; set; }
         public string SenderId { get; set; }
         public TransactionDiagnostics Diagnostics { get; set; }

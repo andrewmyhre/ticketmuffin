@@ -34,6 +34,7 @@ namespace TicketMuffin.Specs
         private Mock<IAccountService> accountService=new Mock<IAccountService>();
         private Mock<IEmailRelayService> emailRelayService=new Mock<IEmailRelayService>();
         private Mock<IIdentity> _userIdentity  = new Mock<IIdentity>();
+        private Mock<ICurrencyStore> _currencyStore = new Mock<ICurrencyStore>();
 
         [BeforeScenario]
         public void SetUp()
@@ -87,7 +88,8 @@ namespace TicketMuffin.Specs
         public void WhenIPledgeToAttend()
         {
             var createPledge = 
-                new MakePledgeAction(taxResolver.Object, paymentGateway.Object, documentSession, new OrderNumberGenerator(), _userIdentity.Object,accountService.Object);
+                new MakePledgeAction(taxResolver.Object, paymentGateway.Object, documentSession, new OrderNumberGenerator(), _userIdentity.Object,accountService.Object,
+                    _currencyStore.Object);
 
             MakePledgeRequest pledgeRequest =new MakePledgeRequest()
             {

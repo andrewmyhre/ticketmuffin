@@ -138,6 +138,7 @@
     <Compile Include="Indexes\ContentByCultureAndAddress.cs" />
     <Compile Include="Indexes\DenormalizedPledges.cs" />
     <Compile Include="Indexes\IndexManager.cs" />
+    <Compile Include="Indexes\PaidPledges.cs" />
     <Compile Include="Payments\FakePaymentGateway.cs" />
     <Compile Include="Payments\IChargeResponse.cs" />
     <Compile Include="Payments\IPaymentCaptureResponse.cs" />
@@ -148,8 +149,10 @@
     <Compile Include="Services\AuthenticationService.cs" />
     <Compile Include="Services\Country.cs" />
     <Compile Include="Services\CountryService.cs" />
+    <Compile Include="Services\CurrencyStore.cs" />
     <Compile Include="Services\IAuthenticationService.cs" />
     <Compile Include="Services\IContentProvider.cs" />
+    <Compile Include="Services\ICurrencyStore.cs" />
     <Compile Include="Services\IPaymentService.cs" />
     <Compile Include="Services\NonEnglishNumbersModelBinder.cs" />
     <Compile Include="Services\CreateEventRequest.cs" />
@@ -168,6 +171,7 @@
     <Compile Include="Services\ITicketGenerator.cs" />
     <Compile Include="Services\IWindowsService.cs" />
     <Compile Include="Services\OrderNumberGenerator.cs" />
+    <Compile Include="Services\PaymentService.cs" />
     <Compile Include="Services\PledgeService.cs" />
     <Compile Include="Services\QueuedCommand.cs" />
     <Compile Include="Services\RavenDbContentProvider.cs" />

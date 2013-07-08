@@ -2,36 +2,10 @@
 
 namespace TicketMuffin.Core.Domain
 {
-    public enum Currency
+    public class Currency
     {
-        GBP,
-        PLN,
-        EUR,
-        USD
-    }
-
-    public static class CurrencyExtensions
-    {
-        public static CultureInfo AsCulture(this Currency currency)
-        {
-            CultureInfo culture = new CultureInfo("fr-FR");
-            switch(currency)
-            {
-                case Currency.PLN:
-                    culture = new CultureInfo("pl-PL");
-                    break;
-                case Currency.GBP:
-                    culture = new CultureInfo("en-GB");
-                    break;
-                case Currency.USD:
-                    culture = new CultureInfo("en-US");
-                    break;
-                case Currency.EUR:
-                default:
-                   culture = new CultureInfo("fr-FR", false);
-                   break;
-            }
-            return culture;
-        }
+        public string Iso4217AlphaCode { get; set; }
+        public int Iso4217NumericCode { get; set; }
+        public string Id { get; set; }
     }
 }

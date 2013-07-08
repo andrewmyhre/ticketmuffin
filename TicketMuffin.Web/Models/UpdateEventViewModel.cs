@@ -70,7 +70,8 @@ namespace TicketMuffin.Web.Models
         public bool ReadyToActivate { get; set; }
 
         [Display(Name = "Currency")]
-        [DefaultValue(Currency.EUR)]
-        public Currency Currency { get; set; }
+        public string Currency { get; set; }
+
+        public IEnumerable<Currency> CurrencyOptions { get; set; }
     }
 }

@@ -18,7 +18,7 @@ namespace TicketMuffin.Core.Services
 
         [Required]
         [DisplayName("Currency")]
-        public Currency Currency { get; set; }
+        public string Currency { get; set; }
 
         [Required]
         [DisplayName("Minimum Participants")]
@@ -52,5 +52,7 @@ namespace TicketMuffin.Core.Services
         public string PayPalFirstName { get; set; }
 
         public string PayPalLastName { get; set; }
+
+        public int CurrencyIsoCode { get; set; }
     }
 }

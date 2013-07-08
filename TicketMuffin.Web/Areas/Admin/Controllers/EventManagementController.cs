@@ -29,14 +29,21 @@ namespace TicketMuffin.Web.Areas.Admin.Controllers
         private readonly IPledgeTicketSender _pledgeTicketSender;
         private ITicketGenerator _ticketGenerator;
         private IEventCultureResolver _cultureResolver;
+        private readonly ICurrencyStore _currencyStore;
 
-        public EventManagementController(IDocumentSession documentSession, IPaymentGateway paymentGateway, IPledgeTicketSender pledgeTicketSender, ITicketGenerator ticketGenerator, IEventCultureResolver cultureResolver)
+        public EventManagementController(IDocumentSession documentSession, 
+            IPaymentGateway paymentGateway, 
+            IPledgeTicketSender pledgeTicketSender, 
+            ITicketGenerator ticketGenerator, 
+            IEventCultureResolver cultureResolver,
+            ICurrencyStore currencyStore)
         {
             _documentSession = documentSession;
             _paymentGateway = paymentGateway;
             _pledgeTicketSender = pledgeTicketSender;
             _ticketGenerator = ticketGenerator;
             _cultureResolver = cultureResolver;
+            _currencyStore = currencyStore;
         }
 
         //
@@ -148,6 +155,7 @@ namespace TicketMuffin.Web.Areas.Admin.Controllers
                     eventViewModel.EventOrganiser = eventOrganiser.Email;
                 }
             }
+            eventViewModel.CurrencyOptions = _currencyStore.AllCurrencies();
 
             return View(eventViewModel);
         }
@@ -166,6 +174,7 @@ namespace TicketMuffin.Web.Areas.Admin.Controllers
 
             if (!ModelState.IsValid)
             {
+                viewModel.CurrencyOptions = _currencyStore.AllCurrencies();
                 return View(viewModel);
             }
 
@@ -175,7 +184,10 @@ namespace TicketMuffin.Web.Areas.Admin.Controllers
             this.TryUpdateModel(groupGivingEvent, "", null, new[] {"Id"});
             groupGivingEvent.OrganiserId = organiser.Id;
             groupGivingEvent.OrganiserName = organiser.FirstName + " " + organiser.LastName;
-            groupGivingEvent.Currency = (int)viewModel.Currency;
+
+            var currency = _currencyStore.GetCurrencyByIso4217Code(viewModel.Currency);
+            groupGivingEvent.CurrencyNumericCode = currency.Iso4217NumericCode;
+
 
             _documentSession.SaveChanges();
             return RedirectToAction("EditEventDetails", new { id });

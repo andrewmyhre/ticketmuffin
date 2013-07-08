@@ -44,6 +44,7 @@ namespace TicketMuffin.Web.Controllers
         private ITicketGenerator _ticketGenerator;
         private IEventCultureResolver _cultureResolver;
         private readonly IOrderNumberGenerator _orderNumberGenerator;
+        private readonly ICurrencyStore _currencyStore;
 
         public EventController(IAccountService accountService,
                                IPaymentGateway paymentGateway,
@@ -53,7 +54,8 @@ namespace TicketMuffin.Web.Controllers
             IEventService eventService,
             IEmailFacade emailService,
             ICultureService cultureService, ITicketGenerator ticketGenerator, IEventCultureResolver cultureResolver,
-            IOrderNumberGenerator orderNumberGenerator)
+            IOrderNumberGenerator orderNumberGenerator,
+            ICurrencyStore currencyStore)
         {
             _accountService = accountService;
             _paymentGateway = paymentGateway;
@@ -68,6 +70,7 @@ namespace TicketMuffin.Web.Controllers
             _ticketGenerator = ticketGenerator;
             _cultureResolver = cultureResolver;
             _orderNumberGenerator = orderNumberGenerator;
+            _currencyStore = currencyStore;
         }
 
         //
@@ -89,7 +92,7 @@ namespace TicketMuffin.Web.Controllers
                 viewModel.UserIsEventOwner = givingEvent.OrganiserId == userAccount.Id;
             }
 
-
+            var currency = _currencyStore.GetCurrencyByIso4217Code(givingEvent.CurrencyNumericCode);
             viewModel.Id = givingEvent.Id;
             viewModel.StartDate = givingEvent.StartDate;
             viewModel.AdditionalBenefitsMarkedDown =
@@ -110,7 +113,7 @@ namespace TicketMuffin.Web.Controllers
             viewModel.ShortUrl = givingEvent.ShortUrl;
             viewModel.Title = givingEvent.Title;
             viewModel.TicketPrice = givingEvent.TicketPrice;
-            viewModel.Currency = (Currency) givingEvent.Currency;
+            viewModel.Currency = currency.Iso4217AlphaCode;
             viewModel.Venue = givingEvent.Venue;
             viewModel.VenueLatitude = givingEvent.Latitude;
             viewModel.VenueLongitude = givingEvent.Longitude;
@@ -180,6 +183,7 @@ namespace TicketMuffin.Web.Controllers
         private EventPledgeViewModel BuildEventPageViewModel(GroupGivingEvent givingEvent,
                                                              EventPledgeViewModel viewModel)
         {
+            var currency = _currencyStore.GetCurrencyByIso4217Code(givingEvent.CurrencyNumericCode);
             viewModel.Id = givingEvent.Id;
             viewModel.StartDate = givingEvent.StartDate;
             viewModel.AdditionalBenefitsMarkedDown = givingEvent.AdditionalBenefits;
@@ -195,7 +199,7 @@ namespace TicketMuffin.Web.Controllers
             viewModel.ShortUrl = givingEvent.ShortUrl;
             viewModel.Title = givingEvent.Title;
             viewModel.TicketPrice = givingEvent.TicketPrice;
-            viewModel.Currency = (Currency)givingEvent.Currency;
+            viewModel.Currency = currency.Iso4217AlphaCode;
             viewModel.Venue = givingEvent.Venue;
             viewModel.EventIsOn = givingEvent.IsOn;
             viewModel.EventIsFull = givingEvent.IsFull;
@@ -240,7 +244,7 @@ namespace TicketMuffin.Web.Controllers
                 return View(viewModel);
             }
 
-            var action = new MakePledgeAction(_taxResolver, _paymentGateway, _ravenSession, _orderNumberGenerator, _userIdentity, _accountService);
+            var action = new MakePledgeAction(_taxResolver, _paymentGateway, _ravenSession, _orderNumberGenerator, _userIdentity, _accountService, _currencyStore);
             var makePledgeRequest = new MakePledgeRequest()
                                         {
                                             AttendeeNames = request.AttendeeName,
@@ -299,6 +303,7 @@ namespace TicketMuffin.Web.Controllers
             viewModel = AutoMapper.Mapper.Map<GroupGivingEvent, UpdateEventViewModel>(groupGivingEvent);
             viewModel.LatLong = string.Format("{0:#.#####},{1:#.#####}", groupGivingEvent.Latitude,
                                               groupGivingEvent.Longitude);
+            viewModel.CurrencyOptions = _currencyStore.AllCurrencies();
 
             return View(viewModel);
         }
@@ -324,12 +329,12 @@ namespace TicketMuffin.Web.Controllers
                 }
                 var result = new ContentResult(){Content = debug.ToString(), ContentType = "text/html"};
                 return result;
-                return View(viewModel);
             }
 
             var groupGivingEvent = _ravenSession.Load<GroupGivingEvent>(viewModel.Id);
             this.TryUpdateModel(groupGivingEvent);
-            groupGivingEvent.Currency = (int)viewModel.Currency;
+            var currency = _currencyStore.GetCurrencyByIso4217Code(viewModel.Currency);
+            groupGivingEvent.CurrencyNumericCode = currency.Iso4217NumericCode;
 
             // update organiser details if we have an organiser id but not organiser name set on the event
             if (string.IsNullOrWhiteSpace(groupGivingEvent.OrganiserName)

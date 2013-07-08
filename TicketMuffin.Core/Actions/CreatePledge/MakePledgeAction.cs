@@ -18,13 +18,15 @@ namespace TicketMuffin.Core.Actions.CreatePledge
         private readonly IOrderNumberGenerator _orderNumberGenerator;
         private readonly IIdentity _userIdentity;
         private readonly IAccountService _accountService;
+        private readonly ICurrencyStore _currencyStore;
 
         public MakePledgeAction(ITaxAmountResolver tax, 
             IPaymentGateway paymentGateway, 
             IDocumentSession documentSession,
             IOrderNumberGenerator orderNumberGenerator,
             IIdentity userIdentity,
-            IAccountService accountService)
+            IAccountService accountService,
+            ICurrencyStore currencyStore)
         {
             _tax = tax;
             _paymentGateway = paymentGateway;
@@ -32,6 +34,7 @@ namespace TicketMuffin.Core.Actions.CreatePledge
             _orderNumberGenerator = orderNumberGenerator;
             _userIdentity = userIdentity;
             _accountService = accountService;
+            _currencyStore = currencyStore;
         }
 
         public CreatePledgeActionResult Attempt(string eventId, Account organiserAccount, MakePledgeRequest request)
@@ -101,8 +104,13 @@ namespace TicketMuffin.Core.Actions.CreatePledge
             try
             {
                 var paymentMemo = "Tickets for " + @event.Title;
-                var currencyCode = Enum.GetName(typeof (Currency), @event.Currency);
-                gatewayResponse = _paymentGateway.AuthoriseCharge(pledge.Total, currencyCode, paymentMemo, organiserAccount.PaymentGatewayId);
+                var currency = _currencyStore.GetCurrencyByIso4217Code(@event.CurrencyNumericCode);
+                gatewayResponse = _paymentGateway
+                    .AuthoriseCharge(pledge.Total, currency.Iso4217AlphaCode, paymentMemo, organiserAccount.PaymentGatewayId);
+                
+                if (gatewayResponse==null)
+                    throw new Exception("Payment gateway did not return a response");
+
                 if (pledge.PaymentGatewayHistory==null)
                     pledge.PaymentGatewayHistory = new List<DialogueHistoryEntry>();
                 pledge.PaymentGatewayHistory.Add(new DialogueHistoryEntry(gatewayResponse.Diagnostics.RequestContent, gatewayResponse.Diagnostics.ResponseContent));

@@ -63,7 +63,7 @@
         <p>@Html.LabelFor(vm => vm.MinimumParticipants) @Html.EditorFor(vm => vm.MinimumParticipants) @Html.ValidationMessageFor(vm => vm.MinimumParticipants)</p>
         <p>@Html.LabelFor(vm => vm.MaximumParticipants) @Html.EditorFor(vm => vm.MaximumParticipants) @Html.ValidationMessageFor(vm => vm.MaximumParticipants)</p>
         <p>@Html.LabelFor(vm => vm.TicketPrice) @Html.EditorFor(vm => vm.TicketPrice) @Html.ValidationMessageFor(vm => vm.TicketPrice)</p>
-        <p>@Html.LabelFor(vm => vm.Currency) @Html.DropDownListFor(vm => vm.Currency, new SelectList(Enum.GetValues(typeof(TicketMuffin.Core.Domain.Currency)), Model.Currency))</p>
+        <p>@Html.LabelFor(vm => vm.Currency) @Html.DropDownListFor(vm => vm.Currency, new SelectList(Model.CurrencyOptions.Select(c=>c.Iso4217AlphaCode), Model.Currency))</p>
         <p>@Html.LabelFor(vm => vm.AdditionalBenefits) @Html.EditorFor(vm => vm.AdditionalBenefits) @Html.ValidationMessageFor(vm => vm.AdditionalBenefits)</p>
         <p>@Html.LabelFor(vm => vm.SalesEndDateTime) @Html.EditorFor(vm => vm.SalesEndDateTime) @Html.ValidationMessageFor(vm => vm.SalesEndDateTime)</p>
     </fieldset>

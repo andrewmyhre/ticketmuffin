@@ -11,6 +11,7 @@ using TicketMuffin.Core.Services;
 using TicketMuffin.PayPal.Configuration;
 using TicketMuffin.PayPal.Model;
 using TicketMuffin.Web.Configuration;
+using TicketMuffin.Web.Conventions;
 
 namespace GroupGiving.Test.Unit
 {
@@ -21,6 +22,7 @@ namespace GroupGiving.Test.Unit
         protected Mock<ITaxAmountResolver> TaxResolverMock = new Mock<ITaxAmountResolver>();
         protected Mock<IAccountService> AccountService = new Mock<IAccountService>();
         protected Mock<IOrderNumberGenerator> OrderNumberGenerator = new Mock<IOrderNumberGenerator>();
+        protected ICurrencyStore _currencyStore = null;
         protected GroupGivingEvent Event;
         protected string PaypalPayKey;
         protected EmbeddableDocumentStore DocumentStore;
@@ -29,6 +31,12 @@ namespace GroupGiving.Test.Unit
         public void Setup()
         {
             DocumentStore = InMemoryStore();
+            using (var session = DocumentStore.OpenSession())
+            {
+                _currencyStore = new CurrencyStore(session);
+                ((CurrencyStore)_currencyStore).CreateDefaults();
+                session.SaveChanges();
+            }
         }
         [TearDown]
         public void TearDown()
@@ -120,13 +128,31 @@ namespace GroupGiving.Test.Unit
                                                                }
                        };
         }
+
+        protected void PayPalWillAuthoriseACharge(string paypalPayKey)
+        {
+            PaymentGateway
+                .Setup(m => m.AuthoriseCharge(It.IsAny<decimal>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<bool>()))
+                .Returns(new PaymentAuthoriseResponse()
+                    {
+                        Diagnostics = new TransactionDiagnostics(),
+                        RedirectUrl = "redirect url",
+                        Status = PaymentStatus.Unauthorised,
+                        Successful=true,
+                        TransactionId = paypalPayKey
+                    })
+                .Verifiable();
+        }
     }
 
     public class InMemoryStoreTest
     {
         public EmbeddableDocumentStore InMemoryStore()
         {
-            return new EmbeddableDocumentStore { RunInMemory = true }.Initialize() as EmbeddableDocumentStore;
+            var store = new EmbeddableDocumentStore { RunInMemory = true }.Initialize() as EmbeddableDocumentStore;
+            store.Conventions.RegisterIdConvention<LocalisedContent>((dbname, commands, content) => String.Join("/", "content", content.Culture, content.Address, content.Label));
+            store.Conventions.RegisterIdConvention<Currency>((dbname, commands, currency) => "currencies/" + currency.Iso4217NumericCode);
+            return store;
         }
     }
 }

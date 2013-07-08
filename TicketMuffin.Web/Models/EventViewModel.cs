@@ -97,7 +97,7 @@ namespace TicketMuffin.Web.Models
 
         public int PaidAttendeeCount { get; set; }
 
-        public Currency Currency { get; set; }
+        public string Currency { get; set; }
 
         public GroupGivingEvent Event { get; set; }
     }

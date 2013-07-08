@@ -100,7 +100,6 @@ namespace TicketMuffin.Core.Domain
 
         public string ImageUrl { get; set; }
         public Charity CharityDetails { get; set; }
-        public int Currency { get; set; }
 
         [JsonIgnore]
         public bool ReadyToActivate
@@ -114,7 +113,7 @@ namespace TicketMuffin.Core.Domain
             get { return SalesEndDateTime < DateTime.Now; }
         }
 
-        public string Iso4217Alpha3Code { get; set; }
+        public int CurrencyNumericCode { get; set; }
 
         public GroupGivingEvent()
         {

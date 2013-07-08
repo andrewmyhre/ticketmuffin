@@ -41,21 +41,20 @@ namespace TicketMuffin.Core.Actions.SettlePledge
 
             // get the payment details from payment gateway
             var paymentDetails = _paymentGateway.RetrievePaymentDetails(payment.TransactionId);
+
             if (pledge.PaymentGatewayHistory == null)
                 pledge.PaymentGatewayHistory = new List<DialogueHistoryEntry>();
+
             pledge.PaymentGatewayHistory.Add(new DialogueHistoryEntry(paymentDetails.Diagnostics.RequestContent, paymentDetails.Diagnostics.RequestContent));
 
-            if (paymentDetails.PaymentStatus != PaymentStatus.Unauthorised) // delayed payment will be incomplete until execute payment is called
+            if (paymentDetails.PaymentStatus == PaymentStatus.AuthorisedUnsettled
+                || paymentDetails.PaymentStatus == PaymentStatus.Settled)
             {
-                payment.PaymentStatus = PaymentStatus.AuthorisedUnsettled;
-                pledge.DatePledged = 
-                    DateTime.Now;
-            }
-            else if (paymentDetails.PaymentStatus == PaymentStatus.Settled)
-            {
-                payment.PaymentStatus = PaymentStatus.Settled;
+                payment.PaymentStatus = paymentDetails.PaymentStatus;
                 pledge.DatePledged = DateTime.Now;
             }
+            
+
             if (!string.IsNullOrWhiteSpace(paymentDetails.SenderId))
             {
                 pledge.PayPalEmailAddress = paymentDetails.SenderId;

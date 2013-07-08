@@ -15,6 +15,7 @@ using Raven.Client.Indexes;
 using TicketMuffin.Core.Actions;
 using TicketMuffin.Core.Domain;
 using TicketMuffin.Core.Email;
+using TicketMuffin.Core.Indexes;
 using TicketMuffin.Core.Payments;
 using TicketMuffin.Core.Services;
 using TicketMuffin.PayPal.Clients;
@@ -27,27 +28,37 @@ using log4net;
 
 namespace TicketMuffin.Web.Conventions
 {
+    public class RavenStoreConventions
+    {
+        public const string DATABASE_NAME = "TicketMuffin";
+
+        public void RunConventions(IDocumentStore store)
+        {
+            store.DatabaseCommands.EnsureDatabaseExists(DATABASE_NAME);
+
+            store.Conventions.RegisterIdConvention<LocalisedContent>((dbname, commands, content) => String.Join("/", "content", content.Culture, content.Address, content.Label));
+            store.Conventions.RegisterIdConvention<Currency>((dbname, commands, currency) => "currencies/" + currency.Iso4217NumericCode);
+
+            var catalog = new CompositionContainer(new AssemblyCatalog(Assembly.GetAssembly(typeof(ContentByCultureAndAddress))));
+            var databaseCommands = store.DatabaseCommands.ForDatabase(DATABASE_NAME);
+
+            IndexCreation.CreateIndexes(catalog, databaseCommands, store.Conventions);
+        }
+    }
     internal class TicketMuffinWebNinjectModule : NinjectModule
     {
-        private const string DATABASE_NAME = "TicketMuffin";
         private ILog _logger = LogManager.GetLogger(typeof (TicketMuffinWebNinjectModule));
         public override void Load()
         {
             Bind<IDocumentStore>().ToMethod(x => { 
                 var store = new DocumentStore() {Url = "http://localhost:8080"};
                 store.Initialize();
-                store.DatabaseCommands.EnsureDatabaseExists(DATABASE_NAME);
-
-                store.Conventions.RegisterIdConvention<LocalisedContent>((dbname, commands, content) => string.Join("/","content", content.Culture, content.Address, content.Label));
-
-                var catalog = new CompositionContainer(new AssemblyCatalog(Assembly.GetAssembly(typeof(TicketMuffin.Core.Indexes.ContentByCultureAndAddress))));
-                var databaseCommands = store.DatabaseCommands.ForDatabase(DATABASE_NAME);
-                IndexCreation.CreateIndexes(catalog, databaseCommands, store.Conventions);
+                new RavenStoreConventions().RunConventions(store);
 
                 return store;
             }).InSingletonScope();
             Bind<IDocumentSession>()
-                .ToMethod(x => Kernel.Get<IDocumentStore>().OpenSession(DATABASE_NAME))
+                .ToMethod(x => Kernel.Get<IDocumentStore>().OpenSession(RavenStoreConventions.DATABASE_NAME))
                 .InRequestScope()
                 .OnActivation((context,session)=>_logger.Debug("Activating a doc session for " + context.GetScope()))
                 .OnDeactivation((context,session) =>

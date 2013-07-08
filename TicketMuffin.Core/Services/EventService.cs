@@ -11,10 +11,12 @@ namespace TicketMuffin.Core.Services
     public class EventService : IEventService
     {
         private readonly IDocumentSession _ravenSession;
+        private readonly ICurrencyStore _currencyStore;
 
-        public EventService(IDocumentSession ravenSession)
+        public EventService(IDocumentSession ravenSession, ICurrencyStore currencyStore)
         {
             _ravenSession = ravenSession;
+            _currencyStore = currencyStore;
         }
 
         public IEnumerable<GroupGivingEvent> List(int pageSize=20, int pageIndex=0)
@@ -105,7 +107,8 @@ namespace TicketMuffin.Core.Services
             @event.PaypalAccountEmailAddress = setTicketDetailsRequest.PayPalEmail;
             @event.PayPalAccountFirstName = setTicketDetailsRequest.PayPalFirstName;
             @event.PayPalAccountLastName = setTicketDetailsRequest.PayPalLastName;
-            @event.Currency = (int) setTicketDetailsRequest.Currency;
+            var currency = _currencyStore.GetCurrencyByIso4217Code(setTicketDetailsRequest.Currency);
+            @event.CurrencyNumericCode = currency.Iso4217NumericCode;
             @event.State = EventState.SalesReady;
 
             _ravenSession.SaveChanges();

@@ -205,11 +205,6 @@ namespace TicketMuffin.Web.Code
             }
         }
 
-        public static CultureInfo CurrencyFormat(this HtmlHelper html, Currency currency)
-        {
-            return currency.AsCulture();
-        }
-
         public static MvcHtmlString TicketPricesInCurrencyFormatAsJsonObject(this HtmlHelper html, int count, decimal ticketPrice, CultureInfo cultureInfo)
         {
             string cacheKey = string.Format("{0}-{1}-{2}", count, ticketPrice, cultureInfo);
