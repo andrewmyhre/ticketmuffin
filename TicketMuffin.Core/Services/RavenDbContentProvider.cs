@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using Raven.Client;
@@ -10,10 +11,11 @@ namespace TicketMuffin.Core.Services
 {
     public class RavenDbContentProvider : IContentProvider, IDisposable
     {
+        readonly Stack<LocalisedContent> CreatedContent = new Stack<LocalisedContent>();
         private readonly IDocumentSession _session;
         private readonly ILog _logger = LogManager.GetLogger(typeof (RavenDbContentProvider));
 
-        static Dictionary<string, Dictionary<string, LocalisedContent>> _contentsByAddress = new Dictionary<string, Dictionary<string, LocalisedContent>>();
+        static readonly ConcurrentDictionary<string, ConcurrentDictionary<string, LocalisedContent>> ContentsByAddress = new ConcurrentDictionary<string, ConcurrentDictionary<string, LocalisedContent>>();
 
         public RavenDbContentProvider(IDocumentSession session)
         {
@@ -61,69 +63,84 @@ namespace TicketMuffin.Core.Services
         {
         }
 
+        static object _lock = new object();
+
         public LocalisedContent GetContent(string pageAddress, string label, string defaultContent, string culture)
         {
-            pageAddress = Sanitize(pageAddress).ToLowerInvariant();
-            label = Sanitize(label).ToLowerInvariant();
-            culture = culture.ToLowerInvariant();
-            if (culture.Contains("-"))
-                culture = culture.Substring(0, culture.IndexOf("-", System.StringComparison.Ordinal));
-
-            LocalisedContent page = null;
-
-            string pageCacheKey = string.Concat(culture, "/", pageAddress);
-            if (!PageIsCached(culture, pageAddress))
+            lock (_lock)
             {
-                var contentForPage = _session.Query<ContentByCultureAndAddress.LocalisedContentByCultureAndAddressResult>("ContentByCultureAndAddress", true)
-                    .SingleOrDefault(x => x.Key == pageCacheKey);
-                if (contentForPage != null)
-                    AddToCache(contentForPage);
-                
-            }
-            page = GetFromCache(pageCacheKey, label);
+                pageAddress = Sanitize(pageAddress).ToLowerInvariant();
+                label = Sanitize(label).ToLowerInvariant();
+                culture = culture.ToLowerInvariant();
+                if (culture.Contains("-"))
+                    culture = culture.Substring(0, culture.IndexOf("-", System.StringComparison.Ordinal));
 
-            if(page==null)
-            {
-                _logger.WarnFormat("content cache miss");
-                page = CreatePage(pageAddress, label, defaultContent, culture);
-            }
+                LocalisedContent page = null;
 
-            return page;
+                string pageCacheKey = string.Concat(culture, "/", pageAddress);
+                page = GetFromCache(pageCacheKey, label);
+                if (page==null)
+                {
+                    _logger.WarnFormat("content cache miss: {0}/{1}", pageAddress, label);
+                    var contentForPage = _session
+                        .Query<ContentByCultureAndAddress.LocalisedContentByCultureAndAddressResult>(
+                            "ContentByCultureAndAddress", true)
+                        .SingleOrDefault(x => x.Key == pageCacheKey);
+                    if (contentForPage == null)
+                    {
+                        _logger.DebugFormat("not found in store: {0}/{1}", pageAddress, label);
+                        page = CreatePage(pageAddress, label, defaultContent, culture);
+                    }
+                    AddToCache(page);
+                }
+                else
+                {
+                    _logger.DebugFormat("Loaded content from cache: {0}/{1}", pageAddress, label);
+                }
+                _logger.Debug("exit GetContent");
+                return page;
+            }
         }
 
-        private bool PageIsCached(string culture, string address)
-        {
-            return _contentsByAddress.ContainsKey(string.Concat(culture, "/", address));
-        }
-
-        private static LocalisedContent GetFromCache(string pageCacheKey, string label)
+        private static LocalisedContent GetFromCache(string pageKey, string contentKey)
         {
             LocalisedContent page=null;
-            if (_contentsByAddress.ContainsKey(pageCacheKey))
+            if (ContentsByAddress.ContainsKey(pageKey))
             {
-                var contentForPage = _contentsByAddress[pageCacheKey];
-                if (contentForPage.ContainsKey(label))
+                var contentForPage = ContentsByAddress[pageKey];
+                if (contentForPage.ContainsKey(contentKey))
                 {
-                    page = contentForPage[label];
+                    page = contentForPage[contentKey];
                 }
             }
             return page;
         }
 
-        private void AddToCache(ContentByCultureAndAddress.LocalisedContentByCultureAndAddressResult contentForPage)
+        private static string CacheKey(LocalisedContent content)
         {
-            if (!_contentsByAddress.ContainsKey(contentForPage.Key))
-            {
-                _contentsByAddress.Add(contentForPage.Key, new Dictionary<string, LocalisedContent>());
-            }
-            foreach (var content in contentForPage.ContentItems)
-            {
-                _contentsByAddress[contentForPage.Key].Add(content.Label, content);    
-            }
-            
+            return string.Concat(content.Culture, "/", content.Address);
         }
 
-        Stack<LocalisedContent> _createdContent = new Stack<LocalisedContent>(); 
+        private void AddToCache(ContentByCultureAndAddress.LocalisedContentByCultureAndAddressResult contentForPage)
+        {
+            _logger.DebugFormat("Adding page to cache: {0}", contentForPage.Key);
+            var pageSet = ContentsByAddress.GetOrAdd(contentForPage.Key, new ConcurrentDictionary<string, LocalisedContent>());
+            
+            foreach (var content in contentForPage.ContentItems)
+            {
+                _logger.DebugFormat("Adding content to cache: {0}/{1}", content.Address, content.Label);
+                pageSet.GetOrAdd(content.Label, content);
+            }
+        }
+
+        private void AddToCache(LocalisedContent content)
+        {
+            var pageSet = ContentsByAddress.GetOrAdd(CacheKey(content), new ConcurrentDictionary<string, LocalisedContent>());
+
+            _logger.DebugFormat("Adding content to cache: {0}/{1}", content.Address, content.Label);
+            pageSet.GetOrAdd(content.Label, content);
+        }
+
         private LocalisedContent CreatePage(string pageAddress, string label, string defaultContent, string culture)
         {
             var content = new LocalisedContent()
@@ -133,18 +150,19 @@ namespace TicketMuffin.Core.Services
                     Culture = culture,
                     Label = label
                 };
-            _createdContent.Push(content);
+            CreatedContent.Push(content);
+
             _session.Store(content);
-            _logger.DebugFormat("Stored content {0}", content.Id);
- 
+            _logger.DebugFormat("Stored content {0}/{1}", content.Address, content.Label);
+
             return content;
         }
 
         public void Dispose()
         {
-            if (_createdContent.Count > 0)
+            if (CreatedContent.Count > 0)
             {
-                int count = _createdContent.Count;
+                int count = CreatedContent.Count;
                 _logger.DebugFormat("Saving {0} content items", count);
                 try
                 {
@@ -153,7 +171,7 @@ namespace TicketMuffin.Core.Services
                 {
                     _session.Advanced.Clear();
                 }
-                _createdContent.Clear();
+                CreatedContent.Clear();
             }
         }
     }

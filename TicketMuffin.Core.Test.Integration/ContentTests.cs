@@ -9,12 +9,19 @@ using TicketMuffin.Core.Conventions;
 using TicketMuffin.Core.Domain;
 using TicketMuffin.Core.Services;
 using Raven.Client.Linq;
+using log4net;
 
 namespace TicketMuffin.Core.Test.Integration
 {
     [TestFixture]
     public class ContentTests
     {
+        [SetUp]
+        public void Setup()
+        {
+            log4net.Config.XmlConfigurator.Configure();
+        }
+
         [Test]
         public void WhenRequestingANonExistingPage_PageIsCreated()
         {
@@ -46,53 +53,45 @@ namespace TicketMuffin.Core.Test.Integration
                 cp.GetContent(pageAddress, "text6", "default content", "en-GB");
                 session.SaveChanges();
 
-                var cs = session.Query<PageContent>().Where(pc => pc.Address == pageAddress).Customize(x=>x.WaitForNonStaleResults(TimeSpan.FromSeconds(5)));
-                Assert.That(cs.Count(), Is.EqualTo(1));
-
-                foreach(var c in cs)
-                {
-                    session.Delete(c);
-                }
-                session.SaveChanges();
+                var contentItems = session.Query<LocalisedContent>().Customize(x=>x.WaitForNonStaleResults(TimeSpan.FromSeconds(5)));
+                string[] pages = contentItems.Select(c => c.Address).Distinct().ToArray();
+                Assert.That(pages.Length, Is.EqualTo(1));
+                Assert.That(contentItems.Count(), Is.EqualTo(6));
             }
         }
 
         [Test]
         public void WhenRequestingAContentOnTwoThreads_ONlyOneContentIsCreated()
         {
+            var logger = LogManager.GetLogger(typeof (ContentTests));
             using (var store = RavenStore.CreateDocumentStore())
             {
-
-                string pageAddress = Guid.NewGuid().ToString();
+                string pageAddress = "/test/page/url";
                 var task1 = new Task(() =>
                     {
-                        System.Diagnostics.Debug.WriteLine("task 1 start");
+                        logger.Info("task 1 start");
                         using (var session = store.OpenSession())
+                        using (var contentProvider = new RavenDbContentProvider(session))
                         {
-                            IContentProvider cp = new RavenDbContentProvider(session);
-                            PageContent content = null;
-                            string label = "";
-                            cp.GetContent(pageAddress, "main text", "default content", "en-GB");
-                            cp.GetContent(pageAddress, "text2", "default content", "en-GB");
-                            cp.GetContent(pageAddress, "text3", "default content", "en-GB");
-                            session.SaveChanges();
-                            System.Diagnostics.Debug.WriteLine("got content " + pageAddress);
+                            logger.Info("get content " + pageAddress);
+                            contentProvider.GetContent(pageAddress, "main text", "default content", "en-GB");
+                            contentProvider.GetContent(pageAddress, "text2", "default content", "en-GB");
+                            contentProvider.GetContent(pageAddress, "text3", "default content", "en-GB");
+                            logger.Info("got content " + pageAddress);
                         }
                     });
 
                 var task2 = new Task(() =>
                     {
-                        System.Diagnostics.Debug.WriteLine("task 2 start");
+                        logger.Info("task 2 start");
                         using (var session = store.OpenSession())
+                        using (var contentProvider = new RavenDbContentProvider(session))
                         {
-                            IContentProvider cp = new RavenDbContentProvider(session);
-                            PageContent content = null;
-                            string label = "";
-                            cp.GetContent(pageAddress, "main text", "default content", "en-GB");
-                            cp.GetContent(pageAddress, "text2", "default content", "en-GB");
-                            cp.GetContent(pageAddress, "text3", "default content", "en-GB");
-                            session.SaveChanges();
-                            System.Diagnostics.Debug.WriteLine("got content " + pageAddress);
+                            logger.Info("get content " + pageAddress);
+                            contentProvider.GetContent(pageAddress, "main text", "default content", "en-GB");
+                            contentProvider.GetContent(pageAddress, "text2", "default content", "en-GB");
+                            contentProvider.GetContent(pageAddress, "text3", "default content", "en-GB");
+                            logger.Info("got content " + pageAddress);
                         }
                     });
 
@@ -102,23 +101,21 @@ namespace TicketMuffin.Core.Test.Integration
 
                 using (var session = store.OpenSession())
                 {
-                    IContentProvider cp = new RavenDbContentProvider(session);
-
                     RavenQueryStatistics stats;
                     var content = session
-                        .Query<PageContent>()
+                        .Query<LocalisedContent>()
                         .Statistics(out stats)
-                        .Where(c => c.Address == pageAddress)
-                        .Customize(x => x.WaitForNonStaleResults(TimeSpan.FromSeconds(5)));
+                        .Customize(x => x.WaitForNonStaleResults(TimeSpan.FromSeconds(5)))
+                        .ToArray();
 
-                    Assert.That(content.Count(), Is.EqualTo(1));
-                    System.Diagnostics.Debug.WriteLine("count = " + content.Count());
-
+                    Assert.That(stats.TotalResults, Is.EqualTo(3));
                     foreach (var c in content)
                     {
-                        session.Delete(c);
+                        logger.InfoFormat("content: {0}", c.Id);
+                        logger.InfoFormat("culture: {0}", c.Culture);
+                        logger.InfoFormat("address: {0}", c.Address);
+                        logger.InfoFormat("label: {0}", c.Label);
                     }
-                    session.SaveChanges();
                 }
             }
 

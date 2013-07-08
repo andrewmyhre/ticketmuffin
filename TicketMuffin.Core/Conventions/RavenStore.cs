@@ -1,4 +1,9 @@
+using System;
+using System.ComponentModel.Composition.Hosting;
+using System.Reflection;
 using Raven.Client;
+using Raven.Client.Indexes;
+using TicketMuffin.Core.Domain;
 using TicketMuffin.Core.Indexes;
 
 namespace TicketMuffin.Core.Conventions
@@ -7,12 +12,13 @@ namespace TicketMuffin.Core.Conventions
     {
         public static IDocumentStore CreateDocumentStore()
         {
-            var documentStore = new Raven.Client.Document.DocumentStore()
-                {
-                    Url = "http://localhost:8080"
-                };
+            var documentStore = new Raven.Client.Embedded.EmbeddableDocumentStore() {RunInMemory = true};
             documentStore.Initialize();
             new IndexManager().Initialise(documentStore);
+            IndexCreation.CreateIndexes(Assembly.GetAssembly(typeof(ContentByCultureAndAddress)), documentStore);
+
+            documentStore.Conventions.RegisterIdConvention<LocalisedContent>((dbname, commands, content) => String.Join("/", "content", content.Culture, content.Address, content.Label));
+
             return documentStore;
         }
     }
