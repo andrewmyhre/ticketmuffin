@@ -87,7 +87,7 @@ namespace TicketMuffin.Specs
         public void WhenIPledgeToAttend()
         {
             var createPledge = 
-                new MakePledgeAction(taxResolver.Object, paymentGateway.Object, documentSession, new OrderNumberGenerator(), _userIdentity.Object);
+                new MakePledgeAction(taxResolver.Object, paymentGateway.Object, documentSession, new OrderNumberGenerator(), _userIdentity.Object,accountService.Object);
 
             MakePledgeRequest pledgeRequest =new MakePledgeRequest()
             {
