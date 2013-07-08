@@ -20,20 +20,20 @@ namespace GroupGiving.Test.Unit.Pledging
     [TestFixture]
     public class MakingAPledgeWithValidRequest : PledgeTestsBase
     {
-        protected decimal _expectedTotalCharge;
-        protected decimal _expectedTaxValue;
-        protected string[] _attendee;
-        protected decimal _taxRate;
+        protected decimal ExpectedTotalCharge;
+        protected decimal ExpectedTaxValue;
+        protected string[] Attendee;
+        protected decimal TaxRate;
         private CreatePledgeActionResult _result;
-        private Mock<IIdentity> _userIdentity = new Mock<IIdentity>();
+        private readonly Mock<IIdentity> _userIdentity = new Mock<IIdentity>();
 
         [SetUp]
         public virtual void SetUp()
         {
-            _taxRate = 0.15m;
-            _attendee = new string[] {"some guy"};
-            _expectedTaxValue = 15.75m;
-            _expectedTotalCharge = 115.8m;
+            TaxRate = 0.15m;
+            Attendee = new string[] {"some guy"};
+            ExpectedTaxValue = 15.75m;
+            ExpectedTotalCharge = 115.8m;
             PaypalPayKey = "12345";
             Event = new GroupGivingEvent()
                         {
@@ -49,7 +49,7 @@ namespace GroupGiving.Test.Unit.Pledging
                 session.SaveChanges();
             }
 
-            SetTaxRateForCountry(Event.Country, _taxRate);
+            SetTaxRateForCountry(Event.Country, TaxRate);
             PayPalGatewayReturnsTransactionIdWithVerification();
             PayPalGatewayCanCreateDelayedPayment(PaypalPayKey);
         }
@@ -60,9 +60,9 @@ namespace GroupGiving.Test.Unit.Pledging
             using (var session = DocumentStore.OpenSession())
             {
                 var organiserAccount = ValidAccount();
-                var request = new MakePledgeRequest() { AttendeeNames = _attendee, WebsiteUrlBase = "http://ticketmuffin.com/" };
+                var request = new MakePledgeRequest() { AttendeeNames = Attendee, WebsiteUrlBase = "http://ticketmuffin.com/" };
                 var action = new MakePledgeAction(TaxResolverMock.Object,
-                    PaymentGateway.Object, session, OrderNumberGenerator.Object, _userIdentity.Object, _accountService.Object);
+                    PaymentGateway.Object, session, OrderNumberGenerator.Object, _userIdentity.Object, AccountService.Object);
                 _result = action.Attempt(Event.Id, organiserAccount, request);
                 var _event = session.Load<GroupGivingEvent>(Event.Id);
                 Assert.That(_event.Pledges.Count, Is.GreaterThan(0));
@@ -76,10 +76,10 @@ namespace GroupGiving.Test.Unit.Pledging
             {
                 var organiserAccount = ValidAccount();
                 var request = new MakePledgeRequest()
-                                  {AttendeeNames = _attendee, WebsiteUrlBase = "http://ticketmuffin.com/"};
+                                  {AttendeeNames = Attendee, WebsiteUrlBase = "http://ticketmuffin.com/"};
                 var action = new MakePledgeAction(TaxResolverMock.Object,
                                                   PaymentGateway.Object,
-                                                  session, OrderNumberGenerator.Object, _userIdentity.Object, _accountService.Object);
+                                                  session, OrderNumberGenerator.Object, _userIdentity.Object, AccountService.Object);
                 _result = action.Attempt(Event.Id, organiserAccount, request);
                 var _event = session.Load<GroupGivingEvent>(Event.Id);
                 Assert.That(_event.Pledges.Any(p => p.Payments.Any(pmt=>pmt.TransactionId.Equals(PaypalPayKey))));
@@ -93,10 +93,10 @@ namespace GroupGiving.Test.Unit.Pledging
             {
                 var organiserAccount = ValidAccount();
                 var request = new MakePledgeRequest()
-                                  {AttendeeNames = _attendee, WebsiteUrlBase = "http://ticketmuffin.com/"};
+                                  {AttendeeNames = Attendee, WebsiteUrlBase = "http://ticketmuffin.com/"};
                 var action = new MakePledgeAction(TaxResolverMock.Object,
                                                   PaymentGateway.Object,
-                                                  session, OrderNumberGenerator.Object, _userIdentity.Object, _accountService.Object);
+                                                  session, OrderNumberGenerator.Object, _userIdentity.Object, AccountService.Object);
                 _result = action.Attempt(Event.Id, organiserAccount, request);
 
                 var _event = session.Load<GroupGivingEvent>(Event.Id);
@@ -114,15 +114,15 @@ namespace GroupGiving.Test.Unit.Pledging
             {
                 var organiserAccount = ValidAccount();
                 var request = new MakePledgeRequest()
-                                  {AttendeeNames = _attendee, WebsiteUrlBase = "http://ticketmuffin.com/"};
+                                  {AttendeeNames = Attendee, WebsiteUrlBase = "http://ticketmuffin.com/"};
                 var action = new MakePledgeAction(TaxResolverMock.Object,
                                                   PaymentGateway.Object,
-                                                  session, OrderNumberGenerator.Object, _userIdentity.Object, _accountService.Object);
+                                                  session, OrderNumberGenerator.Object, _userIdentity.Object, AccountService.Object);
                 _result = action.Attempt(Event.Id, organiserAccount, request);
                 var _event = session.Load<GroupGivingEvent>(Event.Id);
                 var pledge = _event.Pledges.LastOrDefault();
 
-                Assert.That(pledge.Tax, Is.EqualTo(_expectedTaxValue));
+                Assert.That(pledge.Tax, Is.EqualTo(ExpectedTaxValue));
             }
         }
 
@@ -134,15 +134,15 @@ namespace GroupGiving.Test.Unit.Pledging
             {
                 var organiserAccount = ValidAccount();
                 var request = new MakePledgeRequest()
-                                  {AttendeeNames = _attendee, WebsiteUrlBase = "http://ticketmuffin.com/"};
+                                  {AttendeeNames = Attendee, WebsiteUrlBase = "http://ticketmuffin.com/"};
                 var action = new MakePledgeAction(TaxResolverMock.Object,
                                                   PaymentGateway.Object,
-                                                  session, OrderNumberGenerator.Object, _userIdentity.Object, _accountService.Object);
+                                                  session, OrderNumberGenerator.Object, _userIdentity.Object, AccountService.Object);
                 _result = action.Attempt(Event.Id, organiserAccount, request);
                 var _event = session.Load<GroupGivingEvent>(Event.Id);
                 var pledge = _event.Pledges.LastOrDefault();
 
-                Assert.That(pledge.Total, Is.EqualTo(_expectedTotalCharge));
+                Assert.That(pledge.Total, Is.EqualTo(ExpectedTotalCharge));
             }
         }
 
@@ -153,10 +153,10 @@ namespace GroupGiving.Test.Unit.Pledging
             {
                 var organiserAccount = ValidAccount();
                 var request = new MakePledgeRequest()
-                                  {AttendeeNames = _attendee, WebsiteUrlBase = "http://ticketmuffin.com/"};
+                                  {AttendeeNames = Attendee, WebsiteUrlBase = "http://ticketmuffin.com/"};
                 var action = new MakePledgeAction(TaxResolverMock.Object,
                                                   PaymentGateway.Object,
-                                                  session, OrderNumberGenerator.Object, _userIdentity.Object, _accountService.Object);
+                                                  session, OrderNumberGenerator.Object, _userIdentity.Object, AccountService.Object);
                 _result = action.Attempt(Event.Id, organiserAccount, request);
                 var _event = session.Load<GroupGivingEvent>(Event.Id);
                 var pledge = _event.Pledges.LastOrDefault();
@@ -173,10 +173,10 @@ namespace GroupGiving.Test.Unit.Pledging
             {
                 var organiserAccount = ValidAccount();
                 var request = new MakePledgeRequest()
-                                  {AttendeeNames = _attendee, WebsiteUrlBase = "http://ticketmuffin.com/"};
+                                  {AttendeeNames = Attendee, WebsiteUrlBase = "http://ticketmuffin.com/"};
                 var action = new MakePledgeAction(TaxResolverMock.Object,
                                                   PaymentGateway.Object,
-                                                  session, OrderNumberGenerator.Object, _userIdentity.Object, _accountService.Object);
+                                                  session, OrderNumberGenerator.Object, _userIdentity.Object, AccountService.Object);
                 _result = action.Attempt(Event.Id, organiserAccount, request);
 
                 Assert.That(_result.TransactionId, Is.EqualTo(PaypalPayKey));
@@ -190,10 +190,10 @@ namespace GroupGiving.Test.Unit.Pledging
             {
                 var organiserAccount = ValidAccount();
                 var request = new MakePledgeRequest()
-                                  {AttendeeNames = _attendee, WebsiteUrlBase = "http://ticketmuffin.com/"};
+                                  {AttendeeNames = Attendee, WebsiteUrlBase = "http://ticketmuffin.com/"};
                 var action = new MakePledgeAction(TaxResolverMock.Object,
                                                   PaymentGateway.Object,
-                                                  session, OrderNumberGenerator.Object, _userIdentity.Object, _accountService.Object);
+                                                  session, OrderNumberGenerator.Object, _userIdentity.Object, AccountService.Object);
                 _result = action.Attempt(Event.Id, organiserAccount, request);
                 Assert.That(_result.Succeeded, Is.True);
             }
@@ -241,7 +241,7 @@ namespace GroupGiving.Test.Unit.Pledging
                                   {AttendeeNames = Attendee, WebsiteUrlBase = "http://ticketmuffin.com/"};
                 var action = new MakePledgeAction(TaxResolverMock.Object,
                                                   PaymentGateway.Object,
-                                                  session, OrderNumberGenerator.Object, _userIdentity.Object, _accountService.Object);
+                                                  session, OrderNumberGenerator.Object, _userIdentity.Object, AccountService.Object);
                 _result = action.Attempt(Event.Id, organiserAccount, request);
                 Assert.That(_result.Succeeded, Is.False);
             }
@@ -288,7 +288,7 @@ namespace GroupGiving.Test.Unit.Pledging
             var organiserAccount = ValidAccount();
             var request = new MakePledgeRequest() { AttendeeNames = _attendee, WebsiteUrlBase = "http://ticketmuffin.com/" };
             var action = new MakePledgeAction(TaxResolverMock.Object,
-                PaymentGateway.Object, _documentSession, OrderNumberGenerator.Object, _userIdentity.Object, _accountService.Object);
+                PaymentGateway.Object, _documentSession, OrderNumberGenerator.Object, _userIdentity.Object, AccountService.Object);
             _result = action.Attempt(Event.Id, organiserAccount, request);
         }
 
@@ -397,7 +397,7 @@ namespace GroupGiving.Test.Unit.Pledging
                 var organiserAccount = ValidAccount();
                 var action = new MakePledgeAction(TaxResolverMock.Object,
                                                   PaymentGateway.Object,
-                                                  session, OrderNumberGenerator.Object, _userIdentity.Object, _accountService.Object);
+                                                  session, OrderNumberGenerator.Object, _userIdentity.Object, AccountService.Object);
 
                 Assert.Throws<InvalidOperationException>(() => action.Attempt(Event.Id, organiserAccount, request),
                                                          "Number of attendees exceeded");
@@ -489,7 +489,7 @@ namespace GroupGiving.Test.Unit.Pledging
             using (var session = DocumentStore.OpenSession())
             {
                 var pledgeAction = new MakePledgeAction(TaxResolverMock.Object, PaymentGateway.Object,
-                                                        session, OrderNumberGenerator.Object, _userIdentity.Object, _accountService.Object);
+                                                        session, OrderNumberGenerator.Object, _userIdentity.Object, AccountService.Object);
                 pledgeAction.Attempt(Event.Id, organiserAccount, request);
                 var @event = session.Load<GroupGivingEvent>(Event.Id);
 

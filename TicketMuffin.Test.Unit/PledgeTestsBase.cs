@@ -21,7 +21,6 @@ namespace GroupGiving.Test.Unit
         protected Mock<ITaxAmountResolver> TaxResolverMock = new Mock<ITaxAmountResolver>();
         protected Mock<IAccountService> AccountService = new Mock<IAccountService>();
         protected Mock<IOrderNumberGenerator> OrderNumberGenerator = new Mock<IOrderNumberGenerator>();
-        protected Mock<IAccountService> _accountService = new Mock<IAccountService>();
         protected GroupGivingEvent Event;
         protected string PaypalPayKey;
         protected EmbeddableDocumentStore DocumentStore;
