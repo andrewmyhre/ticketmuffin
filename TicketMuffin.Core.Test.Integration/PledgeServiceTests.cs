@@ -21,6 +21,9 @@ namespace TicketMuffin.Core.Test.Integration
         public void Setup()
         {
             _kernel = new Ninject.StandardKernel(new TicketMuffin.Core.Conventions.IoCConfiguration(), new TestNinjectModule());
+            
+            _kernel.Get<ICurrencyStore>().CreateDefaults();
+            _kernel.Bind<IPaymentGateway>().To<FakePaymentGateway>();
         }
 
         [Test]

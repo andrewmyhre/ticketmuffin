@@ -87,6 +87,7 @@ namespace TicketMuffin.Specs
         [When(@"I pledge to attend")]
         public void WhenIPledgeToAttend()
         {
+            Helpers.PaymentGatewayReturnsSuccessful(paymentGateway, PaymentStatus.Unauthorised);
             var createPledge = 
                 new MakePledgeAction(taxResolver.Object, paymentGateway.Object, documentSession, new OrderNumberGenerator(), _userIdentity.Object,accountService.Object,
                     _currencyStore.Object);
@@ -167,6 +168,7 @@ namespace TicketMuffin.Specs
             var confirmPledge
                 =new ConfirmPledgePaymentAction(paymentGateway.Object, accountService.Object, emailRelayService.Object);
 
+            Helpers.PaymentGatewayReturnsSuccessful(paymentGateway, PaymentStatus.AuthorisedUnsettled);
             var request=new SettlePledgeRequest()
                                             {
                                                 TransactionId=pledgeResult.TransactionId

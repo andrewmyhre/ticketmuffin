@@ -1,4 +1,5 @@
-﻿using Raven.Client;
+﻿using System;
+using Raven.Client;
 using TicketMuffin.Core.Domain;
 using TicketMuffin.Core.Payments;
 
@@ -25,7 +26,12 @@ namespace TicketMuffin.Core.Services
             pledge.Total = pledge.SubTotal + pledge.ServiceCharge;
             _session.SaveChanges();
 
+            var allCurrencies = _currencyStore.AllCurrencies();
             var currency = _currencyStore.GetCurrencyByIso4217Code(@event.CurrencyNumericCode);
+            if (currency == null)
+            {
+                throw new Exception(string.Format("Could not find a currency with Iso code '{0}'", @event.CurrencyNumericCode));
+            }
             string memo = "Tickets for " + @event.Title;
             string successUrl = "";
             string failureUrl = "";

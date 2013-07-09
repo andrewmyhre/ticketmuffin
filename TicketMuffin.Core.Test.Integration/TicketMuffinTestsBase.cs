@@ -32,7 +32,7 @@ namespace TicketMuffin.Core.Test.Integration
                     PaymentGatewayId = creatorEmail,
                     PayPalFirstName = RandomString(),
                     PayPalLastName = RandomString(),
-                    Email = creatorEmail
+                    Email = creatorEmail,
                 };
             session.Store(eventCreator);
 
@@ -40,6 +40,8 @@ namespace TicketMuffin.Core.Test.Integration
             var @event = new GroupGivingEvent()
                 {
                     Title = string.Concat("Test event ", RandomString()),
+                    CurrencyNumericCode = 826,
+                    SalesEndDateTime = DateTime.Now.AddDays(7),
                     OrganiserId = eventCreator.Id
                 };
             session.Store(@event);

@@ -8,5 +8,6 @@ namespace TicketMuffin.Core.Services
         Currency GetCurrencyByIso4217Code(int iso4217Code);
         Currency GetCurrencyByIso4217Code(string iso4217Code);
         IEnumerable<Currency> AllCurrencies();
+        void CreateDefaults();
     }
 }

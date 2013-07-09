@@ -31,9 +31,13 @@ namespace TicketMuffin.Core.Services
 
         public void CreateDefaults()
         {
-            _session.Store(new Currency(){Iso4217NumericCode= 985, Iso4217AlphaCode = "PLN"});
-            _session.Store(new Currency() { Iso4217NumericCode = 826, Iso4217AlphaCode = "GBP" });
-            _session.Store(new Currency() { Iso4217NumericCode = 978, Iso4217AlphaCode = "EUR" });
+            //if (_session.Load<Currency>("currencies/985")==null)
+                _session.Store(new Currency(){Iso4217NumericCode= 985, Iso4217AlphaCode = "PLN"});
+            //if (_session.Load<Currency>("currencies/826") == null)
+                _session.Store(new Currency() { Iso4217NumericCode = 826, Iso4217AlphaCode = "GBP" });
+            //if (_session.Load<Currency>("currencies/978") == null)
+                _session.Store(new Currency() { Iso4217NumericCode = 978, Iso4217AlphaCode = "EUR" });
+            _session.SaveChanges();
         }
     }
 }

@@ -40,13 +40,14 @@ namespace TicketMuffin.Specs
                 yield return new EventPledgeAttendee(i.ToString());
         }
 
-        public static void PaymentGatewayReturnsSuccessful(Mock<IPaymentGateway> paymentGateway)
+        public static void PaymentGatewayReturnsSuccessful(Mock<IPaymentGateway> paymentGateway, PaymentStatus statusToReturn = PaymentStatus.Created)
         {
             paymentGateway
                 .Setup(x => x.RetrievePaymentDetails(It.IsAny<string>()))
                 .Returns(new TicketMuffin.Core.Payments.PaymentDetailsResponse()
                              {
-                                 PaymentStatus = PaymentStatus.Created
+                                 PaymentStatus = statusToReturn,
+                                 Successful = true
                              });
         }
     }

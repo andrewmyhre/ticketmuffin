@@ -12,8 +12,7 @@ namespace TicketMuffin.Core.Test.Integration
         {
             Bind<IDocumentStore>().ToMethod(x =>
                 {
-                    var store = new EmbeddableDocumentStore() {RunInMemory = true};
-                    store.Initialize();
+                    var store = RavenStore.CreateDocumentStore();
                     return store;
                 }).InSingletonScope();
             Bind<IDocumentSession>().ToMethod(x => Kernel.Get<IDocumentStore>().OpenSession())

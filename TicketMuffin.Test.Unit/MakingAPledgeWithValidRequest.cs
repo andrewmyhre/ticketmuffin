@@ -497,9 +497,14 @@ namespace GroupGiving.Test.Unit.Pledging
         {
             var request = new MakePledgeRequest()
             {
-                AttendeeNames = new[] { "attendee1", "attendee2", "attendee3" },
+                AttendeeNames = new[] { "attendee1", "attendee2", "attendee3", "attendee4", "attendee5", "attendee6", "attendee7", "attendee8", "attendee9", "attendee10" },
                 WebsiteUrlBase = "http://ticketmuffin.com/",
             };
+
+            PaymentGateway
+                .Setup(x => x.RetrievePaymentDetails(PaypalPayKey))
+                .Returns(new TicketMuffin.Core.Payments.PaymentDetailsResponse(){PaymentStatus = PaymentStatus.AuthorisedUnsettled, Successful = true});
+
 
             var organiserAccount = ValidAccount();
 
@@ -508,6 +513,8 @@ namespace GroupGiving.Test.Unit.Pledging
                 var pledgeAction = new MakePledgeAction(TaxResolverMock.Object, PaymentGateway.Object,
                                                         session, OrderNumberGenerator.Object, _userIdentity.Object, AccountService.Object, _currencyStore);
                 pledgeAction.Attempt(Event.Id, organiserAccount, request);
+                
+
                 var @event = session.Load<GroupGivingEvent>(Event.Id);
 
                 var completeAction =

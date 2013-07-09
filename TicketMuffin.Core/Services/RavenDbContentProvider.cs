@@ -82,15 +82,8 @@ namespace TicketMuffin.Core.Services
                 if (page==null)
                 {
                     _logger.WarnFormat("content cache miss: {0}/{1}", pageAddress, label);
-                    var contentForPage = _session
-                        .Query<ContentByCultureAndAddress.LocalisedContentByCultureAndAddressResult>(
-                            "ContentByCultureAndAddress", true)
-                        .SingleOrDefault(x => x.Key == pageCacheKey);
-                    if (contentForPage == null)
-                    {
-                        _logger.DebugFormat("not found in store: {0}/{1}", pageAddress, label);
-                        page = CreatePage(pageAddress, label, defaultContent, culture);
-                    }
+                    _logger.DebugFormat("not found in store: {0}/{1}", pageAddress, label);
+                    page = CreatePage(pageAddress, label, defaultContent, culture);
                     AddToCache(page);
                 }
                 else

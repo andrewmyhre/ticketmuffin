@@ -114,7 +114,6 @@
     <Compile Include="Configuration\JustGivingApiConfiguration.cs" />
     <Compile Include="Configuration\TicketMuffinFees.cs" />
     <Compile Include="Conventions\IoCConfiguration.cs" />
-    <Compile Include="Conventions\RavenStore.cs" />
     <Compile Include="Data\CSVReader.cs" />
     <Compile Include="Data\StringConverter.cs" />
     <Compile Include="DialogueHistoryEntry.cs" />

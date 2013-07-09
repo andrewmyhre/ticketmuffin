@@ -1,12 +1,11 @@
 using System;
-using System.ComponentModel.Composition.Hosting;
 using System.Reflection;
 using Raven.Client;
 using Raven.Client.Indexes;
 using TicketMuffin.Core.Domain;
 using TicketMuffin.Core.Indexes;
 
-namespace TicketMuffin.Core.Conventions
+namespace TicketMuffin.Core.Test.Integration
 {
     public static class RavenStore
     {
@@ -18,6 +17,7 @@ namespace TicketMuffin.Core.Conventions
             IndexCreation.CreateIndexes(Assembly.GetAssembly(typeof(ContentByCultureAndAddress)), documentStore);
 
             documentStore.Conventions.RegisterIdConvention<LocalisedContent>((dbname, commands, content) => String.Join("/", "content", content.Culture, content.Address, content.Label));
+            documentStore.Conventions.RegisterIdConvention<Currency>((dbname, commands, currency) => "currencies/" + currency.Iso4217NumericCode);
 
             return documentStore;
         }
